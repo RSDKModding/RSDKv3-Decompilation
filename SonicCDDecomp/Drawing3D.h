@@ -8,6 +8,9 @@ namespace Drawing3D {
 		int Rows[0x10];
 	};
 
+	static int VertexCount = 0;
+	static int FaceCount = 0;
+
 }
 
 #endif // !DRAWING3D_H

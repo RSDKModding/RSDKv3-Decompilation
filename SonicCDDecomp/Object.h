@@ -29,6 +29,9 @@ namespace Object {
 
 	static int objectLoop = 0;
 	static Entity objectEntityList[OBJECT_COUNT];
+
+	void ProcessObjects(void);
+	void ProcessPausedObjects(void);
 }
 
 #endif // !OBJECT_H

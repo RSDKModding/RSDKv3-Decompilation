@@ -33,7 +33,7 @@ void RetroEngine::Run() {
             //ProcessStageMenu();
             break;
         case 1:
-            //Scene::ProcessStage();
+            Scene::ProcessStage();
             break;
         case 2u:
             LoadGameConfig("Data/Game/GameConfig.bin");

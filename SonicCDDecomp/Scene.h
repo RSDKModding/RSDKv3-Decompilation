@@ -1,6 +1,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#define LAYER_COUNT (9)
+#define DEFORM_COUNT (576)
+
 namespace Scene {
 
 	class SceneInfo {
@@ -56,7 +59,8 @@ namespace Scene {
 		ushort	TileIndex[0x8000];
 		byte	Direction[0x8000];
 		byte	VisualPlane[0x8000];
-		byte	CollisionFlags[0x10000];
+		byte	CollisionFlags[0x8000];
+		byte	CollisionFlagsB[0x8000];
 	};
 
 	static int StageListCount[4];
@@ -64,8 +68,66 @@ namespace Scene {
 
 	static int StageMode = 0;
 
+	static int CameraTarget = -1;
+	static int CameraStyle = 0;
+	static bool CameraEnabled = 0;
+	static int CameraAdjustY = 0;
+	static int xScrollOffset = 0;
+	static int yScrollOffset = 0;
+	static int yScrollA = 0;
+	static int yScrollB = 240;
+	static int xScrollA = 0;
+	static int xScrollB = 320;
+	static int yScrollMove = 0;
+	static int CameraShakeX = 0;
+	static int CameraShakeY = 0;
+
+	static int lastXSize = -1;
+	static int lastYSize = -1;
+
+	static int WaterLevel = 0;
+	static int WaterDrawPos = 0;
+
+	static bool PauseEnabled = false;
+	static bool TimeEnabled = false;
+	static int StageTimer = 0;
+	static int StageMilliseconds = 0;
+	static int StageSeconds = 0;
+	static int StageMinutes = 0;
+
+	//Category and Scene IDs
+	static int ActiveStageList = 0;
+	static int StageListPosition = 0;
+
+	static byte ActiveTileLayers[4];
+	static byte TLayerMidPoint;
+	static TileLayer StageLayouts[LAYER_COUNT];
+
+	static int bgDeformationData0[DEFORM_COUNT];
+	static int bgDeformationData1[DEFORM_COUNT];
+	static int bgDeformationData2[DEFORM_COUNT];
+	static int bgDeformationData3[DEFORM_COUNT];
+
+	static LineScroll hParallax;
+	static LineScroll vParallax;
+
+	static Tiles128x128 Tile128x128;
+
 	void InitFirstStage(void);
 	void ProcessStage(void);
+
+	void ResetBackgroundSettings(void);
+
+	void LoadStageFiles(void);
+	int LoadActFile(const char* Extention, int StageID, Reader::FileInfo* FileInfo);
+	int LoadStageFile(const char* FileName, int StageID, Reader::FileInfo* FileInfo);
+
+	void LoadActLayout(void);
+	void LoadStageBackground(void);
+	void LoadStageChunks(void);
+	void LoadStageCollisions(void);
+	void LoadStageGIFFile(int StageID);
+	void LoadStageGFXFile(int StageID);
 }
 
 #endif // !SCENE_H

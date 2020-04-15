@@ -27,6 +27,9 @@ typedef int RSDK_BOOL;
 
 #define RSDK_TARGETPLATFORM			(RSDK_PLATFORM_WINDOWS)
 
+//General Defines
+#define SCREEN_HEIGHT (240)
+
 #include "Animation.h"
 #include "Audio.h"
 #include "Collision.h"

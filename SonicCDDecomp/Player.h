@@ -55,6 +55,12 @@ namespace Player {
 	};
 
 	static Player Players[PLAYER_COUNT];
+	static int PlayerListPos = 0;
+
+	void SetPlayerScreenPosition(Player* Player);
+	void SetPlayerScreenPositionCDStyle(Player* Player);
+	void SetPlayerHLockedScreenPosition(Player* Player);
+	void SetPlayerLockedScreenPosition(Player* Player);
 }
 
 #endif // !PLAYER_H

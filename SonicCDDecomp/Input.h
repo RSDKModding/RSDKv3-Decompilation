@@ -20,6 +20,13 @@ namespace Input {
 		int Touches;
 	};
 
+	static InputData KeyPress;
+	static InputData KeyDown;
+	static InputData KeyRelease;
+
+	void CheckKeyPress(InputData* input, byte Flags);
+	void CheckKeyDown(InputData* input, byte Flags);
+
 }
 
 #endif // !INPUT_H

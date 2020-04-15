@@ -69,3 +69,11 @@ int Audio::InitAudioPlayback(void) {
 
 	return 1;
 }
+
+void Audio::PauseSound(void) {
+
+}
+
+void Audio::ResumeSound(void) {
+
+}

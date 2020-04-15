@@ -27,3 +27,132 @@ void Drawing::GenerateBlendLookupTable(void) {
         Drawing::TintLookupTable[k] = 2113 * TintValue;
     }
 }
+
+void Drawing::DrawObjectList(int Layer) {
+
+}
+
+void Drawing::DrawStageGFX(void) {
+    Scene::WaterDrawPos = Scene::WaterLevel - Scene::yScrollOffset;
+    if (Scene::WaterDrawPos < 0) {
+        Scene::WaterDrawPos = 0;
+    }
+
+    if (Scene::WaterDrawPos > 240) {
+        Scene::WaterDrawPos = 240;
+    }
+
+    DrawObjectList(0);
+    if (Scene::ActiveTileLayers[0] < LAYER_COUNT) {
+        switch (Scene::StageLayouts[Scene::ActiveTileLayers[0]].Type)
+        {
+        case 1:
+            DrawHLineScrollLayer(0);
+            break;
+        case 2:
+            DrawVLineScrollLayer(0);
+            break;
+        case 3:
+            Draw3DFloorLayer(0);
+            break;
+        case 4:
+            Draw3DSkyLayer(0);
+            break;
+        default:
+            break;
+        }
+    }
+
+    DrawObjectList(1);
+    if (Scene::ActiveTileLayers[0] < LAYER_COUNT) {
+        switch (Scene::StageLayouts[Scene::ActiveTileLayers[1]].Type)
+        {
+        case 1:
+            DrawHLineScrollLayer(0);
+            break;
+        case 2:
+            DrawVLineScrollLayer(0);
+            break;
+        case 3:
+            Draw3DFloorLayer(0);
+            break;
+        case 4:
+            Draw3DSkyLayer(0);
+            break;
+        default:
+            break;
+        }
+    }
+
+    DrawObjectList(2);
+    if (Scene::ActiveTileLayers[0] < LAYER_COUNT) {
+        switch (Scene::StageLayouts[Scene::ActiveTileLayers[2]].Type)
+        {
+        case 1:
+            DrawHLineScrollLayer(0);
+            break;
+        case 2:
+            DrawVLineScrollLayer(0);
+            break;
+        case 3:
+            Draw3DFloorLayer(0);
+            break;
+        case 4:
+            Draw3DSkyLayer(0);
+            break;
+        default:
+            break;
+        }
+    }
+
+    DrawObjectList(3);
+    DrawObjectList(4);
+    if (Scene::ActiveTileLayers[0] < LAYER_COUNT) {
+        switch (Scene::StageLayouts[Scene::ActiveTileLayers[3]].Type)
+        {
+        case 1:
+            DrawHLineScrollLayer(0);
+            break;
+        case 2:
+            DrawVLineScrollLayer(0);
+            break;
+        case 3:
+            Draw3DFloorLayer(0);
+            break;
+        case 4:
+            Draw3DSkyLayer(0);
+            break;
+        default:
+            break;
+        }
+    }
+
+    DrawObjectList(5);
+    DrawObjectList(6);
+
+    if (Palette::FadeMode > 0) {
+        DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_HEIGHT, Palette::FadeR, Palette::FadeG, Palette::FadeB, Palette::FadeA);
+    }
+}
+
+void Drawing::DrawHLineScrollLayer(int LayerID) {
+
+}
+
+void Drawing::DrawVLineScrollLayer(int LayerID) {
+
+}
+
+void Drawing::Draw3DFloorLayer(int LayerID) {
+
+}
+
+void Drawing::Draw3DSkyLayer(int LayerID) {
+
+}
+
+
+
+void Drawing::DrawRectangle(int XPos, int YPos, int Width, int Height, int R, int G, int B, int A) {
+
+}

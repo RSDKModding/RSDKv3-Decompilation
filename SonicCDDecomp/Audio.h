@@ -25,6 +25,9 @@ namespace Audio {
 	static int numGlobalSFX = 0;
 
 	int InitAudioPlayback(void);
+
+	void PauseSound(void);
+	void ResumeSound(void);
 }
 
 #endif // !AUDIO_H
