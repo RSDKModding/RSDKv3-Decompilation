@@ -72,19 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)build\</OutDir>
+    <OutDir>$(SolutionDir)build\x86\</OutDir>
+    <TargetName>Sonic CD</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)build\</OutDir>
+    <OutDir>$(SolutionDir)build\x64\</OutDir>
+    <TargetName>Sonic CD_64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)build\</OutDir>
+    <OutDir>$(SolutionDir)build\x86\</OutDir>
+    <TargetName>Sonic CD</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)build\</OutDir>
+    <OutDir>$(SolutionDir)build\x64\</OutDir>
+    <TargetName>Sonic CD_64</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -93,10 +97,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies/windows/SDL2/include/;$(SolutionDir)dependencies/windows/libogg/include/;$(SolutionDir)dependencies/windows/libvorbis/include/;$(SolutionDir)dependencies/windows/libtheora/include/;$(SolutionDir)dependencies/all/theoraplay/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/windows/SDL2/lib/$(PlatformTargetAsMSBuildArchitecture)/;$(SolutionDir)dependencies/windows/libvorbis/win32/VS2010/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libtheora/win32/VS2008/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libogg/win32/VS2015/$(Platform)/Release/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;libtheora_static.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,10 +113,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies/windows/SDL2/include/;$(SolutionDir)dependencies/windows/libogg/include/;$(SolutionDir)dependencies/windows/libvorbis/include/;$(SolutionDir)dependencies/windows/libtheora/include/;$(SolutionDir)dependencies/all/theoraplay/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/windows/SDL2/lib/$(PlatformTargetAsMSBuildArchitecture)/;$(SolutionDir)dependencies/windows/libvorbis/win32/VS2010/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libtheora/win32/VS2008/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libogg/win32/VS2015/$(Platform)/Release/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;libtheora_static.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,12 +131,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies/windows/SDL2/include/;$(SolutionDir)dependencies/windows/libogg/include/;$(SolutionDir)dependencies/windows/libvorbis/include/;$(SolutionDir)dependencies/windows/libtheora/include/;$(SolutionDir)dependencies/all/theoraplay/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/windows/SDL2/lib/$(PlatformTargetAsMSBuildArchitecture)/;$(SolutionDir)dependencies/windows/libvorbis/win32/VS2010/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libtheora/win32/VS2008/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libogg/win32/VS2015/$(Platform)/Release/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;libtheora_static.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,20 +151,26 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies/windows/SDL2/include/;$(SolutionDir)dependencies/windows/libogg/include/;$(SolutionDir)dependencies/windows/libvorbis/include/;$(SolutionDir)dependencies/windows/libtheora/include/;$(SolutionDir)dependencies/all/theoraplay/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/windows/SDL2/lib/$(PlatformTargetAsMSBuildArchitecture)/;$(SolutionDir)dependencies/windows/libvorbis/win32/VS2010/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libtheora/win32/VS2008/$(Platform)/Release/;$(SolutionDir)dependencies/windows/libogg/win32/VS2015/$(Platform)/Release/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;libtheora_static.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\dependencies\all\theoraplay\theoraplay.c" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Drawing.cpp" />
-    <ClCompile Include="Drawing3D.cpp" />
+    <ClCompile Include="Scene3D.cpp" />
+    <ClCompile Include="Ini.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.cpp" />
@@ -162,28 +181,43 @@
     <ClCompile Include="RetroEngine.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Script.cpp" />
+    <ClCompile Include="Userdata.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="String.cpp" />
-    <ClCompile Include="TextSystem.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Video.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
-    <ClInclude Include="Audio.h" />
-    <ClInclude Include="Collision.h" />
-    <ClInclude Include="Drawing.h" />
-    <ClInclude Include="Drawing3D.h" />
-    <ClInclude Include="Reader.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Math.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="Palette.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="RetroEngine.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="Script.h" />
-    <ClInclude Include="String.h" />
-    <ClInclude Include="TextSystem.h" />
+    <ClInclude Include="..\dependencies\all\theoraplay\theoraplay.h" />
+    <ClInclude Include="..\dependencies\all\theoraplay\theoraplay_cvtrgb.h" />
+    <ClInclude Include="Animation.hpp" />
+    <ClInclude Include="Audio.hpp" />
+    <ClInclude Include="Collision.hpp" />
+    <ClInclude Include="Debug.hpp" />
+    <ClInclude Include="Drawing.hpp" />
+    <ClInclude Include="Scene3D.hpp" />
+    <ClInclude Include="Ini.hpp" />
+    <ClInclude Include="Reader.hpp" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Sprite.hpp" />
+    <ClInclude Include="Input.hpp" />
+    <ClInclude Include="Math.hpp" />
+    <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Palette.hpp" />
+    <ClInclude Include="Player.hpp" />
+    <ClInclude Include="RetroEngine.hpp" />
+    <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="Script.hpp" />
+    <ClInclude Include="String.hpp" />
+    <ClInclude Include="Text.hpp" />
+    <ClInclude Include="Userdata.hpp" />
+    <ClInclude Include="Video.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SonicCDDecomp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="win.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,6 +23,16 @@ bin/
 [Bb]in/
 [Oo]bj/
 
+#dependencies
+[Dd]ependencies/windows/SDL2/
+[Dd]ependencies/windows/libogg/
+[Dd]ependencies/windows/libvorbis/
+[Dd]ependencies/windows/libtheora/
+[Dd]ependencies/mac/SDL2/
+[Dd]ependencies/mac/libogg/
+[Dd]ependencies/mac/libvorbis/
+[Dd]ependencies/mac/libtheora/
+
 # Visual Studio 2015 cache/options directory
 .vs/
 

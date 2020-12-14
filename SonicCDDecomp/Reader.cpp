@@ -1,261 +1,326 @@
-#include "RetroEngine.h"
+#include "RetroEngine.hpp"
 #include <string>
 
-using namespace Reader;
+char rsdkName[0x400];
 
-void Reader::CopyFilePath(char* Dest, const char* Src) {
+char fileName[0x100];
+byte fileBuffer[0x2000];
+int fileSize;
+int vFileSize;
+int readPos;
+int readSize;
+int bufferPosition;
+int virtualFileOffset;
+byte eStringPosA;
+byte eStringPosB;
+byte eStringNo;
+byte eNybbleSwap;
+char encryptionStringA[] = { "4RaS9D7KaEbxcp2o5r6t" };
+char encryptionStringB[] = { "3tRaUxLmEaSn" };
 
-    strcpy(Dest, Src);
-    for (int i = 0; ; i++) {
-        if (i >= strlen(Dest)) {
-            break;
-        }
+FILE *cFileHandle = nullptr;
+FILE *cFileHandleStream = nullptr;
 
-        if (Dest[i] == '/') {
-            Dest[i] = '\\';
-        }
-    }
-}
-
-bool Reader::CheckRSDKFile(const char* filename) {
-    char result;
-    char rsdkName; 
-    FileInfo FileInfo;
+bool CheckRSDKFile(const char *filePath)
+{
+    FileInfo info;
 
     Engine.usingDataFile = false;
     Engine.usingBytecode = false;
-    result = 0;
 
-    //CopyFilePath(filename, &rsdkName);
-    cFileHandle = fopen(filename, "rb");
+    // CopyFilePath(filename, &rsdkName);
+    cFileHandle = fopen(filePath, "rb");
     if (cFileHandle) {
         Engine.usingDataFile = true;
-        StringUtils::StrCopy(RSDKName, (char*)filename);
+        StrCopy(rsdkName, filePath);
         fclose(cFileHandle);
-        cFileHandle = 0;
-        if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &FileInfo)) {
+        cFileHandle = NULL;
+        if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
             Engine.usingBytecode = true;
+            Engine.bytecodeMode  = BYTECODE_MOBILE;
             CloseFile();
         }
-        result = 1;
+        else if (LoadFile("Data/Scripts/ByteCode/GS000.bin", &info)) {
+            Engine.usingBytecode = true;
+            Engine.bytecodeMode  = BYTECODE_PC;
+            CloseFile();
+        }
+        return true;
+    }
+    else {
+        Engine.usingDataFile = false;
+        cFileHandle = NULL;
+        if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
+            Engine.usingBytecode = true;
+            Engine.bytecodeMode  = BYTECODE_MOBILE;
+            CloseFile();
+        }
+        else if (LoadFile("Data/Scripts/ByteCode/GS000.bin", &info)) {
+            Engine.usingBytecode = true;
+            Engine.bytecodeMode  = BYTECODE_PC;
+            CloseFile();
+        }
+        return false;
     }
 
-    return result;
+    return false;
 }
 
-int Reader::LoadFile(const char* Filename, FileInfo* FileInfo) {
-    
-    sprintf(FileInfo->FileName, "%s", Filename);
+bool LoadFile(const char *filePath, FileInfo *fileInfo)
+{
+    MEM_ZEROP(fileInfo);
+    StrCopy(fileInfo->fileName, filePath);
+    StrCopy(fileName, filePath);
 
-    if (cFileHandle) {
+    if (cFileHandle)
         fclose(cFileHandle);
-    }
+
     cFileHandle = NULL;
 
     if (Engine.usingDataFile) {
-        cFileHandle = fopen(RSDKName, "rb");
+        cFileHandle = fopen(rsdkName, "rb");
         fseek(cFileHandle, 0, 2);
-        FileSize = ftell(cFileHandle);
-        BufferPosition = 0;
-        ReadSize = 0;
-        ReadPos = 0;
-        if (!ParseVirtualFileSystem(FileInfo)) {
+        fileSize       = ftell(cFileHandle);
+        bufferPosition = 0;
+        readSize       = 0;
+        readPos        = 0;
+        if (!ParseVirtualFileSystem(fileInfo)) {
             fclose(cFileHandle);
             cFileHandle = NULL;
 #if RSDK_DEBUG
-            printf("Couldn't load file '%s'\n", Filename);
+            printf("Couldn't load file '%s'\n", filePath);
 #endif
-            return 0;
+            return false;
         }
-        FileInfo->FileSize = vFileSize;
-        FileInfo->VirtualFileOffset = VirtualFileOffset;
+        fileInfo->readPos           = readPos;
+        fileInfo->fileSize          = vFileSize;
+        fileInfo->virtualFileOffset = virtualFileOffset;
+        fileInfo->eStringNo         = eStringNo;
+        fileInfo->eStringPosB       = eStringPosB;
+        fileInfo->eStringPosA       = eStringPosA;
+        fileInfo->eNybbleSwap       = eNybbleSwap;
+        fileInfo->bufferPosition    = bufferPosition;
     }
     else {
-        cFileHandle = fopen(FileInfo->FileName, "rb");
+        cFileHandle = fopen(fileInfo->fileName, "rb");
         if (!cFileHandle) {
 #if RSDK_DEBUG
-            printf("Couldn't load file '%s'\n", Filename);
+            printf("Couldn't load file '%s'\n", filePath);
 #endif
-            return 0;
+            return false;
         }
-        VirtualFileOffset = 0;
+        virtualFileOffset = 0;
         fseek(cFileHandle, 0, SEEK_END);
-        FileInfo->FileSize = ftell(cFileHandle);
-        FileSize = ftell(cFileHandle);
+        fileInfo->fileSize = ftell(cFileHandle);
+        fileSize           = fileInfo->fileSize;
         fseek(cFileHandle, 0, SEEK_SET);
-        ReadPos = 0;
+        readPos = 0;
+        fileInfo->readPos           = readPos;
+        fileInfo->virtualFileOffset = 0;
+        fileInfo->eStringNo         = 0;
+        fileInfo->eStringPosB       = 0;
+        fileInfo->eStringPosA       = 0;
+        fileInfo->eNybbleSwap       = 0;
+        fileInfo->bufferPosition    = 0;
     }
-    BufferPosition = 0;
-    ReadSize = 0;
+    bufferPosition = 0;
+    readSize       = 0;
 
 #if RSDK_DEBUG
-    printf("Loaded File '%s'\n", Filename);
+    printf("Loaded File '%s'\n", filePath);
 #endif
 
-    return 1;
+    return true;
 }
 
-int Reader::ParseVirtualFileSystem(FileInfo* File) {
-    char result;
-    char Filename[71];
-    byte DirCount;
-    char StringBuffer[68];
-    int j;
-    int FileOffset;
-    int FNamePos = 0;
-    int headerSize;
-    char FullFilename[68];
-    int i;
-    byte FileBuffer;
+bool ParseVirtualFileSystem(FileInfo *fileInfo)
+{
+    char filename[0x50];
+    char fullFilename[0x50];
+    char stringBuffer[0x50];
+    ushort dirCount = 0;
+    int fileOffset  = 0;
+    int fNamePos    = 0;
+    int headerSize  = 0;
+    int i           = 0;
+    byte fileBuffer = 0;
 
-    j = 0;
-    VirtualFileOffset = 0;
-    for (int i = 0; File->FileName[i]; i++) {
-        if (File->FileName[i] == '/') {
-            FNamePos = i;
-            j = 0;
+    int j             = 0;
+    virtualFileOffset = 0;
+    for (int i = 0; fileInfo->fileName[i]; i++) {
+        if (fileInfo->fileName[i] == '/') {
+            fNamePos = i;
+            j        = 0;
         }
         else {
             ++j;
         }
-        FullFilename[i] = File->FileName[i];
+        fullFilename[i] = fileInfo->fileName[i];
     }
-    ++FNamePos;
-    for (i = 0; i < j; ++i) {
-        Filename[i] = File->FileName[i + FNamePos];
-    }
-    Filename[j] = 0;
-    FullFilename[FNamePos] = 0;
+    ++fNamePos;
+    for (i = 0; i < j; ++i) filename[i] = fileInfo->fileName[i + fNamePos];
+    filename[j]            = 0;
+    fullFilename[fNamePos] = 0;
 
     fseek(cFileHandle, 0, SEEK_SET);
-    Engine.usingDataFile = 0;
-    BufferPosition = 0;
-    ReadSize = 0;
-    ReadPos = 0;
+    Engine.usingDataFile = false;
+    bufferPosition       = 0;
+    readSize             = 0;
+    readPos              = 0;
 
-    FileRead(&FileBuffer, 1);
-    headerSize = FileBuffer;
-    FileRead(&FileBuffer, 1);
-    headerSize += FileBuffer << 8;
-    FileRead(&FileBuffer, 1);
-    headerSize += FileBuffer << 16;
-    FileRead(&FileBuffer, 1);
-    headerSize += FileBuffer << 24;
+    FileRead(&fileBuffer, 1);
+    headerSize = fileBuffer;
+    FileRead(&fileBuffer, 1);
+    headerSize += fileBuffer << 8;
+    FileRead(&fileBuffer, 1);
+    headerSize += fileBuffer << 16;
+    FileRead(&fileBuffer, 1);
+    headerSize += fileBuffer << 24;
 
-    FileRead(&FileBuffer, 1);
-    DirCount = FileBuffer;
-    FileRead(&FileBuffer, 1);
-    DirCount += FileBuffer << 8;
+    FileRead(&fileBuffer, 1);
+    dirCount = fileBuffer;
+    FileRead(&fileBuffer, 1);
+    dirCount += fileBuffer << 8;
 
-    i = 0;
-    FileOffset = 0;
-    while (i < DirCount) {
-        FileRead(&FileBuffer, 1);
-        for (j = 0; j < FileBuffer; ++j) {
-            FileRead(&StringBuffer[j], 1);
-            StringBuffer[j] ^= -1 - FileBuffer;
+    i          = 0;
+    fileOffset = 0;
+    int nextFileOffset = 0;
+    while (i < dirCount) {
+        FileRead(&fileBuffer, 1);
+        for (j = 0; j < fileBuffer; ++j) {
+            FileRead(&stringBuffer[j], 1);
+            stringBuffer[j] ^= -1 - fileBuffer;
         }
-        StringBuffer[j] = 0;
+        stringBuffer[j] = 0;
 
-        FileBuffer = StringUtils::StrComp(FullFilename, StringBuffer);
-        if (FileBuffer == 1) {
-            i = DirCount;
-            FileRead(&FileBuffer, 1);
-            FileOffset = FileBuffer;
-            FileRead(&FileBuffer, 1);
-            FileOffset += FileBuffer << 8;
-            FileRead(&FileBuffer, 1);
-            FileOffset += FileBuffer << 16;
-            FileRead(&FileBuffer, 1);
-            FileOffset += FileBuffer << 24;
+        if (StrComp(fullFilename, stringBuffer)) {
+            FileRead(&fileBuffer, 1);
+            fileOffset = fileBuffer;
+            FileRead(&fileBuffer, 1);
+            fileOffset += fileBuffer << 8;
+            FileRead(&fileBuffer, 1);
+            fileOffset += fileBuffer << 16;
+            FileRead(&fileBuffer, 1);
+            fileOffset += fileBuffer << 24;
+
+            //Grab info for next dir to know when we've found an error
+            //Ignore dir name we dont care
+            if (i == dirCount - 1) {
+                nextFileOffset = fileSize - headerSize; //There is no next dir, so just make this the EOF
+            }
+            else {
+                FileRead(&fileBuffer, 1);
+                for (j = 0; j < fileBuffer; ++j) {
+                    FileRead(&stringBuffer[j], 1);
+                    stringBuffer[j] ^= -1 - fileBuffer;
+                }
+                stringBuffer[j] = 0;
+
+                FileRead(&fileBuffer, 1);
+                nextFileOffset = fileBuffer;
+                FileRead(&fileBuffer, 1);
+                nextFileOffset += fileBuffer << 8;
+                FileRead(&fileBuffer, 1);
+                nextFileOffset += fileBuffer << 16;
+                FileRead(&fileBuffer, 1);
+                nextFileOffset += fileBuffer << 24;
+            }
+
+            i = dirCount;
         }
         else {
-            FileOffset = -1;
-            FileRead(&FileBuffer, 1);
-            FileRead(&FileBuffer, 1);
-            FileRead(&FileBuffer, 1);
-            FileRead(&FileBuffer, 1);
+            fileOffset = -1;
+            FileRead(&fileBuffer, 1);
+            FileRead(&fileBuffer, 1);
+            FileRead(&fileBuffer, 1);
+            FileRead(&fileBuffer, 1);
             ++i;
         }
     }
 
-    if (FileOffset == -1) {
-        Engine.usingDataFile = 1;
-        result = 0;
+    if (fileOffset == -1) {
+        Engine.usingDataFile = true;
+        return false;
     }
     else {
-        fseek(cFileHandle, FileOffset + headerSize, 0);
-        BufferPosition = 0;
-        ReadSize = 0;
-        ReadPos = 0;
-        VirtualFileOffset = FileOffset + headerSize;
-        i = 0;
+        fseek(cFileHandle, fileOffset + headerSize, SEEK_SET);
+        bufferPosition    = 0;
+        readSize          = 0;
+        readPos           = 0;
+        virtualFileOffset = fileOffset + headerSize;
+        i                 = 0;
         while (i < 1) {
-            FileRead(&FileBuffer, 1);
-            ++VirtualFileOffset;
+            FileRead(&fileBuffer, 1);
+            ++virtualFileOffset;
             j = 0;
-            while (j < FileBuffer) {
-                FileRead(&StringBuffer[j], 1);
-                StringBuffer[j] = ~StringBuffer[j];
+            while (j < fileBuffer) {
+                FileRead(&stringBuffer[j], 1);
+                stringBuffer[j] = ~stringBuffer[j];
                 ++j;
-                ++VirtualFileOffset;
+                ++virtualFileOffset;
             }
-            StringBuffer[j] = 0;
+            stringBuffer[j] = 0;
 
-            if (StringUtils::StrComp(Filename, StringBuffer)) {
+            if (StrComp(filename, stringBuffer)) {
                 i = 1;
-                FileRead(&FileBuffer, 1);
-                j = FileBuffer;
-                FileRead(&FileBuffer, 1);
-                j += FileBuffer << 8;
-                FileRead(&FileBuffer, 1);
-                j += FileBuffer << 16;
-                FileRead(&FileBuffer, 1);
-                j += FileBuffer << 24;
-                VirtualFileOffset += 4;
+                FileRead(&fileBuffer, 1);
+                j = fileBuffer;
+                FileRead(&fileBuffer, 1);
+                j += fileBuffer << 8;
+                FileRead(&fileBuffer, 1);
+                j += fileBuffer << 16;
+                FileRead(&fileBuffer, 1);
+                j += fileBuffer << 24;
+                virtualFileOffset += 4;
                 vFileSize = j;
             }
             else {
-                FileRead(&FileBuffer, 1);
-                j = FileBuffer;
-                FileRead(&FileBuffer, 1);
-                j += FileBuffer << 8;
-                FileRead(&FileBuffer, 1);
-                j += FileBuffer << 16;
-                FileRead(&FileBuffer, 1);
-                j += FileBuffer << 24;
-                VirtualFileOffset += 4;
-                VirtualFileOffset += j;
+                FileRead(&fileBuffer, 1);
+                j = fileBuffer;
+                FileRead(&fileBuffer, 1);
+                j += fileBuffer << 8;
+                FileRead(&fileBuffer, 1);
+                j += fileBuffer << 16;
+                FileRead(&fileBuffer, 1);
+                j += fileBuffer << 24;
+                virtualFileOffset += 4;
+                virtualFileOffset += j;
             }
-            fseek(cFileHandle, VirtualFileOffset, 0);
-            BufferPosition = 0;
-            ReadSize = 0;
-            ReadPos = VirtualFileOffset;
+
+            //No File has been found (next file would be in a new dir)
+            if (virtualFileOffset >= nextFileOffset + headerSize) {
+                Engine.usingDataFile = true;
+                return false;
+            }
+            fseek(cFileHandle, virtualFileOffset, SEEK_SET);
+            bufferPosition = 0;
+            readSize       = 0;
+            readPos        = virtualFileOffset;
         }
-        eStringNo = (vFileSize & 0x1FCu) >> 2;
-        eStringPosB = (eStringNo % 9) + 1;
-        eStringPosA = (eStringNo % eStringPosB) + 1;
-        eNybbleSwap = 0;
+        eStringNo            = (vFileSize & 0x1FCu) >> 2;
+        eStringPosB          = (eStringNo % 9) + 1;
+        eStringPosA          = (eStringNo % eStringPosB) + 1;
+        eNybbleSwap          = false;
         Engine.usingDataFile = true;
-        result = 1;
+        return true;
     }
-    return result;
+    Engine.usingDataFile = true;
+    return false;
 }
 
-void Reader::FileRead(void* Dest, int Size) {
-    byte* data = (byte*)Dest;
-    byte eStrPosB; // dl
-    if (ReadPos <= FileSize) {
-        if (Engine.usingDataFile) {
-            while (Size > 0) {
-                if (BufferPosition == ReadSize) {
-                    FillFileBuffer();
-                }
+void FileRead(void *dest, int size)
+{
+    byte *data = (byte *)dest;
 
-                *data = encryptionStringB[eStringPosB] ^ eStringNo ^ fileBuffer[BufferPosition];
-                if (eNybbleSwap == 1) {
+    if (readPos <= fileSize) {
+        if (Engine.usingDataFile) {
+            while (size > 0) {
+                if (bufferPosition == readSize)
+                    FillFileBuffer();
+
+                *data = encryptionStringB[eStringPosB] ^ eStringNo ^ fileBuffer[bufferPosition++];
+                if (eNybbleSwap)
                     *data = 16 * (*data & 0xF) + ((signed int)*data >> 4);
-                }
                 *data ^= encryptionStringA[eStringPosA++];
                 ++eStringPosB;
                 if (eStringPosA <= 19 || eStringPosB <= 11) {
@@ -274,112 +339,84 @@ void Reader::FileRead(void* Dest, int Size) {
                     if (eNybbleSwap) {
                         eNybbleSwap = 0;
                         eStringPosA = (eStringNo % 12) + 6;
-                        eStrPosB = (eStringNo % 5) + 4;
+                        eStringPosB = (eStringNo % 5) + 4;
                     }
                     else {
                         eNybbleSwap = 1;
                         eStringPosA = (eStringNo % 15) + 3;
-                        eStrPosB = (eStringNo % 7) + 1;
+                        eStringPosB = (eStringNo % 7) + 1;
                     }
-                    eStringPosB = eStrPosB;
                 }
                 ++data;
-                --Size;
+                --size;
             }
         }
         else {
-            while (Size > 0) {
-                if (BufferPosition == ReadSize) {
+            while (size > 0) {
+                if (bufferPosition == readSize)
                     FillFileBuffer();
-                }
 
-                *data++ = fileBuffer[BufferPosition++];
-                Size--;
+                *data++ = fileBuffer[bufferPosition++];
+                size--;
             }
         }
     }
 }
 
-size_t Reader::FillFileBuffer(void) {
-    size_t result;
-
-    if (ReadPos + 0x2000 <= FileSize) {
-        ReadSize = 0x2000;
-    }
-    else {
-        ReadSize = FileSize - ReadPos;
-    }
-    result = fread(fileBuffer, 1u, ReadSize, cFileHandle);
-    ReadPos += ReadSize;
-    BufferPosition = 0;
-    return result;
-}
-
-void Reader::GetFileInfo(FileInfo* FileInfo) {
-    FileInfo->BufferPosition = BufferPosition;
-    FileInfo->ReadPos = ReadPos - ReadSize;
-    FileInfo->eStringPosA = eStringPosA;
-    FileInfo->eStringPosB = eStringPosB;
-    FileInfo->eStringNo = eStringNo;
-    FileInfo->eNybbleSwap = eNybbleSwap;
-}
-
-void Reader::SetFileInfo(FileInfo* FileInfo) {
+void SetFileInfo(FileInfo *fileInfo)
+{
     if (Engine.usingDataFile) {
-        cFileHandle = fopen(RSDKName, "rb");
-        VirtualFileOffset = FileInfo->VirtualFileOffset;
-        vFileSize = FileInfo->FileSize;
-        fseek(cFileHandle, 0, 2);
-        FileSize = ftell(cFileHandle);
-        ReadPos = FileInfo->ReadPos;
-        fseek(cFileHandle, ReadPos, 0);
+        cFileHandle       = fopen(rsdkName, "rb");
+        virtualFileOffset = fileInfo->virtualFileOffset;
+        vFileSize         = fileInfo->fileSize;
+        fseek(cFileHandle, 0, SEEK_END);
+        fileSize = ftell(cFileHandle);
+        readPos  = fileInfo->readPos;
+        fseek(cFileHandle, readPos, SEEK_SET);
         FillFileBuffer();
-        BufferPosition = FileInfo->BufferPosition;
-        eStringPosA = FileInfo->eStringPosA;
-        eStringPosB = FileInfo->eStringPosB;
-        eStringNo = FileInfo->eStringNo;
-        eNybbleSwap = FileInfo->eNybbleSwap;
+        bufferPosition = fileInfo->bufferPosition;
+        eStringPosA    = fileInfo->eStringPosA;
+        eStringPosB    = fileInfo->eStringPosB;
+        eStringNo      = fileInfo->eStringNo;
+        eNybbleSwap    = fileInfo->eNybbleSwap;
     }
     else {
-        cFileHandle = fopen(FileInfo->FileName, "rb");
-        VirtualFileOffset = 0;
-        FileSize = FileInfo->FileSize;
-        ReadPos = FileInfo->ReadPos;
-        fseek(cFileHandle, ReadPos, 0);
+        StrCopy(fileName, fileInfo->fileName);
+        cFileHandle       = fopen(fileInfo->fileName, "rb");
+        virtualFileOffset = 0;
+        fileSize          = fileInfo->fileSize;
+        readPos           = fileInfo->readPos;
+        fseek(cFileHandle, readPos, SEEK_SET);
         FillFileBuffer();
-        BufferPosition = FileInfo->BufferPosition;
+        bufferPosition = fileInfo->bufferPosition;
+        eStringPosA    = 0;
+        eStringPosB    = 0;
+        eStringNo      = 0;
+        eNybbleSwap    = 0;
     }
 }
 
-size_t Reader::GetFilePosition(void) {
-    size_t result; // eax
-
-    if (Engine.usingDataFile == 1) {
-        result = BufferPosition + ReadPos - ReadSize - VirtualFileOffset;
-    }
-    else {
-        result = BufferPosition + ReadPos - ReadSize;
-    }
-    return result;
+size_t GetFilePosition()
+{
+    if (Engine.usingDataFile)
+        return bufferPosition + readPos - readSize - virtualFileOffset;
+    else
+        return bufferPosition + readPos - readSize;
 }
 
-void Reader::SetFilePosition(int NewPos) {
-    byte eStrPosB; // dl
-
+void SetFilePosition(int newPos)
+{
     if (Engine.usingDataFile) {
-        ReadPos = VirtualFileOffset + NewPos;
-        eStringNo = (vFileSize & 0x1FCu) >> 2;
+        readPos     = virtualFileOffset + newPos;
+        eStringNo   = (vFileSize & 0x1FCu) >> 2;
         eStringPosB = (eStringNo % 9) + 1;
         eStringPosA = (eStringNo % eStringPosB) + 1;
-        eNybbleSwap = 0;
-        while (NewPos)
-        {
+        eNybbleSwap = false;
+        while (newPos) {
             ++eStringPosA;
             ++eStringPosB;
-            if (eStringPosA <= 19 || eStringPosB <= 11)
-            {
-                if (eStringPosA > 19)
-                {
+            if (eStringPosA <= 19 || eStringPosB <= 11) {
+                if (eStringPosA > 19) {
                     eStringPosA = 1;
                     eNybbleSwap ^= 1u;
                 }
@@ -392,46 +429,151 @@ void Reader::SetFilePosition(int NewPos) {
                 ++eStringNo;
                 eStringNo &= 0x7Fu;
                 if (eNybbleSwap) {
-                    eNybbleSwap = 0;
+                    eNybbleSwap = false;
                     eStringPosA = (eStringNo % 12) + 6;
-                    eStrPosB = (eStringNo % 5) + 4;
+                    eStringPosB = (eStringNo % 5) + 4;
                 }
                 else {
-                    eNybbleSwap = 1;
+                    eNybbleSwap = true;
                     eStringPosA = (eStringNo % 15) + 3;
-                    eStrPosB = (eStringNo % 7) + 1;
+                    eStringPosB = (eStringNo % 7) + 1;
                 }
-                eStringPosB = eStrPosB;
             }
-            --NewPos;
+            --newPos;
         }
     }
     else {
-        ReadPos = NewPos;
+        readPos = newPos;
     }
-    fseek(cFileHandle, ReadPos, 0);
+    fseek(cFileHandle, readPos, SEEK_SET);
     FillFileBuffer();
 }
 
-bool Reader::ReachedEndOfFile(void) {
-    bool result;
-
-    if (Engine.usingDataFile) {
-        result = BufferPosition + ReadPos - ReadSize - VirtualFileOffset >= vFileSize;
-    }
-    else {
-        result = BufferPosition + ReadPos - ReadSize >= FileSize;
-    }
-    return result;
+bool ReachedEndOfFile()
+{
+    if (Engine.usingDataFile)
+        return bufferPosition + readPos - readSize - virtualFileOffset >= vFileSize;
+    else
+        return bufferPosition + readPos - readSize >= fileSize;
 }
 
-int Reader::CloseFile(void) {
-    int result;
+size_t FileRead2(FileInfo *info, void *dest, int size)
+{
+    byte *data = (byte *)dest;
+    int rPos   = GetFilePosition2(info);
+    memset(data, 0, size);
 
-    if (cFileHandle) {
-        result = fclose(cFileHandle);
+    if (rPos <= info->fileSize) {
+        if (Engine.usingDataFile) {
+            int rSize = 0;
+            if (rPos + size <= info->fileSize)
+                rSize = size;
+            else
+                rSize = info->fileSize - rPos;
+
+            size_t result = fread(data, 1u, rSize, cFileHandleStream);
+            info->readPos += rSize;
+            info->bufferPosition = 0;
+
+            while (size > 0) {
+                *data = encryptionStringB[info->eStringPosB] ^ info->eStringNo ^ *data;
+                if (info->eNybbleSwap)
+                    *data = 16 * (*data & 0xF) + (*data >> 4);
+                *data ^= encryptionStringA[info->eStringPosA++];
+                ++info->eStringPosB;
+                if (info->eStringPosA <= 19 || info->eStringPosB <= 11) {
+                    if (info->eStringPosA > 19) {
+                        info->eStringPosA = 1;
+                        info->eNybbleSwap ^= 1u;
+                    }
+                    if (info->eStringPosB > 11) {
+                        info->eStringPosB = 1;
+                        info->eNybbleSwap ^= 1u;
+                    }
+                }
+                else {
+                    ++info->eStringNo;
+                    info->eStringNo &= 0x7Fu;
+                    if (info->eNybbleSwap) {
+                        info->eNybbleSwap = false;
+                        info->eStringPosA = (info->eStringNo % 12) + 6;
+                        info->eStringPosB = (info->eStringNo % 5) + 4;
+                    }
+                    else {
+                        info->eNybbleSwap = true;
+                        info->eStringPosA = (info->eStringNo % 15) + 3;
+                        info->eStringPosB = (info->eStringNo % 7) + 1;
+                    }
+                }
+                ++data;
+                --size;
+            }
+            return result;
+        }
+        else {
+            int rSize = 0;
+            if (rPos + size <= info->fileSize)
+                rSize = size;
+            else
+                rSize = info->fileSize - rPos;
+
+            size_t result = fread(data, 1u, rSize, cFileHandleStream);
+            info->readPos += rSize;
+            info->bufferPosition = 0;
+            return result;
+        }
     }
+    return 0;
+}
 
-    cFileHandle = NULL;
-    return result;
+size_t GetFilePosition2(FileInfo* info)
+{
+    if (Engine.usingDataFile)
+        return info->bufferPosition + info->readPos - info->virtualFileOffset;
+    else
+        return info->bufferPosition + info->readPos;
+}
+
+void SetFilePosition2(FileInfo *info, int newPos)
+{
+    if (Engine.usingDataFile) {
+        info->readPos     = info->virtualFileOffset + newPos;
+        info->eStringNo   = (info->fileSize & 0x1FCu) >> 2;
+        info->eStringPosB = (info->eStringNo % 9) + 1;
+        info->eStringPosA = (info->eStringNo % info->eStringPosB) + 1;
+        info->eNybbleSwap = false;
+        while (newPos) {
+            ++info->eStringPosA;
+            ++info->eStringPosB;
+            if (info->eStringPosA <= 19 || info->eStringPosB <= 11) {
+                if (info->eStringPosA > 19) {
+                    info->eStringPosA = 1;
+                    info->eNybbleSwap ^= 1u;
+                }
+                if (info->eStringPosB > 11) {
+                    info->eStringPosB = 1;
+                    info->eNybbleSwap ^= 1u;
+                }
+            }
+            else {
+                ++info->eStringNo;
+                info->eStringNo &= 0x7Fu;
+                if (info->eNybbleSwap) {
+                    info->eNybbleSwap = false;
+                    info->eStringPosA = (info->eStringNo % 12) + 6;
+                    info->eStringPosB = (info->eStringNo % 5) + 4;
+                }
+                else {
+                    info->eNybbleSwap = true;
+                    info->eStringPosA = (info->eStringNo % 15) + 3;
+                    info->eStringPosB = (info->eStringNo % 7) + 1;
+                }
+            }
+            --newPos;
+        }
+    }
+    else {
+        info->readPos = newPos;
+    }
+    fseek(cFileHandleStream, info->readPos, SEEK_SET);
 }

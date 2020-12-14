@@ -1,40 +1,74 @@
-#include "RetroEngine.h"
+#include "RetroEngine.hpp"
 
-void Palette::LoadPalette(const char* Filepath, signed int PaletteID, int StartPalleteIndex, int StartIndex, int EndIndex) {
-    Reader::FileInfo FileInfo;
-    char FullPath[0x80];
+// Palettes (as RGB888 Colours)
+PaletteEntry fullPalette32[PALETTE_COUNT][PALETTE_SIZE];
+PaletteEntry *activePalette32 = fullPalette32[0];
 
-    byte Colour[3];
+// Palettes (as RGB565 Colours)
+ushort fullPalette[PALETTE_COUNT][PALETTE_SIZE];
+ushort *activePalette = fullPalette[0]; // Ptr to the 256 colour set thats active
 
-    StringUtils::StrCopy(FullPath, (char*)"Data/Palettes/");
-    StringUtils::StrAdd(FullPath, (char*)Filepath);
-    
-    if (Reader::LoadFile(FullPath, &FileInfo)) {
-        Reader::SetFilePosition(3 * StartIndex);
-        if (PaletteID > 7 || PaletteID < 0) {
-            PaletteID = 0;
-        }
+byte gfxLineBuffer[SCREEN_YSIZE]; // Pointers to active palette
 
-        if (PaletteID) {
-            for (int i = StartIndex; i < EndIndex; i++) {
-                Reader::FileRead(&Colour, 3);
-                Palette::FullPalette[PaletteID][StartPalleteIndex++] = (ushort)((Colour[2] >> 3) | 32 * (Colour[1] >> 2) | ((Colour[0] >> 3) << 11));
+int fadeMode = 0;
+byte fadeA   = 0;
+byte fadeR   = 0;
+byte fadeG   = 0;
+byte fadeB   = 0;
+
+int paletteMode = 0;
+
+void LoadPalette(const char *filePath, int paletteID, int startPaletteIndex, int startIndex, int endIndex)
+{
+    FileInfo info;
+    char fullPath[0x80];
+
+    StrCopy(fullPath, "Data/Palettes/");
+    StrAdd(fullPath, filePath);
+
+    if (LoadFile(fullPath, &info)) {
+        SetFilePosition(3 * startIndex);
+        if (paletteID >= PALETTE_COUNT || paletteID < 0)
+            paletteID = 0;
+
+        byte colour[3];
+        if (paletteID) {
+            for (int i = startIndex; i < endIndex; i++) {
+                FileRead(&colour, 3);
+                fullPalette[paletteID][startPaletteIndex]     = (ushort)((colour[2] >> 3) | 32 * (colour[1] >> 2) | ((colour[0] >> 3) << 11));
+                fullPalette32[paletteID][startPaletteIndex].r   = colour[0];
+                fullPalette32[paletteID][startPaletteIndex].g   = colour[1];
+                fullPalette32[paletteID][startPaletteIndex++].b = colour[2];
             }
         }
         else {
-            for (int i = StartIndex; i < EndIndex; i++) {
-                Reader::FileRead(&Colour, 3);
-                Palette::FullPalette[PaletteID][StartPalleteIndex] = (ushort)((Colour[2] >> 3) | 32 * (Colour[1] >> 2) | ((Colour[0] >> 3) << 11));
-                Palette::FullPalette_R[PaletteID][StartPalleteIndex] = Colour[0];
-                Palette::FullPalette_G[PaletteID][StartPalleteIndex] = Colour[1];
-                Palette::FullPalette_B[PaletteID][StartPalleteIndex++] = Colour[2];
+            for (int i = startIndex; i < endIndex; i++) {
+                FileRead(&colour, 3);
+                activePalette[startPaletteIndex]       = (ushort)((colour[2] >> 3) | 32 * (colour[1] >> 2) | ((colour[0] >> 3) << 11));
+                activePalette32[startPaletteIndex].r   = colour[0];
+                activePalette32[startPaletteIndex].g   = colour[1];
+                activePalette32[startPaletteIndex++].b = colour[2];
             }
         }
-        Reader::CloseFile();
+        CloseFile();
     }
-
 }
 
-void Palette::SetActivePalette(byte NewActivePal, int StartLine, int EndLine) {
+void SetLimitedFade(byte paletteID, byte R, byte G, byte B, ushort Alpha, int startIndex, int endIndex)
+{
+    if (paletteID >= PALETTE_COUNT)
+        return;
+    paletteMode     = 1;
+    activePalette   = fullPalette[paletteID];
+    activePalette32 = fullPalette32[paletteID];
+    if (Alpha > 0xFF)
+        Alpha = 0xFF;
 
+    if (endIndex < PALETTE_SIZE)
+        ++endIndex;
+    for (int i = startIndex; i < endIndex; ++i) {
+        activePalette[i] = ((int)(byte)((ushort)(B * Alpha + (0xFF - Alpha) * activePalette32[i].r) >> 8) >> 3)
+                           | 32 * ((int)(byte)((ushort)(G * Alpha + (0xFF - Alpha) * activePalette32[i].g) >> 8) >> 2)
+                           | ((ushort)((int)(byte)((ushort)(R * Alpha + (0xFF - Alpha) * activePalette32[i].b) >> 8) >> 3) << 11);
+    }
 }
