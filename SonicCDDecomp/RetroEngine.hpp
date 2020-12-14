@@ -32,6 +32,12 @@ typedef unsigned long long ulong;
 
 #define RETRO_PLATFORM (RETRO_WIN)
 
+#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX
+#define RETRO_USING_SDL (1)
+#else //Since its an else & not an elif these platforms probably aren't supported yet
+#define RETRO_USING_SDL (0)
+#endif
+
 enum RetroLanguages {
     RETRO_EN = 0,
     RETRO_FR = 1,
@@ -186,7 +192,7 @@ public:
     int windowScale = 2;
     int refreshRate = 60;
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
     SDL_Window *window        = nullptr;
     SDL_Renderer *renderer    = nullptr;
     SDL_Texture *screenBuffer = nullptr;

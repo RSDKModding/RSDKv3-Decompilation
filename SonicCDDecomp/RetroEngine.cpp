@@ -8,7 +8,7 @@ char GlobalVariableNames[GLOBALVAR_COUNT][0x20];
 
 bool processEvents()
 {
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
     while (SDL_PollEvent(&Engine.sdlEvents)) {
         switch (Engine.sdlEvents.window.event) {
             case SDL_WINDOWEVENT_MAXIMIZED: {
@@ -201,7 +201,7 @@ void RetroEngine::Run()
     ReleaseRenderDevice();
     writeSettings();
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
     SDL_Quit();
 #endif
 }

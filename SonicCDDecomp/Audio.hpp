@@ -15,7 +15,7 @@ struct TrackInfo {
 };
 
 struct MusicPlaybackInfo {
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
     OggVorbis_File vorbisFile;
     uint audioLen;
     int vorbBitstream;
@@ -72,13 +72,13 @@ extern ChannelInfo sfxChannels[CHANNEL_COUNT];
 
 extern MusicPlaybackInfo musInfo;
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
 extern SDL_AudioSpec audioDeviceFormat;
 #endif
 
 int InitAudioPlayback();
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
 void ProcessMusicStream(void *data, Uint8 *stream, int le);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
 void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat format, Uint32 len, int volume, bool music);

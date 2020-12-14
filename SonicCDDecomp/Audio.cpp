@@ -20,7 +20,7 @@ ChannelInfo sfxChannels[CHANNEL_COUNT];
 
 MusicPlaybackInfo musInfo;
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
 SDL_AudioSpec audioDeviceFormat;
 
 #define AUDIO_FREQUENCY (44100)
@@ -37,7 +37,7 @@ SDL_AudioSpec audioDeviceFormat;
 int InitAudioPlayback()
 {
     StopAllSfx(); //"init"
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
     SDL_AudioSpec want;
     want.freq     = AUDIO_FREQUENCY;
     want.format   = AUDIO_FORMAT;
@@ -128,7 +128,7 @@ int InitAudioPlayback()
     return true;
 }
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
 int readVorbisStream(void *dst, uint size)
 {
     int tot = 0;
@@ -188,7 +188,7 @@ void ProcessMusicStream(void *data, Uint8 *stream, int len)
     switch (musicStatus) {
         case MUSIC_READY:
         case MUSIC_PLAYING: {
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
             int bytes        = trackRequestMoreData(AUDIO_SAMPLES, len * 2);
             if (bytes > 0) {
                 int vol = (bgmVolume * masterVolume) / MAX_VOLUME;
@@ -235,7 +235,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
         if (sfx->samplePtr) {
             if (sfx->sampleLength > 0) {
                 int sampleLen = (len > sfx->sampleLength) ? sfx->sampleLength : len;
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
                 ProcessAudioMixing(sfx, stream, sfx->samplePtr, audioDeviceFormat.format, sampleLen, sfxVolume, false);
 #endif
 
@@ -256,7 +256,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
     }
 }
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
 void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat format, Uint32 len, int volume, bool music)
 {
     if (volume == 0)
@@ -597,7 +597,7 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
 }
 #endif
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
 size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
@@ -659,7 +659,7 @@ bool PlayMusic(int track)
         musInfo.currentTrack = trackPtr;
         musInfo.loaded       = true;
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
         ov_callbacks callbacks;
         ulong samples;
 
