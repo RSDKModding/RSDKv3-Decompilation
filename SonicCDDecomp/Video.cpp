@@ -42,6 +42,9 @@ void PlayVideoFile(char *filePath) {
 
     FILE *file = fopen(filepath, "rb");
     if (file) {
+#if RSDK_DEBUG 
+        printf("Loaded File '%s'!\n", filepath);
+#endif
 
         callbacks.read     = videoRead;
         callbacks.close    = videoClose;
@@ -99,6 +102,11 @@ void PlayVideoFile(char *filePath) {
 
         Engine.gameMode = ENGINE_VIDEOWAIT;
     }
+#if RSDK_DEBUG
+    else {
+        printf("Couldn't find file '%s'!\n", filepath);
+    }
+#endif
     
 }
 

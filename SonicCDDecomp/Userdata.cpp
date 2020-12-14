@@ -145,7 +145,7 @@ void writeSettings() {
     ini.SetBool("Dev", "DevMenu", Engine.devMenu);
     ini.SetBool("Dev", "StartingCategory", Engine.startList);
     ini.SetBool("Dev", "StartingScene", Engine.startStage);
-    ini.SetBool("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
+    ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
 
     ini.SetInteger("Game", "Language", Engine.language);
 

@@ -243,11 +243,11 @@ void LoadStageFiles(void)
         }
         if (loadGlobals && LoadFile("Data/Game/GameConfig.bin", &info)) {
             FileRead(&fileBuffer, 1);
-            for (int i = 0; i < fileBuffer; ++i) FileRead(&fileBuffer2, 1);
+            FileRead(&strBuffer, fileBuffer);
             FileRead(&fileBuffer, 1);
-            for (int i = 0; i < fileBuffer; ++i) FileRead(&fileBuffer2, 1);
+            FileRead(&strBuffer, fileBuffer);
             FileRead(&fileBuffer, 1);
-            for (int i = 0; i < fileBuffer; ++i) FileRead(&fileBuffer2, 1);
+            FileRead(&strBuffer, fileBuffer);
 
             int globalObjectCount = 0;
             FileRead(&globalObjectCount, 1);
@@ -257,6 +257,7 @@ void LoadStageFiles(void)
                 strBuffer[fileBuffer2] = 0;
                 SetObjectTypeName(strBuffer, i + scriptID);
             }
+
             if (Engine.usingBytecode) {
                 GetFileInfo(&infoStore);
                 CloseFile();
@@ -265,7 +266,7 @@ void LoadStageFiles(void)
                 SetFileInfo(&infoStore);
             }
             else {
-                for (int i = 0; i < fileBuffer; ++i) {
+                for (int i = 0; i < globalObjectCount; ++i) {
                     FileRead(&fileBuffer2, 1);
                     FileRead(strBuffer, fileBuffer2);
                     strBuffer[fileBuffer2] = 0;
@@ -381,10 +382,10 @@ void LoadStageFiles(void)
     LoadActLayout();
     Init3DFloorBuffer(0);
     ProcessStartupObjects();
-    xScrollA = (playerList[0].XPos >> 16) - 160;
-    xScrollB = (playerList[0].XPos >> 16) - 160 + SCREEN_XSIZE;
+    xScrollA = (playerList[0].XPos >> 16) - SCREEN_CENTERX;
+    xScrollB                 = (playerList[0].XPos >> 16) - SCREEN_CENTERX + SCREEN_XSIZE;
     yScrollA = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP;
-    yScrollB = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP + SCREEN_YSIZE;
+    yScrollB                 = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP + SCREEN_YSIZE;
 }
 int LoadActFile(const char *ext, int stageID, FileInfo *info)
 {
@@ -620,7 +621,7 @@ void LoadStageChunks()
             tiles128x128.gfxDataPos[i] = tiles128x128.tileIndex[i] << 8;
 
             tiles128x128.collisionFlags[0][i] = entry[2] >> 4;
-            tiles128x128.collisionFlags[1][i] = entry[2] - 16 * (entry[2] >> 4);
+            tiles128x128.collisionFlags[1][i] = entry[2] - ((entry[2] >> 4) << 4);
         }
         CloseFile();
     }

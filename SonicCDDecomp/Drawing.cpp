@@ -252,6 +252,9 @@ void DrawStageGFX(void)
     }
 }
 
+int tileXPos[PARALLAX_COUNT];
+int tileYPos[PARALLAX_COUNT];
+
 void DrawHLineScrollLayer(int layerID)
 {
     TileLayer *layer = &stageLayouts[activeTileLayers[layerID]];
@@ -265,9 +268,6 @@ void DrawHLineScrollLayer(int layerID)
     int *deformationDataW;
 
     int yscrollOffset = 0;
-    int tileXPos[PARALLAX_COUNT];
-    memset(tileXPos, 0, PARALLAX_COUNT * sizeof(int));
-
     if (activeTileLayers[layerID]) { // BG Layer
         int yScroll    = yScrollOffset * layer->parallaxFactor >> 8;
         int fullheight = layerheight << 7;
@@ -780,9 +780,6 @@ void DrawVLineScrollLayer(int layerID)
     int *deformationData;
 
     int xscrollOffset = 0;
-    int tileYPos[PARALLAX_COUNT];
-    memset(tileYPos, 0, PARALLAX_COUNT * sizeof(int));
-
     if (activeTileLayers[layerID]) { // BG Layer
         int xScroll        = xScrollOffset * layer->parallaxFactor >> 8;
         int fullLayerwidth = layerwidth << 7;

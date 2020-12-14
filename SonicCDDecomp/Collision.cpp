@@ -802,22 +802,19 @@ void ProcessAirCollision(Player *player)
             }
         }
 
-        if (movingUp != 1)
-            continue;
-
-        for (int i = 4; i < 6; i++) {
-            if (!sensors[i].collided) {
-                sensors[i].XPos += XVel;
-                sensors[i].YPos += YVel;
-                RoofCollision(player, &sensors[i]);
+        if (movingUp == 1) {
+            for (int i = 4; i < 6; i++) {
+                if (!sensors[i].collided) {
+                    sensors[i].XPos += XVel;
+                    sensors[i].YPos += YVel;
+                    RoofCollision(player, &sensors[i]);
+                }
+            }
+            if (sensors[4].collided || sensors[5].collided) {
+                movingUp = 2;
+                cnt      = 0;
             }
         }
-
-        if (!(sensors[4].collided || sensors[5].collided))
-            continue;
-
-        movingUp = 2;
-        cnt        = 0;
     }
 
     if (movingRight < 2 && movingLeft < 2)

@@ -97,7 +97,7 @@ bool processEvents()
                             SDL_RestoreWindow(Engine.window);
                         }
                         break;
-                    case SDLK_BACKSPACE: Engine.gameSpeed = 8; break;
+                    case SDLK_BACKSPACE: Engine.gameSpeed = Engine.fastForwardSpeed; break;
                     case SDLK_F11:
                         if (Engine.masterPaused)
                             Engine.frameStep = true;

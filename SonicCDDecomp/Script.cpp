@@ -1887,9 +1887,22 @@ void ClearScriptData()
     memset(scriptData, 0, SCRIPTDATA_COUNT * sizeof(int));
     memset(jumpTableData, 0, JUMPTABLE_COUNT * sizeof(int));
 
-    scriptCodePos    = 0;
-    jumpTablePos     = 0;
     scriptFrameCount = 0;
+    
+    scriptCodePos = 0;
+    jumpTablePos  = 0;
+    jumpTableStackPos = 0;
+    functionStackPos  = 0;
+
+    scriptDataPos       = 0;
+    scriptDataOffset    = 0;
+    jumpTableDataPos    = 0;
+    jumpTableDataOffset = 0;
+
+    scriptFunctionCount = 0;
+
+    aliasCount = COMMONALIAS_COUNT;
+    lineID = 0;
 
     ClearAnimationData();
 
@@ -3416,9 +3429,9 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 // PauseSound();
                 StopMusic();
                 if (FindStringToken(scriptText, ".rsv", 1) <= -1)
-                    scriptInfo->spriteSheetID = AddGraphicsFile(scriptText);
-                else
                     PlayVideoFile(scriptText); // not an rsv
+                else
+                    scriptInfo->spriteSheetID = AddGraphicsFile(scriptText);
                 // ResumeSound();
                 break;
             case FUNC_NEXTVIDEOFRAME:
