@@ -21,6 +21,8 @@ void InitUserdata()
         ini.SetBool("Dev", "StartingScene", Engine.startStage = 0);
         ini.SetBool("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
 
+        ini.SetBool("Game", "Language", Engine.language = RETRO_EN);
+
         ini.SetBool("Window", "Fullscreen", Engine.fullScreen = false);
         ini.SetBool("Window", "Borderless", Engine.borderless = false);
         ini.SetBool("Window", "VSync", Engine.vsync = false);
@@ -60,6 +62,9 @@ void InitUserdata()
             Engine.startStage = 0;
         if (!ini.GetInteger("Dev", "FastForwardSpeed", &Engine.fastForwardSpeed))
             Engine.fastForwardSpeed = 8;
+
+        if (!ini.GetInteger("Game", "Language", &Engine.language))
+            Engine.language = RETRO_EN;
 
         if (!ini.GetBool("Window", "FullScreen", &Engine.fullScreen))
             Engine.fullScreen = false;
@@ -141,6 +146,8 @@ void writeSettings() {
     ini.SetBool("Dev", "StartingCategory", Engine.startList);
     ini.SetBool("Dev", "StartingScene", Engine.startStage);
     ini.SetBool("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
+
+    ini.SetInteger("Game", "Language", Engine.language);
 
     ini.SetBool("Window", "Fullscreen", Engine.fullScreen);
     ini.SetBool("Window", "Borderless", Engine.borderless);
