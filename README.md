@@ -48,6 +48,9 @@ if you've cloned this repo and ported it to a platform not on the list or made s
 ### Q: Why dont some buttons in the menu work?
 ### A: buttons like leaderboards & achievements require code to be added to support online functionality & menus (though they are saved anyways), and other buttons like the controls button on PC or privacy button on mobile have no game code and are instead hardcoded through callbacks, and I just didnt feel like going through the effort to decompile all that, since its not really worth it
 
+### Q: is it just me or is the titlecard text slightly offset when using a PC datafile?
+### A: its not just you, but unfortunately its an error with the scripts, so if you wanna go into TitleCards/R[X]\_TitleCard.txt and fix it be my guest
+
 ### Q: I found a bug/I have a feature request!
 ### A: submit an issue in the issues tab and I'll fix/add (if possible) it as soon as I can
 
