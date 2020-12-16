@@ -792,29 +792,29 @@ void DrawVLineScrollLayer(int layerID)
     }
     else { // FG Layer
         lastYSize           = layer->height;
-        xscrollOffset              = xScrollOffset;
-        lineScroll                 = layer->lineScroll;
-        tileYPos[0]                = yScrollOffset;
+        xscrollOffset       = xScrollOffset;
+        lineScroll          = layer->lineScroll;
+        tileYPos[0]         = yScrollOffset;
         vParallax.deform[0] = true;
-        deformationData            = &bgDeformationData0[(byte)(xScrollOffset + layer->deformationOffset)];
+        deformationData     = &bgDeformationData0[(byte)(xScrollOffset + layer->deformationOffset)];
     }
 
     if (layer->type == LAYER_VSCROLL) {
         if (lastYSize != layerheight) {
-            int fullLayerwidth = layerwidth << 7;
+            int fullLayerheight = layerheight << 7;
             for (int i = 0; i < vParallax.entryCount; ++i) {
                 tileYPos[i] = xScrollOffset * vParallax.parallaxFactor[i] >> 8;
                 vParallax.scrollPos[i] += vParallax.scrollSpeed[i];
-                if (vParallax.scrollPos[i] > fullLayerwidth << 16)
-                    vParallax.scrollPos[i] -= fullLayerwidth << 16;
+                if (vParallax.scrollPos[i] > fullLayerheight << 16)
+                    vParallax.scrollPos[i] -= fullLayerheight << 16;
                 if (vParallax.scrollPos[i] < 0)
-                    vParallax.scrollPos[i] += fullLayerwidth << 16;
+                    vParallax.scrollPos[i] += fullLayerheight << 16;
                 tileYPos[i] += vParallax.scrollPos[i] >> 16;
-                tileYPos[i] %= fullLayerwidth;
+                tileYPos[i] %= fullLayerheight;
             }
-            layerwidth = fullLayerwidth >> 7;
+            layerheight = fullLayerheight >> 7;
         }
-        lastXSize = layerwidth;
+        lastYSize = layerheight;
     }
 
     ushort *frameBufferPtr = Engine.frameBuffer;

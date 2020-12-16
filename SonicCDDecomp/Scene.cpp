@@ -470,29 +470,27 @@ void LoadActLayout()
         int ObjectCount = fileBuffer;
         FileRead(&fileBuffer, 1);
         ObjectCount = (ObjectCount << 8) + fileBuffer;
-        if (ObjectCount > 0) {
-            Entity *object = &objectEntityList[32];
-            for (int i = 0; i < ObjectCount; ++i) {
-                FileRead(&fileBuffer, 1);
-                object->type = fileBuffer;
+        Entity *object = &objectEntityList[32];
+        for (int i = 0; i < ObjectCount; ++i) {
+            FileRead(&fileBuffer, 1);
+            object->type = fileBuffer;
 
-                FileRead(&fileBuffer, 1);
-                object->propertyValue = fileBuffer;
+            FileRead(&fileBuffer, 1);
+            object->propertyValue = fileBuffer;
 
-                FileRead(&fileBuffer, 1);
-                object->XPos = fileBuffer << 8;
-                FileRead(&fileBuffer, 1);
-                object->XPos += fileBuffer;
-                object->XPos <<= 16;
+            FileRead(&fileBuffer, 1);
+            object->XPos = fileBuffer << 8;
+            FileRead(&fileBuffer, 1);
+            object->XPos += fileBuffer;
+            object->XPos <<= 16;
 
-                FileRead(&fileBuffer, 1);
-                object->YPos = fileBuffer << 8;
-                FileRead(&fileBuffer, 1);
-                object->YPos += fileBuffer;
-                object->YPos <<= 16;
+            FileRead(&fileBuffer, 1);
+            object->YPos = fileBuffer << 8;
+            FileRead(&fileBuffer, 1);
+            object->YPos += fileBuffer;
+            object->YPos <<= 16;
 
-                ++object;
-            }
+            ++object;
         }
         stageLayouts[0].type = LAYER_HSCROLL;
     }

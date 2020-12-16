@@ -686,7 +686,10 @@ void RWallCollision(Player *player, CollisionSensor *sensor)
 void ProcessAirCollision(Player *player)
 {
     AnimationFile *animFile = player->animationFile;
-    Hitbox *playerHitbox    = &hitboxList[animFrames[animationList[animFile->aniListOffset].frameListOffset].hitboxID + animFile->hitboxListOffset];
+    Hitbox *playerHitbox =
+        &hitboxList[animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame]
+                        .hitboxID
+                    + animFile->hitboxListOffset];
     collisionLeft   = playerHitbox->left[0];
     collisionTop    = playerHitbox->top[0];
     collisionRight  = playerHitbox->right[0];

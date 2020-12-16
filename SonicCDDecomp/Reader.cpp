@@ -79,7 +79,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
 
     if (Engine.usingDataFile) {
         cFileHandle = fopen(rsdkName, "rb");
-        fseek(cFileHandle, 0, 2);
+        fseek(cFileHandle, 0, SEEK_END);
         fileSize       = (int)ftell(cFileHandle);
         bufferPosition = 0;
         readSize       = 0;

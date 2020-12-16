@@ -26,8 +26,7 @@ extern byte fadeB;
 
 extern int paletteMode;
 
-void LoadPalette(const char *filePath, int paletteID, int startPaletteIndex, int startIndex,
-                 int endIndex);
+void LoadPalette(const char *filePath, int paletteID, int startPaletteIndex, int startIndex, int endIndex);
 
 inline void SetActivePalette(byte newActivePal, int startLine, int endLine)
 {
@@ -49,10 +48,8 @@ inline void SetPaletteColour(byte paletteIndex, byte r, byte g, byte b)
 
 inline void CopyPalette(byte src, byte dest)
 {
-    if (src < 8 && dest < PALETTE_COUNT) {
-        for (int i = 0; i < PALETTE_SIZE; ++i)
-            fullPalette[dest][i] = fullPalette[src][i];
-    }
+    if (src < PALETTE_COUNT && dest < PALETTE_COUNT)
+        for (int i = 0; i < PALETTE_SIZE; ++i) fullPalette[dest][i] = fullPalette[src][i];
 }
 
 inline void RotatePalette(byte startIndex, byte endIndex, bool right)
