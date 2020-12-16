@@ -28,10 +28,24 @@ bin/
 [Dd]ependencies/windows/libogg/
 [Dd]ependencies/windows/libvorbis/
 [Dd]ependencies/windows/libtheora/
-[Dd]ependencies/mac/SDL2/
+[Dd]ependencies/mac/SDL2.framework/
 [Dd]ependencies/mac/libogg/
 [Dd]ependencies/mac/libvorbis/
 [Dd]ependencies/mac/libtheora/
+
+#OSX files
+*.DS_Store
+.DS_Store
+*.xactivitylog
+*.xcuserstate
+*.dia
+*.xbuild
+*.db
+*.plist
+*.idx
+*.pcm
+*.timestamp
+*.xcbkptlist
 
 # Visual Studio 2015 cache/options directory
 .vs/

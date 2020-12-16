@@ -1,7 +1,7 @@
-SDL2:
+SDL2: https://www.libsdl.org/download-2.0.php
 
-libogg:
+libogg: https://xiph.org/downloads/ (libogg)
 
-libvorbis:
+libvorbis: https://xiph.org/downloads/ (libvorbis)
 
-libtheora:
+libtheora: https://xiph.org/downloads/ (libtheora)

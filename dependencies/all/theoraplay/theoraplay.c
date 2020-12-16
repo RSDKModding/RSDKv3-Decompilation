@@ -403,9 +403,9 @@ static void WorkerThread(TheoraDecoder *ctx)
                 float *samples;
                 AudioPacket *item = (AudioPacket *) malloc(sizeof (AudioPacket));
                 if (item == NULL) goto cleanup;
-                item->playms = (unsigned long) ((((double) audioframes) / ((double) vinfo.rate)) * 1000.0);
+                item->playms = (int)(unsigned long) ((((double) audioframes) / ((double) vinfo.rate)) * 1000.0);
                 item->channels = channels;
-                item->freq = vinfo.rate;
+                item->freq = (int)vinfo.rate;
                 item->frames = frames;
                 item->samples = (float *) malloc(sizeof (float) * frames * channels);
                 item->next = NULL;

@@ -1148,7 +1148,7 @@ void SetPlayerScreenPosition(Player *Player)
     Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX = -cameraShakeX--;
+            cameraShakeX--;
         }
         else {
             cameraShakeX = -cameraShakeX;
@@ -1158,7 +1158,7 @@ void SetPlayerScreenPosition(Player *Player)
     if (!cameraShakeY)
         return;
     if (cameraShakeY <= 0) {
-        cameraShakeY = -cameraShakeY--;
+        cameraShakeY--;
     }
     else {
         cameraShakeY = -cameraShakeY;
@@ -1337,7 +1337,7 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
     Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX = -cameraShakeX--;
+            cameraShakeX--;
         }
         else {
             cameraShakeX = -cameraShakeX;
@@ -1346,7 +1346,7 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
     if (!cameraShakeY)
         return;
     if (cameraShakeY <= 0) {
-        cameraShakeY = -cameraShakeY--;
+        cameraShakeY--;
     }
     else {
         cameraShakeY = -cameraShakeY;
@@ -1464,7 +1464,7 @@ void SetPlayerHLockedScreenPosition(Player *Player)
     Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX = -cameraShakeX--;
+            cameraShakeX--;
         }
         else {
             cameraShakeX = -cameraShakeX;
@@ -1473,7 +1473,7 @@ void SetPlayerHLockedScreenPosition(Player *Player)
     if (!cameraShakeY)
         return;
     if (cameraShakeY <= 0) {
-        cameraShakeY = -cameraShakeY--;
+        cameraShakeY--;
     }
     else {
         cameraShakeY = -cameraShakeY;
@@ -1501,7 +1501,7 @@ void SetPlayerLockedScreenPosition(Player *Player)
     int yscrollA     = yScrollA;
     int yscrollB     = yScrollB;
     int adjustY      = cameraAdjustY + playerYPos;
-    int adjustOffset = Player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
+    //int adjustOffset = Player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
     if (Player->lookPos + adjustY <= yScrollA + SCREEN_SCROLL_UP) {
         Player->screenYPos = adjustY - yScrollA - cameraShakeY;
         yScrollOffset      = cameraShakeY + yscrollA;
@@ -1518,7 +1518,7 @@ void SetPlayerLockedScreenPosition(Player *Player)
     Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX = -cameraShakeX--;
+            cameraShakeX--;
         }
         else {
             cameraShakeX = -cameraShakeX;
@@ -1527,7 +1527,7 @@ void SetPlayerLockedScreenPosition(Player *Player)
     if (!cameraShakeY)
         return;
     if (cameraShakeY <= 0) {
-        cameraShakeY = -cameraShakeY--;
+        cameraShakeY--;
     }
     else {
         cameraShakeY = -cameraShakeY;

@@ -97,18 +97,31 @@ bool processEvents()
                             SDL_RestoreWindow(Engine.window);
                         }
                         break;
+#if RETRO_PLATFORM == RETRO_OSX
+                    case SDLK_TAB: Engine.gameSpeed = Engine.fastForwardSpeed; break;
+                    case SDLK_F6:
+                        if (Engine.masterPaused)
+                            Engine.frameStep = true;
+                        break;
+                    case SDLK_F7: Engine.masterPaused ^= 1; break;
+#else
                     case SDLK_BACKSPACE: Engine.gameSpeed = Engine.fastForwardSpeed; break;
                     case SDLK_F11:
                         if (Engine.masterPaused)
                             Engine.frameStep = true;
                         break;
                     case SDLK_F12: Engine.masterPaused ^= 1; break;
+#endif
                 }
                 break;
             case SDL_KEYUP:
                 switch (Engine.sdlEvents.key.keysym.sym) {
                     default: break;
+#if RETRO_PLATFORM == RETRO_OSX
+                    case SDLK_TAB: Engine.gameSpeed = 1; break;
+#else
                     case SDLK_BACKSPACE: Engine.gameSpeed = 1; break;
+#endif
                 }
                 break;
             case SDL_QUIT: Engine.gameMode = ENGINE_EXITGAME; return false;
@@ -152,7 +165,7 @@ void RetroEngine::Run()
         if (frameDelta > 1000.0f / (float)refreshRate) {
             frameEnd = frameStart;
 
-            processEvents();
+            running = processEvents();
 
             for (int s = 0; s < gameSpeed; ++s) {
                 ProcessInput();
@@ -373,7 +386,6 @@ void RetroEngine::LoadLeaderboardsMenu() { ReadUserdata(); }
 
 void RetroEngine::Callback(int callbackID)
 {
-    int test = 0;
     switch (callbackID) {
         default:
 #if RSDK_DEBUG

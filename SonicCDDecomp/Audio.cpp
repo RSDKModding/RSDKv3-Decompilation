@@ -293,7 +293,7 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
 
             len /= 2;
             while (len--) {
-                src1 = ((src[0]) << 8 | src[0]);
+                src1 = ((src[1]) << 8 | src[0]);
                 ADJUST_VOLUME(src1, volume);
 
                 if (panL != 0 || panR != 0) {
@@ -601,19 +601,18 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
 size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
-    return FileRead2(&info->fileInfo, mem, size * nmemb);
+    return FileRead2(&info->fileInfo, mem, (int)(size * nmemb));
 }
 int seekVorbis(void *ptr, ogg_int64_t offset, int whence)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
-    int w                   = whence;
     switch (whence) {
         case SEEK_SET: whence = 0; break;
-        case SEEK_CUR: whence = GetFilePosition2(&info->fileInfo); break;
+        case SEEK_CUR: whence = (int)GetFilePosition2(&info->fileInfo); break;
         case SEEK_END: whence = info->fileInfo.fileSize; break;
         default: break;
     }
-    SetFilePosition2(&info->fileInfo, whence + offset);
+    SetFilePosition2(&info->fileInfo, (int)(whence + offset));
     return GetFilePosition2(&info->fileInfo) <= info->fileInfo.fileSize;
 }
 long tellVorbis(void *ptr)
@@ -715,7 +714,6 @@ void LoadSfx(char *filePath, byte sfxID) {
     StrAdd(fullPath, filePath);
 
     if (LoadFile(fullPath, &info)) {
-        int fileBuffer = 0;
         byte* sfx = new byte[info.fileSize];
         FileRead(sfx, info.fileSize);
         CloseFile();

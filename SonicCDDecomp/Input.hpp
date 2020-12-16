@@ -49,7 +49,7 @@ extern int RSTICK_DEADZONE;
 extern int LTRIGGER_DEADZONE;
 extern int RTRIGGER_DEADZONE;
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_USING_SDL
 extern SDL_GameController *controller;
 
 inline void controllerInit(byte controllerID)

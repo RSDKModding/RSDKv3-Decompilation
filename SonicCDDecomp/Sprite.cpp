@@ -26,11 +26,8 @@ const int LOADING_IMAGE = 0;
 const int LOAD_COMPLETE = 1;
 const int LZ_MAX_CODE   = 4095;
 const int LZ_BITS       = 12;
-const int FLUSH_OUTPUT  = 4096;
 const int FIRST_CODE    = 4097;
 const int NO_SUCH_CODE  = 4098;
-const int HT_SIZE       = 8192;
-const int HT_KEY_MASK   = 8191;
 
 struct GifDecoder gifDecoder;
 int codeMasks[] = { 0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095 };
@@ -460,7 +457,7 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         FileRead(&fileBuffer, 1);
         videoHeight += fileBuffer << 8;
 
-        videoFilePos   = GetFilePosition();
+        videoFilePos   = (int)GetFilePosition();
         videoPlaying   = true;
         surface->height       = videoWidth;
         surface->width        = videoHeight;

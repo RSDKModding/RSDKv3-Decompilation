@@ -30,7 +30,14 @@ typedef unsigned long long ulong;
 #define RETRO_ANDROID  (5)
 #define RETRO_WP7      (6)
 
+#if defined _WIN32
 #define RETRO_PLATFORM (RETRO_WIN)
+#elif defined __APPLE__
+#define RETRO_PLATFORM (RETRO_OSX)
+#else
+#define RETRO_PLATFORM (RETRO_WIN) //Default
+#endif
+
 
 #if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX
 #define RETRO_USING_SDL (1)
@@ -94,6 +101,11 @@ enum RetroBytecodeFormat {
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
+#elif RETRO_PLATFORM == RETRO_OSX
+#include <SDL2/SDL.h>
+#include <Vorbis/vorbisfile.h>
+#include <Theora/theora.h>
+#include "theoraplay.h"
 #endif
 
 //Utils
