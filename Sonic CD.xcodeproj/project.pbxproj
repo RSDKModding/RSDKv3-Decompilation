@@ -41,6 +41,7 @@
 		C96219972589B51E00B47AB3 /* Theora.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C96219962589B51E00B47AB3 /* Theora.framework */; };
 		C96219982589B51E00B47AB3 /* Theora.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C96219962589B51E00B47AB3 /* Theora.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C96219A02589B7AB00B47AB3 /* theoraplay.c in Sources */ = {isa = PBXBuildFile; fileRef = C962199F2589B7AB00B47AB3 /* theoraplay.c */; };
+		C96219A5258C632A00B47AB3 /* cocoaHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = C96219A4258C632A00B47AB3 /* cocoaHelpers.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -117,6 +118,8 @@
 		C962199A2589B57300B47AB3 /* theoraplay_cvtrgb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoraplay_cvtrgb.h; path = dependencies/all/theoraplay/theoraplay_cvtrgb.h; sourceTree = SOURCE_ROOT; };
 		C962199B2589B57300B47AB3 /* theoraplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoraplay.h; path = dependencies/all/theoraplay/theoraplay.h; sourceTree = SOURCE_ROOT; };
 		C962199F2589B7AB00B47AB3 /* theoraplay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = theoraplay.c; path = dependencies/all/theoraplay/theoraplay.c; sourceTree = SOURCE_ROOT; };
+		C96219A3258C632200B47AB3 /* cocoaHelpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cocoaHelpers.hpp; path = dependencies/mac/cocoaHelpers.hpp; sourceTree = SOURCE_ROOT; };
+		C96219A4258C632A00B47AB3 /* cocoaHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaHelpers.mm; path = dependencies/mac/cocoaHelpers.mm; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +169,7 @@
 		C962193F25898B6700B47AB3 /* Source Files */ = {
 			isa = PBXGroup;
 			children = (
+				C96219A2258C631100B47AB3 /* helpers */,
 				C962199E2589B6A600B47AB3 /* theoraPlay */,
 				C962195B25898BF500B47AB3 /* Animation.cpp */,
 				C962195625898BF500B47AB3 /* Audio.cpp */,
@@ -196,6 +200,7 @@
 		C962194025898B6E00B47AB3 /* Header Files */ = {
 			isa = PBXGroup;
 			children = (
+				C96219A1258C62FF00B47AB3 /* helpers */,
 				C96219992589B55F00B47AB3 /* theoraPlay */,
 				C962195525898BCE00B47AB3 /* Animation.hpp */,
 				C962194325898BCD00B47AB3 /* Audio.hpp */,
@@ -250,6 +255,22 @@
 				C962199F2589B7AB00B47AB3 /* theoraplay.c */,
 			);
 			name = theoraPlay;
+			sourceTree = "<group>";
+		};
+		C96219A1258C62FF00B47AB3 /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C96219A3258C632200B47AB3 /* cocoaHelpers.hpp */,
+			);
+			name = helpers;
+			sourceTree = "<group>";
+		};
+		C96219A2258C631100B47AB3 /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C96219A4258C632A00B47AB3 /* cocoaHelpers.mm */,
+			);
+			name = helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,6 +367,7 @@
 				C962197725898BF600B47AB3 /* Userdata.cpp in Sources */,
 				C962196D25898BF600B47AB3 /* Debug.cpp in Sources */,
 				C962197A25898BF600B47AB3 /* Player.cpp in Sources */,
+				C96219A5258C632A00B47AB3 /* cocoaHelpers.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

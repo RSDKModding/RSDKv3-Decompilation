@@ -13,8 +13,19 @@ IniParser::IniParser(const char *filename)
 
     count = 0;
 
+    char pathBuffer[0x80];
+
+    #if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(pathBuffer, "%s/%s",getResourcesPath(), filename);
+    else
+        sprintf(pathBuffer, "%s", filename);
+#else
+    sprintf(pathBuffer, "%s", filename);
+#endif
+    
     FileIO *f;
-    if ((f = fOpen(filename, "rb")) == NULL) {
+    if ((f = fOpen(pathBuffer, "rb")) == NULL) {
 #if RSDK_DEBUG
         printLog("ERROR: Couldn't open file '%s'!", filename);
 #endif
@@ -26,7 +37,7 @@ IniParser::IniParser(const char *filename)
         int ret    = 0;
         int strLen = 0;
         while (true) {
-            ret  = fRead(&buf[strLen++], sizeof(byte), 1, f);
+            ret  = (int)fRead(&buf[strLen++], sizeof(byte), 1, f);
             flag = ret == 0;
             if (ret == 0)
                 break;
@@ -188,8 +199,19 @@ int IniParser::SetComment(const char *section, const char* key, const char *comm
 
 void IniParser::Write(const char *filename)
 {
+    char pathBuffer[0x80];
+
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(pathBuffer, "%s/%s",getResourcesPath(),filename);
+    else
+        sprintf(pathBuffer, "%s", filename);
+#else
+    sprintf(pathBuffer, "%s", filename);
+#endif
+    
     FileIO *f;
-    if ((f = fOpen(filename, "w")) == NULL) {
+    if ((f = fOpen(pathBuffer, "w")) == NULL) {
 #if RSDK_DEBUG
         printLog("ERROR: Couldn't open file '%s' for writing!", filename);
 #endif

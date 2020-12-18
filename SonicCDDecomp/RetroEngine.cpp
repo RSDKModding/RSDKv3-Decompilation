@@ -1,5 +1,7 @@
 #include "RetroEngine.hpp"
 
+bool usingCWD = false;
+
 RetroEngine Engine = RetroEngine();
 
 bool processEvents()

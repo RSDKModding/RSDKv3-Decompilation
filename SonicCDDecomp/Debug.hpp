@@ -12,8 +12,17 @@ inline void printLog(const char *msg, ...)
     vsprintf(buffer, msg, args);
     printf("%s\n", buffer);
     sprintf(buffer, "%s\n", buffer);
-
-    FileIO *file = fOpen("log.txt", "a");
+    
+    char pathBuffer[0x100];
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(pathBuffer, "%s/log.txt", getResourcesPath());
+    else
+        sprintf(pathBuffer, "%slog.txt", gamePath);
+#else
+    sprintf(pathBuffer, "%slog.txt", gamePath);
+#endif
+    FileIO *file = fOpen(pathBuffer, "a");
     if (file) {
         fWrite(&buffer, 1, StrLength(buffer), file);
         fClose(file);

@@ -35,7 +35,14 @@ extern LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 inline bool ReadSaveRAMData()
 {
     char buffer[0x100];
-    sprintf(buffer, "%ssavedata.sav", gamePath);
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(buffer, "%s/savedata.sav",getResourcesPath());
+    else
+        sprintf(buffer, "%ssavedata.sav", gamePath);
+#else
+        sprintf(buffer, "%ssavedata.sav", gamePath);
+#endif
     FileIO *saveFile = fOpen(buffer, "rb");
     if (!saveFile)
         return false;
@@ -47,7 +54,15 @@ inline bool ReadSaveRAMData()
 inline bool WriteSaveRAMData()
 {
     char buffer[0x100];
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(buffer, "%s/savedata.sav",getResourcesPath());
+    else
+        sprintf(buffer, "%ssavedata.sav", gamePath);
+#else
     sprintf(buffer, "%ssavedata.sav", gamePath);
+#endif
+    
     FileIO *saveFile = fOpen(buffer, "wb");
     if (!saveFile)
         return false;

@@ -220,7 +220,14 @@ void writeSettings() {
 void ReadUserdata()
 {
     char buffer[0x100];
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(buffer, "%s/userdata.bin", getResourcesPath());
+    else
+        sprintf(buffer, "%suserdata.bin", gamePath);
+#else
     sprintf(buffer, "%suserdata.bin", gamePath);
+#endif
     FileIO *userFile = fOpen(buffer, "rb");
     if (!userFile)
         return;
@@ -245,7 +252,14 @@ void ReadUserdata()
 void WriteUserdata()
 {
     char buffer[0x100];
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(buffer, "%s/userdata.bin", getResourcesPath());
+    else
+        sprintf(buffer, "%suserdata.bin", gamePath);
+#else
     sprintf(buffer, "%suserdata.bin", gamePath);
+#endif
     FileIO *userFile = fOpen(buffer, "wb");
     if (!userFile)
         return;

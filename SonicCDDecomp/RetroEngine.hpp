@@ -106,7 +106,11 @@ enum RetroBytecodeFormat {
 #include <Vorbis/vorbisfile.h>
 #include <Theora/theora.h>
 #include "theoraplay.h"
+
+#include "cocoaHelpers.hpp"
 #endif
+
+extern bool usingCWD;
 
 //Utils
 #include "Ini.hpp"
