@@ -21,7 +21,19 @@ IniParser::IniParser(const char *filename)
         return;
     }
 
-    while (fRead(buf, sizeof(buf), 1, f) != 0) {
+    while (true) {
+        bool flag  = false;
+        int ret    = 0;
+        int strLen = 0;
+        while (true) {
+            ret  = fRead(&buf[strLen++], sizeof(byte), 1, f);
+            flag = ret == 0;
+            if (ret == 0)
+                break;
+            if (buf[strLen - 1] == '\n')
+                break;
+        }
+        buf[strLen] = 0;
         if (buf[0] == '#')
             continue;
 
@@ -38,6 +50,8 @@ IniParser::IniParser(const char *filename)
             items[count].hasSection = hasSection;
             count++;
         }
+        if (flag)
+            break;
     }
 
     fClose(f);
