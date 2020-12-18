@@ -7,6 +7,14 @@ int collisionBottom = 0;
 
 CollisionSensor sensors[6];
 
+inline Hitbox *getPlayerHitbox(Player *player)
+{
+    AnimationFile *animFile = player->animationFile;
+    return &hitboxList
+        [animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame].hitboxID
+         + animFile->hitboxListOffset];
+}
+
 void FindFloorPosition(Player *player, CollisionSensor *sensor, int startY)
 {
     int c = 0;
@@ -685,11 +693,7 @@ void RWallCollision(Player *player, CollisionSensor *sensor)
 
 void ProcessAirCollision(Player *player)
 {
-    AnimationFile *animFile = player->animationFile;
-    Hitbox *playerHitbox =
-        &hitboxList[animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame]
-                        .hitboxID
-                    + animFile->hitboxListOffset];
+    Hitbox *playerHitbox    = getPlayerHitbox(player);
     collisionLeft   = playerHitbox->left[0];
     collisionTop    = playerHitbox->top[0];
     collisionRight  = playerHitbox->right[0];
@@ -1447,11 +1451,7 @@ void ProcessPathGrip(Player *player)
 
 void SetPathGripSensors(Player *player)
 {
-    AnimationFile *animFile = player->animationFile;
-    Hitbox *playerHitbox =
-        &hitboxList[animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame]
-                        .hitboxID
-                    + animFile->hitboxListOffset];
+    Hitbox *playerHitbox = getPlayerHitbox(player);
     switch (player->collisionMode) {
         case CMODE_FLOOR: {
             collisionLeft          = playerHitbox->left[0];
@@ -2069,35 +2069,28 @@ void ObjectRWallGrip(int xOffset, int yOffset, int cPath)
 
 void TouchCollision(int left, int top, int right, int bottom)
 {
-    Player *player             = &playerList[activePlayer];
-    AnimationFile *animFile = player->animationFile;
-    Hitbox *PlayerHitbox =
-        &hitboxList[animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame]
-                        .hitboxID
-                                       + animFile->hitboxListOffset];
+    Player *player       = &playerList[activePlayer];
+    Hitbox *playerHitbox = getPlayerHitbox(player);
+
     collisionLeft   = player->XPos >> 16;
     collisionTop    = player->YPos >> 16;
     collisionRight  = collisionLeft;
     collisionBottom = collisionTop;
-    collisionLeft += PlayerHitbox->left[0];
-    collisionTop += PlayerHitbox->top[0];
-    collisionRight += PlayerHitbox->right[0];
-    collisionBottom += PlayerHitbox->bottom[0];
+    collisionLeft += playerHitbox->left[0];
+    collisionTop += playerHitbox->top[0];
+    collisionRight += playerHitbox->right[0];
+    collisionBottom += playerHitbox->bottom[0];
     scriptEng.checkResult = collisionRight > left && collisionLeft < right && collisionBottom > top && collisionTop < bottom;
 }
 void BoxCollision(int left, int top, int right, int bottom)
 {
-    Player *player             = &playerList[activePlayer];
-    AnimationFile *animFile = player->animationFile;
-    Hitbox *PlayerHitbox =
-        &hitboxList[animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame]
-                        .hitboxID
-                                       + animFile->hitboxListOffset];
+    Player *player       = &playerList[activePlayer];
+    Hitbox *playerHitbox = getPlayerHitbox(player);
 
-    collisionLeft                 = PlayerHitbox->left[0];
-    collisionTop                  = PlayerHitbox->top[0];
-    collisionRight                = PlayerHitbox->right[0];
-    collisionBottom               = PlayerHitbox->bottom[0];
+    collisionLeft                 = playerHitbox->left[0];
+    collisionTop                  = playerHitbox->top[0];
+    collisionRight                = playerHitbox->right[0];
+    collisionBottom               = playerHitbox->bottom[0];
     scriptEng.checkResult = false;
 
     int spd = 0;
@@ -2319,17 +2312,13 @@ void BoxCollision(int left, int top, int right, int bottom)
 }
 void BoxCollision2(int left, int top, int right, int bottom)
 {
-    Player *player             = &playerList[activePlayer];
-    AnimationFile *animFile = player->animationFile;
-    Hitbox *PlayerHitbox =
-        &hitboxList[animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame]
-                        .hitboxID
-                                       + animFile->hitboxListOffset];
+    Player *player       = &playerList[activePlayer];
+    Hitbox *playerHitbox = getPlayerHitbox(player);
 
-    collisionLeft                 = PlayerHitbox->left[0];
-    collisionTop                  = PlayerHitbox->top[0];
-    collisionRight                = PlayerHitbox->right[0];
-    collisionBottom               = PlayerHitbox->bottom[0];
+    collisionLeft                 = playerHitbox->left[0];
+    collisionTop                  = playerHitbox->top[0];
+    collisionRight                = playerHitbox->right[0];
+    collisionBottom               = playerHitbox->bottom[0];
     scriptEng.checkResult = false;
     int spd                       = 0;
     switch (player->collisionMode) {
@@ -2556,16 +2545,13 @@ void BoxCollision2(int left, int top, int right, int bottom)
 }
 void PlatformCollision(int left, int top, int right, int bottom)
 {
-    Player *player             = &playerList[activePlayer];
-    AnimationFile *animFile = player->animationFile;
-    Hitbox *PlayerHitbox =
-        &hitboxList[animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame]
-                        .hitboxID
-                                       + animFile->hitboxListOffset];
-    collisionLeft                 = PlayerHitbox->left[0];
-    collisionTop                  = PlayerHitbox->top[0];
-    collisionRight                = PlayerHitbox->right[0];
-    collisionBottom               = PlayerHitbox->bottom[0];
+    Player *player       = &playerList[activePlayer];
+    Hitbox *playerHitbox = getPlayerHitbox(player);
+
+    collisionLeft                 = playerHitbox->left[0];
+    collisionTop                  = playerHitbox->top[0];
+    collisionRight                = playerHitbox->right[0];
+    collisionBottom               = playerHitbox->bottom[0];
     sensors[0].collided           = false;
     sensors[1].collided           = false;
     sensors[2].collided           = false;

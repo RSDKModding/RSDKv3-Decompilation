@@ -13,7 +13,7 @@ int animationCount = 0;
 Hitbox hitboxList[HITBOX_COUNT];
 int hitboxCount = 0;
 
-void LoadAnimationFile(char *filePath)
+void LoadAnimationFile(const char *filePath)
 {
     FileInfo info;
     if (LoadFile(filePath, &info)) {
@@ -25,6 +25,7 @@ void LoadAnimationFile(char *filePath)
         int sheetCount = 0;
         FileRead(&sheetCount, 1); // Sheet Count
 
+        //Read & load each spritesheet
         for (int s = 0; s < sheetCount; ++s) {
             FileRead(&fileBuffer, 1);
             if (fileBuffer) {
@@ -44,6 +45,7 @@ void LoadAnimationFile(char *filePath)
         animFile->animCount     = animCount;
         animFile->aniListOffset = animationCount;
 
+        //Read animations
         for (int a = 0; a < animCount; ++a) {
             SpriteAnimation *anim = &animationList[animationCount++];
             anim->frameListOffset = animFrameCount;
@@ -76,6 +78,7 @@ void LoadAnimationFile(char *filePath)
                 anim->frameCount >>= 1;
         }
 
+        //Read Hitboxes
         animFile->hitboxListOffset = hitboxCount;
         FileRead(&fileBuffer, 1);
         for (int i = 0; i < fileBuffer; ++i) {
@@ -106,12 +109,13 @@ void ClearAnimationData()
     hitboxCount        = 0;
 }
 
-AnimationFile *AddAnimationFile(char *filePath)
+AnimationFile *AddAnimationFile(const char *filePath)
 {
     char path[0x80];
     StrCopy(path, "Data/Animations/");
     StrAdd(path, filePath);
 
+    //If matching anim is found return that, otherwise load a new anim
     for (int a = 0; a < 0x100; ++a) {
         if (StrLength(animationFileList[a].fileName) <= 0) {
             StrCopy(animationFileList[a].fileName, filePath);

@@ -229,7 +229,7 @@ void LoadStageFiles(void)
 
     if (!CheckCurrentStageFolder(stageListPosition)) {
 #if RSDK_DEBUG
-        printf("Loading Scene %s - %s\n", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
+        printLog("Loading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
 #endif
         ReleaseStageSfx();
         LoadPalette("MasterPalette.act", 0, 0, 0, 256);
@@ -286,7 +286,7 @@ void LoadStageFiles(void)
             for (int i = 96; i < 128; ++i) {
                 byte clr[3];
                 FileRead(&clr, 3);
-                SetPaletteColour(i, clr[0], clr[1], clr[2]);
+                SetPaletteEntry(i, clr[0], clr[1], clr[2]);
             }
 
             int stageObjectCount = 0;
@@ -347,7 +347,7 @@ void LoadStageFiles(void)
     }
 #if RSDK_DEBUG
     else {
-        printf("Reloading Scene %s - %s\n", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
+        printLog("Reloading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
     }
 #endif
     LoadStageChunks();
@@ -493,6 +493,7 @@ void LoadActLayout()
             ++object;
         }
         stageLayouts[0].type = LAYER_HSCROLL;
+        CloseFile();
     }
 }
 void LoadStageBackground()
@@ -818,10 +819,7 @@ void LoadStageGIFFile(int stageID)
         for (int c = 0; c < 0x80; ++c) FileRead(clr, 3);
         for (int c = 0x80; c < 0x100; ++c) {
             FileRead(clr, 3);
-            activePalette32[c].r = clr[0];
-            activePalette32[c].g = clr[1];
-            activePalette32[c].b = clr[2];
-            activePalette[c]     = (clr[2] >> 3) | 32 * (clr[1] >> 2) | ((ushort)(clr[0] >> 3) << 11);
+            SetPaletteEntry(c, clr[0], clr[1], clr[2]);
         }
 
         FileRead(&fileBuffer, 1);
@@ -870,10 +868,7 @@ void LoadStageGFXFile(int stageID)
         for (int i = 0; i < 0x80; ++i) FileRead(&clr, 3); // Palette
         for (int c = 0x80; c < 0x100; ++c) {
             FileRead(clr, 3);
-            activePalette32[c].r = clr[0];
-            activePalette32[c].g = clr[1];
-            activePalette32[c].b = clr[2];
-            activePalette[c]     = (clr[2] >> 3) | 32 * (clr[1] >> 2) | ((ushort)(clr[0] >> 3) << 11);
+            SetPaletteEntry(c, clr[0], clr[1], clr[2]);
         }
 
         byte *gfxData = tilesetGFXData;
@@ -969,10 +964,10 @@ void SetLayerDeformation(int deformID, int deformationA, int deformationB, int d
     }
 }
 
-void SetPlayerScreenPosition(Player *Player)
+void SetPlayerScreenPosition(Player *player)
 {
-    int playerXPos = Player->XPos >> 16;
-    int playerYPos = Player->YPos >> 16;
+    int playerXPos = player->XPos >> 16;
+    int playerYPos = player->YPos >> 16;
     if (newYBoundary1 > yBoundary1) {
         if (yScrollOffset <= newYBoundary1)
             yBoundary1 = yScrollOffset;
@@ -1006,8 +1001,8 @@ void SetPlayerScreenPosition(Player *Player)
     if (newXBoundary1 < xBoundary1) {
         if (xScrollOffset <= xBoundary1) {
             --xBoundary1;
-            if (Player->XVelocity < 0) {
-                xBoundary1 += Player->XVelocity >> 16;
+            if (player->XVelocity < 0) {
+                xBoundary1 += player->XVelocity >> 16;
                 if (xBoundary1 < newXBoundary1)
                     xBoundary1 = newXBoundary1;
             }
@@ -1025,8 +1020,8 @@ void SetPlayerScreenPosition(Player *Player)
     if (newXBoundary2 > xBoundary2) {
         if (SCREEN_XSIZE + xScrollOffset >= xBoundary2) {
             ++xBoundary2;
-            if (Player->XVelocity > 0) {
-                xBoundary2 += Player->XVelocity >> 16;
+            if (player->XVelocity > 0) {
+                xBoundary2 += player->XVelocity >> 16;
                 if (xBoundary2 > newXBoundary2)
                     xBoundary2 = newXBoundary2;
             }
@@ -1067,14 +1062,14 @@ void SetPlayerScreenPosition(Player *Player)
     xScrollA = xscrollA;
     xScrollB = xscrollB;
     if (playerXPos <= SCREEN_CENTERX + xscrollA) {
-        Player->screenXPos = cameraShakeX + playerXPos - xscrollA;
+        player->screenXPos = cameraShakeX + playerXPos - xscrollA;
         xScrollOffset      = xscrollA - cameraShakeX;
     }
     else {
         xScrollOffset      = cameraShakeX + playerXPos - SCREEN_CENTERX;
-        Player->screenXPos = SCREEN_CENTERX - cameraShakeX;
+        player->screenXPos = SCREEN_CENTERX - cameraShakeX;
         if (playerXPos > xscrollB - SCREEN_CENTERX) {
-            Player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xscrollB - SCREEN_CENTERX);
+            player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xscrollB - SCREEN_CENTERX);
             xScrollOffset      = xscrollB - SCREEN_XSIZE - cameraShakeX;
         }
     }
@@ -1082,13 +1077,13 @@ void SetPlayerScreenPosition(Player *Player)
     int yscrollA     = yScrollA;
     int yscrollB     = yScrollB;
     int adjustYPos   = cameraAdjustY + playerYPos;
-    int adjustAmount = Player->lookPos + adjustYPos - (yscrollA + SCREEN_SCROLL_UP);
-    if (Player->trackScroll) {
+    int adjustAmount = player->lookPos + adjustYPos - (yscrollA + SCREEN_SCROLL_UP);
+    if (player->trackScroll) {
         yScrollMove = 32;
     }
     else {
         if (yScrollMove == 32) {
-            yScrollMove = 2 * ((SCREEN_SCROLL_UP - Player->screenYPos - Player->lookPos) >> 1);
+            yScrollMove = 2 * ((SCREEN_SCROLL_UP - player->screenYPos - player->lookPos) >> 1);
             if (yScrollMove > 32)
                 yScrollMove = 32;
             if (yScrollMove < -32)
@@ -1107,17 +1102,17 @@ void SetPlayerScreenPosition(Player *Player)
         yscrollB = yscrollA + SCREEN_YSIZE;
     }
     else if (yScrollMove == 32) {
-        if (Player->lookPos + adjustYPos > yscrollA + yScrollMove + SCREEN_SCROLL_UP) {
-            yscrollA = Player->lookPos + adjustYPos - (yScrollMove + SCREEN_SCROLL_UP);
+        if (player->lookPos + adjustYPos > yscrollA + yScrollMove + SCREEN_SCROLL_UP) {
+            yscrollA = player->lookPos + adjustYPos - (yScrollMove + SCREEN_SCROLL_UP);
             yscrollB = yscrollA + SCREEN_YSIZE;
         }
-        if (Player->lookPos + adjustYPos < yscrollA + SCREEN_SCROLL_UP - yScrollMove) {
-            yscrollA = Player->lookPos + adjustYPos - (SCREEN_SCROLL_UP - yScrollMove);
+        if (player->lookPos + adjustYPos < yscrollA + SCREEN_SCROLL_UP - yScrollMove) {
+            yscrollA = player->lookPos + adjustYPos - (SCREEN_SCROLL_UP - yScrollMove);
             yscrollB = yscrollA + SCREEN_YSIZE;
         }
     }
     else {
-        yscrollA = Player->lookPos + adjustYPos + yScrollMove - SCREEN_SCROLL_UP;
+        yscrollA = player->lookPos + adjustYPos + yScrollMove - SCREEN_SCROLL_UP;
         yscrollB = yscrollA + SCREEN_YSIZE;
     }
     if (yscrollA < yBoundary1) {
@@ -1130,42 +1125,42 @@ void SetPlayerScreenPosition(Player *Player)
     }
     yScrollA = yscrollA;
     yScrollB = yscrollB;
-    if (Player->lookPos + adjustYPos <= yScrollA + SCREEN_SCROLL_UP) {
-        Player->screenYPos = adjustYPos - yScrollA - cameraShakeY;
+    if (player->lookPos + adjustYPos <= yScrollA + SCREEN_SCROLL_UP) {
+        player->screenYPos = adjustYPos - yScrollA - cameraShakeY;
         yScrollOffset      = cameraShakeY + yScrollA;
     }
     else {
-        yScrollOffset      = cameraShakeY + adjustYPos + Player->lookPos - SCREEN_SCROLL_UP;
-        Player->screenYPos = SCREEN_SCROLL_UP - Player->lookPos - cameraShakeY;
-        if (Player->lookPos + adjustYPos > yScrollB - SCREEN_SCROLL_DOWN) {
-            Player->screenYPos = adjustYPos - (yScrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
+        yScrollOffset      = cameraShakeY + adjustYPos + player->lookPos - SCREEN_SCROLL_UP;
+        player->screenYPos = SCREEN_SCROLL_UP - player->lookPos - cameraShakeY;
+        if (player->lookPos + adjustYPos > yScrollB - SCREEN_SCROLL_DOWN) {
+            player->screenYPos = adjustYPos - (yScrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
             yScrollOffset      = yScrollB - SCREEN_YSIZE - cameraShakeY;
         }
     }
+    player->screenYPos -= cameraAdjustY;
 
-    Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX--;
+            cameraShakeX = ~cameraShakeX;
         }
         else {
             cameraShakeX = -cameraShakeX;
         }
     }
 
-    if (!cameraShakeY)
-        return;
-    if (cameraShakeY <= 0) {
-        cameraShakeY--;
-    }
-    else {
-        cameraShakeY = -cameraShakeY;
+    if (cameraShakeY) {
+        if (cameraShakeY <= 0) {
+            cameraShakeY = ~cameraShakeY;
+        }
+        else {
+            cameraShakeY = -cameraShakeY;
+        }
     }
 }
-void SetPlayerScreenPositionCDStyle(Player *Player)
+void SetPlayerScreenPositionCDStyle(Player *player)
 {
-    int playerXPos = Player->XPos >> 16;
-    int playerYPos = Player->YPos >> 16;
+    int playerXPos = player->XPos >> 16;
+    int playerYPos = player->YPos >> 16;
     if (newYBoundary1 > yBoundary1) {
         if (yScrollOffset <= newYBoundary1)
             yBoundary1 = yScrollOffset;
@@ -1199,8 +1194,8 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
     if (newXBoundary1 < xBoundary1) {
         if (xScrollOffset <= xBoundary1) {
             --xBoundary1;
-            if (Player->XVelocity < 0) {
-                xBoundary1 += Player->XVelocity >> 16;
+            if (player->XVelocity < 0) {
+                xBoundary1 += player->XVelocity >> 16;
                 if (xBoundary1 < newXBoundary1)
                     xBoundary1 = newXBoundary1;
             }
@@ -1218,8 +1213,8 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
     if (newXBoundary2 > xBoundary2) {
         if (SCREEN_XSIZE + xScrollOffset >= xBoundary2) {
             ++xBoundary2;
-            if (Player->XVelocity > 0) {
-                xBoundary2 += Player->XVelocity >> 16;
+            if (player->XVelocity > 0) {
+                xBoundary2 += player->XVelocity >> 16;
                 if (xBoundary2 > newXBoundary2)
                     xBoundary2 = newXBoundary2;
             }
@@ -1228,15 +1223,15 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
             xBoundary2 = newXBoundary2;
         }
     }
-    if (!Player->gravity) {
-        if (Player->boundEntity->direction) {
-            if (cameraStyle == 3 || Player->speed < -0x5F5C2)
+    if (!player->gravity) {
+        if (player->boundEntity->direction) {
+            if (cameraStyle == 3 || player->speed < -0x5F5C2)
                 cameraLagStyle = 2;
             else
                 cameraLagStyle = 0;
         }
         else {
-            cameraLagStyle = (cameraStyle == 2 || Player->speed > 0x5F5C2) != 0;
+            cameraLagStyle = (cameraStyle == 2 || player->speed > 0x5F5C2) != 0;
         }
     }
     if (cameraLagStyle) {
@@ -1254,14 +1249,14 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
             cameraLag -= 2;
     }
     if (playerXPos <= cameraLag + SCREEN_CENTERX + xBoundary1) {
-        Player->screenXPos = cameraShakeX + playerXPos - xBoundary1;
+        player->screenXPos = cameraShakeX + playerXPos - xBoundary1;
         xScrollOffset      = xBoundary1 - cameraShakeX;
     }
     else {
         xScrollOffset      = cameraShakeX + playerXPos - SCREEN_CENTERX - cameraLag;
-        Player->screenXPos = cameraLag + SCREEN_CENTERX - cameraShakeX;
+        player->screenXPos = cameraLag + SCREEN_CENTERX - cameraShakeX;
         if (playerXPos - cameraLag > xBoundary2 - SCREEN_CENTERX) {
-            Player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xBoundary2 - SCREEN_CENTERX);
+            player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xBoundary2 - SCREEN_CENTERX);
             xScrollOffset      = xBoundary2 - SCREEN_XSIZE - cameraShakeX;
         }
     }
@@ -1270,13 +1265,13 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
     int yscrollA     = yScrollA;
     int yscrollB     = yScrollB;
     int adjustY      = cameraAdjustY + playerYPos;
-    int adjustOffset = Player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
-    if (Player->trackScroll == 1) {
+    int adjustOffset = player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
+    if (player->trackScroll == 1) {
         yScrollMove = 32;
     }
     else {
         if (yScrollMove == 32) {
-            yScrollMove = 2 * ((SCREEN_SCROLL_UP - Player->screenYPos - Player->lookPos) >> 1);
+            yScrollMove = 2 * ((SCREEN_SCROLL_UP - player->screenYPos - player->lookPos) >> 1);
             if (yScrollMove > 32)
                 yScrollMove = 32;
             if (yScrollMove < -32)
@@ -1296,17 +1291,17 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
         yscrollB = yscrollA + SCREEN_YSIZE;
     }
     else if (yScrollMove == 32) {
-        if (Player->lookPos + adjustY > yscrollA + yScrollMove + SCREEN_SCROLL_UP) {
-            yscrollA = Player->lookPos + adjustY - (yScrollMove + SCREEN_SCROLL_UP);
+        if (player->lookPos + adjustY > yscrollA + yScrollMove + SCREEN_SCROLL_UP) {
+            yscrollA = player->lookPos + adjustY - (yScrollMove + SCREEN_SCROLL_UP);
             yscrollB = yscrollA + SCREEN_YSIZE;
         }
-        if (Player->lookPos + adjustY < yscrollA + SCREEN_SCROLL_UP - yScrollMove) {
-            yscrollA = Player->lookPos + adjustY - (SCREEN_SCROLL_UP - yScrollMove);
+        if (player->lookPos + adjustY < yscrollA + SCREEN_SCROLL_UP - yScrollMove) {
+            yscrollA = player->lookPos + adjustY - (SCREEN_SCROLL_UP - yScrollMove);
             yscrollB = yscrollA + SCREEN_YSIZE;
         }
     }
     else {
-        yscrollA = Player->lookPos + adjustY + yScrollMove - SCREEN_SCROLL_UP;
+        yscrollA = player->lookPos + adjustY + yScrollMove - SCREEN_SCROLL_UP;
         yscrollB = yscrollA + SCREEN_YSIZE;
     }
     if (yscrollA < yBoundary1) {
@@ -1319,41 +1314,42 @@ void SetPlayerScreenPositionCDStyle(Player *Player)
     }
     yScrollA = yscrollA;
     yScrollB = yscrollB;
-    if (Player->lookPos + adjustY <= yscrollA + SCREEN_SCROLL_UP) {
-        Player->screenYPos = adjustY - yscrollA - cameraShakeY;
+    if (player->lookPos + adjustY <= yscrollA + SCREEN_SCROLL_UP) {
+        player->screenYPos = adjustY - yscrollA - cameraShakeY;
         yScrollOffset      = cameraShakeY + yscrollA;
     }
     else {
-        yScrollOffset      = cameraShakeY + adjustY + Player->lookPos - SCREEN_SCROLL_UP;
-        Player->screenYPos = SCREEN_SCROLL_UP - Player->lookPos - cameraShakeY;
-        if (Player->lookPos + adjustY > yscrollB - SCREEN_SCROLL_DOWN) {
-            Player->screenYPos = adjustY - (yscrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
+        yScrollOffset      = cameraShakeY + adjustY + player->lookPos - SCREEN_SCROLL_UP;
+        player->screenYPos = SCREEN_SCROLL_UP - player->lookPos - cameraShakeY;
+        if (player->lookPos + adjustY > yscrollB - SCREEN_SCROLL_DOWN) {
+            player->screenYPos = adjustY - (yscrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
             yScrollOffset      = yscrollB - SCREEN_YSIZE - cameraShakeY;
         }
     }
+    player->screenYPos -= cameraAdjustY;
 
-    Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX--;
+            cameraShakeX = ~cameraShakeX;
         }
         else {
             cameraShakeX = -cameraShakeX;
         }
     }
-    if (!cameraShakeY)
-        return;
-    if (cameraShakeY <= 0) {
-        cameraShakeY--;
-    }
-    else {
-        cameraShakeY = -cameraShakeY;
+
+    if (cameraShakeY) {
+        if (cameraShakeY <= 0) {
+            cameraShakeY = ~cameraShakeY;
+        }
+        else {
+            cameraShakeY = -cameraShakeY;
+        }
     }
 }
-void SetPlayerHLockedScreenPosition(Player *Player)
+void SetPlayerHLockedScreenPosition(Player *player)
 {
-    int playerXPos = Player->XPos >> 16;
-    int playerYPos = Player->YPos >> 16;
+    int playerXPos = player->XPos >> 16;
+    int playerYPos = player->YPos >> 16;
     if (newYBoundary1 > yBoundary1) {
         if (yScrollOffset <= newYBoundary1)
             yBoundary1 = yScrollOffset;
@@ -1382,14 +1378,14 @@ void SetPlayerHLockedScreenPosition(Player *Player)
     int xscrollA = xScrollA;
     int xscrollB = xScrollB;
     if (playerXPos <= SCREEN_CENTERX + xScrollA) {
-        Player->screenXPos = cameraShakeX + playerXPos - xScrollA;
+        player->screenXPos = cameraShakeX + playerXPos - xScrollA;
         xScrollOffset      = xscrollA - cameraShakeX;
     }
     else {
         xScrollOffset      = cameraShakeX + playerXPos - SCREEN_CENTERX;
-        Player->screenXPos = SCREEN_CENTERX - cameraShakeX;
+        player->screenXPos = SCREEN_CENTERX - cameraShakeX;
         if (playerXPos > xscrollB - SCREEN_CENTERX) {
-            Player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xscrollB - SCREEN_CENTERX);
+            player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xscrollB - SCREEN_CENTERX);
             xScrollOffset      = xscrollB - SCREEN_XSIZE - cameraShakeX;
         }
     }
@@ -1397,13 +1393,13 @@ void SetPlayerHLockedScreenPosition(Player *Player)
     int yscrollA   = yScrollA;
     int yscrollB   = yScrollB;
     int adjustY    = cameraAdjustY + playerYPos;
-    int lookOffset = Player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
-    if (Player->trackScroll == 1) {
+    int lookOffset = player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
+    if (player->trackScroll == 1) {
         yScrollMove = 32;
     }
     else {
         if (yScrollMove == 32) {
-            yScrollMove = 2 * ((SCREEN_SCROLL_UP - Player->screenYPos - Player->lookPos) >> 1);
+            yScrollMove = 2 * ((SCREEN_SCROLL_UP - player->screenYPos - player->lookPos) >> 1);
             if (yScrollMove > 32)
                 yScrollMove = 32;
             if (yScrollMove < -32)
@@ -1423,17 +1419,17 @@ void SetPlayerHLockedScreenPosition(Player *Player)
         yscrollB = yscrollA + SCREEN_YSIZE;
     }
     else if (yScrollMove == 32) {
-        if (Player->lookPos + adjustY > yscrollA + yScrollMove + SCREEN_SCROLL_UP) {
-            yscrollA = Player->lookPos + adjustY - (yScrollMove + SCREEN_SCROLL_UP);
+        if (player->lookPos + adjustY > yscrollA + yScrollMove + SCREEN_SCROLL_UP) {
+            yscrollA = player->lookPos + adjustY - (yScrollMove + SCREEN_SCROLL_UP);
             yscrollB = yscrollA + SCREEN_YSIZE;
         }
-        if (Player->lookPos + adjustY < yscrollA + SCREEN_SCROLL_UP - yScrollMove) {
-            yscrollA = Player->lookPos + adjustY - (SCREEN_SCROLL_UP - yScrollMove);
+        if (player->lookPos + adjustY < yscrollA + SCREEN_SCROLL_UP - yScrollMove) {
+            yscrollA = player->lookPos + adjustY - (SCREEN_SCROLL_UP - yScrollMove);
             yscrollB = yscrollA + SCREEN_YSIZE;
         }
     }
     else {
-        yscrollA = Player->lookPos + adjustY + yScrollMove - SCREEN_SCROLL_UP;
+        yscrollA = player->lookPos + adjustY + yScrollMove - SCREEN_SCROLL_UP;
         yscrollB = yscrollA + SCREEN_YSIZE;
     }
     if (yscrollA < yBoundary1) {
@@ -1446,52 +1442,53 @@ void SetPlayerHLockedScreenPosition(Player *Player)
     }
     yScrollA = yscrollA;
     yScrollB = yscrollB;
-    if (Player->lookPos + adjustY <= yscrollA + SCREEN_SCROLL_UP) {
-        Player->screenYPos = adjustY - yscrollA - cameraShakeY;
+    if (player->lookPos + adjustY <= yscrollA + SCREEN_SCROLL_UP) {
+        player->screenYPos = adjustY - yscrollA - cameraShakeY;
         yScrollOffset      = cameraShakeY + yscrollA;
     }
     else {
-        yScrollOffset      = cameraShakeY + adjustY + Player->lookPos - SCREEN_SCROLL_UP;
-        Player->screenYPos = SCREEN_SCROLL_UP - Player->lookPos - cameraShakeY;
-        if (Player->lookPos + adjustY > yscrollB - SCREEN_SCROLL_DOWN) {
-            Player->screenYPos = adjustY - (yscrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
+        yScrollOffset      = cameraShakeY + adjustY + player->lookPos - SCREEN_SCROLL_UP;
+        player->screenYPos = SCREEN_SCROLL_UP - player->lookPos - cameraShakeY;
+        if (player->lookPos + adjustY > yscrollB - SCREEN_SCROLL_DOWN) {
+            player->screenYPos = adjustY - (yscrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
             yScrollOffset      = yscrollB - SCREEN_YSIZE - cameraShakeY;
         }
     }
+    player->screenYPos -= cameraAdjustY;
 
-    Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX--;
+            cameraShakeX = ~cameraShakeX;
         }
         else {
             cameraShakeX = -cameraShakeX;
         }
     }
-    if (!cameraShakeY)
-        return;
-    if (cameraShakeY <= 0) {
-        cameraShakeY--;
-    }
-    else {
-        cameraShakeY = -cameraShakeY;
+
+    if (cameraShakeY) {
+        if (cameraShakeY <= 0) {
+            cameraShakeY = ~cameraShakeY;
+        }
+        else {
+            cameraShakeY = -cameraShakeY;
+        }
     }
 }
-void SetPlayerLockedScreenPosition(Player *Player)
+void SetPlayerLockedScreenPosition(Player *player)
 {
-    int playerXPos = Player->XPos >> 16;
-    int playerYPos = Player->YPos >> 16;
+    int playerXPos = player->XPos >> 16;
+    int playerYPos = player->YPos >> 16;
     int xscrollA   = xScrollA;
     int xscrollB   = xScrollB;
     if (playerXPos <= SCREEN_CENTERX + xScrollA) {
-        Player->screenXPos = cameraShakeX + playerXPos - xScrollA;
+        player->screenXPos = cameraShakeX + playerXPos - xScrollA;
         xScrollOffset      = xscrollA - cameraShakeX;
     }
     else {
         xScrollOffset      = cameraShakeX + playerXPos - SCREEN_CENTERX;
-        Player->screenXPos = SCREEN_CENTERX - cameraShakeX;
+        player->screenXPos = SCREEN_CENTERX - cameraShakeX;
         if (playerXPos > xscrollB - SCREEN_CENTERX) {
-            Player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xscrollB - SCREEN_CENTERX);
+            player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xscrollB - SCREEN_CENTERX);
             xScrollOffset      = xscrollB - SCREEN_XSIZE - cameraShakeX;
         }
     }
@@ -1499,35 +1496,36 @@ void SetPlayerLockedScreenPosition(Player *Player)
     int yscrollA     = yScrollA;
     int yscrollB     = yScrollB;
     int adjustY      = cameraAdjustY + playerYPos;
-    //int adjustOffset = Player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
-    if (Player->lookPos + adjustY <= yScrollA + SCREEN_SCROLL_UP) {
-        Player->screenYPos = adjustY - yScrollA - cameraShakeY;
+    //int adjustOffset = player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
+    if (player->lookPos + adjustY <= yScrollA + SCREEN_SCROLL_UP) {
+        player->screenYPos = adjustY - yScrollA - cameraShakeY;
         yScrollOffset      = cameraShakeY + yscrollA;
     }
     else {
-        yScrollOffset      = cameraShakeY + adjustY + Player->lookPos - SCREEN_SCROLL_UP;
-        Player->screenYPos = SCREEN_SCROLL_UP - Player->lookPos - cameraShakeY;
-        if (Player->lookPos + adjustY > yscrollB - SCREEN_SCROLL_DOWN) {
-            Player->screenYPos = adjustY - (yscrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
+        yScrollOffset      = cameraShakeY + adjustY + player->lookPos - SCREEN_SCROLL_UP;
+        player->screenYPos = SCREEN_SCROLL_UP - player->lookPos - cameraShakeY;
+        if (player->lookPos + adjustY > yscrollB - SCREEN_SCROLL_DOWN) {
+            player->screenYPos = adjustY - (yscrollB - SCREEN_SCROLL_DOWN) + cameraShakeY + SCREEN_SCROLL_UP;
             yScrollOffset      = yscrollB - SCREEN_YSIZE - cameraShakeY;
         }
     }
+    player->screenYPos -= cameraAdjustY;
 
-    Player->screenYPos -= cameraAdjustY;
     if (cameraShakeX) {
         if (cameraShakeX <= 0) {
-            cameraShakeX--;
+            cameraShakeX = ~cameraShakeX;
         }
         else {
             cameraShakeX = -cameraShakeX;
         }
     }
-    if (!cameraShakeY)
-        return;
-    if (cameraShakeY <= 0) {
-        cameraShakeY--;
-    }
-    else {
-        cameraShakeY = -cameraShakeY;
+
+    if (cameraShakeY) {
+        if (cameraShakeY <= 0) {
+            cameraShakeY = ~cameraShakeY;
+        }
+        else {
+            cameraShakeY = -cameraShakeY;
+        }
     }
 }

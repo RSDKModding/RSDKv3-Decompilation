@@ -1,6 +1,24 @@
 #ifndef READER_H
 #define READER_H
 
+#if RETRO_USING_SDL
+#define FileIO                                          SDL_RWops
+#define fOpen(path, mode)                               SDL_RWFromFile(path, mode)
+#define fRead(buffer, elementSize, elementCount, file)  SDL_RWread(file, buffer, elementSize, elementCount)
+#define fSeek(file, offset, whence)                     SDL_RWseek(file, offset, whence)
+#define fTell(file)                                     SDL_RWtell(file)
+#define fClose(file)                                    SDL_RWclose(file)
+#define fWrite(buffer, elementSize, elementCount, file) SDL_RWwrite(file, buffer, elementSize, elementCount)
+#else
+#define FileIO                                            FILE
+#define fOpen(path, mode)                               fopen(path, mode)
+#define fRead(buffer, elementSize, elementCount, file)  fread(buffer, elementSize, elementCount, file)
+#define fSeek(file, offset, whence)                     fseek(file, offset, whence)
+#define fTell(file)                                     ftell(file)
+#define fClose(file)                                    fclose(file)
+#define fWrite(buffer, elementSize, elementCount, file) fwrite(buffer, elementSize, elementCount, file)
+#endif
+
 struct FileInfo {
     char fileName[0x100];
     int fileSize;
@@ -30,8 +48,8 @@ extern byte eNybbleSwap;
 extern char encryptionStringA[21];
 extern char encryptionStringB[13];
 
-extern FILE *cFileHandle;
-extern FILE *cFileHandleStream;
+extern FileIO *cFileHandle;
+extern FileIO *cFileHandleStream;
 
 inline void CopyFilePath(char *dest, const char *src)
 {
@@ -52,7 +70,7 @@ inline bool CloseFile()
 {
     int result = 0;
     if (cFileHandle)
-        result = fclose(cFileHandle);
+        result = fClose(cFileHandle);
 
     cFileHandle = NULL;
     return result;
@@ -69,7 +87,7 @@ inline size_t FillFileBuffer()
     else 
         readSize = fileSize - readPos;
 
-    size_t result = fread(fileBuffer, 1u, readSize, cFileHandle);
+    size_t result = fRead(fileBuffer, 1u, readSize, cFileHandle);
     readPos += readSize;
     bufferPosition = 0;
     return result;
@@ -98,7 +116,7 @@ inline bool CloseFile2()
 {
     int result = 0;
     if (cFileHandleStream)
-        result = fclose(cFileHandleStream);
+        result = fClose(cFileHandleStream);
 
     cFileHandleStream = NULL;
     return result;

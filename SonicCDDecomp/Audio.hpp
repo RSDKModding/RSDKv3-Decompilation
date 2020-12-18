@@ -87,9 +87,6 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
 inline void freeMusInfo()
 {
     if (musInfo.loaded) {
-        //CloseFile2();
-        //MEM_ZERO(musInfo.fileInfo);
-
         if (musInfo.buffer)
             delete[] musInfo.buffer;
         if (musInfo.extraBuffer)

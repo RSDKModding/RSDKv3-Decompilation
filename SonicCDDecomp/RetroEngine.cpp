@@ -2,10 +2,6 @@
 
 RetroEngine Engine = RetroEngine();
 
-int GlobalVariablesCount;
-int GlobalVariables[GLOBALVAR_COUNT];
-char GlobalVariableNames[GLOBALVAR_COUNT][0x20];
-
 bool processEvents()
 {
 #if RETRO_USING_SDL
@@ -255,26 +251,26 @@ void RetroEngine::LoadGameConfig(const char *filePath)
 
         int varCount = 0;
         FileRead(&varCount, 1);
-        GlobalVariablesCount = varCount;
+        globalVariablesCount = varCount;
         for (int v = 0; v < varCount; ++v) {
             // Read Variable Name
             FileRead(&fileBuffer, 1);
-            FileRead(&GlobalVariableNames[v], fileBuffer);
-            GlobalVariableNames[v][fileBuffer] = 0;
+            FileRead(&globalVariableNames[v], fileBuffer);
+            globalVariableNames[v][fileBuffer] = 0;
 
             // Read Variable Value
             FileRead(&fileBuffer2, 1);
-            GlobalVariables[v] = fileBuffer2 << 24;
+            globalVariables[v] = fileBuffer2 << 24;
             FileRead(&fileBuffer2, 1);
-            GlobalVariables[v] += fileBuffer2 << 16;
+            globalVariables[v] += fileBuffer2 << 16;
             FileRead(&fileBuffer2, 1);
-            GlobalVariables[v] += fileBuffer2 << 8;
+            globalVariables[v] += fileBuffer2 << 8;
             FileRead(&fileBuffer2, 1);
-            GlobalVariables[v] += fileBuffer2;
+            globalVariables[v] += fileBuffer2;
 
             if (devMenu) {
-                if (StrComp("Options.DevMenuFlag", GlobalVariableNames[v]))
-                    GlobalVariables[v] = 1;
+                if (StrComp("Options.DevMenuFlag", globalVariableNames[v]))
+                    globalVariables[v] = 1;
             }
         }
 
@@ -330,66 +326,12 @@ void RetroEngine::LoadGameConfig(const char *filePath)
     }
 }
 
-void RetroEngine::AwardAchievement(int id, int status)
-{
-    if (id < 0 || id >= ACHIEVEMENT_MAX)
-        return;
-
-    achievements[id].status = status;
-
-    if (onlineActive) {
-        // Set Achievement online
-    }
-    WriteUserdata();
-}
-
-void RetroEngine::SetAchievement(int achievementID, int achievementDone)
-{
-    if (!trialMode && !debugMode) {
-        AwardAchievement(achievementID, achievementDone);
-    }
-}
-void RetroEngine::SetLeaderboard(int leaderboardID, int result)
-{
-    if (!trialMode && !debugMode) {
-        switch (leaderboardID) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-            case 15:
-            case 16:
-            case 17:
-            case 18:
-            case 19:
-            case 20:
-            case 21:
-                leaderboard[leaderboardID].status = result;
-                WriteUserdata();
-                return;
-        }
-    }
-}
-void RetroEngine::LoadAchievementsMenu() { ReadUserdata(); }
-void RetroEngine::LoadLeaderboardsMenu() { ReadUserdata(); }
-
 void RetroEngine::Callback(int callbackID)
 {
     switch (callbackID) {
         default:
 #if RSDK_DEBUG
-            printf("Callback: Unknown (%d)\n", callbackID);
+            printLog("Callback: Unknown (%d)", callbackID);
 #endif
             break;
         case CALLBACK_DISPLAYLOGOS: // Display Logos, Called immediately
@@ -401,7 +343,7 @@ void RetroEngine::Callback(int callbackID)
                 callbackMessage = 10;
             }*/
 #if RSDK_DEBUG
-            printf("Callback: Display Logos\n");
+            printLog("Callback: Display Logos");
 #endif
             break;
         case CALLBACK_PRESS_START: // Called when "Press Start" is activated, PC = NONE
@@ -413,43 +355,43 @@ void RetroEngine::Callback(int callbackID)
                 callbackMessage = 10;
             }*/
 #if RSDK_DEBUG
-            printf("Callback: Press Start\n");
+            printLog("Callback: Press Start");
 #endif
             break;
         case CALLBACK_TIMEATTACK_NOTIFY_ENTER:
 #if RSDK_DEBUG
-            printf("Callback: Time Attack Notify Enter\n");
+            printLog("Callback: Time Attack Notify Enter");
 #endif
             break;
         case CALLBACK_TIMEATTACK_NOTIFY_EXIT:
 #if RSDK_DEBUG
-            printf("Callback: Time Attack Notify Exit\n");
+            printLog("Callback: Time Attack Notify Exit");
 #endif
             break;
         case CALLBACK_FINISHGAME_NOTIFY: // PC = NONE
 #if RSDK_DEBUG
-            printf("Callback: Finish Game Notify\n");
+            printLog("Callback: Finish Game Notify");
 #endif
             break;
         case CALLBACK_RETURNSTORE_SELECTED: gameMode = ENGINE_EXITGAME;
 #if RSDK_DEBUG
-            printf("Callback: Return To Store Selected\n");
+            printLog("Callback: Return To Store Selected");
 #endif
             break;
         case CALLBACK_RESTART_SELECTED:
 #if RSDK_DEBUG
-            printf("Callback: Restart Selected\n");
+            printLog("Callback: Restart Selected");
 #endif
             break;
         case CALLBACK_EXIT_SELECTED: gameMode = ENGINE_EXITGAME;
 #if RSDK_DEBUG
-            printf("Callback: Exit Selected\n");
+            printLog("Callback: Exit Selected");
 #endif
             break;
         case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
             gameMode = ENGINE_EXITGAME;
 #if RSDK_DEBUG
-            printf("Callback: Buy Full Game Selected\n");
+            printLog("Callback: Buy Full Game Selected");
 #endif
             break;
         case CALLBACK_TERMS_SELECTED: // PC = How to play, Mobile = Full Game Only Screen
@@ -463,22 +405,22 @@ void RetroEngine::Callback(int callbackID)
                 }
             }
 #if RSDK_DEBUG
-            printf("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen\n");
+            printLog("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen");
 #endif
             break;
         case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
 #if RSDK_DEBUG
-            printf("Callback: PC = Controls Menu, Mobile = Privacy Screen\n");
+            printLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
 #endif
             break;
         case CALLBACK_TRIAL_ENDED:
 #if RSDK_DEBUG
-            printf("Callback: PC = ???, Mobile = Trial Ended Screen\n");
+            printLog("Callback: PC = ???, Mobile = Trial Ended Screen");
 #endif
             break;                       // PC = ???, Mobile = Trial Ended Screen
         case CALLBACK_SETTINGS_SELECTED: // PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)
 #if RSDK_DEBUG
-            printf("Callback: PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)\n");
+            printLog("Callback: PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)");
 #endif
             break;
         case CALLBACK_PAUSE_REQUESTED: // PC/Mobile = Pause Requested (Mobile uses in-game menu, PC does as well if devMenu is active)
@@ -502,12 +444,12 @@ void RetroEngine::Callback(int callbackID)
                 }
             }
 #if RSDK_DEBUG
-            printf("Callback: Pause Menu Requested\n");
+            printLog("Callback: Pause Menu Requested");
 #endif
             break;
         case CALLBACK_FULL_VERSION_ONLY:
 #if RSDK_DEBUG
-            printf("Callback: Full Version Only Notify\n");
+            printLog("Callback: Full Version Only Notify");
 #endif
             break;                   // PC = ???, Mobile = Full Game Only Screen
         case CALLBACK_STAFF_CREDITS: // PC = Staff Credits, Mobile = NONE
@@ -521,12 +463,12 @@ void RetroEngine::Callback(int callbackID)
                 }
             }
 #if RSDK_DEBUG
-            printf("Callback: Staff Credits Requested\n");
+            printLog("Callback: Staff Credits Requested");
 #endif
             break;
         case CALLBACK_16: //, PC = ??? (only when online), Mobile = NONE
 #if RSDK_DEBUG
-            printf("Callback: Unknown (%d)\n", callbackID);
+            printLog("Callback: Unknown (%d)", callbackID);
 #endif
             break;
     }

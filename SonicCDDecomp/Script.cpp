@@ -1087,8 +1087,8 @@ void ConvertFunctionText(char *text)
                 }
             }
             // Eg: TempValue0 = Game.Variable
-            for (int v = 0; v < GlobalVariablesCount; ++v) {
-                if (StrComp(funcName, GlobalVariableNames[v])) {
+            for (int v = 0; v < globalVariablesCount; ++v) {
+                if (StrComp(funcName, globalVariableNames[v])) {
                     StrCopy(funcName, "Global");
                     strBuffer[0] = 0;
                     AppendIntegerToSting(strBuffer, v);
@@ -1978,7 +1978,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_CHECKRESULT: scriptEng.operands[i] = scriptEng.checkResult; break;
                     case VAR_ARRAYPOS0: scriptEng.operands[i] = scriptEng.arrayPosition[0]; break;
                     case VAR_ARRAYPOS1: scriptEng.operands[i] = scriptEng.arrayPosition[1]; break;
-                    case VAR_GLOBAL: scriptEng.operands[i] = GlobalVariables[arrayVal]; break;
+                    case VAR_GLOBAL: scriptEng.operands[i] = globalVariables[arrayVal]; break;
                     case VAR_OBJECTENTITYNO: scriptEng.operands[i] = arrayVal; break;
                     case VAR_OBJECTTYPE: {
                         scriptEng.operands[i] = objectEntityList[arrayVal].type;
@@ -3699,18 +3699,18 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
             }
             case FUNC_SETACHIEVEMENT:
                 opcodeSize = 0;
-                Engine.SetAchievement(scriptEng.operands[0], scriptEng.operands[1]);
+                SetAchievement(scriptEng.operands[0], scriptEng.operands[1]);
                 break;
             case FUNC_SETLEADERBOARD:
                 opcodeSize = 0;
-                Engine.SetLeaderboard(scriptEng.operands[0], scriptEng.operands[1]);
+                SetLeaderboard(scriptEng.operands[0], scriptEng.operands[1]);
                 break;
             case FUNC_LOADONLINEMENU:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
                     default: break;
-                    case ONLINEMENU_ACHIEVEMENTS: Engine.LoadLeaderboardsMenu(); break;
-                    case ONLINEMENU_LEADERBOARDS: Engine.LoadAchievementsMenu(); break;
+                    case ONLINEMENU_ACHIEVEMENTS: LoadLeaderboardsMenu(); break;
+                    case ONLINEMENU_LEADERBOARDS: LoadAchievementsMenu(); break;
                 }
                 break;
             case FUNC_ENGINECALLBACK:
@@ -3768,7 +3768,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_CHECKRESULT: scriptEng.checkResult = scriptEng.operands[i]; break;
                     case VAR_ARRAYPOS0: scriptEng.arrayPosition[0] = scriptEng.operands[i]; break;
                     case VAR_ARRAYPOS1: scriptEng.arrayPosition[1] = scriptEng.operands[i]; break;
-                    case VAR_GLOBAL: GlobalVariables[arrayVal] = scriptEng.operands[i]; break;
+                    case VAR_GLOBAL: globalVariables[arrayVal] = scriptEng.operands[i]; break;
                     case VAR_OBJECTENTITYNO: break;
                     case VAR_OBJECTTYPE: {
                         objectEntityList[arrayVal].type = scriptEng.operands[i];

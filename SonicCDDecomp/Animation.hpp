@@ -58,10 +58,10 @@ extern int animationCount;
 extern Hitbox hitboxList[HITBOX_COUNT];
 extern int hitboxCount;
 
-void LoadAnimationFile(char *FilePath);
+void LoadAnimationFile(const char *FilePath);
 void ClearAnimationData();
 
-AnimationFile *AddAnimationFile(char *FilePath);
+AnimationFile *AddAnimationFile(const char *FilePath);
 
 inline AnimationFile *GetDefaultAnimationRef() { return &animationFileList[0]; }
 

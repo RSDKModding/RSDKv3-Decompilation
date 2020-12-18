@@ -1,6 +1,25 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#if RSDK_DEBUG
+inline void printLog(const char *msg, ...)
+{
+    char buffer[0x100];
+
+    // make the full string
+    va_list args;
+    va_start(args, msg);
+    vsprintf(buffer, msg, args);
+    printf("%s\n", buffer);
+    sprintf(buffer, "%s\n", buffer);
+
+    FileIO *file = fOpen("log.txt", "a");
+    if (file) {
+        fWrite(&buffer, 1, StrLength(buffer), file);
+        fClose(file);
+    }
+}
+#endif
 
 enum DevMenuMenus {
     DEVMENU_MAIN,

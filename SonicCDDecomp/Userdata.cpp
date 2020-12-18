@@ -1,5 +1,9 @@
 #include "RetroEngine.hpp"
 
+int globalVariablesCount;
+int globalVariables[GLOBALVAR_COUNT];
+char globalVariableNames[GLOBALVAR_COUNT][0x20];
+
 char gamePath[0x100];
 int saveRAM[SAVEDATA_MAX];
 Achievement achievements[ACHIEVEMENT_MAX];
@@ -8,13 +12,13 @@ LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 void InitUserdata()
 {
     // userdata files are loaded from this directory
-    sprintf(gamePath, "%s", "");
+    sprintf(gamePath, "");
 
     char buffer[0x100];
     sprintf(buffer, "%ssettings.ini", gamePath);
-    FILE *file = fopen(buffer, "rb");
+    FileIO *file = fOpen(buffer, "rb");
+    IniParser ini;
     if (!file) {
-        IniParser ini;
 
         ini.SetBool("Dev", "DevMenu", Engine.devMenu = false);
         ini.SetBool("Dev", "StartingCategory", Engine.startList = 0);
@@ -51,8 +55,8 @@ void InitUserdata()
         ini.Write("settings.ini");
     }
     else {
-        fclose(file);
-        IniParser ini("settings.ini");
+        fClose(file);
+        ini = IniParser("settings.ini");
 
         if (!ini.GetBool("Dev", "DevMenu", &Engine.devMenu))
             Engine.devMenu = false;
@@ -116,46 +120,58 @@ void InitUserdata()
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
     sprintf(buffer, "%suserdata.bin", gamePath);
-    file = fopen(buffer, "rb");
+    file = fOpen(buffer, "rb");
     if (file) {
-        fclose(file);
+        fClose(file);
         ReadUserdata();
     }
     else {
         WriteUserdata();
     }
 
-    sprintf(achievements[0].name, "%s", "88 Miles Per Hour");
-    sprintf(achievements[1].name, "%s", "Just One Hug is Enough");
-    sprintf(achievements[2].name, "%s", "Paradise Found");
-    sprintf(achievements[3].name, "%s", "Take the High Road");
-    sprintf(achievements[4].name, "%s", "King of the Rings");
-    sprintf(achievements[5].name, "%s", "Statue Saviour");
-    sprintf(achievements[6].name, "%s", "Heavy Metal");
-    sprintf(achievements[7].name, "%s", "All Stages Clear");
-    sprintf(achievements[8].name, "%s", "Treasure Hunter");
-    sprintf(achievements[9].name, "%s", "Dr Eggman Got Served");
-    sprintf(achievements[10].name, "%s", "Just In Time");
-    sprintf(achievements[11].name, "%s", "Saviour of the Planet");
+    StrCopy(achievements[0].name, "88 Miles Per Hour");
+    StrCopy(achievements[1].name, "Just One Hug is Enough");
+    StrCopy(achievements[2].name, "Paradise Found");
+    StrCopy(achievements[3].name, "Take the High Road");
+    StrCopy(achievements[4].name, "King of the Rings");
+    StrCopy(achievements[5].name, "Statue Saviour");
+    StrCopy(achievements[6].name, "Heavy Metal");
+    StrCopy(achievements[7].name, "All Stages Clear");
+    StrCopy(achievements[8].name, "Treasure Hunter");
+    StrCopy(achievements[9].name, "Dr Eggman Got Served");
+    StrCopy(achievements[10].name, "Just In Time");
+    StrCopy(achievements[11].name, "Saviour of the Planet");
 }
 
 void writeSettings() {
     IniParser ini;
 
+    ini.SetComment("Dev", "DevMenuComment", "Enable this flag to activate dev menu via the ESC key");
     ini.SetBool("Dev", "DevMenu", Engine.devMenu);
+    ini.SetComment("Dev", "SCComment", "Sets the starting category ID");
     ini.SetBool("Dev", "StartingCategory", Engine.startList);
+    ini.SetComment("Dev", "SSComment", "Sets the starting scene ID");
     ini.SetBool("Dev", "StartingScene", Engine.startStage);
+    ini.SetComment("Dev", "FFComment", "Determines how fast the game will be when fastforwarding is active");
     ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
 
+    ini.SetComment("Game", "LangComment", "Sets the game language (0 = EN, 1 = FR, 2 = IT, 3 = DE, 4 = ES, 5 = JP)");
     ini.SetInteger("Game", "Language", Engine.language);
 
+    ini.SetComment("Window", "FSComment", "Determines if the window will be fullscreen or not");
     ini.SetBool("Window", "Fullscreen", Engine.fullScreen);
+    ini.SetComment("Window", "BLComment", "Determines if the window will be borderless or not");
     ini.SetBool("Window", "Borderless", Engine.borderless);
+    ini.SetComment("Window", "VSComment", "Determines if VSync will be active or not");
     ini.SetBool("Window", "VSync", Engine.vsync);
+    ini.SetComment("Window", "WSComment", "How big the window will be");
     ini.SetInteger("Window", "WindowScale", Engine.windowScale);
+    ini.SetComment("Window", "SWComment", "How wide the base screen will be in pixels");
     ini.SetInteger("Window", "ScreenWidth", SCREEN_XSIZE);
+    ini.SetComment("Window", "RRComment", "Determines the target FPS");
     ini.SetInteger("Window", "RefreshRate", Engine.refreshRate);
 
+    ini.SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://wiki.libsdl.org/SDL_Scancode)");
     ini.SetInteger("Keyboard 1", "Up", inputDevice[0].keyMappings);
     ini.SetInteger("Keyboard 1", "Down", inputDevice[1].keyMappings);
     ini.SetInteger("Keyboard 1", "Left", inputDevice[2].keyMappings);
@@ -165,6 +181,7 @@ void writeSettings() {
     ini.SetInteger("Keyboard 1", "C", inputDevice[6].keyMappings);
     ini.SetInteger("Keyboard 1", "Start", inputDevice[7].keyMappings);
 
+    ini.SetComment("Controller 1", "IC1Comment", "Controller Mappings for P1 (Based on: https://wiki.libsdl.org/SDL_GameControllerButton)");
     ini.SetInteger("Controller 1", "Up", inputDevice[0].contMappings);
     ini.SetInteger("Controller 1", "Down", inputDevice[1].contMappings);
     ini.SetInteger("Controller 1", "Left", inputDevice[2].contMappings);
@@ -174,6 +191,29 @@ void writeSettings() {
     ini.SetInteger("Controller 1", "C", inputDevice[6].contMappings);
     ini.SetInteger("Controller 1", "Start", inputDevice[7].contMappings);
 
+    //Not yet implemented
+    ini.SetComment("Keyboard 2", "IK2Warning", "Not Yet Implemented");
+    ini.SetComment("Keyboard 2", "IK2Comment", "Keyboard Mappings for P2 (Based on: https://wiki.libsdl.org/SDL_Scancode)");
+    ini.SetInteger("Keyboard 2", "Up", -1);
+    ini.SetInteger("Keyboard 2", "Down", -1);
+    ini.SetInteger("Keyboard 2", "Left", -1);
+    ini.SetInteger("Keyboard 2", "Right", -1);
+    ini.SetInteger("Keyboard 2", "A", -1);
+    ini.SetInteger("Keyboard 2", "B", -1);
+    ini.SetInteger("Keyboard 2", "C", -1);
+    ini.SetInteger("Keyboard 2", "Start", -1);
+
+    ini.SetComment("Controller 2", "IC2Warning", "Not Yet Implemented");
+    ini.SetComment("Controller 2", "IC2Comment", "Controller Mappings for P2 (Based on: https://wiki.libsdl.org/SDL_GameControllerButton)");
+    ini.SetInteger("Controller 2", "Up", SDL_CONTROLLER_BUTTON_INVALID);
+    ini.SetInteger("Controller 2", "Down", SDL_CONTROLLER_BUTTON_INVALID);
+    ini.SetInteger("Controller 2", "Left", SDL_CONTROLLER_BUTTON_INVALID);
+    ini.SetInteger("Controller 2", "Right", SDL_CONTROLLER_BUTTON_INVALID);
+    ini.SetInteger("Controller 2", "A", SDL_CONTROLLER_BUTTON_INVALID);
+    ini.SetInteger("Controller 2", "B", SDL_CONTROLLER_BUTTON_INVALID);
+    ini.SetInteger("Controller 2", "C", SDL_CONTROLLER_BUTTON_INVALID);
+    ini.SetInteger("Controller 2", "Start", SDL_CONTROLLER_BUTTON_INVALID);
+
     ini.Write("settings.ini");
 }
 
@@ -181,21 +221,21 @@ void ReadUserdata()
 {
     char buffer[0x100];
     sprintf(buffer, "%suserdata.bin", gamePath);
-    FILE *userFile = fopen(buffer, "rb");
+    FileIO *userFile = fOpen(buffer, "rb");
     if (!userFile)
         return;
 
     int buf = 0;
     for (int a = 0; a < ACHIEVEMENT_MAX; ++a) {
-        fread(&buffer, 4, 1, userFile);
+        fRead(&buffer, 4, 1, userFile);
         achievements[a].status = buf;
     }
     for (int l = 0; l < LEADERBOARD_MAX; ++l) {
-        fread(&buffer, 4, 1, userFile);
+        fRead(&buffer, 4, 1, userFile);
         leaderboard[l].status = buf;
     }
 
-    fclose(userFile);
+    fClose(userFile);
 
     if (Engine.onlineActive) {
         // Load from online
@@ -206,16 +246,68 @@ void WriteUserdata()
 {
     char buffer[0x100];
     sprintf(buffer, "%suserdata.bin", gamePath);
-    FILE *userFile = fopen(buffer, "wb");
+    FileIO *userFile = fOpen(buffer, "wb");
     if (!userFile)
         return;
 
-    for (int a = 0; a < ACHIEVEMENT_MAX; ++a) fwrite(&achievements[a].status, 4, 1, userFile);
-    for (int l = 0; l < LEADERBOARD_MAX; ++l) fwrite(&leaderboard[l].status, 4, 1, userFile);
+    for (int a = 0; a < ACHIEVEMENT_MAX; ++a) fWrite(&achievements[a].status, 4, 1, userFile);
+    for (int l = 0; l < LEADERBOARD_MAX; ++l) fWrite(&leaderboard[l].status, 4, 1, userFile);
 
-    fclose(userFile);
+    fClose(userFile);
 
     if (Engine.onlineActive) {
         // Load from online
+    }
+}
+
+void AwardAchievement(int id, int status)
+{
+    if (id < 0 || id >= ACHIEVEMENT_MAX)
+        return;
+
+    achievements[id].status = status;
+
+    if (Engine.onlineActive) {
+        // Set Achievement online
+    }
+    WriteUserdata();
+}
+
+void SetAchievement(int achievementID, int achievementDone)
+{
+    if (!Engine.trialMode && !debugMode) {
+        AwardAchievement(achievementID, achievementDone);
+    }
+}
+void SetLeaderboard(int leaderboardID, int result)
+{
+    if (!Engine.trialMode && !debugMode) {
+        switch (leaderboardID) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+                leaderboard[leaderboardID].status = result;
+                WriteUserdata();
+                return;
+        }
     }
 }

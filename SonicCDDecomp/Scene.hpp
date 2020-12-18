@@ -237,9 +237,9 @@ inline void Copy16x16Tile(ushort dest, ushort src)
 
 void SetLayerDeformation(int deformID, int deformationA, int deformationB, int deformType, int deformOffset, int deformCount);
 
-void SetPlayerScreenPosition(Player *Player);
-void SetPlayerScreenPositionCDStyle(Player *Player);
-void SetPlayerHLockedScreenPosition(Player *Player);
-void SetPlayerLockedScreenPosition(Player *Player);
+void SetPlayerScreenPosition(Player *player);
+void SetPlayerScreenPositionCDStyle(Player *player);
+void SetPlayerHLockedScreenPosition(Player *player);
+void SetPlayerLockedScreenPosition(Player *player);
 
 #endif // !SCENE_H

@@ -21,8 +21,8 @@ bool videoSkipped = false;
 
 static long videoRead(THEORAPLAY_Io *io, void *buf, long buflen)
 {
-    FILE *file      = (FILE *)io->userdata;
-    const size_t br = fread(buf, 1, buflen * sizeof(byte), file);
+    FileIO *file    = (FileIO *)io->userdata;
+    const size_t br = fRead(buf, 1, buflen * sizeof(byte), file);
     if (br == 0)
         return -1;
     return (int)br;
@@ -30,8 +30,8 @@ static long videoRead(THEORAPLAY_Io *io, void *buf, long buflen)
 
 static void videoClose(THEORAPLAY_Io *io)
 {
-    FILE *file = (FILE *)io->userdata;
-    fclose(file);
+    FileIO *file = (FileIO *)io->userdata;
+    fClose(file);
 }
 
 void PlayVideoFile(char *filePath) { 
@@ -40,10 +40,10 @@ void PlayVideoFile(char *filePath) {
     StrAdd(filepath, filePath);
     StrAdd(filepath, ".ogv");
 
-    FILE *file = fopen(filepath, "rb");
+    FileIO *file = fOpen(filepath, "rb");
     if (file) {
 #if RSDK_DEBUG 
-        printf("Loaded File '%s'!\n", filepath);
+        printLog("Loaded File '%s'!", filepath);
 #endif
 
         callbacks.read     = videoRead;
@@ -53,7 +53,7 @@ void PlayVideoFile(char *filePath) {
 
         if (!videoDecoder) {
 #if RSDK_DEBUG
-            printf("Video Decoder Error!\n");
+            printLog("Video Decoder Error!");
 #endif
             return;
         }
@@ -65,7 +65,7 @@ void PlayVideoFile(char *filePath) {
         }
         if (!videoAudioData || !videoVidData) {
 #if RSDK_DEBUG
-            printf("Video or Audio Error!\n");
+            printLog("Video or Audio Error!");
 #endif
             return;
         }
@@ -104,7 +104,7 @@ void PlayVideoFile(char *filePath) {
     }
 #if RSDK_DEBUG
     else {
-        printf("Couldn't find file '%s'!\n", filepath);
+        printLog("Couldn't find file '%s'!", filepath);
     }
 #endif
     
@@ -256,7 +256,7 @@ void SetupVideoBuffer(int width, int height) {
 
 #if RSDK_DEBUG
     if (!Engine.videoBuffer) 
-        printf("Failed to create video buffer!\n");
+        printLog("Failed to create video buffer!");
 #endif
 
     Engine.videoFrameBuffer = new uint[width * height];

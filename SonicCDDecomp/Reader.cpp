@@ -18,8 +18,8 @@ byte eNybbleSwap;
 char encryptionStringA[] = { "4RaS9D7KaEbxcp2o5r6t" };
 char encryptionStringB[] = { "3tRaUxLmEaSn" };
 
-FILE *cFileHandle = nullptr;
-FILE *cFileHandleStream = nullptr;
+FileIO *cFileHandle = nullptr;
+FileIO *cFileHandleStream = nullptr;
 
 bool CheckRSDKFile(const char *filePath)
 {
@@ -29,11 +29,11 @@ bool CheckRSDKFile(const char *filePath)
     Engine.usingBytecode = false;
 
     // CopyFilePath(filename, &rsdkName);
-    cFileHandle = fopen(filePath, "rb");
+    cFileHandle = fOpen(filePath, "rb");
     if (cFileHandle) {
         Engine.usingDataFile = true;
         StrCopy(rsdkName, filePath);
-        fclose(cFileHandle);
+        fClose(cFileHandle);
         cFileHandle = NULL;
         if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
             Engine.usingBytecode = true;
@@ -73,22 +73,22 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     StrCopy(fileName, filePath);
 
     if (cFileHandle)
-        fclose(cFileHandle);
+        fClose(cFileHandle);
 
     cFileHandle = NULL;
 
     if (Engine.usingDataFile) {
-        cFileHandle = fopen(rsdkName, "rb");
-        fseek(cFileHandle, 0, SEEK_END);
-        fileSize       = (int)ftell(cFileHandle);
+        cFileHandle = fOpen(rsdkName, "rb");
+        fSeek(cFileHandle, 0, SEEK_END);
+        fileSize       = (int)fTell(cFileHandle);
         bufferPosition = 0;
         readSize       = 0;
         readPos        = 0;
         if (!ParseVirtualFileSystem(fileInfo)) {
-            fclose(cFileHandle);
+            fClose(cFileHandle);
             cFileHandle = NULL;
 #if RSDK_DEBUG
-            printf("Couldn't load file '%s'\n", filePath);
+            printLog("Couldn't load file '%s'", filePath);
 #endif
             return false;
         }
@@ -102,18 +102,18 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         fileInfo->bufferPosition    = bufferPosition;
     }
     else {
-        cFileHandle = fopen(fileInfo->fileName, "rb");
+        cFileHandle = fOpen(fileInfo->fileName, "rb");
         if (!cFileHandle) {
 #if RSDK_DEBUG
-            printf("Couldn't load file '%s'\n", filePath);
+            printLog("Couldn't load file '%s'", filePath);
 #endif
             return false;
         }
         virtualFileOffset = 0;
-        fseek(cFileHandle, 0, SEEK_END);
-        fileInfo->fileSize = (int)ftell(cFileHandle);
+        fSeek(cFileHandle, 0, SEEK_END);
+        fileInfo->fileSize = (int)fTell(cFileHandle);
         fileSize           = fileInfo->fileSize;
-        fseek(cFileHandle, 0, SEEK_SET);
+        fSeek(cFileHandle, 0, SEEK_SET);
         readPos = 0;
         fileInfo->readPos           = readPos;
         fileInfo->virtualFileOffset = 0;
@@ -127,7 +127,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     readSize       = 0;
 
 #if RSDK_DEBUG
-    printf("Loaded File '%s'\n", filePath);
+    printLog("Loaded File '%s'", filePath);
 #endif
 
     return true;
@@ -162,7 +162,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
     filename[j]            = 0;
     fullFilename[fNamePos] = 0;
 
-    fseek(cFileHandle, 0, SEEK_SET);
+    fSeek(cFileHandle, 0, SEEK_SET);
     Engine.usingDataFile = false;
     bufferPosition       = 0;
     readSize             = 0;
@@ -243,7 +243,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
         return false;
     }
     else {
-        fseek(cFileHandle, fileOffset + headerSize, SEEK_SET);
+        fSeek(cFileHandle, fileOffset + headerSize, SEEK_SET);
         bufferPosition    = 0;
         readSize          = 0;
         readPos           = 0;
@@ -292,7 +292,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
                 Engine.usingDataFile = true;
                 return false;
             }
-            fseek(cFileHandle, virtualFileOffset, SEEK_SET);
+            fSeek(cFileHandle, virtualFileOffset, SEEK_SET);
             bufferPosition = 0;
             readSize       = 0;
             readPos        = virtualFileOffset;
@@ -366,13 +366,13 @@ void FileRead(void *dest, int size)
 void SetFileInfo(FileInfo *fileInfo)
 {
     if (Engine.usingDataFile) {
-        cFileHandle       = fopen(rsdkName, "rb");
+        cFileHandle       = fOpen(rsdkName, "rb");
         virtualFileOffset = fileInfo->virtualFileOffset;
         vFileSize         = fileInfo->fileSize;
-        fseek(cFileHandle, 0, SEEK_END);
-        fileSize = (int)ftell(cFileHandle);
+        fSeek(cFileHandle, 0, SEEK_END);
+        fileSize = (int)fTell(cFileHandle);
         readPos  = fileInfo->readPos;
-        fseek(cFileHandle, readPos, SEEK_SET);
+        fSeek(cFileHandle, readPos, SEEK_SET);
         FillFileBuffer();
         bufferPosition = fileInfo->bufferPosition;
         eStringPosA    = fileInfo->eStringPosA;
@@ -382,11 +382,11 @@ void SetFileInfo(FileInfo *fileInfo)
     }
     else {
         StrCopy(fileName, fileInfo->fileName);
-        cFileHandle       = fopen(fileInfo->fileName, "rb");
+        cFileHandle       = fOpen(fileInfo->fileName, "rb");
         virtualFileOffset = 0;
         fileSize          = fileInfo->fileSize;
         readPos           = fileInfo->readPos;
-        fseek(cFileHandle, readPos, SEEK_SET);
+        fSeek(cFileHandle, readPos, SEEK_SET);
         FillFileBuffer();
         bufferPosition = fileInfo->bufferPosition;
         eStringPosA    = 0;
@@ -445,7 +445,7 @@ void SetFilePosition(int newPos)
     else {
         readPos = newPos;
     }
-    fseek(cFileHandle, readPos, SEEK_SET);
+    fSeek(cFileHandle, readPos, SEEK_SET);
     FillFileBuffer();
 }
 
@@ -471,7 +471,7 @@ size_t FileRead2(FileInfo *info, void *dest, int size)
             else
                 rSize = info->fileSize - rPos;
 
-            size_t result = fread(data, 1u, rSize, cFileHandleStream);
+            size_t result = fRead(data, 1u, rSize, cFileHandleStream);
             info->readPos += rSize;
             info->bufferPosition = 0;
 
@@ -517,7 +517,7 @@ size_t FileRead2(FileInfo *info, void *dest, int size)
             else
                 rSize = info->fileSize - rPos;
 
-            size_t result = fread(data, 1u, rSize, cFileHandleStream);
+            size_t result = fRead(data, 1u, rSize, cFileHandleStream);
             info->readPos += rSize;
             info->bufferPosition = 0;
             return result;
@@ -575,5 +575,5 @@ void SetFilePosition2(FileInfo *info, int newPos)
     else {
         info->readPos = newPos;
     }
-    fseek(cFileHandleStream, info->readPos, SEEK_SET);
+    fSeek(cFileHandleStream, info->readPos, SEEK_SET);
 }

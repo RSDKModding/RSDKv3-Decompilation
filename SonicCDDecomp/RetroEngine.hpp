@@ -131,8 +131,6 @@ enum RetroBytecodeFormat {
 #include "Userdata.hpp"
 #include "Debug.hpp"
 
-#define GLOBALVAR_COUNT (0x100)
-
 class RetroEngine
 {
 public:
@@ -169,13 +167,6 @@ public:
     void Run();
 
     void LoadGameConfig(const char *Filepath);
-
-    void AwardAchievement(int id, int status);
-
-    void SetAchievement(int achievementID, int achievementDone);
-    void SetLeaderboard(int leaderboardID, int result);
-    void LoadAchievementsMenu();
-    void LoadLeaderboardsMenu();
 
     int callbackMessage = 0;
     int prevMessage     = 0;
@@ -215,8 +206,4 @@ public:
 };
 
 extern RetroEngine Engine;
-
-extern int GlobalVariablesCount;
-extern int GlobalVariables[GLOBALVAR_COUNT];
-extern char GlobalVariableNames[GLOBALVAR_COUNT][0x20];
 #endif // !RETROENGINE_H
