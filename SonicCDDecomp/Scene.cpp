@@ -286,7 +286,7 @@ void LoadStageFiles(void)
             for (int i = 96; i < 128; ++i) {
                 byte clr[3];
                 FileRead(&clr, 3);
-                SetPaletteEntry(i, clr[0], clr[1], clr[2]);
+                SetPaletteEntry(-1, i, clr[0], clr[1], clr[2]);
             }
 
             int stageObjectCount = 0;
@@ -819,7 +819,7 @@ void LoadStageGIFFile(int stageID)
         for (int c = 0; c < 0x80; ++c) FileRead(clr, 3);
         for (int c = 0x80; c < 0x100; ++c) {
             FileRead(clr, 3);
-            SetPaletteEntry(c, clr[0], clr[1], clr[2]);
+            SetPaletteEntry(-1, c, clr[0], clr[1], clr[2]);
         }
 
         FileRead(&fileBuffer, 1);
@@ -868,7 +868,7 @@ void LoadStageGFXFile(int stageID)
         for (int i = 0; i < 0x80; ++i) FileRead(&clr, 3); // Palette
         for (int c = 0x80; c < 0x100; ++c) {
             FileRead(clr, 3);
-            SetPaletteEntry(c, clr[0], clr[1], clr[2]);
+            SetPaletteEntry(-1, c, clr[0], clr[1], clr[2]);
         }
 
         byte *gfxData = tilesetGFXData;

@@ -786,12 +786,16 @@ void PlaySfx(int sfx, bool loop)
 }
 void SetSfxAttributes(int sfx, int loopCount, char pan)
 {
-    for (int i = 0; i < 4; ++i) {
+    int sfxChannel = -1;
+    for (int i = 0; i < CHANNEL_COUNT; ++i) {
         if (sfxChannels[i].sfxID == sfx) {
             nextChannelPos = i;
+            sfxChannel     = i;
             break;
         }
     }
+    if (sfxChannel == -1)
+        return; // wasn't found
 
     ChannelInfo *sfxInfo  = &sfxChannels[nextChannelPos++];
     if (sfxInfo->sfxID != -1)

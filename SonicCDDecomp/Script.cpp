@@ -1907,7 +1907,7 @@ void ClearScriptData()
         scriptInfo->subDraw.scriptCodePtr              = SCRIPTDATA_COUNT - 1;
         scriptInfo->subDraw.jumpTablePtr               = JUMPTABLE_COUNT - 1;
         scriptInfo->subStartup.scriptCodePtr           = SCRIPTDATA_COUNT - 1;
-        scriptInfo->subPlayerInteraction.jumpTablePtr  = JUMPTABLE_COUNT - 1;
+        scriptInfo->subStartup.jumpTablePtr            = JUMPTABLE_COUNT - 1;
         scriptInfo->frameListOffset                    = 0;
         scriptInfo->spriteSheetID                      = 0;
         scriptInfo->animFile                           = GetDefaultAnimationRef();

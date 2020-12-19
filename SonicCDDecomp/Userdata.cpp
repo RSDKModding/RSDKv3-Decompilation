@@ -15,7 +15,14 @@ void InitUserdata()
     sprintf(gamePath, "");
 
     char buffer[0x100];
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(buffer, "%s/settings.ini", getResourcesPath());
+    else
+        sprintf(buffer, "%ssettings.ini", gamePath);
+#else
     sprintf(buffer, "%ssettings.ini", gamePath);
+#endif
     FileIO *file = fOpen(buffer, "rb");
     IniParser ini;
     if (!file) {
@@ -119,7 +126,14 @@ void InitUserdata()
     }
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
+#if RETRO_PLATFORM == RETRO_OSX
+    if (!usingCWD)
+        sprintf(buffer, "%s/userdata.bin", getResourcesPath());
+    else
+        sprintf(buffer, "%suserdata.bin", gamePath);
+#else
     sprintf(buffer, "%suserdata.bin", gamePath);
+#endif
     file = fOpen(buffer, "rb");
     if (file) {
         fClose(file);
@@ -279,6 +293,11 @@ void AwardAchievement(int id, int status)
     if (id < 0 || id >= ACHIEVEMENT_MAX)
         return;
 
+#if RSDK_DEBUG
+    if (status == 100)
+        printLog("Achieved achievement: %s (%d)!", achievements[id].name, status);
+#endif
+
     achievements[id].status = status;
 
     if (Engine.onlineActive) {
@@ -296,6 +315,9 @@ void SetAchievement(int achievementID, int achievementDone)
 void SetLeaderboard(int leaderboardID, int result)
 {
     if (!Engine.trialMode && !debugMode) {
+#if RSDK_DEBUG
+        printLog("Set leaderboard (%d) value to %d", leaderboard, result);
+#endif
         switch (leaderboardID) {
             case 0:
             case 1:

@@ -15,7 +15,7 @@ IniParser::IniParser(const char *filename)
 
     char pathBuffer[0x80];
 
-    #if RETRO_PLATFORM == RETRO_OSX
+#if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
         sprintf(pathBuffer, "%s/%s",getResourcesPath(), filename);
     else

@@ -35,13 +35,13 @@ void LoadPalette(const char *filePath, int paletteID, int startPaletteIndex, int
         if (paletteID) {
             for (int i = startIndex; i < endIndex; ++i) {
                 FileRead(&colour, 3);
-                SetPaletteEntry(startPaletteIndex++, colour[0], colour[1], colour[2]);
+                SetPaletteEntry(paletteID, startPaletteIndex++, colour[0], colour[1], colour[2]);
             }
         }
         else {
             for (int i = startIndex; i < endIndex; ++i) {
                 FileRead(&colour, 3);
-                SetPaletteEntry(startPaletteIndex++, colour[0], colour[1], colour[2]);
+                SetPaletteEntry(-1, startPaletteIndex++, colour[0], colour[1], colour[2]);
             }
         }
         CloseFile();

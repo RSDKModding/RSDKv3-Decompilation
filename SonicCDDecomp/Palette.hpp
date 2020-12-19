@@ -37,12 +37,20 @@ inline void SetActivePalette(byte newActivePal, int startLine, int endLine)
     activePalette32 = fullPalette32[gfxLineBuffer[0]];
 }
 
-inline void SetPaletteEntry(byte paletteIndex, byte r, byte g, byte b)
+inline void SetPaletteEntry(byte paletteIndex, byte index, byte r, byte g, byte b)
 {
-    activePalette[paletteIndex]     = ((int)b >> 3) | 32 * ((int)g >> 2) | ((ushort)((int)r >> 3) << 11);
-    activePalette32[paletteIndex].r = r;
-    activePalette32[paletteIndex].g = g;
-    activePalette32[paletteIndex].b = b;
+    if (paletteIndex != 0xFF) {
+        fullPalette[paletteIndex][index]     = ((int)b >> 3) | 32 * ((int)g >> 2) | ((ushort)((int)r >> 3) << 11);
+        fullPalette32[paletteIndex][index].r = r;
+        fullPalette32[paletteIndex][index].g = g;
+        fullPalette32[paletteIndex][index].b = b;
+    }
+    else {
+        activePalette[index]     = ((int)b >> 3) | 32 * ((int)g >> 2) | ((ushort)((int)r >> 3) << 11);
+        activePalette32[index].r = r;
+        activePalette32[index].g = g;
+        activePalette32[index].b = b;
+    }
 }
 
 inline void CopyPalette(byte src, byte dest)
