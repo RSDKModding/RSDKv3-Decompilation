@@ -25,8 +25,10 @@ even if your platform isn't supported by the official releases, buy it for the a
 
 # Additional Tweaks
 * there is now a settings.ini file that the game uses to load all settings, similar to Sonic Mania
-* dev menu can now be accessed from anywhere by pressing the escape key
-* the f12 pause, f11 step over & fast forward debug features from sonic mania have all be ported
+* dev menu can now be accessed from anywhere by pressing the escape key if enabled in the config
+* the f12 pause, f11 step over & fast forward debug features from sonic mania have all be ported and are enabled if devMenu is enabled in the config
+* if devMenu is enabled in the config, pressing f10 will activate a palette overlay that shows the game's 8 internal palettes in real time
+* if useSteamDir is set in the config, and the user is on windows, the game will try to load savedata from steams userdata directory (where the steam ver saves to)
 
 # How to build:
 ## Windows:
