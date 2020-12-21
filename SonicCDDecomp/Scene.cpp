@@ -228,9 +228,7 @@ void LoadStageFiles(void)
     char strBuffer[0x100];
 
     if (!CheckCurrentStageFolder(stageListPosition)) {
-#if RSDK_DEBUG
         printLog("Loading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
-#endif
         ReleaseStageSfx();
         LoadPalette("MasterPalette.act", 0, 0, 0, 256);
         ClearScriptData();
@@ -345,11 +343,9 @@ void LoadStageFiles(void)
         LoadStageCollisions();
         LoadStageBackground();
     }
-#if RSDK_DEBUG
     else {
         printLog("Reloading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
     }
-#endif
     LoadStageChunks();
     for (int i = 0; i < TRACK_COUNT; ++i) SetMusicTrack((char *)"", i, 0, 0);
     for (int i = 0; i < ENTITY_COUNT; ++i) {

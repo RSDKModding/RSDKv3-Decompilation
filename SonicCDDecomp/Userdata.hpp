@@ -37,16 +37,23 @@ inline bool ReadSaveRAMData()
     char buffer[0x100];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
-        sprintf(buffer, "%s/savedata.sav",getResourcesPath());
+        sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
     else
-        sprintf(buffer, "%ssavedata.sav", gamePath);
+        sprintf(buffer, "%sSdata.bin", gamePath);
 #else
-        sprintf(buffer, "%ssavedata.sav", gamePath);
+        sprintf(buffer, "%sSdata.bin", gamePath);
 #endif
+
+    // Temp(?)
+    saveRAM[32] = audioEnabled;
+    saveRAM[33] = bgmVolume;
+    saveRAM[34] = sfxVolume;
+
     FileIO *saveFile = fOpen(buffer, "rb");
     if (!saveFile)
         return false;
     fRead(saveRAM, 4u, SAVEDATA_MAX, saveFile);
+
     fClose(saveFile);
     return true;
 }
@@ -56,16 +63,22 @@ inline bool WriteSaveRAMData()
     char buffer[0x100];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
-        sprintf(buffer, "%s/savedata.sav",getResourcesPath());
+        sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
     else
-        sprintf(buffer, "%ssavedata.sav", gamePath);
+        sprintf(buffer, "%sSdata.bin", gamePath);
 #else
-    sprintf(buffer, "%ssavedata.sav", gamePath);
+    sprintf(buffer, "%sSdata.bin", gamePath);
 #endif
     
     FileIO *saveFile = fOpen(buffer, "wb");
     if (!saveFile)
         return false;
+
+    //Temp
+    saveRAM[32] = audioEnabled;
+    saveRAM[33] = bgmVolume;
+    saveRAM[34] = sfxVolume;
+
     fWrite(saveRAM, 4u, SAVEDATA_MAX, saveFile);
     fClose(saveFile);
     return true;

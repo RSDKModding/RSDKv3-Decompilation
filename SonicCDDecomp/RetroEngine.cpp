@@ -1,6 +1,7 @@
 #include "RetroEngine.hpp"
 
 bool usingCWD = false;
+bool engineDebugMode = false;
 
 RetroEngine Engine = RetroEngine();
 
@@ -95,20 +96,36 @@ bool processEvents()
                             SDL_RestoreWindow(Engine.window);
                         }
                         break;
+                    case SDLK_F10:
+                        if (Engine.devMenu)
+                            Engine.showPaletteOverlay ^= 1;
+                        break;
 #if RETRO_PLATFORM == RETRO_OSX
-                    case SDLK_TAB: Engine.gameSpeed = Engine.fastForwardSpeed; break;
+                    case SDLK_TAB:
+                        if (Engine.devMenu)
+                            Engine.gameSpeed = Engine.fastForwardSpeed;
+                        break;
                     case SDLK_F6:
                         if (Engine.masterPaused)
                             Engine.frameStep = true;
                         break;
-                    case SDLK_F7: Engine.masterPaused ^= 1; break;
+                    case SDLK_F7:
+                        if (Engine.devMenu)
+                            Engine.masterPaused ^= 1;
+                        break;
 #else
-                    case SDLK_BACKSPACE: Engine.gameSpeed = Engine.fastForwardSpeed; break;
+                    case SDLK_BACKSPACE:
+                        if (Engine.devMenu)
+                            Engine.gameSpeed = Engine.fastForwardSpeed;
+                        break;
                     case SDLK_F11:
                         if (Engine.masterPaused)
                             Engine.frameStep = true;
                         break;
-                    case SDLK_F12: Engine.masterPaused ^= 1; break;
+                    case SDLK_F12:
+                        if (Engine.devMenu)
+                            Engine.masterPaused ^= 1;
+                        break;
 #endif
                 }
                 break;
@@ -332,9 +349,7 @@ void RetroEngine::Callback(int callbackID)
 {
     switch (callbackID) {
         default:
-#if RSDK_DEBUG
             printLog("Callback: Unknown (%d)", callbackID);
-#endif
             break;
         case CALLBACK_DISPLAYLOGOS: // Display Logos, Called immediately
             /*if (ActiveStageList) {
@@ -344,9 +359,7 @@ void RetroEngine::Callback(int callbackID)
             else {
                 callbackMessage = 10;
             }*/
-#if RSDK_DEBUG
             printLog("Callback: Display Logos");
-#endif
             break;
         case CALLBACK_PRESS_START: // Called when "Press Start" is activated, PC = NONE
             /*if (ActiveStageList) {
@@ -356,45 +369,29 @@ void RetroEngine::Callback(int callbackID)
             else {
                 callbackMessage = 10;
             }*/
-#if RSDK_DEBUG
             printLog("Callback: Press Start");
-#endif
             break;
         case CALLBACK_TIMEATTACK_NOTIFY_ENTER:
-#if RSDK_DEBUG
             printLog("Callback: Time Attack Notify Enter");
-#endif
             break;
         case CALLBACK_TIMEATTACK_NOTIFY_EXIT:
-#if RSDK_DEBUG
             printLog("Callback: Time Attack Notify Exit");
-#endif
             break;
         case CALLBACK_FINISHGAME_NOTIFY: // PC = NONE
-#if RSDK_DEBUG
             printLog("Callback: Finish Game Notify");
-#endif
             break;
         case CALLBACK_RETURNSTORE_SELECTED: gameMode = ENGINE_EXITGAME;
-#if RSDK_DEBUG
             printLog("Callback: Return To Store Selected");
-#endif
             break;
         case CALLBACK_RESTART_SELECTED:
-#if RSDK_DEBUG
             printLog("Callback: Restart Selected");
-#endif
             break;
         case CALLBACK_EXIT_SELECTED: gameMode = ENGINE_EXITGAME;
-#if RSDK_DEBUG
             printLog("Callback: Exit Selected");
-#endif
             break;
         case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
             gameMode = ENGINE_EXITGAME;
-#if RSDK_DEBUG
             printLog("Callback: Buy Full Game Selected");
-#endif
             break;
         case CALLBACK_TERMS_SELECTED: // PC = How to play, Mobile = Full Game Only Screen
             if (bytecodeMode == BYTECODE_PC) {
@@ -406,24 +403,16 @@ void RetroEngine::Callback(int callbackID)
                     }
                 }
             }
-#if RSDK_DEBUG
             printLog("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen");
-#endif
             break;
         case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
-#if RSDK_DEBUG
             printLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
-#endif
             break;
         case CALLBACK_TRIAL_ENDED:
-#if RSDK_DEBUG
             printLog("Callback: PC = ???, Mobile = Trial Ended Screen");
-#endif
             break;                       // PC = ???, Mobile = Trial Ended Screen
         case CALLBACK_SETTINGS_SELECTED: // PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)
-#if RSDK_DEBUG
             printLog("Callback: PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)");
-#endif
             break;
         case CALLBACK_PAUSE_REQUESTED: // PC/Mobile = Pause Requested (Mobile uses in-game menu, PC does as well if devMenu is active)
             // I know this is kinda lazy and a copout, buuuuuuut the in-game menu is so much better than the janky PC one
@@ -445,14 +434,10 @@ void RetroEngine::Callback(int callbackID)
                     }
                 }
             }
-#if RSDK_DEBUG
             printLog("Callback: Pause Menu Requested");
-#endif
             break;
         case CALLBACK_FULL_VERSION_ONLY:
-#if RSDK_DEBUG
             printLog("Callback: Full Version Only Notify");
-#endif
             break;                   // PC = ???, Mobile = Full Game Only Screen
         case CALLBACK_STAFF_CREDITS: // PC = Staff Credits, Mobile = NONE
             if (bytecodeMode == BYTECODE_PC) {
@@ -464,14 +449,10 @@ void RetroEngine::Callback(int callbackID)
                     }
                 }
             }
-#if RSDK_DEBUG
             printLog("Callback: Staff Credits Requested");
-#endif
             break;
         case CALLBACK_16: //, PC = ??? (only when online), Mobile = NONE
-#if RSDK_DEBUG
             printLog("Callback: Unknown (%d)", callbackID);
-#endif
             break;
     }
 }

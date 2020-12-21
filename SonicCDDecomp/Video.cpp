@@ -42,9 +42,7 @@ void PlayVideoFile(char *filePath) {
 
     FileIO *file = fOpen(filepath, "rb");
     if (file) {
-#if RSDK_DEBUG 
         printLog("Loaded File '%s'!", filepath);
-#endif
 
         callbacks.read     = videoRead;
         callbacks.close    = videoClose;
@@ -52,9 +50,7 @@ void PlayVideoFile(char *filePath) {
         videoDecoder       = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA);
 
         if (!videoDecoder) {
-#if RSDK_DEBUG
             printLog("Video Decoder Error!");
-#endif
             return;
         }
         while (!videoAudioData || !videoVidData) {
@@ -64,9 +60,7 @@ void PlayVideoFile(char *filePath) {
                 videoVidData = THEORAPLAY_getVideo(videoDecoder);
         }
         if (!videoAudioData || !videoVidData) {
-#if RSDK_DEBUG
             printLog("Video or Audio Error!");
-#endif
             return;
         }
 
@@ -102,11 +96,9 @@ void PlayVideoFile(char *filePath) {
 
         Engine.gameMode = ENGINE_VIDEOWAIT;
     }
-#if RSDK_DEBUG
     else {
         printLog("Couldn't find file '%s'!", filepath);
     }
-#endif
     
 }
 
@@ -254,10 +246,8 @@ int ProcessVideo()
 void SetupVideoBuffer(int width, int height) {
     Engine.videoBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 
-#if RSDK_DEBUG
     if (!Engine.videoBuffer) 
         printLog("Failed to create video buffer!");
-#endif
 
     Engine.videoFrameBuffer = new uint[width * height];
 }

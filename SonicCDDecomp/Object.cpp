@@ -11,6 +11,19 @@ int OBJECT_BORDER_X2       = 0;
 const int OBJECT_BORDER_Y1 = 0x100;
 const int OBJECT_BORDER_Y2 = SCREEN_YSIZE + 0x100;
 
+void SetObjectTypeName(const char *objectName, int objectID)
+{
+    int objNameID  = 0;
+    int typeNameID = 0;
+    while (objectName[objNameID]) {
+        if (objectName[objNameID] != ' ')
+            typeNames[objectID][typeNameID++] = objectName[objNameID];
+        ++objNameID;
+    }
+    typeNames[objectID][typeNameID] = 0;
+    printLog("Set Object (%d) name to: %s", objectID, objectName);
+}
+
 void ProcessStartupObjects()
 {
     scriptFrameCount           = 0;

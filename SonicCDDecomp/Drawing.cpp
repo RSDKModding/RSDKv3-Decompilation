@@ -34,17 +34,13 @@ int InitRenderDevice()
     Engine.renderer = SDL_CreateRenderer(Engine.window, -1, SDL_RENDERER_ACCELERATED);
 
     if (!Engine.window) {
-#if RSDK_DEBUG
         printLog("ERROR: failed to create window!");
-#endif
         Engine.gameMode = ENGINE_EXITGAME;
         return 0;
     }
 
     if (!Engine.renderer) {
-#if RSDK_DEBUG
         printLog("ERROR: failed to create renderer!");
-#endif
         Engine.gameMode = ENGINE_EXITGAME;
         return 0;
     }
@@ -54,12 +50,10 @@ int InitRenderDevice()
 
     Engine.screenBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE, SCREEN_YSIZE);
 
-#if RSDK_DEBUG
     if (!Engine.screenBuffer) {
         printLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
         return 0;
     }
-#endif
 
     if (Engine.fullScreen) {
         SDL_RestoreWindow(Engine.window);
@@ -241,6 +235,18 @@ void DrawStageGFX(void)
             case LAYER_3DFLOOR: Draw3DFloorLayer(3); break;
             case LAYER_3DSKY: Draw3DSkyLayer(3); break;
             default: break;
+        }
+    }
+
+    if (Engine.showPaletteOverlay) {
+        for (int p = 0; p < PALETTE_COUNT; ++p) {
+            int x = (SCREEN_XSIZE - (0xF << 3));
+            int y = (SCREEN_YSIZE - (0xF << 2));
+            for (int c = 0; c < PALETTE_SIZE; ++c) {
+                DrawRectangle(x + ((c & 0xF) << 1) + ((p % (PALETTE_COUNT / 2)) * (2 * 16)),
+                              y + ((c >> 4) << 1) + ((p / (PALETTE_COUNT / 2)) * (2 * 16)), 2, 2, fullPalette32[p][c].r, fullPalette32[p][c].g,
+                              fullPalette32[p][c].b, 0xFF);
+            }
         }
     }
 

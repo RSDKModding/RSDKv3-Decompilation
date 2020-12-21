@@ -50,9 +50,7 @@ int InitAudioPlayback()
         SDL_PauseAudio(0);
     }
     else {
-#if RSDK_DEBUG
         printLog("Unable to open audio device: %s", SDL_GetError());
-#endif
         return false;
     }
     #endif
@@ -589,9 +587,7 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
             }
         } break;
         default:
-#if RSDK_DEBUG
             printLog("Unknown audio format: %d", format);
-#endif
             return;
     }
 }
@@ -689,9 +685,7 @@ bool PlayMusic(int track)
         musInfo.stream = SDL_NewAudioStream(musInfo.spec.format, musInfo.spec.channels, musInfo.spec.freq, audioDeviceFormat.format,
                                       audioDeviceFormat.channels, audioDeviceFormat.freq);
         if (!musInfo.stream) {
-#if RSDK_DEBUG
             printLog("Failed to create stream: %s", SDL_GetError());
-#endif
         }
 
         musInfo.buffer      = new byte[AUDIO_BUFFERSIZE];
@@ -720,9 +714,7 @@ void LoadSfx(char *filePath, byte sfxID) {
 
         SDL_RWops *src = SDL_RWFromMem(sfx, info.fileSize);
         if (src == NULL) {
-#if RSDK_DEBUG
             printLog("Unable to open sfx: %s", info.fileName);
-#endif
         }
         else {
             SDL_AudioSpec wav_spec;
@@ -733,9 +725,7 @@ void LoadSfx(char *filePath, byte sfxID) {
             SDL_RWclose(src);
             delete[] sfx;
             if (wav == NULL) {
-#if RSDK_DEBUG
                 printLog("Unable to read sfx: %s", info.fileName);
-#endif
             }
             else {
                 SDL_AudioCVT convert;
@@ -788,7 +778,7 @@ void SetSfxAttributes(int sfx, int loopCount, char pan)
 {
     int sfxChannel = -1;
     for (int i = 0; i < CHANNEL_COUNT; ++i) {
-        if (sfxChannels[i].sfxID == sfx) {
+        if (sfxChannels[i].sfxID == sfx || sfxChannels[i].sfxID == -1) {
             nextChannelPos = i;
             sfxChannel     = i;
             break;

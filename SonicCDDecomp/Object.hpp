@@ -54,16 +54,6 @@ void ProcessStartupObjects();
 void ProcessObjects();
 void ProcessPausedObjects();
 
-inline void SetObjectTypeName(char *objectName, int objectID)
-{
-    int objNameID  = 0;
-    int typeNameID = 0;
-    while (objectName[objNameID]) {
-        if (objectName[objNameID] != ' ')
-            typeNames[objectID][typeNameID++] = objectName[objNameID];
-        ++objNameID;
-    }
-    typeNames[objectID][typeNameID] = 0;
-}
+void SetObjectTypeName(const char *objectName, int objectID);
 
 #endif // !OBJECT_H

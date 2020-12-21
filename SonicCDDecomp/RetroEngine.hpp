@@ -19,8 +19,6 @@ typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long long ulong;
 
-#define RSDK_DEBUG (1)
-
 // Platforms
 #define RETRO_WIN      (0)
 #define RETRO_OSX      (1)
@@ -111,6 +109,7 @@ enum RetroBytecodeFormat {
 #endif
 
 extern bool usingCWD;
+extern bool engineDebugMode;
 
 //Utils
 #include "Ini.hpp"
@@ -157,6 +156,7 @@ public:
     int frameSkipSetting = 0;
     int frameSkipTimer   = 0;
 
+    bool useSteamDir = true;
     
     // Ported from RSDKv5
     bool devMenu = false;
@@ -166,6 +166,8 @@ public:
     int fastForwardSpeed = 8;
     bool masterPaused    = false;
     bool frameStep       = false;
+
+    bool showPaletteOverlay = false;
 
     void Init();
     void Run();

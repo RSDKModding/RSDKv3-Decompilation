@@ -87,9 +87,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         if (!ParseVirtualFileSystem(fileInfo)) {
             fClose(cFileHandle);
             cFileHandle = NULL;
-#if RSDK_DEBUG
             printLog("Couldn't load file '%s'", filePath);
-#endif
             return false;
         }
         fileInfo->readPos           = readPos;
@@ -104,9 +102,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     else {
         cFileHandle = fOpen(fileInfo->fileName, "rb");
         if (!cFileHandle) {
-#if RSDK_DEBUG
             printLog("Couldn't load file '%s'", filePath);
-#endif
             return false;
         }
         virtualFileOffset = 0;
@@ -126,9 +122,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     bufferPosition = 0;
     readSize       = 0;
 
-#if RSDK_DEBUG
     printLog("Loaded File '%s'", filePath);
-#endif
 
     return true;
 }
