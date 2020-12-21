@@ -51,11 +51,17 @@ if you've cloned this repo and ported it to a platform not on the list or made s
 ### Q: is it just me or is the titlecard text slightly offset when using a PC datafile?
 ### A: its not just you, but unfortunately its an error with the scripts, so if you wanna go into TitleCards/R[X]\_TitleCard.txt and fix it be my guest
 
+### Q: the screen is tearing, how do I fix it
+### A: try turning on vsync, that worked for me (on mac)
+
 ### Q: I found a bug/I have a feature request!
 ### A: submit an issue in the issues tab and I'll fix/add (if possible) it as soon as I can
 
 ### Q: will you do a decompilation for sonic 1/sonic 2?
-### A: maybe. it took about 2-3 years of work to get this to the state it is, so doing one for sonic 1/sonic 2 would take a lot of time to do. But if I ever get a chance to then sure
+### A: maybe. it took about 2-3 years of on/off work to get this to the state it is, so doing one for sonic 1/sonic 2 would likely take a lot of time to do, considering so much less is known about S1&S2/RSDKvB compared to CD/RSDKv2
+
+### Q: will you do a decompilation for sonic Mania?
+### A: absolutely not. mania is tons bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also all _600_+ objects work
 
 # Special Thanks
 * [Xeeynamo](https://github.com/Xeeynamo): For creating the RSDK Animation editor & an early version of the script unpacker, both of which got me into RSDK modding
