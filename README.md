@@ -60,7 +60,7 @@ if you've cloned this repo and ported it to a platform not on the list or made s
 ### A: submit an issue in the issues tab and I'll fix/add (if possible) it as soon as I can
 
 ### Q: will you do a decompilation for sonic 1/sonic 2?
-### A: maybe. it took about 2-3 years of on/off work to get this to the state it is, so doing one for sonic 1/sonic 2 would likely take a lot of time to do, considering so much less is known about S1&S2/RSDKvB compared to CD/RSDKv2
+### A: maybe. it took about 2-3 years of on/off work to get this to the state it is, so doing one for sonic 1/sonic 2 would likely take a lot of time to do, considering so much less is known about S1&S2/RSDKv4 compared to CD/RSDKv3
 
 ### Q: will you do a decompilation for sonic Mania?
 ### A: absolutely not. mania is tons bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also all _600_+ objects work
