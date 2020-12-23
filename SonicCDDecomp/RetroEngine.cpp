@@ -155,17 +155,19 @@ void RetroEngine::Init()
     InitUserdata();
 
     gameMode = ENGINE_EXITGAME;
-    LoadGameConfig("Data/Game/GameConfig.bin");
-    if (InitRenderDevice()) {
-        if (InitAudioPlayback()) {
-            InitFirstStage();
-            ClearScriptData();
-            initialised = true;
-            gameMode    = ENGINE_MAINGAME;
+    running  = false;
+    if (LoadGameConfig("Data/Game/GameConfig.bin")) {
+        if (InitRenderDevice()) {
+            if (InitAudioPlayback()) {
+                InitFirstStage();
+                ClearScriptData();
+                initialised = true;
+                running     = true;
+                gameMode    = ENGINE_MAINGAME;
+            }
         }
     }
 
-    running = true;
 }
 
 void RetroEngine::Run()
@@ -234,7 +236,7 @@ void RetroEngine::Run()
 #endif
 }
 
-void RetroEngine::LoadGameConfig(const char *filePath)
+bool RetroEngine::LoadGameConfig(const char *filePath)
 {
     FileInfo info;
     int fileBuffer  = 0;
@@ -342,7 +344,9 @@ void RetroEngine::LoadGameConfig(const char *filePath)
         }
 
         CloseFile();
+        return true;
     }
+    return false;
 }
 
 void RetroEngine::Callback(int callbackID)

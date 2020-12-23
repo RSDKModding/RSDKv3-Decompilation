@@ -172,7 +172,7 @@ public:
     void Init();
     void Run();
 
-    void LoadGameConfig(const char *Filepath);
+    bool LoadGameConfig(const char *Filepath);
 
     int callbackMessage = 0;
     int prevMessage     = 0;

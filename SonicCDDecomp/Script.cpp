@@ -80,7 +80,7 @@ const char variableNames[][0x20] = {
     "Object.iXPos",
     "Object.iYPos",
     "Object.State",
-    "Object.rotation",
+    "Object.Rotation",
     "Object.Scale",
     "Object.Priority",
     "Object.DrawOrder",
@@ -149,7 +149,7 @@ const char variableNames[][0x20] = {
     "Player.TileCollisions",
     "Player.ObjectInteraction",
     "Player.Visible",
-    "Player.rotation",
+    "Player.Rotation",
     "Player.Scale",
     "Player.Priority",
     "Player.DrawOrder",
@@ -1104,7 +1104,7 @@ void ConvertFunctionText(char *text)
             // Eg: TempValue0 = TypeName[PlayerObject]
             if (StrComp(funcName, "TypeName")) {
                 funcName[0] = 0;
-                AppendIntegerToSting(funcName, 0); // ???
+                AppendIntegerToSting(funcName, 0);
                 for (int o = 0; o < OBJECT_COUNT; ++o) {
                     if (StrComp(strBuffer, typeNames[o])) {
                         funcName[0] = 0;
@@ -3665,10 +3665,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
             case FUNC_LOADTEXTFILE: {
                 opcodeSize     = 0;
                 TextMenu *menu = &gameMenu[scriptEng.operands[0]];
-                if (scriptEng.operands[2])
-                    LoadTextFile(menu, scriptText, 1);
-                else
-                    LoadTextFile(menu, scriptText, 0);
+                LoadTextFile(menu, scriptText, scriptEng.operands[2] != 0);
                 break;
             }
             case FUNC_DRAWTEXT: {

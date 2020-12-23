@@ -23,7 +23,10 @@ void initDevMenu()
     SetupTextMenu(&gameMenu[0], 0);
     AddTextMenuEntry(&gameMenu[0], "RETRO ENGINE DEV MENU");
     AddTextMenuEntry(&gameMenu[0], " ");
-    AddTextMenuEntry(&gameMenu[0], "SONIC CD Version");
+    char version[0x80];
+    StrCopy(version, Engine.gameWindowText);
+    StrAdd(version, " Version");
+    AddTextMenuEntry(&gameMenu[0], version);
     AddTextMenuEntry(&gameMenu[0], Engine.gameVersion);
     AddTextMenuEntry(&gameMenu[0], " ");
     AddTextMenuEntry(&gameMenu[0], " ");
@@ -154,7 +157,10 @@ void processStageSelect()
                 SetupTextMenu(&gameMenu[0], 0);
                 AddTextMenuEntry(&gameMenu[0], "RETRO ENGINE DEV MENU");
                 AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], "SONIC CD Version");
+                char version[0x80];
+                StrCopy(version, Engine.gameWindowText);
+                StrAdd(version, " Version");
+                AddTextMenuEntry(&gameMenu[0], version);
                 AddTextMenuEntry(&gameMenu[0], Engine.gameVersion);
                 AddTextMenuEntry(&gameMenu[0], " ");
                 AddTextMenuEntry(&gameMenu[0], " ");
@@ -321,7 +327,10 @@ void processStageSelect()
                 SetupTextMenu(&gameMenu[0], 0);
                 AddTextMenuEntry(&gameMenu[0], "RETRO ENGINE DEV MENU");
                 AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], "SONIC CD Version");
+                char version[0x80];
+                StrCopy(version, Engine.gameWindowText);
+                StrAdd(version, " Version");
+                AddTextMenuEntry(&gameMenu[0], version);
                 AddTextMenuEntry(&gameMenu[0], Engine.gameVersion);
                 AddTextMenuEntry(&gameMenu[0], " ");
                 AddTextMenuEntry(&gameMenu[0], " ");
