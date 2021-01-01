@@ -96,6 +96,45 @@ bool processEvents()
                             SDL_RestoreWindow(Engine.window);
                         }
                         break;
+                    case SDLK_F1:
+                        if (Engine.devMenu) {
+                            activeStageList   = 0;
+                            stageListPosition = 0;
+                            stageMode         = STAGEMODE_LOAD;
+                            Engine.gameMode   = ENGINE_MAINGAME;
+                        }
+                        break;
+                    case SDLK_F2:
+                        if (Engine.devMenu) {
+                            stageListPosition--;
+                            if (stageListPosition < 0) {
+                                activeStageList--;
+
+                                if (activeStageList < 0) {
+                                    activeStageList = 3;
+                                }
+                                stageListPosition = stageListCount[activeStageList] - 1;
+                            }
+                            stageMode         = STAGEMODE_LOAD;
+                            Engine.gameMode   = ENGINE_MAINGAME;
+                        }
+                        break;
+                    case SDLK_F3:
+                        if (Engine.devMenu) {
+                            stageListPosition++;
+                            if (stageListPosition >= stageListCount[activeStageList]) {
+                                activeStageList++;
+
+                                stageListPosition = 0;
+
+                                if (activeStageList >= 4) {
+                                    activeStageList = 0;
+                                }
+                            }
+                            stageMode         = STAGEMODE_LOAD;
+                            Engine.gameMode   = ENGINE_MAINGAME;
+                        }
+                        break;
                     case SDLK_F10:
                         if (Engine.devMenu)
                             Engine.showPaletteOverlay ^= 1;

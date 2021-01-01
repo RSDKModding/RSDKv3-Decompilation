@@ -139,8 +139,8 @@ void InitUserdata()
     if (!file) {
         ini.SetBool("Dev", "DevMenu", Engine.devMenu = false);
         ini.SetBool("Dev", "EngineDebugMode", engineDebugMode = false);
-        ini.SetBool("Dev", "StartingCategory", Engine.startList = 0);
-        ini.SetBool("Dev", "StartingScene", Engine.startStage = 0);
+        ini.SetInteger("Dev", "StartingCategory", Engine.startList = 0);
+        ini.SetInteger("Dev", "StartingScene", Engine.startStage = 0);
         ini.SetBool("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
         ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir = true);
 
@@ -175,30 +175,6 @@ void InitUserdata()
         ini.SetInteger("Controller 1", "B", inputDevice[5].contMappings = SDL_CONTROLLER_BUTTON_B);
         ini.SetInteger("Controller 1", "C", inputDevice[6].contMappings = SDL_CONTROLLER_BUTTON_X);
         ini.SetInteger("Controller 1", "Start", inputDevice[7].contMappings = SDL_CONTROLLER_BUTTON_START);
-
-
-        // Not yet implemented
-        ini.SetComment("Keyboard 2", "IK2Warning", "Not Yet Implemented");
-        ini.SetComment("Keyboard 2", "IK2Comment", "Keyboard Mappings for P2 (Based on: https://wiki.libsdl.org/SDL_Scancode)");
-        ini.SetInteger("Keyboard 2", "Up", -1);
-        ini.SetInteger("Keyboard 2", "Down", -1);
-        ini.SetInteger("Keyboard 2", "Left", -1);
-        ini.SetInteger("Keyboard 2", "Right", -1);
-        ini.SetInteger("Keyboard 2", "A", -1);
-        ini.SetInteger("Keyboard 2", "B", -1);
-        ini.SetInteger("Keyboard 2", "C", -1);
-        ini.SetInteger("Keyboard 2", "Start", -1);
-
-        ini.SetComment("Controller 2", "IC2Warning", "Not Yet Implemented");
-        ini.SetComment("Controller 2", "IC2Comment", "Controller Mappings for P2 (Based on: https://wiki.libsdl.org/SDL_GameControllerButton)");
-        ini.SetInteger("Controller 2", "Up", SDL_CONTROLLER_BUTTON_INVALID);
-        ini.SetInteger("Controller 2", "Down", SDL_CONTROLLER_BUTTON_INVALID);
-        ini.SetInteger("Controller 2", "Left", SDL_CONTROLLER_BUTTON_INVALID);
-        ini.SetInteger("Controller 2", "Right", SDL_CONTROLLER_BUTTON_INVALID);
-        ini.SetInteger("Controller 2", "A", SDL_CONTROLLER_BUTTON_INVALID);
-        ini.SetInteger("Controller 2", "B", SDL_CONTROLLER_BUTTON_INVALID);
-        ini.SetInteger("Controller 2", "C", SDL_CONTROLLER_BUTTON_INVALID);
-        ini.SetInteger("Controller 2", "Start", SDL_CONTROLLER_BUTTON_INVALID);
 
         ini.Write("settings.ini");
     }
@@ -329,12 +305,12 @@ void writeSettings() {
     ini.SetComment("Dev", "DebugModeComment", "Enable this flag to activate features used for debugging the engine (may result in slightly slower game speed)");
     ini.SetBool("Dev", "EngineDebugMode", engineDebugMode);
     ini.SetComment("Dev", "SCComment", "Sets the starting category ID");
-    ini.SetBool("Dev", "StartingCategory", Engine.startList);
+    ini.SetInteger("Dev", "StartingCategory", Engine.startList);
     ini.SetComment("Dev", "SSComment", "Sets the starting scene ID");
-    ini.SetBool("Dev", "StartingScene", Engine.startStage);
+    ini.SetInteger("Dev", "StartingScene", Engine.startStage);
     ini.SetComment("Dev", "FFComment", "Determines how fast the game will be when fastforwarding is active");
     ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
-    ini.SetComment("Dev", "FFComment", "Determines if the game will try to use the steam directory for the game if it can locate it (windows only)");
+    ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it (windows only)");
     ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir);
 
     ini.SetComment("Game", "LangComment", "Sets the game language (0 = EN, 1 = FR, 2 = IT, 3 = DE, 4 = ES, 5 = JP)");
@@ -375,29 +351,6 @@ void writeSettings() {
     ini.SetInteger("Controller 1", "B", inputDevice[5].contMappings);
     ini.SetInteger("Controller 1", "C", inputDevice[6].contMappings);
     ini.SetInteger("Controller 1", "Start", inputDevice[7].contMappings);
-
-    //Not yet implemented
-    ini.SetComment("Keyboard 2", "IK2Warning", "Not Yet Implemented");
-    ini.SetComment("Keyboard 2", "IK2Comment", "Keyboard Mappings for P2 (Based on: https://wiki.libsdl.org/SDL_Scancode)");
-    ini.SetInteger("Keyboard 2", "Up", -1);
-    ini.SetInteger("Keyboard 2", "Down", -1);
-    ini.SetInteger("Keyboard 2", "Left", -1);
-    ini.SetInteger("Keyboard 2", "Right", -1);
-    ini.SetInteger("Keyboard 2", "A", -1);
-    ini.SetInteger("Keyboard 2", "B", -1);
-    ini.SetInteger("Keyboard 2", "C", -1);
-    ini.SetInteger("Keyboard 2", "Start", -1);
-
-    ini.SetComment("Controller 2", "IC2Warning", "Not Yet Implemented");
-    ini.SetComment("Controller 2", "IC2Comment", "Controller Mappings for P2 (Based on: https://wiki.libsdl.org/SDL_GameControllerButton)");
-    ini.SetInteger("Controller 2", "Up", SDL_CONTROLLER_BUTTON_INVALID);
-    ini.SetInteger("Controller 2", "Down", SDL_CONTROLLER_BUTTON_INVALID);
-    ini.SetInteger("Controller 2", "Left", SDL_CONTROLLER_BUTTON_INVALID);
-    ini.SetInteger("Controller 2", "Right", SDL_CONTROLLER_BUTTON_INVALID);
-    ini.SetInteger("Controller 2", "A", SDL_CONTROLLER_BUTTON_INVALID);
-    ini.SetInteger("Controller 2", "B", SDL_CONTROLLER_BUTTON_INVALID);
-    ini.SetInteger("Controller 2", "C", SDL_CONTROLLER_BUTTON_INVALID);
-    ini.SetInteger("Controller 2", "Start", SDL_CONTROLLER_BUTTON_INVALID);
 
     ini.Write("settings.ini");
 }

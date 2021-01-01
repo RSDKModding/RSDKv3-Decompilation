@@ -31,6 +31,24 @@ extern int saveRAM[SAVEDATA_MAX];
 extern Achievement achievements[ACHIEVEMENT_MAX];
 extern LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 
+inline int GetGlobalVariableByName(const char *name)
+{
+    for (int v = 0; v < globalVariablesCount; ++v) {
+        if (StrComp(name, globalVariableNames[v]))
+            return globalVariables[v];
+    }
+    return 0;
+}
+
+inline void SetGlobalVariableByName(const char *name, int value)
+{
+    for (int v = 0; v < globalVariablesCount; ++v) {
+        if (StrComp(name, globalVariableNames[v])) {
+            globalVariables[v] = value;
+            break;
+        }
+    }
+}
 
 inline bool ReadSaveRAMData()
 {

@@ -916,7 +916,7 @@ void ConvertIfWhileStatement(char *text)
     int strPos     = 0;
     int destStrPos = 0;
     if (FindStringToken(text, "if", 1)) {
-        if (!FindStringToken(text, "while", 1)) {
+        if (!FindStringToken(text, "while", 1)) { //if no "if" but there is "while"
             for (int i = 0; i < 6; ++i) {
                 destStrPos = FindStringToken(text, scriptEvaluationTokens[i + FUNC_MOD], 1);
                 if (destStrPos > -1) {
@@ -1445,7 +1445,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                 FileRead(&curChar, 1);
                 if (readMode == READMODE_STRING) {
                     if (curChar == '\t' || curChar == '\r' || curChar == '\n' || curChar == ';' || readMode >= READMODE_COMMENTLINE) {
-                        if ((curChar == '\r' && prevChar != '\n') || curChar == '\n') {
+                        if ((curChar == '\n' && prevChar != '\r') || (curChar == '\n' && prevChar == '\r')) {
                             readMode            = READMODE_ENDLINE;
                             scriptText[textPos] = 0;
                         }
@@ -1465,7 +1465,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                 }
                 else if (curChar == ' ' || curChar == '\t' || curChar == '\r' || curChar == '\n' || curChar == ';'
                          || readMode >= READMODE_COMMENTLINE) {
-                    if ((curChar == '\r' && prevChar != '\n') || curChar == '\n') {
+                    if ((curChar == '\n' && prevChar != '\r') || (curChar == '\n' && prevChar == '\r')) {
                         readMode            = READMODE_ENDLINE;
                         scriptText[textPos] = 0;
                     }
@@ -1523,16 +1523,15 @@ void ParseScriptFile(char *scriptName, int scriptID)
                     if (FindStringToken(scriptText, "function", 1)) {
                         if (FindStringToken(scriptText, "function", 1) == 1) {
                             char funcName[0x20];
-                            for (textPos = 8; scriptText[textPos]; ++textPos) funcName[textPos - 8] = scriptText[textPos];
-                            funcName[textPos - 8] = 0;
-                            parseMode             = -1;
-                            for (textPos = 0; textPos < scriptFunctionCount; ++textPos) {
-                                if (StrComp(scriptText, scriptFunctionNames[textPos]) == 1)
-                                    parseMode = textPos;
+                            for (textPos = 9; scriptText[textPos]; ++textPos) funcName[textPos - 9] = scriptText[textPos];
+                            funcName[textPos - 9] = 0;
+                            int funcID             = -1;
+                            for (int f = 0; f < scriptFunctionCount; ++f) {
+                                if (StrComp(scriptText, scriptFunctionNames[f]))
+                                    funcID = f;
                             }
-                            if (scriptFunctionCount < FUNCTION_COUNT && parseMode == -1) {
-                                StrCopy(scriptFunctionNames[scriptFunctionCount], scriptText);
-                                ++scriptFunctionCount;
+                            if (scriptFunctionCount < FUNCTION_COUNT && funcID == -1) {
+                                StrCopy(scriptFunctionNames[scriptFunctionCount++], funcName);
                             }
                             parseMode = PARSEMODE_SCOPELESS;
                         }
@@ -1541,12 +1540,12 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         char funcName[0x20];
                         for (textPos = 8; scriptText[textPos]; ++textPos) funcName[textPos - 8] = scriptText[textPos];
                         funcName[textPos - 8] = 0;
-                        parseMode             = -1;
-                        for (textPos = 0; textPos < scriptFunctionCount; ++textPos) {
-                            if (StrComp(funcName, scriptFunctionNames[textPos]))
-                                parseMode = textPos;
+                        int funcID             = -1;
+                        for (int f = 0; f < scriptFunctionCount; ++f) {
+                            if (StrComp(funcName, scriptFunctionNames[f]))
+                                funcID = f;
                         }
-                        if (parseMode <= -1) {
+                        if (funcID <= -1) {
                             if (scriptFunctionCount >= FUNCTION_COUNT) {
                                 parseMode = PARSEMODE_SCOPELESS;
                             }
@@ -1561,9 +1560,9 @@ void ParseScriptFile(char *scriptName, int scriptID)
                             }
                         }
                         else {
-                            StrCopy(scriptFunctionNames[parseMode], funcName);
-                            functionScriptList[scriptFunctionCount].scriptCodePtr = scriptDataPos;
-                            functionScriptList[scriptFunctionCount].jumpTablePtr  = jumpTableDataPos;
+                            StrCopy(scriptFunctionNames[funcID], funcName);
+                            functionScriptList[funcID].scriptCodePtr = scriptDataPos;
+                            functionScriptList[funcID].jumpTablePtr               = jumpTableDataPos;
                             scriptDataOffset                                      = scriptDataPos;
                             jumpTableDataOffset                                   = jumpTableDataPos;
                             parseMode                                             = PARSEMODE_FUNCTION;
@@ -1586,8 +1585,8 @@ void ParseScriptFile(char *scriptName, int scriptID)
                             scriptData[scriptDataPos++] = FUNC_ENDFUNCTION;
                             parseMode                   = PARSEMODE_SCOPELESS;
                         }
-                        else if (FindStringToken(scriptText, "#platform:", 1)) {
-                            if (FindStringToken(scriptText, "#endplatform", 1) == -1) {
+                        else if (FindStringToken(scriptText, "#platform:", 1)) { //layed out like ass, but this means "if we did not find "#platform:"
+                            if (FindStringToken(scriptText, "#endplatform", 1) == -1) { //if we did NOT find "#endplatform"
                                 ConvertIfWhileStatement(scriptText);
                                 if (ConvertSwitchStatement(scriptText)) {
                                     parseMode    = PARSEMODE_SWITCHREAD;
@@ -1608,7 +1607,10 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         }
                         else if (FindStringToken(scriptText, Engine.gamePlatform, 1) == -1
                                  && FindStringToken(scriptText, Engine.gameRenderType, 1) == -1
-                                 && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1) {
+#if RETRO_USE_HAPTICS
+                                 && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1)
+#endif
+                        { //if NONE of these checks succeeded, then we skip everything until "end platform"
                             parseMode = PARSEMODE_PLATFORMSKIP;
                         }
                     }
@@ -2559,7 +2561,9 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_ENGINEPLATFORMID: scriptEng.operands[i] = RETRO_PLATFORM; break;
                     case VAR_ENGINETRIALMODE: scriptEng.operands[i] = Engine.trialMode; break;
                     case VAR_KEYPRESSANYSTART: scriptEng.operands[i] = anyPress; break;
+#if RETRO_USE_HAPTICS
                     case VAR_ENGINEHAPTICSENABLED: scriptEng.operands[i] = Engine.hapticsEnabled; break;
+#endif
                 }
             }
             else if (opcodeType == SCRIPTVAR_INTCONST) { // int constant
@@ -3714,11 +3718,13 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 opcodeSize = 0;
                 Engine.Callback(scriptEng.operands[0]);
                 break;
+#if RETRO_USE_HAPTICS
             case FUNC_HAPTICEFFECT:
                 opcodeSize = 0;
                 // params: scriptEng.Operands[0],scriptEng.Operands[1],scriptEng.Operands[2],scriptEng.Operands[3]
-                // QueueHapticEffect(scriptEng.Operands[0]); //This is what the mobile ports use
+                QueueHapticEffect(scriptEng.operands[0]);
                 break;
+#endif
         }
 
         // Set Values
@@ -4318,7 +4324,9 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_ENGINEPLATFORMID: break;
                     case VAR_ENGINETRIALMODE: break;
                     case VAR_KEYPRESSANYSTART: break;
+#if RETRO_USE_HAPTICS
                     case VAR_ENGINEHAPTICSENABLED: break;
+#endif
                 }
             }
             else if (opcodeType == SCRIPTVAR_INTCONST) { // int constant

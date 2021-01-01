@@ -263,6 +263,7 @@ int tileYPos[PARALLAX_COUNT];
 
 void DrawHLineScrollLayer(int layerID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     TileLayer *layer = &stageLayouts[activeTileLayers[layerID]];
     int screenwidth16       = (SCREEN_XSIZE >> 4) - 1;
     int layerwidth          = layer->width;
@@ -775,9 +776,11 @@ void DrawHLineScrollLayer(int layerID)
             }
         }
     }
+#endif
 }
 void DrawVLineScrollLayer(int layerID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     TileLayer *layer = &stageLayouts[activeTileLayers[layerID]];
     int layerwidth          = layer->width;
     int layerheight         = layer->height;
@@ -1276,9 +1279,15 @@ void DrawVLineScrollLayer(int layerID)
             tileX = 0;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    //TODO: this
+#endif
 }
 void Draw3DFloorLayer(int layerID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     TileLayer *layer = &stageLayouts[activeTileLayers[layerID]];
     int layerWidth          = layer->width << 7;
     int layerHeight         = layer->height << 7;
@@ -1323,9 +1332,15 @@ void Draw3DFloorLayer(int layerID)
             YPos += YBuffer;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 void Draw3DSkyLayer(int layerID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     TileLayer *layer = &stageLayouts[activeTileLayers[layerID]];
     int layerWidth          = layer->width << 7;
     int layerHeight         = layer->height << 7;
@@ -1379,10 +1394,16 @@ void Draw3DSkyLayer(int layerID)
     //    int cnt    = 108 * SCREEN_XSIZE;
     //    while (cnt--) *frameBufferPtr++ = 0xF81Fu; //Magenta
     //}
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int B, int A)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (width + XPos > SCREEN_XSIZE)
         width = SCREEN_XSIZE - XPos;
     if (XPos < 0) {
@@ -1429,10 +1450,16 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
             frameBufferPtr += pitch;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawTintRectangle(int XPos, int YPos, int width, int height)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (width + XPos > SCREEN_XSIZE)
         width = SCREEN_XSIZE - XPos;
     if (XPos < 0) {
@@ -1459,10 +1486,16 @@ void DrawTintRectangle(int XPos, int YPos, int width, int height)
             ++frameBufferPtr;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 void DrawScaledTintMask(int direction, int XPos, int YPos, int pivotX, int pivotY, int scaleX, int scaleY, int width, int height, int sprX,
                                  int sprY, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int roundedYPos = 0;
     int roundedXPos = 0;
     int truescaleX  = 4 * scaleX;
@@ -1556,10 +1589,16 @@ void DrawScaledTintMask(int direction, int XPos, int YPos, int pivotX, int pivot
             gfxPitch    = 0;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (width + XPos > SCREEN_XSIZE)
         width = SCREEN_XSIZE - XPos;
     if (XPos < 0) {
@@ -1597,10 +1636,16 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
         frameBufferPtr += pitch;
         gfxDataPtr += gfxPitch;
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int sprY, int direction, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int widthFlip = width;
     int heightFlip = height;
 
@@ -1720,10 +1765,16 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
             break;
         default: break;
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+        // TODO: this
+#endif
 }
 void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY, int scaleX, int scaleY, int width, int height, int sprX,
                                int sprY, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int roundedYPos = 0;
     int roundedXPos = 0;
     int truescaleX  = 4 * scaleX;
@@ -1823,10 +1874,16 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
             gfxPitch    = 0;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY, int sprX, int sprY, int width, int height, int rotation,
                                 int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int sprXPos    = (pivotX + sprX) << 9;
     int sprYPos    = (pivotY + sprY) << 9;
     int fullwidth  = width + sprX;
@@ -1968,6 +2025,11 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
             frameBufferPtr += pitch;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivotY, int sprX, int sprY, int width, int height, int rotation,
@@ -1975,6 +2037,7 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
 {
     if (scale == 0)
         return;
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
 
     int sprXPos    = (pivotX + sprX) << 9;
     int sprYPos    = (pivotY + sprY) << 9;
@@ -2120,10 +2183,16 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
             frameBufferPtr += pitch;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (width + XPos > SCREEN_XSIZE)
         width = SCREEN_XSIZE - XPos;
     if (XPos < 0) {
@@ -2161,9 +2230,15 @@ void DrawBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int 
         frameBufferPtr += pitch;
         gfxData += gfxPitch;
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, int alpha, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (width + XPos > SCREEN_XSIZE)
         width = SCREEN_XSIZE - XPos;
     if (XPos < 0) {
@@ -2227,9 +2302,15 @@ void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX,
             gfxData += gfxPitch;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, int alpha, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (width + XPos > SCREEN_XSIZE)
         width = SCREEN_XSIZE - XPos;
     if (XPos < 0) {
@@ -2292,9 +2373,15 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
         frameBufferPtr += pitch;
         gfxData += gfxPitch;
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, int alpha, int sheetID)
 {
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (width + XPos > SCREEN_XSIZE)
         width = SCREEN_XSIZE - XPos;
     if (XPos < 0) {
@@ -2350,6 +2437,11 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
         frameBufferPtr += pitch;
         gfxData += gfxPitch;
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawObjectAnimation(void *objScr, void *ent, int XPos, int YPos)
@@ -2475,6 +2567,7 @@ void DrawFace(void *v, uint colour)
     if (verts[0].y == verts[1].y && verts[1].y == verts[2].y && verts[2].y == verts[3].y)
         return;
 
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int vertexA = 0;
     int vertexB = 1;
     int vertexC = 2;
@@ -2580,6 +2673,11 @@ void DrawFace(void *v, uint colour)
             ++faceTop;
         }
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 void DrawTexturedFace(void *v, byte sheetID)
 {
@@ -2598,6 +2696,7 @@ void DrawTexturedFace(void *v, byte sheetID)
     if (verts[0].y == verts[1].y && verts[1].y == verts[2].y && verts[2].y == verts[3].y)
         return;
 
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int vertexA = 0;
     int vertexB = 1;
     int vertexC = 2;
@@ -2703,6 +2802,11 @@ void DrawTexturedFace(void *v, byte sheetID)
         }
         ++faceTop;
     }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif
 }
 
 void DrawBitmapText(void *menu, int XPos, int YPos, int scale, int spacing, int rowStart, int rowCount)

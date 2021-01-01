@@ -1,7 +1,11 @@
-SDL2:
+SDL2: https://www.libsdl.org/download-2.0.php
+just download the appropriate development library for your compiler and place it in "./SDL2/" and include the includes, link the library and place the dll next to the exe
 
-libogg:
+libogg: https://xiph.org/downloads/ (libogg)
+download the libogg .zip file and unzip it in "./libogg/", then build the static library and link it in the vs solution
 
-libvorbis:
+libvorbis: https://xiph.org/downloads/ (libvorbis)
+download the libogg .zip file and unzip it in "./libvorbis/", then build the static library and link it in the vs solution
 
-libtheora:
+libtheora: https://xiph.org/downloads/ (libtheora)
+download the libogg .zip file and unzip it in "./libtheora/", then build the static library and link it in the vs solution

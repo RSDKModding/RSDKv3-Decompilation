@@ -159,7 +159,7 @@ void ProcessStage(void)
             }
 
             if (timeEnabled) {
-                if (++stageTimer == 60) {
+                if (++stageTimer == Engine.refreshRate) {
                     stageTimer = 0;
                     if (++stageSeconds > 59) {
                         stageSeconds = 0;
@@ -167,7 +167,7 @@ void ProcessStage(void)
                             stageMinutes = 0;
                     }
                 }
-                stageMilliseconds = 100 * stageTimer / 60;
+                stageMilliseconds = 100 * stageTimer / Engine.refreshRate;
             }
 
             ProcessObjects();

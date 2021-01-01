@@ -79,6 +79,6 @@ void LoadBytecode(int stageListID, int scriptID);
 
 void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub);
 
-void ClearScriptData(void);
+void ClearScriptData();
 
 #endif // !SCRIPT_H

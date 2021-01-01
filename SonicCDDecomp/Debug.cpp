@@ -323,7 +323,7 @@ void processStageSelect()
         {
             DrawTextMenu(&gameMenu[0], SCREEN_CENTERX, 72);
             if (keyPress.start || keyPress.A) {
-                stageMode = DEVMENU_STAGESEL;
+                stageMode = DEVMENU_MAIN;
                 SetupTextMenu(&gameMenu[0], 0);
                 AddTextMenuEntry(&gameMenu[0], "RETRO ENGINE DEV MENU");
                 AddTextMenuEntry(&gameMenu[0], " ");
@@ -352,7 +352,7 @@ void processStageSelect()
                 ClearAnimationData();
                 LoadPalette("MasterPalette.act", 0, 0, 0, 256);
                 activeStageList   = 0;
-                stageMode         = DEVMENU_STAGESEL;
+                stageMode         = DEVMENU_MAIN;
                 Engine.gameMode   = ENGINE_MAINGAME;
                 stageListPosition = 0;
             }

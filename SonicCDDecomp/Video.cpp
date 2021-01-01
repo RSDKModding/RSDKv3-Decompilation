@@ -79,6 +79,12 @@ void PlayVideoFile(char *filePath) {
         // (yes I tried, and probably cut years off my life)
         StrCopy(filepath, "videos/");
         StrAdd(filepath, filePath);
+        if (StrComp(filePath, "Good_Ending") || StrComp(filePath, "Bad_Ending") || StrComp(filePath, "Opening")) {
+            if (!GetGlobalVariableByName("Options.Soundtrack"))
+                StrAdd(filepath, "JP");
+            else
+                StrAdd(filepath, "US");
+        }
         StrAdd(filepath, ".ogg");
 
         TrackInfo *track = &musicTracks[trackID];

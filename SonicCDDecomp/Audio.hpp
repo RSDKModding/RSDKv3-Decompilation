@@ -95,6 +95,7 @@ inline void freeMusInfo()
             SDL_FreeAudioStream(musInfo.stream);
         ov_clear(&musInfo.vorbisFile);
         musInfo.buffer       = nullptr;
+        musInfo.extraBuffer  = nullptr;
         musInfo.stream       = nullptr;
         musInfo.audioLen     = 0;
         musInfo.currentTrack = nullptr;

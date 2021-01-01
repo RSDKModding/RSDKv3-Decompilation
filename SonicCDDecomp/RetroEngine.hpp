@@ -43,6 +43,21 @@ typedef unsigned long long ulong;
 #define RETRO_USING_SDL (0)
 #endif
 
+#define RETRO_GAME_STANDARD (0)
+#define RETRO_GAME_MOBILE   (1)
+
+#if RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7
+#define RETRO_GAMEPLATFORM (RETRO_GAME_MOBILE)
+#else
+#define RETRO_GAMEPLATFORM (RETRO_GAME_STANDARD)
+#endif
+
+#define RETRO_SW_RENDER  (0)
+#define RETRO_HW_RENDER  (1)
+#define RETRO_RENDERTYPE (RETRO_SW_RENDER)
+
+#define RETRO_USE_HAPTICS (1)
+
 enum RetroLanguages {
     RETRO_EN = 0,
     RETRO_FR = 1,
@@ -182,13 +197,22 @@ public:
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
     const char *gameVersion       = "1.0.0";
-    const char *gamePlatform      = "Standard";
-    const char *gameRenderType    = "SW_Rendering";
-    const char *gameHapticSetting = "Use_Haptics"; //" No_Haptics "; //No Haptics is default for pc but people with controllers exist
-    //Mobile settings
-    //const char *GamePlatform = "Mobile";
-    //const char *GameRenderType = "HW_Rendering";
-    //const char *GameHapticSetting = "Use_Haptics";
+#if RETRO_GAMEPLATFORM == RETRO_GAME_STANDARD
+    const char *gamePlatform = "Standard";
+#elif RETRO_GAMEPLATFORM == RETRO_GAME_MOBILE
+    const char *gamePlatform   = "Mobile";
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
+    const char *gameRenderType = "SW_Rendering";
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
+    const char *gameRenderType = "HW_Rendering";
+#endif
+
+#if RETRO_USE_HAPTICS
+    const char *gameHapticSetting = "Use_Haptics"; // No_Haptics is default for pc but people with controllers exist
+#endif
+
 
     ushort *frameBuffer = nullptr;
     uint *videoFrameBuffer = nullptr;

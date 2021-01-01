@@ -71,4 +71,6 @@ void ProcessInput();
 void CheckKeyPress(InputData *input, byte Flags);
 void CheckKeyDown(InputData *input, byte Flags);
 
+void QueueHapticEffect(int hapticID);
+
 #endif // !INPUT_H

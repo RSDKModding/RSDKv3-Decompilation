@@ -180,6 +180,11 @@ void CheckKeyDown(InputData *input, byte flags)
         input->C = inputDevice[6].hold;
     if (flags & 0x80)
         input->start = inputDevice[7].hold;
-    //if (flags & 0x80)
-    //   anyHold = inputDevice[8].hold;
+}
+
+void QueueHapticEffect(int hapticID)
+{
+    if (Engine.hapticsEnabled) {
+        //Haptic ID seems to be the ID for "Universal Haptic Layer"'s haptic effect library
+    }
 }
