@@ -73,3 +73,8 @@ if you've cloned this repo and ported it to a platform not on the list or made s
 
 # Background:
 in 2018 I started researching Christan Whitehead's 'Retro Engine' as a side project since I was bored, I started with Sonic CD (RSDKv3) since it was the most well known version that hadn't had much support, since at that time Sonic Mania's (RSDKv5) modding scene was already thriving, and eventually I expanded my range to Retro-Sonic (Retro-Sonic Engine), Sonic Nexus (RSDKv1) & Sonic 1/2 (RSDKv4), since then I have worked during spare moments to document and reverse all that I can of all versions of RSDK as it was just interesting to see how things worked under the hood or how features evolved and changed over time. Fast forward to 2020 and [Sappharad](https://github.com/Sappharad) shows me his decompilation of Sonic CD based on the windows phone 7 port since they'd seen my other github repositories relating to RSDK reversing. After seeing their decompilation I had the idea to start my own Sonic CD decompilation based on the PC port, with improvements and tweaks android port, though I didn't have much time to get around to it, so the project was shelved until I had more time to work on it. in mid-december 2020, I remembered the sonic CD decompilation that I started and finally had the time to work on it more, so after around 2 weeks of on/off working the decompilation was finally in a solid working state, though I continued tweaking it for another few weeks just to iron out all the glitches and bugs that I found. 
+
+# Contact:
+Here's some other platforms I'm more active on if more specific questions need to be asked or you just wanna check out other stuff I do
+- [Twitter](https://twitter.com/Rubberduckcooly)
+- Discord: Rubberduckycooly#6438
