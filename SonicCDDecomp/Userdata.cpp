@@ -2,7 +2,6 @@
 
 #if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
 #include <Windows.h>
-#include <string>
 #include <codecvt>
 #include "../dependencies/windows/ValveFileVDF/vdf_parser.hpp"
 
@@ -125,7 +124,7 @@ void InitUserdata()
     }
 #endif
 
-    char buffer[0x100];
+    char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
         sprintf(buffer, "%s/settings.ini", getResourcesPath());
@@ -357,7 +356,7 @@ void writeSettings() {
 
 void ReadUserdata()
 {
-    char buffer[0x100];
+    char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
@@ -389,7 +388,7 @@ void ReadUserdata()
 
 void WriteUserdata()
 {
-    char buffer[0x100];
+    char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());

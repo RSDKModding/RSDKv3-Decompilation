@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C962193925898B0B00B47AB3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C962193625898B0A00B47AB3 /* Assets.xcassets */; };
-		C962193A25898B0B00B47AB3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C962193725898B0A00B47AB3 /* Info.plist */; };
 		C962193E25898B6000B47AB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C962193C25898B6000B47AB3 /* Main.storyboard */; };
 		C962196C25898BF600B47AB3 /* Audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C962195625898BF500B47AB3 /* Audio.cpp */; };
 		C962196D25898BF600B47AB3 /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C962195725898BF500B47AB3 /* Debug.cpp */; };
@@ -64,7 +63,6 @@
 /* Begin PBXFileReference section */
 		C962191925898A9300B47AB3 /* Sonic CD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sonic CD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C962193625898B0A00B47AB3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = dependencies/mac/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		C962193725898B0A00B47AB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = dependencies/mac/Info.plist; sourceTree = SOURCE_ROOT; };
 		C962193D25898B6000B47AB3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = dependencies/mac/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
 		C962194125898BCD00B47AB3 /* Text.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Text.hpp; path = SonicCDDecomp/Text.hpp; sourceTree = SOURCE_ROOT; };
 		C962194225898BCD00B47AB3 /* Script.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Script.hpp; path = SonicCDDecomp/Script.hpp; sourceTree = SOURCE_ROOT; };
@@ -161,7 +159,6 @@
 				C962193F25898B6700B47AB3 /* Source Files */,
 				C962193C25898B6000B47AB3 /* Main.storyboard */,
 				C962193625898B0A00B47AB3 /* Assets.xcassets */,
-				C962193725898B0A00B47AB3 /* Info.plist */,
 			);
 			path = "Sonic CD";
 			sourceTree = "<group>";
@@ -332,7 +329,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C962193E25898B6000B47AB3 /* Main.storyboard in Resources */,
-				C962193A25898B0B00B47AB3 /* Info.plist in Resources */,
 				C962193925898B0B00B47AB3 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -501,8 +497,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Sonic CD/Sonic_CD.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/dependencies/mac",
@@ -517,8 +515,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Rubberduckycooly.Sonic-CD";
+				PRODUCT_BUNDLE_IDENTIFIER = "RSDKv3.Sonic-CD";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -527,8 +526,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Sonic CD/Sonic_CD.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/dependencies/mac",
@@ -543,8 +544,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Rubberduckycooly.Sonic-CD";
+				PRODUCT_BUNDLE_IDENTIFIER = "RSDKv3.Sonic-CD";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};

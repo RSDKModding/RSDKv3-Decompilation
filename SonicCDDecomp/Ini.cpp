@@ -13,11 +13,10 @@ IniParser::IniParser(const char *filename)
 
     count = 0;
 
-    char pathBuffer[0x80];
-
+    char pathBuffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
-        sprintf(pathBuffer, "%s/%s",getResourcesPath(), filename);
+        sprintf(pathBuffer, "%s/%s",getResourcesPath(),filename);
     else
         sprintf(pathBuffer, "%s", filename);
 #else
@@ -233,8 +232,7 @@ int IniParser::SetComment(const char *section, const char* key, const char *comm
 
 void IniParser::Write(const char *filename)
 {
-    char pathBuffer[0x80];
-
+    char pathBuffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
         sprintf(pathBuffer, "%s/%s",getResourcesPath(),filename);

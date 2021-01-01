@@ -52,7 +52,7 @@ inline void SetGlobalVariableByName(const char *name, int value)
 
 inline bool ReadSaveRAMData()
 {
-    char buffer[0x100];
+    char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
         sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
@@ -63,7 +63,6 @@ inline bool ReadSaveRAMData()
 #endif
 
     // Temp(?)
-    saveRAM[32] = audioEnabled;
     saveRAM[33] = bgmVolume;
     saveRAM[34] = sfxVolume;
 
@@ -78,7 +77,7 @@ inline bool ReadSaveRAMData()
 
 inline bool WriteSaveRAMData()
 {
-    char buffer[0x100];
+    char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX
     if (!usingCWD)
         sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
@@ -93,7 +92,6 @@ inline bool WriteSaveRAMData()
         return false;
 
     //Temp
-    saveRAM[32] = audioEnabled;
     saveRAM[33] = bgmVolume;
     saveRAM[34] = sfxVolume;
 
