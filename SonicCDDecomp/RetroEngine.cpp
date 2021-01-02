@@ -497,5 +497,10 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_16: //, PC = ??? (only when online), Mobile = NONE
             printLog("Callback: Unknown (%d)", callbackID);
             break;
+        case CALLBACK_AGEGATE: 
+            //Newer versions of the game wont continue without this
+            //Thanks to Sappharad for pointing this out
+            globalVariables[135] = 1;
+            break;
     }
 }
