@@ -1,5 +1,5 @@
 # Sonic-CD-11-Decompilation
-A Full Decompilation of Sonic CD 2011, Based on the PC port with improvements & tweaks from the mobile ports
+A Full Decompilation of Sonic CD 2011, Based on the PC remake with improvements & tweaks from the mobile remakes
 
 
 # **SUPPORT THE OFFICIAL RELEASE OF SONIC CD**
