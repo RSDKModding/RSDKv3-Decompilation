@@ -51,7 +51,8 @@ int InitAudioPlayback()
     }
     else {
         printLog("Unable to open audio device: %s", SDL_GetError());
-        return false;
+        // Commented to allow running without an audio device (WSL)
+        // return false;
     }
     #endif
 

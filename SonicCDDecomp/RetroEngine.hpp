@@ -15,9 +15,11 @@
 // ================
 typedef unsigned char byte;
 typedef signed char sbyte;
+#if defined _WIN32
 typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long long ulong;
+#endif
 
 // Platforms
 #define RETRO_WIN      (0)
@@ -27,17 +29,18 @@ typedef unsigned long long ulong;
 #define RETRO_iOS      (4)
 #define RETRO_ANDROID  (5)
 #define RETRO_WP7      (6)
+#define RETRO_LINUX    (7)
 
 #if defined _WIN32
 #define RETRO_PLATFORM (RETRO_WIN)
 #elif defined __APPLE__
 #define RETRO_PLATFORM (RETRO_OSX)
 #else
-#define RETRO_PLATFORM (RETRO_WIN) //Default
+#define RETRO_PLATFORM (RETRO_LINUX) //Default
 #endif
 
 
-#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX
+#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_LINUX
 #define RETRO_USING_SDL (1)
 #else //Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL (0)
@@ -121,6 +124,11 @@ enum RetroBytecodeFormat {
 #include "theoraplay.h"
 
 #include "cocoaHelpers.hpp"
+#elif RETRO_PLATFORM == RETRO_LINUX
+#include <SDL2/SDL.h>
+#include <vorbis/vorbisfile.h>
+#include <theora/theora.h>
+#include <theoraplay.h>
 #endif
 
 extern bool usingCWD;
