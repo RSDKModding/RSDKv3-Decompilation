@@ -241,7 +241,7 @@ void IniParser::Write(const char *filename)
 #else
     sprintf(pathBuffer, "%s", filename);
 #endif
-    
+    return;
     FileIO *f;
     if ((f = fOpen(pathBuffer, "w")) == NULL) {
         printLog("ERROR: Couldn't open file '%s' for writing!", filename);
@@ -253,11 +253,11 @@ void IniParser::Write(const char *filename)
     int c = 0;
     sprintf(past, "");
     for (int i = 0; i < count; ++i) {
-        if (std::find(std::begin(sections), std::end(sections), items[i].section) == std::end(sections) && strcmp(past, items[i].section) != 0) {
-            sprintf(past, "%s", items[i].section);
-            sprintf(sections[c], "%s", items[i].section);
-            c++;
-        }
+        // if (std::find(std::begin(sections), std::end(sections), items[i].section) == std::end(sections) && strcmp(past, items[i].section) != 0) {
+        //     sprintf(past, "%s", items[i].section);
+        //     sprintf(sections[c], "%s", items[i].section);
+        //     c++;
+        // }
     }
 
     if (c >= 1) {
