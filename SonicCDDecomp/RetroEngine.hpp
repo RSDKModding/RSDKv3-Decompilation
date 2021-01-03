@@ -17,9 +17,9 @@ typedef unsigned char byte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
 typedef unsigned int uint;
-typedef unsigned long long ulong;
+//typedef unsigned long long ulong;
 
-// Platforms
+// Platforms (RSDKv3 only defines these 7, but feel free to add your own custom platform define for easier platform code changes)
 #define RETRO_WIN      (0)
 #define RETRO_OSX      (1)
 #define RETRO_XBOX_360 (2)

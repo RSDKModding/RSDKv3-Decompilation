@@ -682,7 +682,7 @@ void LoadStageCollisions()
                     for (int c = 0; c < TILE_SIZE; ++c) {
                         int h = 0;
                         while (h > -1) {
-                            if (h == TILE_SIZE) {
+                            if (h >= TILE_SIZE) {
                                 collisionMasks[p].lWallMasks[c + tileIndex] = 0x40;
                                 h                                           = -1;
                             }
@@ -700,7 +700,7 @@ void LoadStageCollisions()
                     for (int c = 0; c < TILE_SIZE; ++c) {
                         int h = TILE_SIZE - 1;
                         while (h < TILE_SIZE) {
-                            if (h == -1) {
+                            if (h <= -1) {
                                 collisionMasks[p].rWallMasks[c + tileIndex] = -0x40;
                                 h                                           = TILE_SIZE;
                             }
@@ -751,9 +751,9 @@ void LoadStageCollisions()
 
                     //LWall rotations
                     for (int c = 0; c < TILE_SIZE; ++c) {
-                        char h = 0;
+                        int h = 0;
                         while (h > -1) {
-                            if (h == TILE_SIZE) {
+                            if (h >= TILE_SIZE) {
                                 collisionMasks[p].lWallMasks[c + tileIndex] = 0x40;
                                 h                                           = -1;
                             }
@@ -769,9 +769,9 @@ void LoadStageCollisions()
 
                     //RWall rotations
                     for (int c = 0; c < TILE_SIZE; ++c) {
-                        char h = TILE_SIZE - 1;
+                        int h = TILE_SIZE - 1;
                         while (h < TILE_SIZE) {
-                            if (h == -1) {
+                            if (h <= -1) {
                                 collisionMasks[p].rWallMasks[c + tileIndex] = -0x40;
                                 h                                           = TILE_SIZE;
                             }

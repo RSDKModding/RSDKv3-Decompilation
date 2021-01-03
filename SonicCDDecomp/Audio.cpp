@@ -656,7 +656,7 @@ bool PlayMusic(int track)
 
 #if RETRO_USING_SDL
         ov_callbacks callbacks;
-        ulong samples;
+        uint samples;
 
         callbacks.read_func  = readVorbis;
         callbacks.seek_func  = seekVorbis;
@@ -678,7 +678,7 @@ bool PlayMusic(int track)
         musInfo.spec.freq     = (int)musInfo.vorbisFile.vi->rate;
         musInfo.spec.samples  = 4096;
 
-        samples = (ulong)ov_pcm_total(&musInfo.vorbisFile, -1);
+        samples = (uint)ov_pcm_total(&musInfo.vorbisFile, -1);
 
         musInfo.audioLen = musInfo.spec.size = (int)(samples * musInfo.spec.channels * 2);
 
