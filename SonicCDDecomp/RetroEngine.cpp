@@ -21,7 +21,7 @@ bool processEvents()
                     }
                     case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
                 }
-            break;
+                break;
             case SDL_CONTROLLERDEVICEADDED: controllerInit(SDL_NumJoysticks() - 1); break;
             case SDL_CONTROLLERDEVICEREMOVED: controllerClose(SDL_NumJoysticks() - 1); break;
             case SDL_WINDOWEVENT_CLOSE:
@@ -191,7 +191,7 @@ void RetroEngine::Init()
     CalculateTrigAngles();
     GenerateBlendLookupTable();
 
-    CheckRSDKFile("data.rsdk");
+    CheckRSDKFile(BASE_PATH "Data.rsdk");
     InitUserdata();
 
     gameMode = ENGINE_EXITGAME;

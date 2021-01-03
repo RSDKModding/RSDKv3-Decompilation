@@ -39,6 +39,10 @@ even if your platform isn't supported by the official releases, buy it for the a
 * Clone the repo, then follow the instructions in the [depencencies readme for mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the xcode solution
 * or grab a prebuilt executable from the releases section
 
+## PS Vita:
+* Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
+NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
+
 ## Other platforms:
 Currently only windows & mac are supported by this decompilation, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
 if you've cloned this repo and ported it to a platform not on the list or made some changes you'd like to see added to this repo, submit a pull request and it'll most likely be added

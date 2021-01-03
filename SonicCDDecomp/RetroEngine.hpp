@@ -17,7 +17,6 @@ typedef unsigned char byte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
 typedef unsigned int uint;
-//typedef unsigned long long ulong;
 
 // Platforms (RSDKv3 only defines these 7, but feel free to add your own custom platform define for easier platform code changes)
 #define RETRO_WIN      (0)
@@ -36,6 +35,11 @@ typedef unsigned int uint;
 #define RETRO_PLATFORM (RETRO_WIN) //Default
 #endif
 
+#if defined __vita__
+#define BASE_PATH "ux0:data/SonicCD/"
+#else
+#define BASE_PATH ""
+#endif
 
 #if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX
 #define RETRO_USING_SDL (1)

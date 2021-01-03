@@ -63,7 +63,7 @@ LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 void InitUserdata()
 {
     // userdata files are loaded from this directory
-    sprintf(gamePath, "");
+    sprintf(gamePath, BASE_PATH);
 
 #if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
     if (Engine.useSteamDir) {
@@ -131,7 +131,7 @@ void InitUserdata()
     else
         sprintf(buffer, "%ssettings.ini", gamePath);
 #else
-    sprintf(buffer, "settings.ini");
+    sprintf(buffer, BASE_PATH"settings.ini");
 #endif
     FileIO *file = fOpen(buffer, "rb");
     IniParser ini;
@@ -175,11 +175,11 @@ void InitUserdata()
         ini.SetInteger("Controller 1", "C", inputDevice[6].contMappings = SDL_CONTROLLER_BUTTON_X);
         ini.SetInteger("Controller 1", "Start", inputDevice[7].contMappings = SDL_CONTROLLER_BUTTON_START);
 
-        ini.Write("settings.ini");
+        ini.Write(BASE_PATH"settings.ini");
     }
     else {
         fClose(file);
-        ini = IniParser("settings.ini");
+        ini = IniParser(BASE_PATH"settings.ini");
 
         if (!ini.GetBool("Dev", "DevMenu", &Engine.devMenu))
             Engine.devMenu = false;
@@ -351,7 +351,7 @@ void writeSettings() {
     ini.SetInteger("Controller 1", "C", inputDevice[6].contMappings);
     ini.SetInteger("Controller 1", "Start", inputDevice[7].contMappings);
 
-    ini.Write("settings.ini");
+    ini.Write(BASE_PATH"settings.ini");
 }
 
 void ReadUserdata()
