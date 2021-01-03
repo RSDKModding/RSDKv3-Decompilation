@@ -145,11 +145,11 @@ void InitUserdata()
 
         ini.SetBool("Game", "Language", Engine.language = RETRO_EN);
 
-        ini.SetBool("Window", "Fullscreen", Engine.startFullScreen = false);
+        ini.SetBool("Window", "Fullscreen", Engine.startFullScreen = DEFAULT_FULLSCREEN);
         ini.SetBool("Window", "Borderless", Engine.borderless = false);
         ini.SetBool("Window", "VSync", Engine.vsync = false);
         ini.SetInteger("Window", "WindowScale", Engine.windowScale = 2);
-        ini.SetInteger("Window", "ScreenWidth", SCREEN_XSIZE = 424);
+        ini.SetInteger("Window", "ScreenWidth", SCREEN_XSIZE = DEFAULT_SCREEN_XSIZE);
         ini.SetInteger("Window", "RefreshRate", Engine.refreshRate = 60);
 
         ini.SetFloat("Audio", "BGMVolume", bgmVolume / (float)MAX_VOLUME);
@@ -198,7 +198,7 @@ void InitUserdata()
             Engine.language = RETRO_EN;
 
         if (!ini.GetBool("Window", "FullScreen", &Engine.startFullScreen))
-            Engine.startFullScreen = false;
+            Engine.startFullScreen = DEFAULT_FULLSCREEN;
         if (!ini.GetBool("Window", "Borderless", &Engine.borderless))
             Engine.borderless = false;
         if (!ini.GetBool("Window", "VSync", &Engine.vsync))
@@ -206,7 +206,7 @@ void InitUserdata()
         if (!ini.GetInteger("Window", "WindowScale", &Engine.windowScale))
             Engine.windowScale = 2;
         if (!ini.GetInteger("Window", "ScreenWidth", &SCREEN_XSIZE))
-            SCREEN_XSIZE = 424;
+            SCREEN_XSIZE = DEFAULT_SCREEN_XSIZE;
         if (!ini.GetInteger("Window", "Refresh Rate", &Engine.refreshRate))
             Engine.refreshRate = 60;
 

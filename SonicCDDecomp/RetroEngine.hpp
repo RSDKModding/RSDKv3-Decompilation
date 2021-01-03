@@ -37,8 +37,12 @@ typedef unsigned int uint;
 
 #if defined __vita__
 #define BASE_PATH "ux0:data/SonicCD/"
+#define DEFAULT_SCREEN_XSIZE 480
+#define DEFAULT_FULLSCREEN true
 #else
 #define BASE_PATH ""
+#define DEFAULT_SCREEN_XSIZE 424
+#define DEFAULT_FULLSCREEN false
 #endif
 
 #if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX
