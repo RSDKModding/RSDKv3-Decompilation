@@ -2,14 +2,17 @@
 
 .DEFAULT_GOAL := all
 
-NAME	  = scd2011
-SUFFIX	  = 
-PKGCONFIG = pkg-config
-DEBUG	 ?= 0
-STATIC	 ?= 1
-VERBOSE  ?= 0
-PROFILE	 ?= 0
-STRIP	 ?= strip
+NAME		=  scd2011
+SUFFIX		= 
+PKGCONFIG	=  pkg-config
+DEBUG		?= 0
+STATIC		?= 1
+VERBOSE		?= 0
+PROFILE		?= 0
+STRIP		?= strip
+
+# -fsigned-char required to prevent hang in LoadStageCollisions
+CFLAGS		?= -fsigned-char
 
 # =============================================================================
 # Detect default platform if not explicitly specified
