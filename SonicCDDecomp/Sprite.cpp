@@ -328,7 +328,13 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         FileRead(&fileBuffer, 1);
         surface->height += (fileBuffer << 8);
 
-        FileRead(&fileBuffer, 1); // Palette Size (thrown away) :/
+        FileRead(&fileBuffer, 1); // Palette Size
+        int has_pallete = (fileBuffer & 0x80) >> 7;
+        int colors = ((fileBuffer & 0x70) >> 4) + 1;
+        int palette_size = (fileBuffer & 0x7) + 1;
+        if (palette_size > 0)
+            palette_size = 1 << palette_size;
+
         FileRead(&fileBuffer, 1); // BG Colour index (thrown away)
         FileRead(&fileBuffer, 1); // idk actually (still thrown away)
 
@@ -337,7 +343,7 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         do {
             ++c;
             FileRead(clr, 3);
-        } while (c != 0x100);
+        } while (c != palette_size);
 
         FileRead(&fileBuffer, 1);
         while (fileBuffer != ',') FileRead(&fileBuffer, 1); // gif image start identifier
