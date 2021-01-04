@@ -43,8 +43,9 @@ extern int jumpTableData[JUMPTABLE_COUNT];
 extern int jumpTableStack[JUMPSTACK_COUNT];
 extern int functionStack[FUNCSTACK_COUNT];
 
-extern int scriptCodePos; //Bytecode reading offset
-extern int jumpTablePos;  //Bytecode reading offset
+extern int scriptCodePos; //Bytecode file readpos
+extern int jumpTablePos;  //Bytecode file readpos
+
 extern int jumpTableStackPos;
 extern int functionStackPos;
 
@@ -69,7 +70,7 @@ bool ConvertSwitchStatement(char *text);
 void ConvertFunctionText(char *text);
 void CheckCaseNumber(char *text);
 bool ReadSwitchCase(char *text);
-void AppendIntegerToSting(char *text, int value);
+void AppendIntegerToString(char *text, int value);
 bool ConvertStringToInteger(char *text, int *value);
 void CopyAliasStr(char *dest, char *text, bool arrayIndex);
 bool CheckOpcodeType(char *text); // Never actually used

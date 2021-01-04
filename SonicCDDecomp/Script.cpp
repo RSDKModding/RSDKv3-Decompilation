@@ -928,7 +928,7 @@ void ConvertIfWhileStatement(char *text)
                 text[strPos] = ',';
                 StrCopy(dest, functions[compareOp + FUNC_WEQUAL].name);
                 StrAdd(dest, "(");
-                AppendIntegerToSting(dest, jumpTableDataPos - jumpTableDataOffset);
+                AppendIntegerToString(dest, jumpTableDataPos - jumpTableDataOffset);
                 StrAdd(dest, ",");
                 destStrPos = StrLength(dest);
                 for (int i = 5; text[i]; ++i) {
@@ -956,7 +956,7 @@ void ConvertIfWhileStatement(char *text)
             text[strPos] = ',';
             StrCopy(dest, functions[compareOp + FUNC_IFEQUAL].name);
             StrAdd(dest, "(");
-            AppendIntegerToSting(dest, jumpTableDataPos - jumpTableDataOffset);
+            AppendIntegerToString(dest, jumpTableDataPos - jumpTableDataOffset);
             StrAdd(dest, ",");
             destStrPos = StrLength(dest);
             for (int i = 2; text[i]; ++i) {
@@ -979,7 +979,7 @@ bool ConvertSwitchStatement(char *text)
     char switchText[260];
     StrCopy(switchText, "switch");
     StrAdd(switchText, "(");
-    AppendIntegerToSting(switchText, jumpTableDataPos - jumpTableDataOffset);
+    AppendIntegerToString(switchText, jumpTableDataPos - jumpTableDataOffset);
     StrAdd(switchText, ",");
     int pos = StrLength(switchText);
     for (int i = 6; text[i]; ++i) {
@@ -1091,24 +1091,24 @@ void ConvertFunctionText(char *text)
                 if (StrComp(funcName, globalVariableNames[v])) {
                     StrCopy(funcName, "Global");
                     strBuffer[0] = 0;
-                    AppendIntegerToSting(strBuffer, v);
+                    AppendIntegerToString(strBuffer, v);
                 }
             }
             // Eg: TempValue0 = Function1
             for (int f = 0; f < scriptFunctionCount; ++f) {
                 if (StrComp(funcName, scriptFunctionNames[f])) {
                     funcName[0] = 0;
-                    AppendIntegerToSting(funcName, f);
+                    AppendIntegerToString(funcName, f);
                 }
             }
             // Eg: TempValue0 = TypeName[PlayerObject]
             if (StrComp(funcName, "TypeName")) {
                 funcName[0] = 0;
-                AppendIntegerToSting(funcName, 0);
+                AppendIntegerToString(funcName, 0);
                 for (int o = 0; o < OBJECT_COUNT; ++o) {
                     if (StrComp(strBuffer, typeNames[o])) {
                         funcName[0] = 0;
-                        AppendIntegerToSting(funcName, o);
+                        AppendIntegerToString(funcName, o);
                     }
                 }
             }
@@ -1196,7 +1196,7 @@ void ConvertFunctionText(char *text)
                     AddTextMenuEntry(&gameMenu[0], " ");
                     AddTextMenuEntry(&gameMenu[0], "LINE NUMBER");
                     funcName[0] = 0;
-                    AppendIntegerToSting(funcName, lineID);
+                    AppendIntegerToString(funcName, lineID);
                     AddTextMenuEntry(&gameMenu[0], funcName);
                     Engine.gameMode = ENGINE_SCRIPTERROR;
                     value           = 0;
@@ -1292,7 +1292,7 @@ bool ReadSwitchCase(char *text)
     }
     return false;
 }
-void AppendIntegerToSting(char *text, int value)
+void AppendIntegerToString(char *text, int value)
 {
     int textPos = 0;
     while (true) {
@@ -2097,7 +2097,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                         }
                         else {
                             int pos               = objectEntityList[arrayVal].YPos >> 16;
-                            scriptEng.operands[i] = pos <= yScrollOffset - 256 || pos >= yScrollOffset + 496;
+                            scriptEng.operands[i] = pos <= yScrollOffset - OBJECT_BORDER_Y1 || pos >= yScrollOffset + OBJECT_BORDER_Y2;
                         }
                         break;
                     }
@@ -2444,7 +2444,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                         }
                         else {
                             int pos               = playerList[activePlayer].YPos >> 16;
-                            scriptEng.operands[i] = pos <= yScrollOffset - 256 || pos >= yScrollOffset + 496;
+                            scriptEng.operands[i] = pos <= yScrollOffset - OBJECT_BORDER_Y1 || pos >= yScrollOffset + OBJECT_BORDER_Y2;
                         }
                         break;
                     }

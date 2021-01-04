@@ -2483,7 +2483,7 @@ void DrawObjectAnimation(void *objScr, void *ent, int XPos, int YPos)
                 DrawSpriteRotated(entity->direction, XPos, YPos, -frame->pivotX, -frame->pivotY, frame->sprX, frame->sprY, frame->width,
                                   frame->height, 0x200 - ((532 - entity->rotation) >> 6 << 6), frame->sheetID);
             else
-                DrawSpriteRotated(entity->direction, XPos, YPos, -frame->pivotX, -frame->pivotY, frame->sprX, frame->sprX, frame->width,
+                DrawSpriteRotated(entity->direction, XPos, YPos, -frame->pivotX, -frame->pivotY, frame->sprX, frame->sprY, frame->width,
                                   frame->height, (entity->rotation + 20) >> 6 << 6, frame->sheetID);
             break;
         case ROTFLAG_STATICFRAMES:
