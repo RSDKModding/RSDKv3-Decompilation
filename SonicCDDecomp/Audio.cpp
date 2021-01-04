@@ -133,7 +133,7 @@ int readVorbisStream(void *dst, uint size)
     int read;
     int to_read = size;
     char *buf   = (char *)dst;
-    uint left   = musInfo.audioLen;
+    unsigned long long left   = musInfo.audioLen;
     while (to_read && (read = (int)ov_read(&musInfo.vorbisFile, buf, to_read, 0, 2, 1, &musInfo.vorbBitstream))) {
         if (read < 0) {
             return 0;
@@ -656,7 +656,6 @@ bool PlayMusic(int track)
 
 #if RETRO_USING_SDL
         ov_callbacks callbacks;
-        uint samples;
 
         callbacks.read_func  = readVorbis;
         callbacks.seek_func  = seekVorbis;
@@ -675,12 +674,13 @@ bool PlayMusic(int track)
 
         musInfo.spec.format   = AUDIO_S16;
         musInfo.spec.channels = musInfo.vorbisFile.vi->channels;
-        musInfo.spec.freq     = (int)musInfo.vorbisFile.vi->rate;
+        musInfo.spec.freq     = musInfo.vorbisFile.vi->rate;
         musInfo.spec.samples  = 4096;
 
-        samples = (uint)ov_pcm_total(&musInfo.vorbisFile, -1);
+        unsigned long long samples = (unsigned long long)ov_pcm_total(&musInfo.vorbisFile, -1);
 
-        musInfo.audioLen = musInfo.spec.size = (int)(samples * musInfo.spec.channels * 2);
+        musInfo.audioLen = samples * musInfo.spec.channels * 2;
+        musInfo.spec.size = AUDIO_BUFFERSIZE;
 
         musInfo.stream = SDL_NewAudioStream(musInfo.spec.format, musInfo.spec.channels, musInfo.spec.freq, audioDeviceFormat.format,
                                       audioDeviceFormat.channels, audioDeviceFormat.freq);
