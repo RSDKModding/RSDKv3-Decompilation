@@ -1527,7 +1527,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                             funcName[textPos - 9] = 0;
                             int funcID             = -1;
                             for (int f = 0; f < scriptFunctionCount; ++f) {
-                                if (StrComp(scriptText, scriptFunctionNames[f]))
+                                if (StrComp(funcName, scriptFunctionNames[f]))
                                     funcID = f;
                             }
                             if (scriptFunctionCount < FUNCTION_COUNT && funcID == -1) {

@@ -9,18 +9,19 @@ bool processEvents()
 {
 #if RETRO_USING_SDL
     while (SDL_PollEvent(&Engine.sdlEvents)) {
-        switch (Engine.sdlEvents.window.event) {
-            case SDL_WINDOWEVENT_MAXIMIZED: {
-                SDL_RestoreWindow(Engine.window);
-                SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-                Engine.isFullScreen = true;
-                break;
-            }
-            case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
-        }
-
         // Main Events
         switch (Engine.sdlEvents.type) {
+            case SDL_WINDOWEVENT:
+                switch (Engine.sdlEvents.window.event) {
+                    case SDL_WINDOWEVENT_MAXIMIZED: {
+                        SDL_RestoreWindow(Engine.window);
+                        SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+                        Engine.isFullScreen = true;
+                        break;
+                    }
+                    case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
+                }
+            break;
             case SDL_CONTROLLERDEVICEADDED: controllerInit(SDL_NumJoysticks() - 1); break;
             case SDL_CONTROLLERDEVICEREMOVED: controllerClose(SDL_NumJoysticks() - 1); break;
             case SDL_WINDOWEVENT_CLOSE:
@@ -496,6 +497,11 @@ void RetroEngine::Callback(int callbackID)
             break;
         case CALLBACK_16: //, PC = ??? (only when online), Mobile = NONE
             printLog("Callback: Unknown (%d)", callbackID);
+            break;
+        case CALLBACK_AGEGATE: 
+            //Newer versions of the game wont continue without this
+            //Thanks to Sappharad for pointing this out
+            globalVariables[135] = 1;
             break;
     }
 }
