@@ -55,7 +55,7 @@ int InitRenderDevice()
         return 0;
     }
 
-    if (Engine.fullScreen) {
+    if (Engine.startFullScreen) {
         SDL_RestoreWindow(Engine.window);
         SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
         Engine.isFullScreen = true;

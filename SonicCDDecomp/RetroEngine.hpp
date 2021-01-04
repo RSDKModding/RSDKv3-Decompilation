@@ -220,7 +220,7 @@ public:
 
     bool isFullScreen = false;
 
-    bool fullScreen = false;
+    bool startFullScreen = false; // if should start as fullscreen
     bool borderless = false;
     bool vsync = false;
     int windowScale = 2;
