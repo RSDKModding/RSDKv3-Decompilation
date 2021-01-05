@@ -77,8 +77,8 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "CompanyName", "RSDKv3/Sonic CD (2011) By Christian 'The Taxman' Whitehead"
-            VALUE "FileDescription", "Sonic CD - Retro Engine Conversion, by Christian Whitehead!, RSDKv3 Decompilation By Rubberduckycooly"
+            VALUE "CompanyName", "RSDKv3/Sonic CD (2011) By Christian 'The Taxman' Whitehead, Decompilation by Rubberduckycooly"
+            VALUE "FileDescription", "RSDKv3"
             VALUE "FileVersion", "1.0.0"
             VALUE "InternalName", "SonicCD.exe"
             VALUE "LegalCopyright", ""
