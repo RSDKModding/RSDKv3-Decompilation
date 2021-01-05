@@ -23,6 +23,9 @@ bin/
 [Bb]in/
 [Oo]bj/
 
+#safety
+*.rsdk
+
 #dependencies
 [Dd]ependencies/windows/SDL2/
 [Dd]ependencies/windows/libogg/
