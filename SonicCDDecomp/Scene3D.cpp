@@ -49,9 +49,9 @@ void matrixMultiply(Matrix *matrixA, Matrix *matrixB)
 
     for (int i = 0; i < 0x10; ++i) {
         uint RowB = i & 3;
-        uint RowA = i & 0xC;
-        output[i] = (matrixA->values[0][RowA + 3] * matrixB->values[3][RowB] >> 8) + (matrixA->values[0][RowA + 2] * matrixB->values[2][RowB] >> 8)
-                    + (matrixA->values[0][RowA + 1] * matrixB->values[1][RowB] >> 8) + (matrixA->values[0][RowA] * matrixB->values[0][RowB] >> 8);
+        uint RowA = (i & 0xC)/4;
+        output[i] = (matrixA->values[RowA][3] * matrixB->values[3][RowB] >> 8) + (matrixA->values[RowA][2] * matrixB->values[2][RowB] >> 8)
+                    + (matrixA->values[RowA][1] * matrixB->values[1][RowB] >> 8) + (matrixA->values[RowA][0] * matrixB->values[0][RowB] >> 8);
     }
 
     for (int i = 0; i < 0x10; ++i) matrixA->values[i / 4][i % 4] = output[i];
