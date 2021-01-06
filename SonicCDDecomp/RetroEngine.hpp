@@ -29,18 +29,17 @@ typedef unsigned int uint;
 #define RETRO_iOS      (4)
 #define RETRO_ANDROID  (5)
 #define RETRO_WP7      (6)
-#define RETRO_LINUX    (7)
 
 #if defined _WIN32
 #define RETRO_PLATFORM (RETRO_WIN)
 #elif defined __APPLE__
 #define RETRO_PLATFORM (RETRO_OSX)
 #else
-#define RETRO_PLATFORM (RETRO_LINUX) //Default
+#define RETRO_PLATFORM (RETRO_WIN) //Default
 #endif
 
 
-#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_LINUX
+#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX
 #define RETRO_USING_SDL (1)
 #else //Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL (0)
@@ -114,7 +113,11 @@ enum RetroBytecodeFormat {
 #define SCREEN_CENTERY (SCREEN_YSIZE / 2)
 
 #if RETRO_PLATFORM == RETRO_WIN
+#ifdef __SWITCH__
+#include <SDL2/SDL.h>
+#else
 #include <SDL.h>
+#endif
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
@@ -125,11 +128,6 @@ enum RetroBytecodeFormat {
 #include "theoraplay.h"
 
 #include "cocoaHelpers.hpp"
-#elif RETRO_PLATFORM == RETRO_LINUX
-#include <SDL2/SDL.h>
-#include <vorbis/vorbisfile.h>
-#include <theora/theora.h>
-#include <theoraplay.h>
 #endif
 
 extern bool usingCWD;

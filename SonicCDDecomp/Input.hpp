@@ -66,6 +66,9 @@ inline void controllerClose(byte controllerID)
 }
 #endif
 
+void ProcessButton(byte controllerID, byte buttonID, byte pressed);
+
+void ProcessInputPost();
 void ProcessInput();
 
 void CheckKeyPress(InputData *input, byte Flags);

@@ -86,8 +86,41 @@ bool getControllerButton(byte buttonID)
 }
 #endif
 
+void ProcessButton(byte controllerID, byte buttonID, byte pressed) {
+    // printLog("Button %i %i %i", controllerID, buttonID, pressed);
+
+    // if (SDL_GameControllerFromInstanceID(controllerID) != controller) return;
+
+    inputType = 1;
+
+    for (int i = 0; i < 8; i++) {
+        if (inputDevice[i].contMappings != buttonID) continue;
+        if (pressed) {
+            inputDevice[i].setHeld();
+        } else if (inputDevice[i].hold)
+            inputDevice[i].setReleased();
+        break;
+    }
+
+    anyPress = false;
+    inputDevice[8].setReleased();
+
+    for (int i = 0; i < 8; i++) {
+        if (!inputDevice[i].hold) continue;
+        anyPress = true;
+        inputDevice[8].setHeld();
+        break;
+    }
+}
+
+void ProcessInputPost() {
+    for (int i = 0; i < 8; i++)
+        inputDevice[i].press = false;
+}
+
 void ProcessInput()
 {
+    return;
 #if RETRO_USING_SDL
     int length           = 0;
     const byte *keyState = SDL_GetKeyboardState(&length);
@@ -103,17 +136,17 @@ void ProcessInput()
                 inputDevice[i].setReleased();
         }
     }
-    else if (inputType == 1) {
-        for (int i = 0; i < 8; i++) {
-            if (getControllerButton(inputDevice[i].contMappings)) {
-                inputDevice[i].setHeld();
-                inputDevice[8].setHeld();
-                continue;
-            }
-            else if (inputDevice[i].hold)
-                inputDevice[i].setReleased();
-        }
-    }
+    // else if (inputType == 1) {
+        // for (int i = 0; i < 8; i++) {
+        //     if (getControllerButton(inputDevice[i].contMappings)) {
+        //         inputDevice[i].setHeld();
+        //         inputDevice[8].setHeld();
+        //         continue;
+        //     }
+        //     else if (inputDevice[i].hold)
+        //         inputDevice[i].setReleased();
+        // }
+    // }
 
     if (keyState[inputDevice[0].keyMappings] || keyState[inputDevice[1].keyMappings] || keyState[inputDevice[2].keyMappings]
         || keyState[inputDevice[3].keyMappings] || keyState[inputDevice[4].keyMappings] || keyState[inputDevice[5].keyMappings]
@@ -123,18 +156,18 @@ void ProcessInput()
     else if (inputType == 0)
         inputDevice[8].setReleased();
 
-    if (getControllerButton(SDL_CONTROLLER_BUTTON_A) || getControllerButton(SDL_CONTROLLER_BUTTON_B) || getControllerButton(SDL_CONTROLLER_BUTTON_X)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_Y) || getControllerButton(SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) || getControllerButton(SDL_CONTROLLER_BUTTON_ZL)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_ZR) || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_UP)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_DOWN) || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_LEFT)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_UP)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_DOWN) || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_LEFT)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_RIGHT) || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_UP)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_DOWN) || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_LEFT)
-        || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_RIGHT) || getControllerButton(SDL_CONTROLLER_BUTTON_START)) {
-        inputType = 1;
-    }
+    // if (getControllerButton(SDL_CONTROLLER_BUTTON_A) || getControllerButton(SDL_CONTROLLER_BUTTON_B) || getControllerButton(SDL_CONTROLLER_BUTTON_X)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_Y) || getControllerButton(SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) || getControllerButton(SDL_CONTROLLER_BUTTON_ZL)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_ZR) || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_UP)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_DOWN) || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_LEFT)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_UP)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_DOWN) || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_LEFT)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_LSTICK_RIGHT) || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_UP)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_DOWN) || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_LEFT)
+    //     || getControllerButton(SDL_CONTROLLER_BUTTON_RSTICK_RIGHT) || getControllerButton(SDL_CONTROLLER_BUTTON_START)) {
+    //     inputType = 1;
+    // }
     else if (inputType == 1)
         inputDevice[8].setReleased();
 #endif

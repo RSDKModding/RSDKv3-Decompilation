@@ -1,5 +1,3 @@
-
-
 .DEFAULT_GOAL := all
 
 NAME		=  scd2011
