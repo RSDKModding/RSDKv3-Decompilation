@@ -59,6 +59,7 @@ inline void ClearGraphicsData()
 void ClearScreen(byte index);
 
 void SetScreenSize(int width, int height);
+void CopyFrameOverlay2x();
 
 // Layer Drawing
 void DrawObjectList(int layer);

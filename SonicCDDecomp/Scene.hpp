@@ -188,6 +188,7 @@ extern CollisionMasks collisionMasks[2];
 extern byte tilesetGFXData[TILESET_SIZE];
 
 extern ushort tile3DFloorBuffer[0x13334];
+extern bool drawStageGFXHQ;
 
 void InitFirstStage();
 void ProcessStage();

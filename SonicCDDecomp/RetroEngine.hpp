@@ -216,6 +216,7 @@ public:
 
 
     ushort *frameBuffer = nullptr;
+    ushort *frameBuffer2x = nullptr;
     uint *videoFrameBuffer = nullptr;
 
     bool isFullScreen = false;
@@ -230,6 +231,7 @@ public:
     SDL_Window *window        = nullptr;
     SDL_Renderer *renderer    = nullptr;
     SDL_Texture *screenBuffer = nullptr;
+    SDL_Texture *screenBuffer2x = nullptr;
     SDL_Texture *videoBuffer = nullptr;
 
     SDL_Event sdlEvents;

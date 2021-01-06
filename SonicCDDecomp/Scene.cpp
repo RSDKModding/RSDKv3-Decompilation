@@ -79,8 +79,9 @@ CollisionMasks collisionMasks[2];
 byte tilesetGFXData[TILESET_SIZE];
 
 ushort tile3DFloorBuffer[0x13334];
+bool drawStageGFXHQ = false;
 
-void InitFirstStage(void)
+void InitFirstStage()
 {
     xScrollOffset = 0;
     yScrollOffset = 0;
@@ -140,7 +141,8 @@ void ProcessStage(void)
             stageMode = STAGEMODE_NORMAL;
 
             break;
-        case STAGEMODE_NORMAL: // Regular
+        case STAGEMODE_NORMAL:
+            drawStageGFXHQ = false;
             if (fadeMode > 0)
                 fadeMode--;
 
@@ -189,7 +191,8 @@ void ProcessStage(void)
 
             DrawStageGFX();
             break;
-        case STAGEMODE_PAUSED: // Paused
+        case STAGEMODE_PAUSED:
+            drawStageGFXHQ = false;
             if (fadeMode > 0)
                 fadeMode--;
 

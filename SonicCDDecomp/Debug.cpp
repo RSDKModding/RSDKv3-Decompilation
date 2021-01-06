@@ -2,7 +2,7 @@
 
 void initDevMenu()
 {
-    // DrawStageGFXHQ = 0;
+    drawStageGFXHQ = false;
     xScrollOffset = 0;
     yScrollOffset = 0;
     StopMusic();
@@ -45,6 +45,7 @@ void initDevMenu()
 }
 void initErrorMessage()
 {
+    drawStageGFXHQ = false;
     xScrollOffset = 0;
     yScrollOffset = 0;
     StopMusic();

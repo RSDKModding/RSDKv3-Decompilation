@@ -20,7 +20,9 @@ int InitRenderDevice()
     sprintf(gameTitle, "%s%s", Engine.gameWindowText, Engine.usingDataFile ? "" : " (Using Data Folder)");
 
     Engine.frameBuffer = new ushort[SCREEN_XSIZE * SCREEN_YSIZE];
+    Engine.frameBuffer2x = new ushort[(SCREEN_XSIZE * 2) * SCREEN_YSIZE];
     memset(Engine.frameBuffer, 0, (SCREEN_XSIZE * SCREEN_YSIZE) * sizeof(ushort));
+    memset(Engine.frameBuffer2x, 0, ((SCREEN_XSIZE * 2) * SCREEN_YSIZE) * sizeof(ushort));
 
 #if RETRO_USING_SDL
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -52,6 +54,13 @@ int InitRenderDevice()
 
     if (!Engine.screenBuffer) {
         printLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
+        return 0;
+    }
+
+    Engine.screenBuffer2x = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE * 2, SCREEN_YSIZE);
+
+    if (!Engine.screenBuffer2x) {
+        printLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
         return 0;
     }
 
@@ -94,11 +103,20 @@ void RenderRenderDevice()
     SDL_SetRenderTarget(Engine.renderer, NULL);
     ushort *pixels = NULL;
     if (Engine.gameMode != ENGINE_VIDEOWAIT) {
-        SDL_LockTexture(Engine.screenBuffer, NULL, (void **)&pixels, &pitch);
-        memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE);
-        SDL_UnlockTexture(Engine.screenBuffer);
+        if (!drawStageGFXHQ) {
+            SDL_LockTexture(Engine.screenBuffer, NULL, (void **)&pixels, &pitch);
+            memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE);
+            SDL_UnlockTexture(Engine.screenBuffer);
 
-        SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, &destScreenPos);
+            SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, &destScreenPos);
+        }
+        else {
+            SDL_LockTexture(Engine.screenBuffer2x, NULL, (void **)&pixels, &pitch);
+            memcpy(pixels, Engine.frameBuffer2x, pitch * SCREEN_YSIZE);
+            SDL_UnlockTexture(Engine.screenBuffer2x);
+
+            SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, &destScreenPos);
+        }
     }
     else {
         SDL_LockTexture(Engine.videoBuffer, NULL, (void **)&pixels, &pitch);
@@ -115,9 +133,13 @@ void ReleaseRenderDevice()
 {
     if (Engine.frameBuffer)
         delete[] Engine.frameBuffer;
+    if (Engine.frameBuffer2x)
+        delete[] Engine.frameBuffer2x;
 #if RETRO_USING_SDL
     SDL_DestroyTexture(Engine.screenBuffer);
     Engine.screenBuffer = NULL;
+    SDL_DestroyTexture(Engine.screenBuffer2x);
+    Engine.screenBuffer2x = NULL;
 
     SDL_DestroyRenderer(Engine.renderer);
     SDL_DestroyWindow(Engine.window);
@@ -171,6 +193,41 @@ void SetScreenSize(int width, int height)
     // OBJECT_BORDER_Y2   = height + 0x100;
 }
 
+void CopyFrameOverlay2x()
+{
+    ushort *frameBuffer   = &Engine.frameBuffer[132 * SCREEN_XSIZE];
+    ushort *frameBuffer2x       = Engine.frameBuffer2x;
+    
+    for (int y = 0; y < 108; ++y) {
+        for (int x = 0; x < SCREEN_XSIZE; ++x) {
+            if (*frameBuffer == 0xF81F) { // magenta
+                frameBuffer2x += 2;
+            }
+            else {
+                *frameBuffer2x = *frameBuffer;
+                ushort *store  = frameBuffer2x + 1;
+                *store         = *frameBuffer;
+                frameBuffer2x  = store + 1;
+            }
+            ++frameBuffer;
+        }
+
+        frameBuffer -= SCREEN_XSIZE;
+        for (int x = 0; x < SCREEN_XSIZE; ++x) {
+            if (*frameBuffer == 0xF81F) { // magenta
+                frameBuffer2x += 2;
+            }
+            else {
+                *frameBuffer2x = *frameBuffer;
+                ushort *store  = frameBuffer2x + 1;
+                *store         = *frameBuffer;
+                frameBuffer2x  = store + 1;
+            }
+            ++frameBuffer;
+        }
+    }
+}
+
 void DrawObjectList(int Layer)
 {
     int size = drawListEntries[Layer].listSize;
@@ -198,8 +255,14 @@ void DrawStageGFX(void)
         switch (stageLayouts[activeTileLayers[0]].type) {
             case LAYER_HSCROLL: DrawHLineScrollLayer(0); break;
             case LAYER_VSCROLL: DrawVLineScrollLayer(0); break;
-            case LAYER_3DFLOOR: Draw3DFloorLayer(0); break;
-            case LAYER_3DSKY: Draw3DSkyLayer(0); break;
+            case LAYER_3DFLOOR:
+                drawStageGFXHQ = false;
+                Draw3DFloorLayer(0);
+                break;
+            case LAYER_3DSKY:
+                //drawStageGFXHQ = true;
+                Draw3DSkyLayer(0);
+                break;
             default: break;
         }
     }
@@ -209,8 +272,14 @@ void DrawStageGFX(void)
         switch (stageLayouts[activeTileLayers[1]].type) {
             case LAYER_HSCROLL: DrawHLineScrollLayer(1); break;
             case LAYER_VSCROLL: DrawVLineScrollLayer(1); break;
-            case LAYER_3DFLOOR: Draw3DFloorLayer(1); break;
-            case LAYER_3DSKY: Draw3DSkyLayer(1); break;
+            case LAYER_3DFLOOR:
+                drawStageGFXHQ = false;
+                Draw3DFloorLayer(1);
+                break;
+            case LAYER_3DSKY:
+                //drawStageGFXHQ = true;
+                Draw3DSkyLayer(1);
+                break;
             default: break;
         }
     }
@@ -220,8 +289,14 @@ void DrawStageGFX(void)
         switch (stageLayouts[activeTileLayers[2]].type) {
             case LAYER_HSCROLL: DrawHLineScrollLayer(2); break;
             case LAYER_VSCROLL: DrawVLineScrollLayer(2); break;
-            case LAYER_3DFLOOR: Draw3DFloorLayer(2); break;
-            case LAYER_3DSKY: Draw3DSkyLayer(2); break;
+            case LAYER_3DFLOOR:
+                drawStageGFXHQ = false;
+                Draw3DFloorLayer(2);
+                break;
+            case LAYER_3DSKY:
+                //drawStageGFXHQ = true;
+                Draw3DSkyLayer(2);
+                break;
             default: break;
         }
     }
@@ -232,8 +307,14 @@ void DrawStageGFX(void)
         switch (stageLayouts[activeTileLayers[3]].type) {
             case LAYER_HSCROLL: DrawHLineScrollLayer(3); break;
             case LAYER_VSCROLL: DrawVLineScrollLayer(3); break;
-            case LAYER_3DFLOOR: Draw3DFloorLayer(3); break;
-            case LAYER_3DSKY: Draw3DSkyLayer(3); break;
+            case LAYER_3DFLOOR:
+                drawStageGFXHQ = false;
+                Draw3DFloorLayer(3);
+                break;
+            case LAYER_3DSKY:
+                //drawStageGFXHQ = true;
+                Draw3DSkyLayer(3);
+                break;
             default: break;
         }
     }
@@ -253,8 +334,16 @@ void DrawStageGFX(void)
     DrawObjectList(5);
     DrawObjectList(6);
 
-    if (fadeMode > 0) {
-        DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
+    if (drawStageGFXHQ) {
+        CopyFrameOverlay2x();
+        if (fadeMode > 0) {
+            DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
+        }
+    }
+    else {
+        if (fadeMode > 0) {
+            DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
+        }
     }
 }
 
@@ -1348,6 +1437,9 @@ void Draw3DSkyLayer(int layerID)
     int sinValue            = sinM[layer->angle & 0x1FF];
     int cosValue            = cosM[layer->angle & 0x1FF];
     ushort *frameBufferPtr  = &Engine.frameBuffer[132 * SCREEN_XSIZE];
+    ushort *bufferPtr       = Engine.frameBuffer2x;
+    if (!drawStageGFXHQ)
+        bufferPtr = &Engine.frameBuffer[132 * SCREEN_XSIZE];
     byte *linePtr           = &gfxLineBuffer[132];
     int layerXPos           = layer->XPos >> 4;
     int layerZPos           = layer->ZPos >> 4;
@@ -1375,25 +1467,39 @@ void Draw3DSkyLayer(int layerID)
                     case FLIP_XY: tilePixel += 0xF - (tileX & 0xF) + SCREEN_YSIZE - TILE_SIZE * (tileY & 0xF); break;
                     default: break;
                 }
+
                 if (*tilePixel > 0)
-                    *frameBufferPtr = activePalette[*tilePixel];
+                    *bufferPtr = activePalette[*tilePixel];
+                else if (drawStageGFXHQ)
+                    *bufferPtr = *frameBufferPtr;
+            }
+            else if (drawStageGFXHQ) {
+                *bufferPtr = *frameBufferPtr;
             }
             if (lineBuffer & 1)
                 ++frameBufferPtr;
+            if (drawStageGFXHQ) {
+                bufferPtr++;
+            }
+            else if (lineBuffer & 1) {
+                ++bufferPtr;
+            }
             lineBuffer++;
             XPos += xBuffer;
             YPos += yBuffer;
         }
         if (!(i & 1))
             frameBufferPtr -= SCREEN_XSIZE;
+        if (!(i & 1) && !drawStageGFXHQ) {
+            bufferPtr -= SCREEN_XSIZE;
+        }
     }
 
-    //TODO(?): this is run only when the code above is drawn to a "HQ" framebuffer
-    //if (false) {
-    //    frameBufferPtr = &Engine.frameBuffer[132 * SCREEN_XSIZE];
-    //    int cnt    = 108 * SCREEN_XSIZE;
-    //    while (cnt--) *frameBufferPtr++ = 0xF81Fu; //Magenta
-    //}
+    if (drawStageGFXHQ) {
+        frameBufferPtr = &Engine.frameBuffer[132 * SCREEN_XSIZE];
+        int cnt        = 108 * SCREEN_XSIZE;
+        while (cnt--) *frameBufferPtr++ = 0xF81F; // Magenta
+    }
 #endif
 
 #if RETRO_RENDERTYPE == RETRO_HW_RENDER
