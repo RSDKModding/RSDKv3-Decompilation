@@ -136,9 +136,9 @@ void ProcessStage(void)
             stageMilliseconds = 0;
             stageSeconds      = 0;
             stageMinutes      = 0;
+            stageMode         = STAGEMODE_NORMAL;
             ResetBackgroundSettings();
             LoadStageFiles();
-            stageMode = STAGEMODE_NORMAL;
 
             break;
         case STAGEMODE_NORMAL:

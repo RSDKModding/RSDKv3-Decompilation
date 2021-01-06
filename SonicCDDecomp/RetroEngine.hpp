@@ -28,6 +28,7 @@ typedef unsigned int uint;
 #define RETRO_ANDROID  (5)
 #define RETRO_WP7      (6)
 
+ // use this macro (RETRO_PLATFORM) to define platform specific code blocks and etc to run the engine
 #if defined _WIN32
 #define RETRO_PLATFORM (RETRO_WIN)
 #elif defined __APPLE__
@@ -57,6 +58,13 @@ typedef unsigned int uint;
 #define RETRO_RENDERTYPE (RETRO_SW_RENDER)
 
 #define RETRO_USE_HAPTICS (1)
+
+// use *this* macro to determine what platform the game thinks its running on (since only the first 7 platforms are supported natively by scripts)
+#if RETRO_PLATFORM <= RETRO_WP7
+#define RETRO_GAMEPLATFORMID (RETRO_PLATFORM) 
+#else
+#define RETRO_GAMEPLATFORMID (RETRO_WIN) // use *this* macro to determine what platform the game thinks its running on (since only the first 7 platforms are supported natively by scripts)
+#endif
 
 enum RetroLanguages {
     RETRO_EN = 0,
