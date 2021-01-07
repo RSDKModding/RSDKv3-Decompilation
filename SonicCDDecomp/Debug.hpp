@@ -20,7 +20,7 @@ inline void printLog(const char *msg, ...)
         else
             sprintf(pathBuffer, "log.txt");
 #else
-        sprintf(pathBuffer, "log.txt");
+        sprintf(pathBuffer, BASE_PATH"log.txt");
 #endif
         FileIO *file = fOpen(pathBuffer, "a");
         if (file) {

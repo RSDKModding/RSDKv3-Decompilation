@@ -1,0 +1,41 @@
+name: Build Sonic CD for multiple platforms
+
+on:
+  push:
+    branches:
+      - master
+      - continuous-delivery
+
+jobs:
+  psvita:
+    runs-on: ubuntu-latest
+    container: vitasdk/vitasdk:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: apk add --no-cache make cmake
+      - name: Get SDL2
+        run: |
+          wget https://github.com/rsn8887/SDL-Vita/releases/download/2.0.8dev_vita_rsn8887_git_20180523/sdl2_vita_20180523.tar.xz
+          mkdir -p dependencies/vita/sdl2
+          tar -xf sdl2_vita_20180523.tar.xz -C dependencies/vita/sdl2
+      - name: Get and compile libtheora
+        run: |
+          wget https://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2 && \
+          tar -xf libtheora-1.1.1.tar.bz2 -C dependencies/vita && \
+          mv dependencies/vita/libtheora-1.1.1 dependencies/vita/libtheora
+          cd dependencies/vita/libtheora
+          ./configure --host=arm-vita-eabi --prefix=${VITASDK}/arm-vita-eabi --disable-shared --enable-static --disable-spec --disable-examples
+          make install
+      - name: Build Sonic CD
+        run: |
+          cd SonicCD.Vita
+          cmake .
+          make
+      - name: Upload VPK
+        uses: actions/upload-artifact@v2
+        with:
+          name: SonicCD-vita
+          path: SonicCD.Vita/SonicCD.vpk
+          if-no-files-found: error

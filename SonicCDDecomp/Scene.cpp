@@ -810,15 +810,25 @@ void LoadStageGIFFile(int stageID)
         FileRead(&fileBuffer, 1);
         height += (fileBuffer << 8);
 
-        FileRead(&fileBuffer, 1); // Palette Size (thrown away) :/
-        FileRead(&fileBuffer, 1); // BG Colour index (thrown away)
-        FileRead(&fileBuffer, 1); // idk actually (still thrown away)
+        FileRead(&fileBuffer, 1); // Palette Size
+        int has_pallete = (fileBuffer & 0x80) >> 7;
+        int colors = ((fileBuffer & 0x70) >> 4) + 1;
+        int palette_size = (fileBuffer & 0x7) + 1;
+        if (palette_size > 0)
+            palette_size = 1 << palette_size;
 
-        byte clr[3];
-        for (int c = 0; c < 0x80; ++c) FileRead(clr, 3);
-        for (int c = 0x80; c < 0x100; ++c) {
-            FileRead(clr, 3);
-            SetPaletteEntry(-1, c, clr[0], clr[1], clr[2]);
+        FileRead(&fileBuffer, 1); // BG Colour index (thrown away)
+        FileRead(&fileBuffer, 1); // Pixel aspect ratio (thrown away)
+
+        if (palette_size == 256)
+        {
+            byte clr[3];
+
+            for (int c = 0; c < 0x80; ++c) FileRead(clr, 3);
+            for (int c = 0x80; c < 0x100; ++c) {
+                FileRead(clr, 3);
+                SetPaletteEntry(-1, c, clr[0], clr[1], clr[2]);
+            }
         }
 
         FileRead(&fileBuffer, 1);

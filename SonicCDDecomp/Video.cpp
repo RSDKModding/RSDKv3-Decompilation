@@ -36,7 +36,7 @@ static void videoClose(THEORAPLAY_Io *io)
 
 void PlayVideoFile(char *filePath) { 
     char filepath[0x100];
-    StrCopy(filepath, "videos/");
+    StrCopy(filepath, BASE_PATH"videos/");
     StrAdd(filepath, filePath);
     StrAdd(filepath, ".ogv");
 
