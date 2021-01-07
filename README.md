@@ -58,7 +58,10 @@ if you've cloned this repo and ported it to a platform not on the list or made s
 ### A: Buttons like leaderboards & achievements require code to be added to support online functionality & menus (though they are saved anyways), and other buttons like the controls button on PC or privacy button on mobile have no game code and are instead hardcoded through callbacks, and I just didnt feel like going through the effort to decompile all that, since its not really worth it
 
 ### Q: Is the titlecard text slightly offset when using a PC datafile?
-### A: Its not just you, but unfortunately its an error with the scripts, so if you wanna go into TitleCards/R[X]\_TitleCard.txt and fix it, be my guest
+### A: Its not just you, but unfortunately its an error with the scripts, so if you wanna go into TitleCards/R[X]\_TitleCard.txt and fix it, be my guest, alternatively set screenWidth to 400, instead of 424 in the settings.ini file to match the PC version's resolution
+
+### Q: Theres a weird spot on the title screen how do I fix it?
+### A: Set screenWidth to 400, instead of 424 in the settings.ini file to match the PC version's resolution
 
 ### Q: The screen is tearing, how do I fix it
 ### A: Try turning on vsync, that worked for me (on mac)
