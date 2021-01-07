@@ -28,7 +28,6 @@ bool CheckRSDKFile(const char *filePath)
     Engine.usingDataFile = false;
     Engine.usingBytecode = false;
 
-    // CopyFilePath(filename, &rsdkName);
     cFileHandle = fOpen(filePath, "rb");
     if (cFileHandle) {
         Engine.usingDataFile = true;

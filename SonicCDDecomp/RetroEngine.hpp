@@ -31,7 +31,16 @@ typedef unsigned int uint;
 #if defined _WIN32
 #define RETRO_PLATFORM (RETRO_WIN)
 #elif defined __APPLE__
+#include <TargetConditionals.h>
+#if TARGET_IPHONE_SIMULATOR
+#define RETRO_PLATFORM (RETRO_iOS)
+#elif TARGET_OS_IPHONE
+#define RETRO_PLATFORM (RETRO_iOS)
+#elif TARGET_OS_MAC
 #define RETRO_PLATFORM (RETRO_OSX)
+#else
+#   error "Unknown Apple platform"
+#endif
 #else
 #define RETRO_PLATFORM (RETRO_WIN) //Default
 #endif
@@ -46,7 +55,7 @@ typedef unsigned int uint;
 #define DEFAULT_FULLSCREEN false
 #endif
 
-#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX
+#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS
 #define RETRO_USING_SDL (1)
 #else //Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL (0)
@@ -134,6 +143,13 @@ enum RetroBytecodeFormat {
 #elif RETRO_PLATFORM == RETRO_OSX
 #include <SDL2/SDL.h>
 #include <Vorbis/vorbisfile.h>
+#include <Theora/theora.h>
+#include "theoraplay.h"
+
+#include "cocoaHelpers.hpp"
+#elif RETRO_PLATFORM == RETRO_iOS
+#include <SDL2/SDL.h>
+#include <vorbis/vorbisfile.h>
 #include <Theora/theora.h>
 #include "theoraplay.h"
 

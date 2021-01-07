@@ -78,6 +78,9 @@ bool processEvents()
                     touchY[i] = (finger->y * SCREEN_YSIZE * Engine.windowScale) / Engine.windowScale;
                 }
                 break;
+            case SDL_FINGERUP:
+                touches = SDL_GetNumTouchFingers(SDL_GetTouchDevice(1));
+                break;
             case SDL_KEYDOWN:
                 switch (Engine.sdlEvents.key.keysym.sym) {
                     default: break;
@@ -221,7 +224,7 @@ void RetroEngine::Run()
 
         if (frameDelta > 1000.0f / (float)refreshRate) {
             frameEnd = frameStart;
-
+            
             running = processEvents();
 
             for (int s = 0; s < gameSpeed; ++s) {
@@ -429,9 +432,14 @@ void RetroEngine::Callback(int callbackID)
             break;
         case CALLBACK_RESTART_SELECTED:
             printLog("Callback: Restart Selected");
+            stageMode = STAGEMODE_LOAD;
             break;
-        case CALLBACK_EXIT_SELECTED: gameMode = ENGINE_EXITGAME;
+        case CALLBACK_EXIT_SELECTED:
+            //gameMode = ENGINE_EXITGAME;
             printLog("Callback: Exit Selected");
+            activeStageList = 0;
+            stageListPosition = 0;
+            stageMode = STAGEMODE_LOAD;
             break;
         case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
             gameMode = ENGINE_EXITGAME;

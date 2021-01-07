@@ -58,6 +58,8 @@ inline bool ReadSaveRAMData()
         sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
     else
         sprintf(buffer, "%sSdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_iOS
+        sprintf(buffer, "%s/SData.bin", getDocumentsPath());
 #else
         sprintf(buffer, "%sSdata.bin", gamePath);
 #endif
@@ -83,6 +85,8 @@ inline bool WriteSaveRAMData()
         sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
     else
         sprintf(buffer, "%sSdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_iOS
+    sprintf(buffer, "%s/SData.bin", getDocumentsPath());
 #else
     sprintf(buffer, "%sSdata.bin", gamePath);
 #endif

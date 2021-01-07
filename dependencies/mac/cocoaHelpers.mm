@@ -12,4 +12,14 @@ const char* getResourcesPath(void)
         return (char*)[resource_path UTF8String];
     }
 }
+const char* getDocumentsPath(void)
+{
+    @autoreleasepool
+    {
+        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString* path = [paths objectAtIndex:0];
+        
+        return (char*)[path UTF8String];
+    }
+}
 #endif

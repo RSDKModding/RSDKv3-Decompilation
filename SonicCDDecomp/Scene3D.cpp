@@ -224,8 +224,6 @@ void transformVertexBuffer()
         vert->x = (vx * matFinal.values[0][0] >> 8) + (vy * matFinal.values[1][0] >> 8) + (vz * matFinal.values[2][0] >> 8) + matFinal.values[3][0];
         vert->y = (vx * matFinal.values[0][1] >> 8) + (vy * matFinal.values[1][1] >> 8) + (vz * matFinal.values[2][1] >> 8) + matFinal.values[3][1];
         vert->z = (vx * matFinal.values[0][2] >> 8) + (vy * matFinal.values[1][2] >> 8) + (vz * matFinal.values[2][2] >> 8) + matFinal.values[3][2];
-        if (vert->z < 1 && vert->z > 0)
-            vert->z = 1;
     } while (++outVertexID != vertexCount);
 }
 void transformVerticies(Matrix *matrix, int startIndex, int endIndex)

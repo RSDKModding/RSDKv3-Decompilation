@@ -47,6 +47,11 @@ bin/
 [Dd]ependencies/mac/libogg/
 [Dd]ependencies/mac/libvorbis/
 [Dd]ependencies/mac/libtheora/
+[Dd]ependencies/ios/SDL2.framework/
+[Dd]ependencies/ios/libSDLMain.a
+[Dd]ependencies/ios/[Oo]gg.framework/
+[Dd]ependencies/ios/[Vv]orbis.framework/
+[Dd]ependencies/ios/[Tt]heora.framework/
 
 #OSX files
 *.DS_Store

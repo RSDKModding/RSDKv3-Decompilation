@@ -29,6 +29,8 @@ int InitRenderDevice()
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
     SDL_SetHint(SDL_HINT_RENDER_VSYNC, Engine.vsync ? "1" : "0");
+    
+    SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
 
     Engine.window = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE, SCREEN_YSIZE,
                                      SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
@@ -46,7 +48,7 @@ int InitRenderDevice()
         Engine.gameMode = ENGINE_EXITGAME;
         return 0;
     }
-
+    
     SDL_RenderSetLogicalSize(Engine.renderer, SCREEN_XSIZE, SCREEN_YSIZE);
     SDL_SetRenderDrawBlendMode(Engine.renderer, SDL_BLENDMODE_BLEND);
 
@@ -80,6 +82,14 @@ int InitRenderDevice()
 
     SDL_SetWindowResizable(Engine.window, SDL_FALSE);
     SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    
+    
+#if RETRO_PLATFORM == RETRO_iOS
+    SDL_RestoreWindow(Engine.window);
+    SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    Engine.isFullScreen = true;
+#endif
+    
 #endif
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;

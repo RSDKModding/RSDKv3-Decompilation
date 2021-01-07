@@ -130,6 +130,8 @@ void InitUserdata()
         sprintf(buffer, "%s/settings.ini", getResourcesPath());
     else
         sprintf(buffer, "%ssettings.ini", gamePath);
+#elif RETRO_PLATFORM == RETRO_iOS
+    sprintf(buffer, "%s/settings.ini", getDocumentsPath());
 #else
     sprintf(buffer, BASE_PATH"settings.ini");
 #endif
@@ -270,6 +272,8 @@ void InitUserdata()
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
         sprintf(buffer, "%sUdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_iOS
+    sprintf(buffer, "%s/UData.bin", getDocumentsPath());
 #else
     sprintf(buffer, "%sUdata.bin", gamePath);
 #endif
