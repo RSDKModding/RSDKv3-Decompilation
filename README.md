@@ -36,8 +36,11 @@ even if your platform isn't supported by the official releases, buy it for the a
 * or grab a prebuilt executable from the releases section
 
 ## Mac:
-* Clone the repo, then follow the instructions in the [depencencies readme for mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the xcode solution
+* Clone the repo, then follow the instructions in the [depencencies readme for mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the xcode project
 * or grab a prebuilt executable from the releases section
+
+## iOS:
+* Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the xcode project
 
 ## PS Vita:
 * Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
