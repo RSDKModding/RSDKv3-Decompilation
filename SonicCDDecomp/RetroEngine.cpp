@@ -222,50 +222,51 @@ void RetroEngine::Run()
         frameStart = SDL_GetTicks();
         frameDelta = frameStart - frameEnd;
 
-        if (frameDelta > 1000.0f / (float)refreshRate) {
-            frameEnd = frameStart;
-            
-            running = processEvents();
+        if (frameDelta < 1000.0f / (float)refreshRate)
+            SDL_Delay(1000.0f / (float)refreshRate - frameDelta);
 
-            for (int s = 0; s < gameSpeed; ++s) {
-                ProcessInput();
+        frameEnd = SDL_GetTicks();
 
-                if (!masterPaused || frameStep) {
-                    switch (gameMode) {
-                        case ENGINE_DEVMENU: processStageSelect(); break;
-                        case ENGINE_MAINGAME: ProcessStage(); break;
-                        case ENGINE_INITDEVMENU:
-                            LoadGameConfig("Data/Game/GameConfig.bin");
-                            initDevMenu();
-                            ResetCurrentStageFolder();
-                            break;
-                        case ENGINE_EXITGAME: running = false; break;
-                        case ENGINE_SCRIPTERROR:
-                            LoadGameConfig("Data/Game/GameConfig.bin");
-                            initErrorMessage();
-                            ResetCurrentStageFolder();
-                            break;
-                        case ENGINE_ENTER_HIRESMODE:
-                            gameMode    = ENGINE_MAINGAME;
-                            highResMode = true;
-                            break;
-                        case ENGINE_EXIT_HIRESMODE:
-                            gameMode    = ENGINE_MAINGAME;
-                            highResMode = false;
-                            break;
-                        case ENGINE_PAUSE: break;
-                        case ENGINE_WAIT: break;
-                        case ENGINE_VIDEOWAIT:
-                            if (ProcessVideo() == 1)
-                                gameMode = ENGINE_MAINGAME;
-                            break;
-                        default: break;
-                    }
+        running = processEvents();
 
-                    RenderRenderDevice();
+        for (int s = 0; s < gameSpeed; ++s) {
+            ProcessInput();
 
-                    frameStep = false;
+            if (!masterPaused || frameStep) {
+                switch (gameMode) {
+                    case ENGINE_DEVMENU: processStageSelect(); break;
+                    case ENGINE_MAINGAME: ProcessStage(); break;
+                    case ENGINE_INITDEVMENU:
+                        LoadGameConfig("Data/Game/GameConfig.bin");
+                        initDevMenu();
+                        ResetCurrentStageFolder();
+                        break;
+                    case ENGINE_EXITGAME: running = false; break;
+                    case ENGINE_SCRIPTERROR:
+                        LoadGameConfig("Data/Game/GameConfig.bin");
+                        initErrorMessage();
+                        ResetCurrentStageFolder();
+                        break;
+                    case ENGINE_ENTER_HIRESMODE:
+                        gameMode    = ENGINE_MAINGAME;
+                        highResMode = true;
+                        break;
+                    case ENGINE_EXIT_HIRESMODE:
+                        gameMode    = ENGINE_MAINGAME;
+                        highResMode = false;
+                        break;
+                    case ENGINE_PAUSE: break;
+                    case ENGINE_WAIT: break;
+                    case ENGINE_VIDEOWAIT:
+                        if (ProcessVideo() == 1)
+                            gameMode = ENGINE_MAINGAME;
+                        break;
+                    default: break;
                 }
+
+                RenderRenderDevice();
+
+                frameStep = false;
             }
         }
     }
