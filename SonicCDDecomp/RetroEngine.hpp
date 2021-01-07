@@ -26,6 +26,8 @@ typedef unsigned int uint;
 #define RETRO_iOS      (4)
 #define RETRO_ANDROID  (5)
 #define RETRO_WP7      (6)
+//Custom Platforms start here
+#define RETRO_VITA     (7)
 
  // use this macro (RETRO_PLATFORM) to define platform specific code blocks and etc to run the engine
 #if defined _WIN32
@@ -40,12 +42,14 @@ typedef unsigned int uint;
 #define RETRO_PLATFORM (RETRO_OSX)
 #else
 #   error "Unknown Apple platform"
-#endif
+#endif 
+#elif defined __vita__
+#define RETRO_PLATFORM (RETRO_VITA)
 #else
 #define RETRO_PLATFORM (RETRO_WIN) //Default
 #endif
 
-#if defined __vita__
+#if RETRO_PLATFORM == RETRO_VITA
 #define BASE_PATH "ux0:data/SonicCD/"
 #define DEFAULT_SCREEN_XSIZE 480
 #define DEFAULT_FULLSCREEN true
