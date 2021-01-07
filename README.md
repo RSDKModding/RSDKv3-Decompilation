@@ -39,6 +39,9 @@ even if your platform isn't supported by the official releases, buy it for the a
 * Clone the repo, then follow the instructions in the [depencencies readme for mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the xcode project
 * or grab a prebuilt executable from the releases section
 
+## Linux:
+* Clone the repo, install your distro's SDL2, libtheora, and libvorbisfile packages, and then run `make` in the cloned repo's directory
+
 ## iOS:
 * Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the xcode project
 
