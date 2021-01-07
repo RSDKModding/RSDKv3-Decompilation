@@ -2259,8 +2259,11 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     }
                     case VAR_PLAYERCOLLISIONLEFT: {
                         AnimationFile *animFile = playerList[activePlayer].animationFile;
+                        Player *plr             = &playerList[activePlayer];
                         if (animFile) {
-                            int h = animFrames[animationList[animFile->aniListOffset].frameListOffset].hitboxID;
+                            int h = animFrames[animationList[animFile->aniListOffset + plr->boundEntity->animation].frameListOffset
+                                               + plr->boundEntity->frame]
+                                        .hitboxID;
 
                             scriptEng.operands[i] = hitboxList[animFile->hitboxListOffset + h].left[0];
                         }
@@ -2271,8 +2274,11 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     }
                     case VAR_PLAYERCOLLISIONTOP: {
                         AnimationFile *animFile = playerList[activePlayer].animationFile;
+                        Player *plr             = &playerList[activePlayer];
                         if (animFile) {
-                            int h = animFrames[animationList[animFile->aniListOffset].frameListOffset].hitboxID;
+                            int h = animFrames[animationList[animFile->aniListOffset + plr->boundEntity->animation].frameListOffset
+                                               + plr->boundEntity->frame]
+                                        .hitboxID;
 
                             scriptEng.operands[i] = hitboxList[animFile->hitboxListOffset + h].top[0];
                         }
@@ -2283,8 +2289,11 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     }
                     case VAR_PLAYERCOLLISIONRIGHT: {
                         AnimationFile *animFile = playerList[activePlayer].animationFile;
+                        Player *plr             = &playerList[activePlayer];
                         if (animFile) {
-                            int h = animFrames[animationList[animFile->aniListOffset].frameListOffset].hitboxID;
+                            int h = animFrames[animationList[animFile->aniListOffset + plr->boundEntity->animation].frameListOffset
+                                               + plr->boundEntity->frame]
+                                        .hitboxID;
 
                             scriptEng.operands[i] = hitboxList[animFile->hitboxListOffset + h].right[0];
                         }
@@ -2295,8 +2304,11 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     }
                     case VAR_PLAYERCOLLISIONBOTTOM: {
                         AnimationFile *animFile = playerList[activePlayer].animationFile;
+                        Player *plr             = &playerList[activePlayer];
                         if (animFile) {
-                            int h = animFrames[animationList[animFile->aniListOffset].frameListOffset].hitboxID;
+                            int h = animFrames[animationList[animFile->aniListOffset + plr->boundEntity->animation].frameListOffset
+                                               + plr->boundEntity->frame]
+                                        .hitboxID;
 
                             scriptEng.operands[i] = hitboxList[animFile->hitboxListOffset + h].bottom[0];
                         }
