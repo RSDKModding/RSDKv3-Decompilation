@@ -22,6 +22,7 @@ MusicPlaybackInfo musInfo;
 
 #if RETRO_USING_SDL
 SDL_AudioSpec audioDeviceFormat;
+SDL_AudioStream *ogv_stream;
 
 #define AUDIO_FREQUENCY (44100)
 #define AUDIO_FORMAT    (0x8010) /**< Signed 16-bit samples */
@@ -53,6 +54,20 @@ int InitAudioPlayback()
         printLog("Unable to open audio device: %s", SDL_GetError());
         return false;
     }
+
+    // Init video sound stuff
+    // TODO: Unfortunately, we're assuming that video sound is stereo at 48000Hz.
+    // This is true of every .ogv file in the game (the Steam version, at least),
+    // but it would be nice to make this dynamic. Unfortunately, THEORAPLAY's API
+    // makes this awkward.
+    ogv_stream = SDL_NewAudioStream(AUDIO_F32, 2, 48000, audioDeviceFormat.format,
+                                  audioDeviceFormat.channels, audioDeviceFormat.freq);
+    if (!ogv_stream) {
+        printLog("Failed to create stream: %s", SDL_GetError());
+        SDL_CloseAudio();
+        return false;
+    }
+
     #endif
 
     FileInfo info;
@@ -221,6 +236,30 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
         return;
 
     ProcessMusicStream(data, stream, len);
+
+    // Process music being played by a video
+    if (videoPlaying) {
+        // TODO - Lock the audio device when THEORAPLAY is accessing the audio list(?)
+
+        // Fetch THEORAPLAY audio packets, and shove them into the SDL Audio Stream
+        const THEORAPLAY_AudioPacket *packet;
+
+        while ((packet = THEORAPLAY_getAudio(videoDecoder)) != NULL) {
+            SDL_AudioStreamPut(ogv_stream, packet->samples, packet->frames * sizeof (float) * 2); // 2 for stereo
+            THEORAPLAY_freeAudio(packet);
+        }
+
+        byte buffer[AUDIO_BUFFERSIZE];
+
+        // Fetch the converted audio data, which is ready for mixing.
+        // TODO: This code doesn't account for `len` being larger than the buffer.
+        // ...But neither does `trackRequestMoreData`, so I guess it's not my problem.
+        int get = SDL_AudioStreamGet(ogv_stream, buffer, len);
+
+        // Mix the converted audio data into the final output
+        if (get != -1)
+            ProcessAudioMixing(NULL, stream, buffer, audioDeviceFormat.format, get, (bgmVolume * masterVolume) / MAX_VOLUME, true); // TODO - Should we be using the music volume?
+    }
 
     for (byte i = 0; i < CHANNEL_COUNT; ++i) {
         ChannelInfo *sfx = &sfxChannels[i];

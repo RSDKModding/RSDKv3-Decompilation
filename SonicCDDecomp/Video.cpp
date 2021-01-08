@@ -64,9 +64,6 @@ void PlayVideoFile(char *filePath) {
             return;
         }
 
-        //clear audio data, we dont use it
-        while ((videoAudioData = THEORAPLAY_getAudio(videoDecoder)) != NULL) THEORAPLAY_freeAudio(videoAudioData);
-
         videoWidth  = videoVidData->width;
         videoHeight = videoVidData->height;
         SetupVideoBuffer(videoWidth, videoHeight);
@@ -226,9 +223,6 @@ int ProcessVideo()
                 THEORAPLAY_freeVideo(videoVidData);
                 videoVidData = NULL;
             }
-
-            //Clear audio data
-            while ((videoAudioData = THEORAPLAY_getAudio(videoDecoder)) != NULL) THEORAPLAY_freeAudio(videoAudioData);
 
             return 2; // its playing as expected
         }
