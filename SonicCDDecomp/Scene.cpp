@@ -47,7 +47,7 @@ int lastXSize = -1;
 bool pauseEnabled     = true;
 bool timeEnabled      = true;
 bool debugMode        = false;
-int stageTimer        = 0;
+int frameCounter        = 0;
 int stageMilliseconds = 0;
 int stageSeconds      = 0;
 int stageMinutes      = 0;
@@ -104,6 +104,7 @@ void InitFirstStage()
 
 void ProcessStage(void)
 {
+    int updateMax = 0; 
     switch (stageMode) {
         case STAGEMODE_LOAD: // Startup
             fadeMode = 0;
@@ -136,6 +137,7 @@ void ProcessStage(void)
             stageMilliseconds = 0;
             stageSeconds      = 0;
             stageMinutes      = 0;
+            Engine.frameCount = 0;
             stageMode         = STAGEMODE_NORMAL;
             ResetBackgroundSettings();
             LoadStageFiles();
@@ -161,18 +163,30 @@ void ProcessStage(void)
             }
 
             if (timeEnabled) {
-                if (++stageTimer == Engine.refreshRate) {
-                    stageTimer = 0;
+                if (++frameCounter == Engine.refreshRate) {
+                    frameCounter = 0;
                     if (++stageSeconds > 59) {
                         stageSeconds = 0;
                         if (++stageMinutes > 59)
                             stageMinutes = 0;
                     }
                 }
-                stageMilliseconds = 100 * stageTimer / Engine.refreshRate;
+                stageMilliseconds = 100 * frameCounter / Engine.refreshRate;
             }
 
-            ProcessObjects();
+            updateMax = 1;
+            /*updateMax = Engine.renderFrameIndex;
+            if (Engine.refreshRate >= Engine.targetRefreshRate) {
+                updateMax = 0;
+                if (Engine.frameCount % Engine.skipFrameIndex < Engine.renderFrameIndex)
+                    updateMax = 1;
+            }*/
+
+            // Update
+            for (int i = 0; i < updateMax; ++i) {
+                ProcessObjects();
+            }
+
             if (cameraTarget > -1) {
                 if (cameraEnabled == 1) {
                     switch (cameraStyle) {
@@ -204,7 +218,20 @@ void ProcessStage(void)
             lastYSize = -1;
             CheckKeyDown(&keyDown, 0xFF);
             CheckKeyPress(&keyPress, 0xFF);
-            ProcessPausedObjects();
+            
+            updateMax = 1;
+            /*updateMax = Engine.renderFrameIndex;
+            if (Engine.refreshRate >= Engine.targetRefreshRate) {
+                updateMax = 0;
+                if (Engine.frameCount % Engine.skipFrameIndex < Engine.renderFrameIndex)
+                    updateMax = 1;
+            }*/
+
+            // Update
+            for (int i = 0; i < updateMax; ++i) {
+                ProcessPausedObjects();
+            }
+
             DrawObjectList(0);
             DrawObjectList(1);
             DrawObjectList(2);
@@ -218,6 +245,7 @@ void ProcessStage(void)
             }
             break;
     }
+    Engine.frameCount++;
 }
 
 void LoadStageFiles(void)

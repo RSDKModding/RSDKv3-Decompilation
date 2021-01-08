@@ -178,18 +178,7 @@ int ProcessVideo()
         }
 
         if (!THEORAPLAY_isDecoding(videoDecoder) || (videoSkipped && fadeMode >= 0xFF)) {
-            if (videoSkipped && fadeMode >= 0xFF)
-                fadeMode = 0;
-
-            if (videoVidData)
-                THEORAPLAY_freeVideo(videoVidData);
-            if (videoAudioData)
-                THEORAPLAY_freeAudio(videoAudioData);
-            if (videoDecoder)
-                THEORAPLAY_stopDecode(videoDecoder);
-
-            CloseVideoBuffer();
-            videoPlaying = false;
+            StopVideoPlayback();
 
             return 1; // video finished
         }
@@ -246,6 +235,24 @@ int ProcessVideo()
     }
 
     return 0; // its not even initialised
+}
+
+void StopVideoPlayback()
+{
+    if (videoPlaying) {
+        if (videoSkipped && fadeMode >= 0xFF)
+            fadeMode = 0;
+
+        if (videoVidData)
+            THEORAPLAY_freeVideo(videoVidData);
+        if (videoAudioData)
+            THEORAPLAY_freeAudio(videoAudioData);
+        if (videoDecoder)
+            THEORAPLAY_stopDecode(videoDecoder);
+
+        CloseVideoBuffer();
+        videoPlaying = false;
+    }
 }
 
 

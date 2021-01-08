@@ -142,8 +142,9 @@ void InitUserdata()
         ini.SetBool("Dev", "EngineDebugMode", engineDebugMode = false);
         ini.SetInteger("Dev", "StartingCategory", Engine.startList = 0);
         ini.SetInteger("Dev", "StartingScene", Engine.startStage = 0);
-        ini.SetBool("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
+        ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
         ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir = true);
+        ini.SetBool("Dev", "UseHQModes", Engine.useHQModes = true);
 
         ini.SetBool("Game", "Language", Engine.language = RETRO_EN);
 
@@ -195,6 +196,8 @@ void InitUserdata()
             Engine.fastForwardSpeed = 8;
         if (!ini.GetBool("Dev", "UseSteamDir", &Engine.useSteamDir))
             Engine.useSteamDir = true;
+        if (!ini.GetBool("Dev", "UseHQModes", &Engine.useHQModes))
+            Engine.useHQModes = true;
 
         if (!ini.GetInteger("Game", "Language", &Engine.language))
             Engine.language = RETRO_EN;
@@ -209,7 +212,7 @@ void InitUserdata()
             Engine.windowScale = 2;
         if (!ini.GetInteger("Window", "ScreenWidth", &SCREEN_XSIZE))
             SCREEN_XSIZE = DEFAULT_SCREEN_XSIZE;
-        if (!ini.GetInteger("Window", "Refresh Rate", &Engine.refreshRate))
+        if (!ini.GetInteger("Window", "RefreshRate", &Engine.refreshRate))
             Engine.refreshRate = 60;
 
         float bv = 0, sv = 0;
@@ -315,6 +318,8 @@ void writeSettings() {
     ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
     ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it (windows only)");
     ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir);
+    ini.SetComment("Dev", "UseHQComment","Determines if applicable rendering modes (such as 3D floor from special stages) will render in \"High Quality\" mode or standard mode");
+    ini.SetBool("Dev", "UseHQModes", Engine.useHQModes);
 
     ini.SetComment("Game", "LangComment", "Sets the game language (0 = EN, 1 = FR, 2 = IT, 3 = DE, 4 = ES, 5 = JP)");
     ini.SetInteger("Game", "Language", Engine.language);

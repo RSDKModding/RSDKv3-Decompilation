@@ -220,6 +220,7 @@ public:
     bool frameStep       = false;
 
     bool showPaletteOverlay = false;
+    bool useHQModes         = true;
 
     void Init();
     void Run();
@@ -261,7 +262,13 @@ public:
     bool borderless = false;
     bool vsync = false;
     int windowScale = 2;
-    int refreshRate = 60;
+    int refreshRate       = 60; //user-picked screen update rate
+    int screenRefreshRate = 60; //hardware screen update rate
+    int targetRefreshRate = 60; //game logic update rate
+
+    uint frameCount      = 0; // frames since scene load
+    int renderFrameIndex = 0;
+    int skipFrameIndex   = 0;
 
 #if RETRO_USING_SDL
     SDL_Window *window        = nullptr;

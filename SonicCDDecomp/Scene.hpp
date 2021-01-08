@@ -156,7 +156,7 @@ extern int lastYSize;
 extern bool pauseEnabled;
 extern bool timeEnabled;
 extern bool debugMode;
-extern int stageTimer;
+extern int frameCounter;
 extern int stageMilliseconds;
 extern int stageSeconds;
 extern int stageMinutes;

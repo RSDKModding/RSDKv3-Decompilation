@@ -5,6 +5,22 @@ bool engineDebugMode = false;
 
 RetroEngine Engine = RetroEngine();
 
+inline int getLowerRate(int intendRate, int targetRate)
+{
+    int result   = 0;
+    int valStore = 0;
+
+    result = targetRate;
+    if (intendRate) {
+        do {
+            valStore   = result % intendRate;
+            result     = intendRate;
+            intendRate = valStore;
+        } while (valStore);
+    }
+    return result;
+}
+
 bool processEvents()
 {
 #if RETRO_USING_SDL
@@ -211,6 +227,11 @@ void RetroEngine::Init()
         }
     }
 
+    // Calculate Skip frame
+    int lower        = getLowerRate(targetRefreshRate, refreshRate);
+    renderFrameIndex = targetRefreshRate / lower;
+    skipFrameIndex   = refreshRate / lower;
+
 }
 
 void RetroEngine::Run()
@@ -267,13 +288,13 @@ void RetroEngine::Run()
                 }
 
                 RenderRenderDevice();
-
                 frameStep = false;
             }
         }
     }
 
     ReleaseAudioDevice();
+    StopVideoPlayback();
     ReleaseRenderDevice();
     writeSettings();
 

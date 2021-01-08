@@ -20,6 +20,7 @@ extern int vidBaseticks;
 void PlayVideoFile(char *filepath);
 void UpdateVideoFrame();
 int ProcessVideo();
+void StopVideoPlayback();
 
 void SetupVideoBuffer(int width, int height);
 void CloseVideoBuffer();
