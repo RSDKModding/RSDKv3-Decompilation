@@ -25,28 +25,28 @@ void LoadFontFile(const char *filePath)
             fontCharacterList[cnt].srcX = fileBuffer;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].srcX += fileBuffer << 8;
-            FileRead(&fileBuffer, 1);
 
+            FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].srcY = fileBuffer;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].srcY += fileBuffer << 8;
-            FileRead(&fileBuffer, 1);
 
+            FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].width = fileBuffer;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].width += fileBuffer << 8;
-            FileRead(&fileBuffer, 1);
 
+            FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].height = fileBuffer;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].height += fileBuffer << 8;
-            FileRead(&fileBuffer, 1);
 
+            FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].pivotX = fileBuffer;
             FileRead(&fileBuffer, 1);
             if (fileBuffer > 0x80) {
                 fontCharacterList[cnt].pivotX += (fileBuffer - 0x80) << 8;
-                fontCharacterList[cnt].pivotX = (short)(-(short)(0x8000 - (int)fontCharacterList[cnt].pivotX));
+                fontCharacterList[cnt].pivotX += -0x8000;
             }
             else {
                 fontCharacterList[cnt].pivotX += fileBuffer << 8;
@@ -57,10 +57,10 @@ void LoadFontFile(const char *filePath)
             FileRead(&fileBuffer, 1);
             if (fileBuffer > 0x80) {
                 fontCharacterList[cnt].pivotY += (fileBuffer - 0x80) << 8;
-                fontCharacterList[cnt].pivotY = (short)(-(short)(0x8000 - (int)fontCharacterList[cnt].pivotX));
+                fontCharacterList[cnt].pivotY += -0x8000;
             }
             else {
-                fontCharacterList[cnt].pivotY += (fileBuffer - 0x80) << 8;
+                fontCharacterList[cnt].pivotY += fileBuffer << 8;
             }
 
             FileRead(&fileBuffer, 1);
@@ -68,14 +68,14 @@ void LoadFontFile(const char *filePath)
             FileRead(&fileBuffer, 1);
             if (fileBuffer > 0x80) {
                 fontCharacterList[cnt].xAdvance += (fileBuffer - 0x80) << 8;
-                fontCharacterList[cnt].xAdvance = (short)(-(short)(0x8000 - (int)fontCharacterList[cnt].xAdvance));
+                fontCharacterList[cnt].xAdvance += -0x8000;
             }
             else {
-                fontCharacterList[cnt].xAdvance += (fileBuffer - 0x80) << 8;
+                fontCharacterList[cnt].xAdvance += fileBuffer << 8;
             }
 
+            //Unused
             FileRead(&fileBuffer, 1);
-
             FileRead(&fileBuffer, 1);
             cnt++;
         }

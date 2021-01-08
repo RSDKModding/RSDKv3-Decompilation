@@ -250,10 +250,12 @@ void RetroEngine::Run()
                     case ENGINE_ENTER_HIRESMODE:
                         gameMode    = ENGINE_MAINGAME;
                         highResMode = true;
+                        printLog("Callback: HiRes Mode Enabled");
                         break;
                     case ENGINE_EXIT_HIRESMODE:
                         gameMode    = ENGINE_MAINGAME;
                         highResMode = false;
+                        printLog("Callback: HiRes Mode Disabled");
                         break;
                     case ENGINE_PAUSE: break;
                     case ENGINE_WAIT: break;
@@ -428,7 +430,8 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_FINISHGAME_NOTIFY: // PC = NONE
             printLog("Callback: Finish Game Notify");
             break;
-        case CALLBACK_RETURNSTORE_SELECTED: gameMode = ENGINE_EXITGAME;
+        case CALLBACK_RETURNSTORE_SELECTED: 
+            gameMode = ENGINE_EXITGAME;
             printLog("Callback: Return To Store Selected");
             break;
         case CALLBACK_RESTART_SELECTED:
@@ -438,9 +441,14 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_EXIT_SELECTED:
             //gameMode = ENGINE_EXITGAME;
             printLog("Callback: Exit Selected");
-            activeStageList = 0;
-            stageListPosition = 0;
-            stageMode = STAGEMODE_LOAD;
+            if (bytecodeMode == BYTECODE_PC) {
+                running = false;
+            }
+            else {
+                activeStageList   = 0;
+                stageListPosition = 0;
+                stageMode         = STAGEMODE_LOAD;
+            }
             break;
         case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
             gameMode = ENGINE_EXITGAME;

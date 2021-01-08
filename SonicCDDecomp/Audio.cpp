@@ -712,6 +712,8 @@ void LoadSfx(char *filePath, byte sfxID) {
         FileRead(sfx, info.fileSize);
         CloseFile();
 
+#if RETRO_USING_SDL
+        SDL_LockAudio();
         SDL_RWops *src = SDL_RWFromMem(sfx, info.fileSize);
         if (src == NULL) {
             printLog("Unable to open sfx: %s", info.fileName);
@@ -750,9 +752,9 @@ void LoadSfx(char *filePath, byte sfxID) {
                     sfxList[sfxID].loaded = true;
                 }
             }
-
-        
         }
+        SDL_UnlockAudio();
+#endif
     }
 }
 void PlaySfx(int sfx, bool loop)

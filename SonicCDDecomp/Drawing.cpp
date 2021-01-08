@@ -20,9 +20,9 @@ int InitRenderDevice()
     sprintf(gameTitle, "%s%s", Engine.gameWindowText, Engine.usingDataFile ? "" : " (Using Data Folder)");
 
     Engine.frameBuffer = new ushort[SCREEN_XSIZE * SCREEN_YSIZE];
-    Engine.frameBuffer2x = new ushort[(SCREEN_XSIZE * 2) * SCREEN_YSIZE];
+    Engine.frameBuffer2x = new ushort[(SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2)];
     memset(Engine.frameBuffer, 0, (SCREEN_XSIZE * SCREEN_YSIZE) * sizeof(ushort));
-    memset(Engine.frameBuffer2x, 0, ((SCREEN_XSIZE * 2) * SCREEN_YSIZE) * sizeof(ushort));
+    memset(Engine.frameBuffer2x, 0, (SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2) * sizeof(ushort));
 
 #if RETRO_USING_SDL
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -59,7 +59,7 @@ int InitRenderDevice()
         return 0;
     }
 
-    Engine.screenBuffer2x = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE * 2, SCREEN_YSIZE);
+    Engine.screenBuffer2x = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2);
 
     if (!Engine.screenBuffer2x) {
         printLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
@@ -121,8 +121,43 @@ void RenderRenderDevice()
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, &destScreenPos);
         }
         else {
+            int w = 0, h = 0;
+            SDL_QueryTexture(Engine.screenBuffer2x, NULL, NULL, &w, &h);
             SDL_LockTexture(Engine.screenBuffer2x, NULL, (void **)&pixels, &pitch);
-            memcpy(pixels, Engine.frameBuffer2x, pitch * SCREEN_YSIZE);
+
+            ushort *framebufferPtr = Engine.frameBuffer;
+            for (int y = 0; y < (SCREEN_YSIZE / 2) + 12; ++y) {
+                for (int x = 0; x < SCREEN_XSIZE; ++x) {
+                    *pixels = *framebufferPtr;
+                    pixels++;
+                    *pixels = *framebufferPtr;
+                    pixels++;
+                    framebufferPtr++;
+                }
+
+                framebufferPtr -= SCREEN_XSIZE;
+                for (int x = 0; x < SCREEN_XSIZE; ++x) {
+                    *pixels = *framebufferPtr;
+                    pixels++;
+                    *pixels = *framebufferPtr;
+                    pixels++;
+                    framebufferPtr++;
+                }
+            }
+
+            framebufferPtr = Engine.frameBuffer2x;
+            for (int y = 0; y < ((SCREEN_YSIZE / 2) - 12) * 2; ++y) {
+                for (int x = 0; x < SCREEN_XSIZE; ++x) {
+                    *pixels = *framebufferPtr;
+                    framebufferPtr++;
+                    pixels++;
+
+                    *pixels = *framebufferPtr;
+                    framebufferPtr++;
+                    pixels++;
+                }
+            }
+
             SDL_UnlockTexture(Engine.screenBuffer2x);
 
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, &destScreenPos);
@@ -205,19 +240,19 @@ void SetScreenSize(int width, int height)
 
 void CopyFrameOverlay2x()
 {
-    ushort *frameBuffer   = &Engine.frameBuffer[132 * SCREEN_XSIZE];
-    ushort *frameBuffer2x       = Engine.frameBuffer2x;
-    
-    for (int y = 0; y < 108; ++y) {
+    ushort *frameBuffer   = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * SCREEN_XSIZE];
+    ushort *frameBuffer2x = Engine.frameBuffer2x;
+
+    for (int y = 0; y < (SCREEN_YSIZE / 2) - 12; ++y) {
         for (int x = 0; x < SCREEN_XSIZE; ++x) {
             if (*frameBuffer == 0xF81F) { // magenta
                 frameBuffer2x += 2;
             }
             else {
                 *frameBuffer2x = *frameBuffer;
-                ushort *store  = frameBuffer2x + 1;
-                *store         = *frameBuffer;
-                frameBuffer2x  = store + 1;
+                frameBuffer2x++;
+                *frameBuffer2x = *frameBuffer;
+                frameBuffer2x++;
             }
             ++frameBuffer;
         }
@@ -229,9 +264,9 @@ void CopyFrameOverlay2x()
             }
             else {
                 *frameBuffer2x = *frameBuffer;
-                ushort *store  = frameBuffer2x + 1;
-                *store         = *frameBuffer;
-                frameBuffer2x  = store + 1;
+                frameBuffer2x++;
+                *frameBuffer2x = *frameBuffer;
+                frameBuffer2x++;
             }
             ++frameBuffer;
         }
@@ -270,7 +305,7 @@ void DrawStageGFX(void)
                 Draw3DFloorLayer(0);
                 break;
             case LAYER_3DSKY:
-                //drawStageGFXHQ = true;
+                drawStageGFXHQ = true;
                 Draw3DSkyLayer(0);
                 break;
             default: break;
@@ -287,7 +322,7 @@ void DrawStageGFX(void)
                 Draw3DFloorLayer(1);
                 break;
             case LAYER_3DSKY:
-                //drawStageGFXHQ = true;
+                drawStageGFXHQ = true;
                 Draw3DSkyLayer(1);
                 break;
             default: break;
@@ -304,7 +339,7 @@ void DrawStageGFX(void)
                 Draw3DFloorLayer(2);
                 break;
             case LAYER_3DSKY:
-                //drawStageGFXHQ = true;
+                drawStageGFXHQ = true;
                 Draw3DSkyLayer(2);
                 break;
             default: break;
@@ -322,10 +357,26 @@ void DrawStageGFX(void)
                 Draw3DFloorLayer(3);
                 break;
             case LAYER_3DSKY:
-                //drawStageGFXHQ = true;
+                drawStageGFXHQ = true;
                 Draw3DSkyLayer(3);
                 break;
             default: break;
+        }
+    }
+
+    DrawObjectList(5);
+    DrawObjectList(6);
+
+    if (drawStageGFXHQ) {
+        CopyFrameOverlay2x();
+        if (fadeMode > 0) {
+            DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
+            DrawRectangleHQ(fadeR, fadeG, fadeB, fadeA);
+        }
+    }
+    else {
+        if (fadeMode > 0) {
+            DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
         }
     }
 
@@ -338,21 +389,6 @@ void DrawStageGFX(void)
                               y + ((c >> 4) << 1) + ((p / (PALETTE_COUNT / 2)) * (2 * 16)), 2, 2, fullPalette32[p][c].r, fullPalette32[p][c].g,
                               fullPalette32[p][c].b, 0xFF);
             }
-        }
-    }
-
-    DrawObjectList(5);
-    DrawObjectList(6);
-
-    if (drawStageGFXHQ) {
-        CopyFrameOverlay2x();
-        if (fadeMode > 0) {
-            DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
-        }
-    }
-    else {
-        if (fadeMode > 0) {
-            DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
         }
     }
 }
@@ -1395,10 +1431,10 @@ void Draw3DFloorLayer(int layerID)
     int sinValue            = sinM[layer->angle];
     int cosValue            = cosM[layer->angle];
     byte *linePtr           = gfxLineBuffer;
-    ushort *frameBufferPtr  = &Engine.frameBuffer[132 * SCREEN_XSIZE];
+    ushort *frameBufferPtr  = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * SCREEN_XSIZE];
     int layerXPos           = layer->XPos >> 4;
     int ZBuffer             = layerZPos >> 4;
-    for (int i = 4; i < 112; ++i) {
+    for (int i = 4; i < ((SCREEN_YSIZE / 2) - 8); ++i) {
         if (!(i & 1)) {
             activePalette   = fullPalette[*linePtr];
             activePalette32 = fullPalette32[*linePtr];
@@ -1446,11 +1482,11 @@ void Draw3DSkyLayer(int layerID)
     int layerYPos           = layer->YPos;
     int sinValue            = sinM[layer->angle & 0x1FF];
     int cosValue            = cosM[layer->angle & 0x1FF];
-    ushort *frameBufferPtr  = &Engine.frameBuffer[132 * SCREEN_XSIZE];
+    ushort *frameBufferPtr  = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * SCREEN_XSIZE];
     ushort *bufferPtr       = Engine.frameBuffer2x;
     if (!drawStageGFXHQ)
-        bufferPtr = &Engine.frameBuffer[132 * SCREEN_XSIZE];
-    byte *linePtr           = &gfxLineBuffer[132];
+        bufferPtr = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * SCREEN_XSIZE];
+    byte *linePtr           = &gfxLineBuffer[((SCREEN_YSIZE / 2) + 12)];
     int layerXPos           = layer->XPos >> 4;
     int layerZPos           = layer->ZPos >> 4;
     for (int i = TILE_SIZE / 2; i < SCREEN_YSIZE - TILE_SIZE; ++i) {
@@ -1506,8 +1542,8 @@ void Draw3DSkyLayer(int layerID)
     }
 
     if (drawStageGFXHQ) {
-        frameBufferPtr = &Engine.frameBuffer[132 * SCREEN_XSIZE];
-        int cnt        = 108 * SCREEN_XSIZE;
+        frameBufferPtr = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * SCREEN_XSIZE];
+        int cnt        = ((SCREEN_YSIZE / 2) - 12) * SCREEN_XSIZE;
         while (cnt--) *frameBufferPtr++ = 0xF81F; // Magenta
     }
 #endif
@@ -1539,7 +1575,7 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
         A = 0xFF;
     int pitch              = SCREEN_XSIZE - width;
     ushort *frameBufferPtr = &Engine.frameBuffer[XPos + SCREEN_XSIZE * YPos];
-    ushort clr             = (B >> 3) | 32 * (G >> 2) | ((ushort)(R >> 3) << 11);
+    ushort clr             = RGB888_TO_RGB565(R, G, B);
     if (A == 0xFF) {
         int h = height;
         while (h--) {
@@ -1571,6 +1607,47 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
 #if RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
+}
+
+void DrawRectangleHQ(int R, int G, int B, int A)
+{
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
+    if (A <= 0)
+        return;
+    if (A > 0xFF)
+        A = 0xFF;
+    int pitch              = SCREEN_XSIZE * 2;
+    ushort *frameBufferPtr = Engine.frameBuffer2x;
+    ushort clr             = RGB888_TO_RGB565(R, G, B);
+    if (A == 0xFF) {
+        int h = SCREEN_YSIZE;
+        while (h--) {
+            int w = pitch;
+            while (w--) {
+                *frameBufferPtr = clr;
+                ++frameBufferPtr;
+            }
+        }
+    }
+    else {
+        int h = SCREEN_YSIZE;
+        while (h--) {
+            int w = pitch;
+            while (w--) {
+                short *blendPtrB = &blendLookupTable[BLENDTABLE_XSIZE * (0xFF - A)];
+                short *blendPtrA = &blendLookupTable[BLENDTABLE_XSIZE * A];
+                *frameBufferPtr  = (blendPtrB[*frameBufferPtr & (BLENDTABLE_XSIZE - 1)] + blendPtrA[((byte)(B >> 3) | (byte)(32 * (G >> 2))) & 0x1F])
+                                  | ((blendPtrB[(*frameBufferPtr & 0x7E0) >> 6] + blendPtrA[(clr & 0x7E0) >> 6]) << 6)
+                                  | ((blendPtrB[(*frameBufferPtr & 0xF800) >> 11] + blendPtrA[(clr & 0xF800) >> 11]) << 11);
+                ++frameBufferPtr;
+            }
+        }
+    }
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+    // TODO: this
+#endif 
 }
 
 void DrawTintRectangle(int XPos, int YPos, int width, int height)
@@ -2736,7 +2813,7 @@ void DrawFace(void *v, uint colour)
     processScanEdge(&verts[vertexC], &verts[vertexD]);
     processScanEdge(&verts[vertexB], &verts[vertexD]);
 
-    ushort colour16 = ((signed int)(byte)colour >> 3) | 32 * (((colour >> 8) & 0xFF) >> 2) | ((ushort)(((colour >> 16) & 0xFF) >> 3) << 11);
+    ushort colour16 = RGB888_TO_RGB565(((colour >> 16) & 0xFF), ((colour >> 8) & 0xFF), ((colour >> 0) & 0xFF));
 
     ushort *frameBufferPtr = &Engine.frameBuffer[SCREEN_XSIZE * faceTop];
     if (alpha == 255) {
@@ -2935,17 +3012,13 @@ void DrawBitmapText(void *menu, int XPos, int YPos, int scale, int spacing, int 
         rowCount = tMenu->rowCount - rowStart;
 
     while (rowCount > 0) {
-        int charID = 0;
-        int i      = tMenu->entrySize[rowStart];
         int X      = XPos << 9;
-        while (i > 0) {
-            char c               = tMenu->textData[tMenu->entryStart[rowStart] + charID];
+        for (int i = 0; i < tMenu->entrySize[rowStart]; ++i) {
+            ushort c             = tMenu->textData[tMenu->entryStart[rowStart] + i];
             FontCharacter *fChar = &fontCharacterList[c];
-            DrawSpriteScaled(FLIP_NONE, X >> 5, Y >> 5, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height,
-                                      fChar->srcX, fChar->srcY, textMenuSurfaceNo);
+            DrawSpriteScaled(FLIP_NONE, X >> 9, Y >> 9, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height, fChar->srcX,
+                             fChar->srcY, textMenuSurfaceNo);
             X += fChar->xAdvance * scale;
-            charID++;
-            i--;
         }
         Y += spacing * scale;
         rowStart++;

@@ -320,7 +320,7 @@ void writeSettings() {
     ini.SetInteger("Game", "Language", Engine.language);
 
     ini.SetComment("Window", "FSComment", "Determines if the window will be fullscreen or not");
-    ini.SetBool("Window", "Fullscreen", Engine.startFullScreen);
+    ini.SetBool("Window", "FullScreen", Engine.startFullScreen);
     ini.SetComment("Window", "BLComment", "Determines if the window will be borderless or not");
     ini.SetBool("Window", "Borderless", Engine.borderless);
     ini.SetComment("Window", "VSComment", "Determines if VSync will be active or not");
