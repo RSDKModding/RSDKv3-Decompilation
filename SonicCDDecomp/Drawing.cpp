@@ -159,7 +159,6 @@ void RenderRenderDevice()
             }
 
             SDL_UnlockTexture(Engine.screenBuffer2x);
-
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, &destScreenPos);
         }
     }
@@ -371,7 +370,7 @@ void DrawStageGFX(void)
         CopyFrameOverlay2x();
         if (fadeMode > 0) {
             DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, fadeR, fadeG, fadeB, fadeA);
-            DrawRectangleHQ(fadeR, fadeG, fadeB, fadeA);
+            SetFadeHQ(fadeR, fadeG, fadeB, fadeA);
         }
     }
     else {
@@ -1609,7 +1608,7 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
 #endif
 }
 
-void DrawRectangleHQ(int R, int G, int B, int A)
+void SetFadeHQ(int R, int G, int B, int A)
 {
 #if RETRO_RENDERTYPE == RETRO_SW_RENDER
     if (A <= 0)
