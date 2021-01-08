@@ -218,9 +218,15 @@ void StopVideoPlayback()
             fadeMode = 0;
 
         if (videoVidData)
+        {
             THEORAPLAY_freeVideo(videoVidData);
+            videoVidData = NULL;
+        }
         if (videoDecoder)
+        {
             THEORAPLAY_stopDecode(videoDecoder);
+            videoDecoder = NULL;
+        }
 
         CloseVideoBuffer();
         videoPlaying = false;
