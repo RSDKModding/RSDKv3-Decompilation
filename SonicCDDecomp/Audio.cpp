@@ -239,7 +239,6 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
 
     // Process music being played by a video
     if (videoPlaying) {
-        // TODO - Lock the audio device when THEORAPLAY is accessing the audio list(?)
         // TODO - Aren't the ending videos meant to play different music when the US soundtrack is enabled?
 
         // Fetch THEORAPLAY audio packets, and shove them into the SDL Audio Stream
