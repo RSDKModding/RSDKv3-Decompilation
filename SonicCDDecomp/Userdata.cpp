@@ -147,7 +147,7 @@ void InitUserdata()
 
         ini.SetBool("Game", "Language", Engine.language = RETRO_EN);
 
-        ini.SetBool("Window", "Fullscreen", Engine.startFullScreen = DEFAULT_FULLSCREEN);
+        ini.SetBool("Window", "FullScreen", Engine.startFullScreen = DEFAULT_FULLSCREEN);
         ini.SetBool("Window", "Borderless", Engine.borderless = false);
         ini.SetBool("Window", "VSync", Engine.vsync = false);
         ini.SetInteger("Window", "WindowScale", Engine.windowScale = 2);
