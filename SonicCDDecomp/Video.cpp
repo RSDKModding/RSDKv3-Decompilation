@@ -7,7 +7,6 @@ int videoHeight       = 0;
 
 THEORAPLAY_Decoder *videoDecoder;
 const THEORAPLAY_VideoFrame *videoVidData;
-const THEORAPLAY_AudioPacket *videoAudioData;
 THEORAPLAY_Io callbacks;
 
 byte videoData = 0;
@@ -53,14 +52,12 @@ void PlayVideoFile(char *filePath) {
             printLog("Video Decoder Error!");
             return;
         }
-        while (!videoAudioData || !videoVidData) {
-            if (!videoAudioData)
-                videoAudioData = THEORAPLAY_getAudio(videoDecoder);
+        while (!videoVidData) {
             if (!videoVidData)
                 videoVidData = THEORAPLAY_getVideo(videoDecoder);
         }
-        if (!videoAudioData || !videoVidData) {
-            printLog("Video or Audio Error!");
+        if (!videoVidData) {
+            printLog("Video Error!");
             return;
         }
 
@@ -222,8 +219,6 @@ void StopVideoPlayback()
 
         if (videoVidData)
             THEORAPLAY_freeVideo(videoVidData);
-        if (videoAudioData)
-            THEORAPLAY_freeAudio(videoAudioData);
         if (videoDecoder)
             THEORAPLAY_stopDecode(videoDecoder);
 
