@@ -214,22 +214,27 @@ int ProcessVideo()
 void StopVideoPlayback()
 {
     if (videoPlaying) {
+        // `videoPlaying` and `videoDecoder` are read by
+        // the audio thread, so lock it to prevent a race
+        // condition that results in invalid memory accesses.
+        SDL_LockAudio();
+
         if (videoSkipped && fadeMode >= 0xFF)
             fadeMode = 0;
 
-        if (videoVidData)
-        {
+        if (videoVidData) {
             THEORAPLAY_freeVideo(videoVidData);
             videoVidData = NULL;
         }
-        if (videoDecoder)
-        {
+        if (videoDecoder) {
             THEORAPLAY_stopDecode(videoDecoder);
             videoDecoder = NULL;
         }
 
         CloseVideoBuffer();
         videoPlaying = false;
+
+        SDL_UnlockAudio();
     }
 }
 
