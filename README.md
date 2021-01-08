@@ -54,9 +54,6 @@ Currently only windows & mac are supported by this decompilation, however the ba
 if you've cloned this repo and ported it to a platform not on the list or made some changes you'd like to see added to this repo, submit a pull request and it'll most likely be added
 
 # FAQ
-### Q: Sound doesn't play when videos are playing!
-### A: Currently the video playback system doesn't support streaming audio from .ogv files, the workaround is to open the ogv file in any kind of video/audio software that supports it and save just the audio as an ogg vorbis file called [videoName]\[JP/US].ogg in the same directory as the .ogv
-
 ### Q: Why dont some buttons in the menu work?
 ### A: Buttons like leaderboards & achievements require code to be added to support online functionality & menus (though they are saved anyways), and other buttons like the controls button on PC or privacy button on mobile have no game code and are instead hardcoded through callbacks, and I just didnt feel like going through the effort to decompile all that, since its not really worth it
 
