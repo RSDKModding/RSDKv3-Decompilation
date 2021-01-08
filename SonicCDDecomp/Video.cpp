@@ -72,23 +72,6 @@ void PlayVideoFile(char *filePath) {
         videoPlaying = true;
         trackID        = TRACK_COUNT - 1;
 
-        // "temp" but I really cannot be bothered to go through the nightmare that is streaming the audio data
-        // (yes I tried, and probably cut years off my life)
-        StrCopy(filepath, "videos/");
-        StrAdd(filepath, filePath);
-        if (StrComp(filePath, "Good_Ending") || StrComp(filePath, "Bad_Ending") || StrComp(filePath, "Opening")) {
-            if (!GetGlobalVariableByName("Options.Soundtrack"))
-                StrAdd(filepath, "JP");
-            else
-                StrAdd(filepath, "US");
-        }
-        StrAdd(filepath, ".ogg");
-
-        TrackInfo *track = &musicTracks[trackID];
-        StrCopy(track->fileName, filepath);
-        track->trackLoop = false;
-        track->loopPoint = 0;
-
         //Switch it off so the reader can access it
         bool df              = Engine.usingDataFile;
         Engine.usingDataFile = false;
