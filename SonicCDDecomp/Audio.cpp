@@ -252,6 +252,12 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
 
         byte buffer[AUDIO_BUFFERSIZE];
 
+        // If we need more samples, assume we've reached the end of the file,
+        // and flush the audio stream. If we were wrong, and there's still more
+        // file left, then there will be a gap in the audio. Sorry.
+        if (SDL_AudioStreamAvailable(ogv_stream) < len)
+            SDL_AudioStreamFlush(ogv_stream);
+
         // Fetch the converted audio data, which is ready for mixing.
         // TODO: This code doesn't account for `len` being larger than the buffer.
         // ...But neither does `trackRequestMoreData`, so I guess it's not my problem.
@@ -260,6 +266,9 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
         // Mix the converted audio data into the final output
         if (get != -1)
             ProcessAudioMixing(NULL, stream, buffer, audioDeviceFormat.format, get, (bgmVolume * masterVolume) / MAX_VOLUME, true); // TODO - Should we be using the music volume?
+    }
+    else {
+        SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
     }
 
     for (byte i = 0; i < CHANNEL_COUNT; ++i) {
