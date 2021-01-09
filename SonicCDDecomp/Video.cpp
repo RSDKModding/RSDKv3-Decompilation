@@ -69,12 +69,6 @@ void PlayVideoFile(char *filePath) {
         videoPlaying = true;
         trackID        = TRACK_COUNT - 1;
 
-        //Switch it off so the reader can access it
-        bool df              = Engine.usingDataFile;
-        Engine.usingDataFile = false;
-        PlayMusic(trackID);
-        Engine.usingDataFile = df;
-
         videoSkipped = false;
 
         Engine.gameMode = ENGINE_VIDEOWAIT;
