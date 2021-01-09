@@ -32,8 +32,7 @@ int InitRenderDevice()
     
     SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
 
-    Engine.window = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE, SCREEN_YSIZE,
-                                     SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    Engine.window = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE, SCREEN_YSIZE, SDL_WINDOW_ALLOW_HIGHDPI);
 
     Engine.renderer = SDL_CreateRenderer(Engine.window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -80,12 +79,15 @@ int InitRenderDevice()
         SDL_SetWindowBordered(Engine.window, SDL_FALSE);
     }
 
-    SDL_SetWindowResizable(Engine.window, SDL_FALSE);
     SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     
     SDL_DisplayMode disp;
-    if (SDL_GetDisplayMode(0, 0, &disp) == 0) {
+    int winID = SDL_GetWindowDisplayIndex(Engine.window);
+    if (SDL_GetCurrentDisplayMode(winID, &disp) == 0) {
         Engine.screenRefreshRate = disp.refresh_rate;
+    }
+    else {
+        printf("error: %s",SDL_GetError());
     }
     
 #if RETRO_PLATFORM == RETRO_iOS

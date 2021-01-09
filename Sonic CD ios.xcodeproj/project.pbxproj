@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C9065CC925A3E14C00382B94 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9065CC825A3E14C00382B94 /* Main.storyboard */; };
 		C9065CCE25A3E2FF00382B94 /* cocoaHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9065CCD25A3E2FF00382B94 /* cocoaHelpers.mm */; };
-		C9065CD125A3E50100382B94 /* data.rsdk in Resources */ = {isa = PBXBuildFile; fileRef = C9065CD025A3E50000382B94 /* data.rsdk */; };
+		C9065CD125A3E50100382B94 /* Data.rsdk in Resources */ = {isa = PBXBuildFile; fileRef = C9065CD025A3E50000382B94 /* Data.rsdk */; };
 		C9065CD325A425D100382B94 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9065C8C25A3D47B00382B94 /* SDL2.framework */; };
 		C9065CD425A425D200382B94 /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9065C8C25A3D47B00382B94 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C9065CD625A425E000382B94 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9065C8A25A3D47B00382B94 /* Ogg.framework */; };
@@ -42,7 +41,7 @@
 		C959D5F925A0415D0001CA1C /* Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C959D5E325A0415D0001CA1C /* Reader.cpp */; };
 		C959D5FA25A0415D0001CA1C /* Sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C959D5E425A0415D0001CA1C /* Sprite.cpp */; };
 		C959D5FB25A0415D0001CA1C /* Text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C959D5E525A0415D0001CA1C /* Text.cpp */; };
-		C959D61E25A2DFC60001CA1C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C959D61D25A2DFC60001CA1C /* Default-568h@2x.png */; };
+		C959D61E25A2DFC60001CA1C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C959D61D25A2DFC60001CA1C /* Default.png */; };
 		C959D62A25A2E5250001CA1C /* theoraplay.c in Sources */ = {isa = PBXBuildFile; fileRef = C959D62925A2E5250001CA1C /* theoraplay.c */; };
 		C959D67E25A303DB0001CA1C /* libSDLMain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C959D67D25A303C80001CA1C /* libSDLMain.a */; };
 /* End PBXBuildFile section */
@@ -69,10 +68,9 @@
 		C9065C8A25A3D47B00382B94 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = dependencies/ios/Ogg.framework; sourceTree = "<group>"; };
 		C9065C8B25A3D47B00382B94 /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = dependencies/ios/Vorbis.framework; sourceTree = "<group>"; };
 		C9065C8C25A3D47B00382B94 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = dependencies/ios/SDL2.framework; sourceTree = "<group>"; };
-		C9065CC825A3E14C00382B94 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Main.storyboard; path = dependencies/ios/Main.storyboard; sourceTree = SOURCE_ROOT; };
 		C9065CCB25A3E2EC00382B94 /* cocoaHelpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cocoaHelpers.hpp; path = dependencies/mac/cocoaHelpers.hpp; sourceTree = SOURCE_ROOT; };
 		C9065CCD25A3E2FF00382B94 /* cocoaHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaHelpers.mm; path = dependencies/mac/cocoaHelpers.mm; sourceTree = SOURCE_ROOT; };
-		C9065CD025A3E50000382B94 /* data.rsdk */ = {isa = PBXFileReference; lastKnownFileType = file; name = data.rsdk; path = dependencies/ios/data.rsdk; sourceTree = "<group>"; };
+		C9065CD025A3E50000382B94 /* Data.rsdk */ = {isa = PBXFileReference; lastKnownFileType = file; name = Data.rsdk; path = dependencies/ios/Data.rsdk; sourceTree = "<group>"; };
 		C959D5A825A0409F0001CA1C /* Sonic CD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sonic CD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C959D5C825A040FF0001CA1C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = dependencies/ios/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		C959D5CC25A041080001CA1C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = dependencies/ios/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
@@ -119,7 +117,7 @@
 		C959D60E25A041750001CA1C /* Object.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Object.hpp; path = SonicCDDecomp/Object.hpp; sourceTree = SOURCE_ROOT; };
 		C959D60F25A041750001CA1C /* Video.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Video.hpp; path = SonicCDDecomp/Video.hpp; sourceTree = SOURCE_ROOT; };
 		C959D61025A041750001CA1C /* Debug.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Debug.hpp; path = SonicCDDecomp/Debug.hpp; sourceTree = SOURCE_ROOT; };
-		C959D61D25A2DFC60001CA1C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "dependencies/ios/Default-568h@2x.png"; sourceTree = "<group>"; };
+		C959D61D25A2DFC60001CA1C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = dependencies/ios/Default.png; sourceTree = "<group>"; };
 		C959D62625A2E5130001CA1C /* theoraplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoraplay.h; path = dependencies/all/theoraplay/theoraplay.h; sourceTree = SOURCE_ROOT; };
 		C959D62725A2E5130001CA1C /* theoraplay_cvtrgb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoraplay_cvtrgb.h; path = dependencies/all/theoraplay/theoraplay_cvtrgb.h; sourceTree = SOURCE_ROOT; };
 		C959D62925A2E5250001CA1C /* theoraplay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = theoraplay.c; path = dependencies/all/theoraplay/theoraplay.c; sourceTree = SOURCE_ROOT; };
@@ -145,7 +143,7 @@
 		C9065CCA25A3E24E00382B94 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C9065CD025A3E50000382B94 /* data.rsdk */,
+				C9065CD025A3E50000382B94 /* Data.rsdk */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -158,7 +156,7 @@
 				C9065C8C25A3D47B00382B94 /* SDL2.framework */,
 				C9065C8925A3D47B00382B94 /* Theora.framework */,
 				C9065C8B25A3D47B00382B94 /* Vorbis.framework */,
-				C959D61D25A2DFC60001CA1C /* Default-568h@2x.png */,
+				C959D61D25A2DFC60001CA1C /* Default.png */,
 				C959D5AA25A0409F0001CA1C /* Sonic CD ios */,
 				C959D5A925A0409F0001CA1C /* Products */,
 				C959D61125A2DED30001CA1C /* Frameworks */,
@@ -180,7 +178,6 @@
 				C959D5CE25A0410E0001CA1C /* Source Files */,
 				C959D5CB25A041080001CA1C /* LaunchScreen.storyboard */,
 				C959D5C825A040FF0001CA1C /* Assets.xcassets */,
-				C9065CC825A3E14C00382B94 /* Main.storyboard */,
 			);
 			path = "Sonic CD ios";
 			sourceTree = "<group>";
@@ -345,10 +342,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9065CC925A3E14C00382B94 /* Main.storyboard in Resources */,
 				C959D5CD25A041080001CA1C /* LaunchScreen.storyboard in Resources */,
-				C9065CD125A3E50100382B94 /* data.rsdk in Resources */,
-				C959D61E25A2DFC60001CA1C /* Default-568h@2x.png in Resources */,
+				C9065CD125A3E50100382B94 /* Data.rsdk in Resources */,
+				C959D61E25A2DFC60001CA1C /* Default.png in Resources */,
 				C959D5CA25A040FF0001CA1C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
