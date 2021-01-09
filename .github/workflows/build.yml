@@ -20,8 +20,7 @@ jobs:
           vcpkg integrate install
       - name: Build CD (experimental, this will definitely crash)
         run: |
-          cd $env:SRC_DIR_PATH
-          msbuild $env:SRC_DIR_PATH\SonicCDDecomp.sln /p:Configuration=Release /p:Platform=x86
+          msbuild .\SonicCDDecomp.sln /p:Configuration=Release /p:Platform=x86
       - name: Move artifacts
         run: |
           mkdir artifacts
