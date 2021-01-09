@@ -125,6 +125,7 @@ typedef struct TheoraDecoder
     volatile int hasvideo;
     volatile int hasaudio;
     volatile int decode_error;
+    volatile int audio_bitstream;
 
     THEORAPLAY_VideoFormat vidfmt;
     ConvertVideoFrameFn vidcvt;
@@ -248,6 +249,7 @@ static void WorkerThread(TheoraDecoder *ctx)
     vorbis_block vblock;
     th_dec_ctx *tdec = NULL;
     th_setup_info *tsetup = NULL;
+    unsigned int current_audio_bitstream = 0;
 
     ogg_sync_init(&sync);
     vorbis_info_init(&vinfo);
@@ -284,8 +286,18 @@ static void WorkerThread(TheoraDecoder *ctx)
             } // if
             else if (!vpackets && (vorbis_synthesis_headerin(&vinfo, &vcomment, &packet) >= 0))
             {
-                memcpy(&vstream, &test, sizeof (test));
-                vpackets = 1;
+                if (current_audio_bitstream++ == ctx->audio_bitstream)
+                {
+                    memcpy(&vstream, &test, sizeof (test));
+                    vpackets = 1;
+                }
+                else
+                {
+                    // It's a vorbis stream, but not the one we're looking for.
+                    // Reset the vorbis state stuff, and wait for the next one.
+                    vorbis_info_init(&vinfo);
+                    vorbis_comment_init(&vcomment);
+                }
             } // else if
             else
             {
@@ -600,7 +612,8 @@ static void IoFopenClose(THEORAPLAY_Io *io)
 
 THEORAPLAY_Decoder *THEORAPLAY_startDecodeFile(const char *fname,
                                                const unsigned int maxframes,
-                                               THEORAPLAY_VideoFormat vidfmt)
+                                               THEORAPLAY_VideoFormat vidfmt,
+                                               unsigned int audio_bitstream)
 {
     THEORAPLAY_Io *io = (THEORAPLAY_Io *) malloc(sizeof (THEORAPLAY_Io));
     if (io == NULL)
@@ -616,13 +629,14 @@ THEORAPLAY_Decoder *THEORAPLAY_startDecodeFile(const char *fname,
     io->read = IoFopenRead;
     io->close = IoFopenClose;
     io->userdata = f;
-    return THEORAPLAY_startDecode(io, maxframes, vidfmt);
+    return THEORAPLAY_startDecode(io, maxframes, vidfmt, audio_bitstream);
 } // THEORAPLAY_startDecodeFile
 
 
 THEORAPLAY_Decoder *THEORAPLAY_startDecode(THEORAPLAY_Io *io,
                                            const unsigned int maxframes,
-                                           THEORAPLAY_VideoFormat vidfmt)
+                                           THEORAPLAY_VideoFormat vidfmt,
+                                           unsigned int audio_bitstream)
 {
     TheoraDecoder *ctx = NULL;
     ConvertVideoFrameFn vidcvt = NULL;
@@ -648,6 +662,7 @@ THEORAPLAY_Decoder *THEORAPLAY_startDecode(THEORAPLAY_Io *io,
     ctx->vidfmt = vidfmt;
     ctx->vidcvt = vidcvt;
     ctx->io = io;
+    ctx->audio_bitstream = audio_bitstream;
 
     if (Mutex_Create(ctx) == 0)
     {
