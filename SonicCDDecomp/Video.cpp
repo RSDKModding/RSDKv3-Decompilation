@@ -7,7 +7,6 @@ int videoHeight       = 0;
 
 THEORAPLAY_Decoder *videoDecoder;
 const THEORAPLAY_VideoFrame *videoVidData;
-const THEORAPLAY_AudioPacket *videoAudioData;
 THEORAPLAY_Io callbacks;
 
 byte videoData = 0;
@@ -53,19 +52,14 @@ void PlayVideoFile(char *filePath) {
             printLog("Video Decoder Error!");
             return;
         }
-        while (!videoAudioData || !videoVidData) {
-            if (!videoAudioData)
-                videoAudioData = THEORAPLAY_getAudio(videoDecoder);
+        while (!videoVidData) {
             if (!videoVidData)
                 videoVidData = THEORAPLAY_getVideo(videoDecoder);
         }
-        if (!videoAudioData || !videoVidData) {
-            printLog("Video or Audio Error!");
+        if (!videoVidData) {
+            printLog("Video Error!");
             return;
         }
-
-        //clear audio data, we dont use it
-        while ((videoAudioData = THEORAPLAY_getAudio(videoDecoder)) != NULL) THEORAPLAY_freeAudio(videoAudioData);
 
         videoWidth  = videoVidData->width;
         videoHeight = videoVidData->height;
@@ -74,23 +68,6 @@ void PlayVideoFile(char *filePath) {
         vidFrameMS     = (videoVidData->fps == 0.0) ? 0 : ((Uint32)(1000.0 / videoVidData->fps));
         videoPlaying = true;
         trackID        = TRACK_COUNT - 1;
-
-        // "temp" but I really cannot be bothered to go through the nightmare that is streaming the audio data
-        // (yes I tried, and probably cut years off my life)
-        StrCopy(filepath, "videos/");
-        StrAdd(filepath, filePath);
-        if (StrComp(filePath, "Good_Ending") || StrComp(filePath, "Bad_Ending") || StrComp(filePath, "Opening")) {
-            if (!GetGlobalVariableByName("Options.Soundtrack"))
-                StrAdd(filepath, "JP");
-            else
-                StrAdd(filepath, "US");
-        }
-        StrAdd(filepath, ".ogg");
-
-        TrackInfo *track = &musicTracks[trackID];
-        StrCopy(track->fileName, filepath);
-        track->trackLoop = false;
-        track->loopPoint = 0;
 
         //Switch it off so the reader can access it
         bool df              = Engine.usingDataFile;
@@ -227,9 +204,6 @@ int ProcessVideo()
                 videoVidData = NULL;
             }
 
-            //Clear audio data
-            while ((videoAudioData = THEORAPLAY_getAudio(videoDecoder)) != NULL) THEORAPLAY_freeAudio(videoAudioData);
-
             return 2; // its playing as expected
         }
     }
@@ -240,18 +214,27 @@ int ProcessVideo()
 void StopVideoPlayback()
 {
     if (videoPlaying) {
+        // `videoPlaying` and `videoDecoder` are read by
+        // the audio thread, so lock it to prevent a race
+        // condition that results in invalid memory accesses.
+        SDL_LockAudio();
+
         if (videoSkipped && fadeMode >= 0xFF)
             fadeMode = 0;
 
-        if (videoVidData)
+        if (videoVidData) {
             THEORAPLAY_freeVideo(videoVidData);
-        if (videoAudioData)
-            THEORAPLAY_freeAudio(videoAudioData);
-        if (videoDecoder)
+            videoVidData = NULL;
+        }
+        if (videoDecoder) {
             THEORAPLAY_stopDecode(videoDecoder);
+            videoDecoder = NULL;
+        }
 
         CloseVideoBuffer();
         videoPlaying = false;
+
+        SDL_UnlockAudio();
     }
 }
 

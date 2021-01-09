@@ -115,6 +115,11 @@ void RenderRenderDevice()
 
     int pitch = 0;
     SDL_SetRenderTarget(Engine.renderer, NULL);
+
+    // Clear the screen. This is needed to keep the
+    // pillarboxes in fullscreen from displaying garbage data.
+    SDL_RenderClear(Engine.renderer);
+
     ushort *pixels = NULL;
     if (Engine.gameMode != ENGINE_VIDEOWAIT) {
         if (!drawStageGFXHQ) {
