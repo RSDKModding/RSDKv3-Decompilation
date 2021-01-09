@@ -829,7 +829,7 @@ void SetSfxAttributes(int sfx, int loopCount, char pan)
 {
     int sfxChannel = -1;
     for (int i = 0; i < CHANNEL_COUNT; ++i) {
-        if (sfxChannels[i].sfxID == sfx) {
+        if (sfxChannels[i].sfxID == sfx || sfxChannels[i].sfxID == -1) {
             sfxChannel = i;
             break;
         }
@@ -837,7 +837,10 @@ void SetSfxAttributes(int sfx, int loopCount, char pan)
     if (sfxChannel == -1)
         return; // wasn't found
 
-    ChannelInfo *sfxInfo = &sfxChannels[sfxChannel];
+    //TODO: is this right? should it play an sfx here? without this rings dont play any sfx so I assume it must be?
+    ChannelInfo *sfxInfo  = &sfxChannels[sfxChannel];
+    sfxInfo->samplePtr    = sfxList[sfx].buffer;
+    sfxInfo->sampleLength = sfxList[sfx].length;
     sfxInfo->loopSFX     = loopCount == -1 ? sfxInfo->loopSFX : loopCount;
     sfxInfo->pan         = pan;
     sfxInfo->sfxID       = sfx;
