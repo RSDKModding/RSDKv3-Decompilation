@@ -297,6 +297,7 @@ static void WorkerThread(TheoraDecoder *ctx)
                     // Reset the vorbis state stuff, and wait for the next one.
                     vorbis_info_init(&vinfo);
                     vorbis_comment_init(&vcomment);
+                    ogg_stream_clear(&test);
                 }
             } // else if
             else
