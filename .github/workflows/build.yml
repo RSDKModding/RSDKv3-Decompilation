@@ -7,6 +7,28 @@ on:
       - continuous-delivery
 
 jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+      - name: Download dependencies and setup vcpkg
+        run: |
+          vcpkg install sdl2 libvorbis libtheora libogg
+          vcpkg integrate install
+      - name: Build CD (experimental, this will definitely crash)
+        run: |
+          msbuild /p:Configuration=Release /p:Platform=x86
+      - name: Move artifacts
+        run: |
+          mkdir artifacts
+          move ./build/Win32/Release/*.dll ./artifacts 
+          move ./build/Win32/Release/*.exe ./artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1.0.0  
+        with:
+          name: SonicCD-Windows 
+          path: .\artifacts 
   psvita:
     runs-on: ubuntu-latest
     container: vitasdk/vitasdk:latest
