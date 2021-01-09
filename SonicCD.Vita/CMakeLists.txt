@@ -39,7 +39,7 @@ set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
 # Add any additional include paths here
 include_directories(
   ../dependencies/all/theoraplay
-  /home/user/vitasdk/arm-vita-eabi/include/SDL2
+  /home/user/vitasdk/arm-vita-eabi/include
 )
 
 # Add any additional library paths here
