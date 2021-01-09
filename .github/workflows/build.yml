@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - win-action
       - continuous-delivery
 
 jobs:
