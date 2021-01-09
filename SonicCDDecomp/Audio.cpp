@@ -252,8 +252,8 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
         byte buffer[AUDIO_BUFFERSIZE];
 
         // If we need more samples, assume we've reached the end of the file,
-        // and flush the audio stream. If we were wrong, and there's still more
-        // file left, then there will be a gap in the audio. Sorry.
+        // and flush the audio stream so we can get more. If we were wrong, and
+        // there's still more file left, then there will be a gap in the audio. Sorry.
         if (SDL_AudioStreamAvailable(ogv_stream) < len)
             SDL_AudioStreamFlush(ogv_stream);
 
