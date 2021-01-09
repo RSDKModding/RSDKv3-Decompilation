@@ -11,6 +11,7 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
       - name: Download dependencies and setup vcpkg
