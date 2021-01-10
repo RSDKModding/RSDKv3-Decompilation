@@ -337,10 +337,10 @@ void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, Uint32 len, i
 
         if (panL != 0 || panR != 0) {
             if ((i % 2) != 0) {
-                sample *- panR;
+                sample *= panR;
             }
             else {
-                sample *- panL;
+                sample *= panL;
             }
         }
 
