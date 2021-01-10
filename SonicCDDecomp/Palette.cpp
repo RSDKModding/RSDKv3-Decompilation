@@ -48,21 +48,22 @@ void LoadPalette(const char *filePath, int paletteID, int startPaletteIndex, int
     }
 }
 
-void SetLimitedFade(byte paletteID, byte R, byte G, byte B, ushort Alpha, int startIndex, int endIndex)
+void SetLimitedFade(byte paletteID, byte R, byte G, byte B, ushort alpha, int startIndex, int endIndex)
 {
     if (paletteID >= PALETTE_COUNT)
         return;
     paletteMode     = 1;
     activePalette   = fullPalette[paletteID];
     activePalette32 = fullPalette32[paletteID];
-    if (Alpha > 0xFF)
-        Alpha = 0xFF;
+    if (alpha > 0xFF)
+        alpha = 0xFF;
 
     if (endIndex < PALETTE_SIZE)
         ++endIndex;
+    uint alpha2 = 0xFF - alpha;
     for (int i = startIndex; i < endIndex; ++i) {
-        activePalette[i] = ((int)(byte)((ushort)(B * Alpha + (0xFF - Alpha) * activePalette32[i].r) >> 8) >> 3)
-                           | 32 * ((int)(byte)((ushort)(G * Alpha + (0xFF - Alpha) * activePalette32[i].g) >> 8) >> 2)
-                           | ((ushort)((int)(byte)((ushort)(R * Alpha + (0xFF - Alpha) * activePalette32[i].b) >> 8) >> 3) << 11);
+        activePalette[i] = RGB888_TO_RGB565((byte)((ushort)(B * alpha + alpha2 * activePalette32[i].b) >> 8),
+                                            (byte)((ushort)(G * alpha + alpha2 * activePalette32[i].g) >> 8),
+                                            (byte)((ushort)(R * alpha + alpha2 * activePalette32[i].r) >> 8));
     }
 }
