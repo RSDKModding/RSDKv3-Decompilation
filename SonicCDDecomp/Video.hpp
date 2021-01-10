@@ -5,6 +5,7 @@ extern int currentVideoFrame;
 extern int videoFrameCount;
 extern int videoWidth;
 extern int videoHeight;
+extern float videoAR;
 
 extern THEORAPLAY_Decoder *videoDecoder;
 extern const THEORAPLAY_VideoFrame *videoVidData;

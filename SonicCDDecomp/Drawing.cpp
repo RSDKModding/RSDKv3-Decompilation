@@ -114,6 +114,22 @@ void RenderRenderDevice()
     destScreenPos.y = 0;
     destScreenPos.w = SCREEN_XSIZE;
     destScreenPos.h = SCREEN_YSIZE;
+    
+
+    // This is to match the aspect ratio of the video file.
+    if (videoPlaying) {
+        float screenAR  = float(SCREEN_XSIZE) / float(SCREEN_YSIZE);
+        if (screenAR > videoAR) { // If the screen is wider than the video. (Pillarboxed)
+            uint videoW = uint(SCREEN_YSIZE * videoAR); // This is to force Pillarboxed mode if the screen is wider than the video.
+            destScreenPos.x = (SCREEN_XSIZE - videoW) / 2;  // Centers the video horizontally.
+            destScreenPos.w = videoW;
+        }
+        else {
+            uint videoH = uint(float(SCREEN_XSIZE) / videoAR); // This is to force letterbox mode if the video is wider than the screen.
+            destScreenPos.y = (SCREEN_YSIZE - videoH) / 2; // Centers the video vertically.
+            destScreenPos.h = videoH;
+        }
+    }
 
     int pitch = 0;
     SDL_SetRenderTarget(Engine.renderer, NULL);
@@ -168,7 +184,6 @@ void RenderRenderDevice()
                     pixels++;
                 }
             }
-
             SDL_UnlockTexture(Engine.screenBuffer2x);
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, &destScreenPos);
         }
