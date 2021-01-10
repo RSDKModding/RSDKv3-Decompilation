@@ -271,8 +271,6 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
                 SDL_AudioStreamFlush(ogv_stream);
 
             // Fetch the converted audio data, which is ready for mixing.
-            // TODO: This code doesn't account for `len` being larger than the buffer.
-            // ...But neither does `trackRequestMoreData`, so I guess it's not my problem.
             int get = SDL_AudioStreamGet(ogv_stream, buffer, bytes_to_do);
 
             // Mix the converted audio data into the final output
