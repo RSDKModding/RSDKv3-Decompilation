@@ -38,7 +38,6 @@ struct SFXInfo {
 };
 
 struct ChannelInfo {
-    int sampleStart;
     int sampleLength;
     Sint16 *samplePtr;
     int sfxID;
