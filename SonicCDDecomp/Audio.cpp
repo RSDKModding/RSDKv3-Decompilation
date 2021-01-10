@@ -35,7 +35,7 @@ SDL_AudioStream *ogv_stream;
 
 #define AUDIO_BUFFERSIZE (0x4000)
 
-#define MIX_BUFFER_FRAMES (256)
+#define MIX_BUFFER_SAMPLES (256)
 
 int InitAudioPlayback()
 {
@@ -241,44 +241,46 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 
     size_t samples_remaining = (size_t)len / sizeof(Sint16);
     while (samples_remaining != 0) {
-        Sint32 mix_buffer[MIX_BUFFER_FRAMES];
+        Sint32 mix_buffer[MIX_BUFFER_SAMPLES];
         memset(mix_buffer, 0, sizeof(mix_buffer));
 
-        const size_t samples_to_do = (samples_remaining < MIX_BUFFER_FRAMES) ? samples_remaining : MIX_BUFFER_FRAMES;
+        const size_t samples_to_do = (samples_remaining < MIX_BUFFER_SAMPLES) ? samples_remaining : MIX_BUFFER_SAMPLES;
 
 //        ProcessMusicStream(data, stream, len);
-/*
+
         // Process music being played by a video
         if (videoPlaying) {
             // Fetch THEORAPLAY audio packets, and shove them into the SDL Audio Stream
+            const size_t bytes_to_do = samples_to_do * sizeof(Sint16);
+
             const THEORAPLAY_AudioPacket *packet;
 
             while ((packet = THEORAPLAY_getAudio(videoDecoder)) != NULL) {
-                SDL_AudioStreamPut(ogv_stream, packet->samples, packet->frames * sizeof (float) * 2); // 2 for stereo
+                SDL_AudioStreamPut(ogv_stream, packet->samples, packet->frames * sizeof(float) * 2); // 2 for stereo
                 THEORAPLAY_freeAudio(packet);
             }
 
-            Sint16 buffer[AUDIO_BUFFERSIZE];
+            Sint16 buffer[MIX_BUFFER_SAMPLES];
 
             // If we need more samples, assume we've reached the end of the file,
             // and flush the audio stream so we can get more. If we were wrong, and
             // there's still more file left, then there will be a gap in the audio. Sorry.
-            if (SDL_AudioStreamAvailable(ogv_stream) < len)
+            if (SDL_AudioStreamAvailable(ogv_stream) < bytes_to_do)
                 SDL_AudioStreamFlush(ogv_stream);
 
             // Fetch the converted audio data, which is ready for mixing.
             // TODO: This code doesn't account for `len` being larger than the buffer.
             // ...But neither does `trackRequestMoreData`, so I guess it's not my problem.
-            int get = SDL_AudioStreamGet(ogv_stream, buffer, len);
+            int get = SDL_AudioStreamGet(ogv_stream, buffer, bytes_to_do);
 
             // Mix the converted audio data into the final output
             if (get != -1)
-                ProcessAudioMixing(stream, buffer, get, (bgmVolume * masterVolume) / MAX_VOLUME, 0); // TODO - Should we be using the music volume?
+                ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), (bgmVolume * masterVolume) / MAX_VOLUME, 0); // TODO - Should we be using the music volume?
         }
         else {
             SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
         }
-*/
+
         for (byte i = 0; i < CHANNEL_COUNT; ++i) {
             ChannelInfo *sfx = &sfxChannels[i];
             if (sfx == NULL)
