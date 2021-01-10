@@ -246,6 +246,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 
         const size_t samples_to_do = (samples_remaining < MIX_BUFFER_SAMPLES) ? samples_remaining : MIX_BUFFER_SAMPLES;
 
+        // Mix music
         ProcessMusicStream(mix_buffer, samples_to_do);
 
         // Process music being played by a video
@@ -281,6 +282,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
         }
 
+        // Mix SFX
         for (byte i = 0; i < CHANNEL_COUNT; ++i) {
             ChannelInfo *sfx = &sfxChannels[i];
             if (sfx == NULL)
@@ -312,6 +314,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             }
         }
 
+        // Clamp mixed samples back to 16-bit and write them to the output buffer
         for (size_t i = 0; i < sizeof(mix_buffer) / sizeof(*mix_buffer); ++i)
         {
             const Sint16 max_audioval = ((1 << (16 - 1)) - 1);
