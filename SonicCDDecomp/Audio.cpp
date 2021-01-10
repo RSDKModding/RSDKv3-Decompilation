@@ -25,7 +25,7 @@ SDL_AudioSpec audioDeviceFormat;
 SDL_AudioStream *ogv_stream;
 
 #define AUDIO_FREQUENCY (44100)
-#define AUDIO_FORMAT    (0x8010) /**< Signed 16-bit samples */
+#define AUDIO_FORMAT    (AUDIO_S16SYS) /**< Signed 16-bit samples */
 #define AUDIO_SAMPLES   (0x800)
 #define AUDIO_CHANNELS  (2)
 
@@ -327,7 +327,7 @@ void ProcessAudioMixing(Sint16 *dst, const Sint16 *src, Uint32 len, int volume, 
     const Sint16 max_audioval = ((1 << (16 - 1)) - 1);
     const Sint16 min_audioval = -(1 << (16 - 1));
 
-    len /= 2;
+    len /= sizeof(Sint16);
     while (len--) {
         long sample = *src++;
         ADJUST_VOLUME(sample, volume);
