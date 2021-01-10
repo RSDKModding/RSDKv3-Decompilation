@@ -196,7 +196,7 @@ int trackRequestMoreData(uint samples, uint amount)
 #endif
 
 
-void ProcessMusicStream(void *data, Sint16 *stream, int len)
+void ProcessMusicStream(Sint32 *stream, size_t len)
 {
     if (!musInfo.loaded)
         return;
@@ -204,10 +204,10 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len)
         case MUSIC_READY:
         case MUSIC_PLAYING: {
 #if RETRO_USING_SDL
-            int bytes        = trackRequestMoreData(AUDIO_SAMPLES, len * 2);
+            int bytes        = trackRequestMoreData(AUDIO_SAMPLES, len * sizeof(Sint16) * 2);
             if (bytes > 0) {
                 int vol = (bgmVolume * masterVolume) / MAX_VOLUME;
-      //          ProcessAudioMixing(stream, musInfo.buffer, len, vol, 0);
+                ProcessAudioMixing(stream, musInfo.buffer, len, vol, 0);
             }
 
             switch (bytes) {
@@ -246,7 +246,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 
         const size_t samples_to_do = (samples_remaining < MIX_BUFFER_SAMPLES) ? samples_remaining : MIX_BUFFER_SAMPLES;
 
-//        ProcessMusicStream(data, stream, len);
+        ProcessMusicStream(mix_buffer, samples_to_do);
 
         // Process music being played by a video
         if (videoPlaying) {
