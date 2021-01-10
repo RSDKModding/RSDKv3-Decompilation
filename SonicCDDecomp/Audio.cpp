@@ -285,7 +285,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
                 ProcessAudioMixing(stream, sfx->samplePtr, sampleLen, sfxVolume, sfx->pan);
 #endif
 
-                sfx->samplePtr += sampleLen;
+                sfx->samplePtr += sampleLen / sizeof(Sint16);
                 sfx->sampleLength -= sampleLen;
             }
 
