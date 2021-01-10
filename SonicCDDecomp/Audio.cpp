@@ -35,6 +35,8 @@ SDL_AudioStream *ogv_stream;
 
 #define AUDIO_BUFFERSIZE (0x4000)
 
+#define MIX_BUFFER_FRAMES (256)
+
 int InitAudioPlayback()
 {
     StopAllSfx(); //"init"
@@ -205,7 +207,7 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len)
             int bytes        = trackRequestMoreData(AUDIO_SAMPLES, len * 2);
             if (bytes > 0) {
                 int vol = (bgmVolume * masterVolume) / MAX_VOLUME;
-                ProcessAudioMixing(stream, musInfo.buffer, len, vol, 0);
+      //          ProcessAudioMixing(stream, musInfo.buffer, len, vol, 0);
             }
 
             switch (bytes) {
@@ -228,82 +230,107 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len)
     }
 }
 
-void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
+void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 {
-    Sint16 *stream = (Sint16*)stream_uint8;
-
-    memset(stream, 0, len);
+    (void)userdata; // Unused
 
     if (!audioEnabled)
         return;
 
-    ProcessMusicStream(data, stream, len);
+    Sint16 *output_buffer = (Sint16*)stream;
 
-    // Process music being played by a video
-    if (videoPlaying) {
-        // Fetch THEORAPLAY audio packets, and shove them into the SDL Audio Stream
-        const THEORAPLAY_AudioPacket *packet;
+    size_t samples_remaining = (size_t)len / sizeof(Sint16);
+    while (samples_remaining != 0) {
+        Sint32 mix_buffer[MIX_BUFFER_FRAMES];
+        memset(mix_buffer, 0, sizeof(mix_buffer));
 
-        while ((packet = THEORAPLAY_getAudio(videoDecoder)) != NULL) {
-            SDL_AudioStreamPut(ogv_stream, packet->samples, packet->frames * sizeof (float) * 2); // 2 for stereo
-            THEORAPLAY_freeAudio(packet);
-        }
+        const size_t samples_to_do = (samples_remaining < MIX_BUFFER_FRAMES) ? samples_remaining : MIX_BUFFER_FRAMES;
 
-        Sint16 buffer[AUDIO_BUFFERSIZE];
+//        ProcessMusicStream(data, stream, len);
+/*
+        // Process music being played by a video
+        if (videoPlaying) {
+            // Fetch THEORAPLAY audio packets, and shove them into the SDL Audio Stream
+            const THEORAPLAY_AudioPacket *packet;
 
-        // If we need more samples, assume we've reached the end of the file,
-        // and flush the audio stream so we can get more. If we were wrong, and
-        // there's still more file left, then there will be a gap in the audio. Sorry.
-        if (SDL_AudioStreamAvailable(ogv_stream) < len)
-            SDL_AudioStreamFlush(ogv_stream);
-
-        // Fetch the converted audio data, which is ready for mixing.
-        // TODO: This code doesn't account for `len` being larger than the buffer.
-        // ...But neither does `trackRequestMoreData`, so I guess it's not my problem.
-        int get = SDL_AudioStreamGet(ogv_stream, buffer, len);
-
-        // Mix the converted audio data into the final output
-        if (get != -1)
-            ProcessAudioMixing(stream, buffer, get, (bgmVolume * masterVolume) / MAX_VOLUME, 0); // TODO - Should we be using the music volume?
-    }
-    else {
-        SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
-    }
-
-    for (byte i = 0; i < CHANNEL_COUNT; ++i) {
-        ChannelInfo *sfx = &sfxChannels[i];
-        if (sfx == NULL)
-            continue;
-
-        if (sfx->sfxID < 0)
-            continue;
-
-        if (sfx->samplePtr) {
-            if (sfx->sampleLength > 0) {
-                int sampleLen = (len > sfx->sampleLength) ? sfx->sampleLength : len;
-#if RETRO_USING_SDL
-                ProcessAudioMixing(stream, sfx->samplePtr, sampleLen, sfxVolume, sfx->pan);
-#endif
-
-                sfx->samplePtr += sampleLen / sizeof(Sint16);
-                sfx->sampleLength -= sampleLen;
+            while ((packet = THEORAPLAY_getAudio(videoDecoder)) != NULL) {
+                SDL_AudioStreamPut(ogv_stream, packet->samples, packet->frames * sizeof (float) * 2); // 2 for stereo
+                THEORAPLAY_freeAudio(packet);
             }
 
-            if (sfx->sampleLength <= 0) {
-                if (sfx->loopSFX) {
-                    sfx->samplePtr    = sfxList[sfx->sfxID].buffer;
-                    sfx->sampleLength = sfxList[sfx->sfxID].length;
+            Sint16 buffer[AUDIO_BUFFERSIZE];
+
+            // If we need more samples, assume we've reached the end of the file,
+            // and flush the audio stream so we can get more. If we were wrong, and
+            // there's still more file left, then there will be a gap in the audio. Sorry.
+            if (SDL_AudioStreamAvailable(ogv_stream) < len)
+                SDL_AudioStreamFlush(ogv_stream);
+
+            // Fetch the converted audio data, which is ready for mixing.
+            // TODO: This code doesn't account for `len` being larger than the buffer.
+            // ...But neither does `trackRequestMoreData`, so I guess it's not my problem.
+            int get = SDL_AudioStreamGet(ogv_stream, buffer, len);
+
+            // Mix the converted audio data into the final output
+            if (get != -1)
+                ProcessAudioMixing(stream, buffer, get, (bgmVolume * masterVolume) / MAX_VOLUME, 0); // TODO - Should we be using the music volume?
+        }
+        else {
+            SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
+        }
+*/
+        for (byte i = 0; i < CHANNEL_COUNT; ++i) {
+            ChannelInfo *sfx = &sfxChannels[i];
+            if (sfx == NULL)
+                continue;
+
+            if (sfx->sfxID < 0)
+                continue;
+
+            if (sfx->samplePtr) {
+                if (sfx->sampleLength > 0) {
+                    int sampleLen = ((sfx->sampleLength/sizeof(Sint16)) < samples_to_do) ? (sfx->sampleLength/sizeof(Sint16)) : samples_to_do;
+    #if RETRO_USING_SDL
+                    ProcessAudioMixing(mix_buffer, sfx->samplePtr, sampleLen, sfxVolume, sfx->pan);
+    #endif
+
+                    sfx->samplePtr += sampleLen;
+                    sfx->sampleLength -= sampleLen*sizeof(Sint16);
                 }
-                else {
-                    StopSfx(sfx->sfxID);
+
+                if (sfx->sampleLength <= 0) {
+                    if (sfx->loopSFX) {
+                        sfx->samplePtr    = sfxList[sfx->sfxID].buffer;
+                        sfx->sampleLength = sfxList[sfx->sfxID].length;
+                    }
+                    else {
+                        StopSfx(sfx->sfxID);
+                    }
                 }
             }
         }
+
+        for (size_t i = 0; i < sizeof(mix_buffer) / sizeof(*mix_buffer); ++i)
+        {
+            const Sint16 max_audioval = ((1 << (16 - 1)) - 1);
+            const Sint16 min_audioval = -(1 << (16 - 1));
+
+            const Sint32 sample = mix_buffer[i];
+
+            if (sample > max_audioval)
+                *output_buffer++ = max_audioval;
+            else if (sample < min_audioval)
+                *output_buffer++ = min_audioval;
+            else
+                *output_buffer++ = sample;
+        }
+
+        samples_remaining -= samples_to_do;
     }
 }
 
 #if RETRO_USING_SDL
-void ProcessAudioMixing(Sint16 *dst, const Sint16 *src, int len, int volume, signed char pan)
+void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, signed char pan)
 {
     if (volume == 0)
         return;
@@ -324,12 +351,8 @@ void ProcessAudioMixing(Sint16 *dst, const Sint16 *src, int len, int volume, sig
         panR = 1.0f;
     }
 
-    const Sint16 max_audioval = ((1 << (16 - 1)) - 1);
-    const Sint16 min_audioval = -(1 << (16 - 1));
-
-    len /= sizeof(Sint16);
     while (len--) {
-        long sample = *src++;
+        Sint32 sample = *src++;
         ADJUST_VOLUME(sample, volume);
 
         if (pan != 0) {
@@ -341,14 +364,7 @@ void ProcessAudioMixing(Sint16 *dst, const Sint16 *src, int len, int volume, sig
             }
         }
 
-        sample += *dst;
-
-        if (sample > max_audioval)
-            *dst++ = max_audioval;
-        else if (sample < min_audioval)
-            *dst++ = min_audioval;
-        else
-            *dst++ = sample;
+        *dst++ += sample;
 
         i++;
     }
