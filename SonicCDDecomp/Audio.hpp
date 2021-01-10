@@ -21,8 +21,8 @@ struct MusicPlaybackInfo {
     int vorbBitstream;
     SDL_AudioSpec spec;
     SDL_AudioStream *stream;
-    byte *buffer;
-    byte *extraBuffer;
+    Sint16 *buffer;
+    Sint16 *extraBuffer;
 #endif
     FileInfo fileInfo;
     bool trackLoop;
@@ -32,7 +32,7 @@ struct MusicPlaybackInfo {
 
 struct SFXInfo {
     char name[0x40];
-    byte *buffer;
+    Sint16 *buffer;
     int length;
     bool loaded;
 };
@@ -40,7 +40,7 @@ struct SFXInfo {
 struct ChannelInfo {
     int sampleStart;
     int sampleLength;
-    byte *samplePtr;
+    Sint16 *samplePtr;
     int sfxID;
     byte loopSFX;
     sbyte pan;
@@ -80,9 +80,9 @@ extern SDL_AudioSpec audioDeviceFormat;
 int InitAudioPlayback();
 
 #if RETRO_USING_SDL
-void ProcessMusicStream(void *data, Uint8 *stream, int le);
+void ProcessMusicStream(void *data, Sint16 *stream, int le);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
-void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat format, Uint32 len, int volume, bool music);
+void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, SDL_AudioFormat format, Uint32 len, int volume, bool music);
 
 
 inline void freeMusInfo()

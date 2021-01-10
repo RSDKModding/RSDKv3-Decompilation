@@ -194,7 +194,7 @@ int trackRequestMoreData(uint samples, uint amount)
 #endif
 
 
-void ProcessMusicStream(void *data, Uint8 *stream, int len)
+void ProcessMusicStream(void *data, Sint16 *stream, int len)
 {
     if (!musInfo.loaded)
         return;
@@ -228,8 +228,10 @@ void ProcessMusicStream(void *data, Uint8 *stream, int len)
     }
 }
 
-void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
+void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
 {
+    Sint16 *stream = (Sint16*)stream_uint8;
+
     memset(stream, 0, len);
 
     if (!audioEnabled)
@@ -249,7 +251,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
             THEORAPLAY_freeAudio(packet);
         }
 
-        byte buffer[AUDIO_BUFFERSIZE];
+        Sint16 buffer[AUDIO_BUFFERSIZE];
 
         // If we need more samples, assume we've reached the end of the file,
         // and flush the audio stream so we can get more. If we were wrong, and
@@ -303,7 +305,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream, int len)
 }
 
 #if RETRO_USING_SDL
-void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat format, Uint32 len, int volume, bool music)
+void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, SDL_AudioFormat format, Uint32 len, int volume, bool music)
 {
     if (volume == 0)
         return;
@@ -334,7 +336,7 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
 
     len /= 2;
     while (len--) {
-        src1 = ((src[1]) << 8 | src[0]);
+        src1 = src[0];
         ADJUST_VOLUME(src1, volume);
 
         if (panL != 0 || panR != 0) {
@@ -346,8 +348,8 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
             }
         }
 
-        src2 = ((dst[1]) << 8 | dst[0]);
-        src += 2;
+        src2 = dst[0];
+        src += 1;
         dst_sample = src1 + src2;
 
         if (dst_sample > max_audioval) {
@@ -356,10 +358,7 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
         else if (dst_sample < min_audioval) {
             dst_sample = min_audioval;
         }
-        dst[0] = dst_sample & 0xFF;
-        dst_sample >>= 8;
-        dst[1] = dst_sample & 0xFF;
-        dst += 2;
+        *dst++ = dst_sample;
         i++;
     }
 }
@@ -461,8 +460,8 @@ bool PlayMusic(int track)
             printLog("Failed to create stream: %s", SDL_GetError());
         }
 
-        musInfo.buffer      = new byte[AUDIO_BUFFERSIZE];
-        musInfo.extraBuffer = new byte[AUDIO_BUFFERSIZE];
+        musInfo.buffer      = new Sint16[AUDIO_BUFFERSIZE];
+        musInfo.extraBuffer = new Sint16[AUDIO_BUFFERSIZE];
 #endif
 
         musicStatus = MUSIC_PLAYING;
@@ -513,14 +512,14 @@ void LoadSfx(char *filePath, byte sfxID) {
                     SDL_ConvertAudio(&convert);
 
                     StrCopy(sfxList[sfxID].name, filePath);
-                    sfxList[sfxID].buffer = convert.buf;
+                    sfxList[sfxID].buffer = (Sint16*)convert.buf;
                     sfxList[sfxID].length = convert.len_cvt;
                     sfxList[sfxID].loaded = true;
                     SDL_FreeWAV(wav_buffer);
                 }
                 else {
                     StrCopy(sfxList[sfxID].name, filePath);
-                    sfxList[sfxID].buffer = wav_buffer;
+                    sfxList[sfxID].buffer = (Sint16*)wav_buffer;
                     sfxList[sfxID].length = wav_length;
                     sfxList[sfxID].loaded = true;
                 }
