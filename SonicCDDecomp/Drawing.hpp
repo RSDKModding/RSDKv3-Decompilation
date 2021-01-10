@@ -39,6 +39,9 @@ extern short tintLookupTable[TINTTABLE_SIZE];
 extern int SCREEN_XSIZE;
 extern int SCREEN_CENTERX;
 
+extern float videoAR;
+extern bool videoPlaying;
+
 extern DrawListEntry drawListEntries[DRAWLAYER_COUNT];
 
 extern int gfxDataPosition;

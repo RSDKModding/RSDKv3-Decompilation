@@ -4,6 +4,7 @@ int currentVideoFrame = 0;
 int videoFrameCount = 0;
 int videoWidth  = 0;
 int videoHeight       = 0;
+float videoAR         = 0;
 
 THEORAPLAY_Decoder *videoDecoder;
 const THEORAPLAY_VideoFrame *videoVidData;
@@ -14,7 +15,6 @@ int videoFilePos = 0;
 bool videoPlaying = 0;
 int vidFrameMS = 0;
 int vidBaseticks = 0;
-
 
 bool videoSkipped = false;
 
@@ -63,6 +63,9 @@ void PlayVideoFile(char *filePath) {
 
         videoWidth  = videoVidData->width;
         videoHeight = videoVidData->height;
+        // commit video Aspect Ratio.
+        videoAR     = float(videoWidth) / float(videoHeight);
+
         SetupVideoBuffer(videoWidth, videoHeight);
         vidBaseticks = SDL_GetTicks();
         vidFrameMS     = (videoVidData->fps == 0.0) ? 0 : ((Uint32)(1000.0 / videoVidData->fps));
@@ -70,7 +73,6 @@ void PlayVideoFile(char *filePath) {
         trackID        = TRACK_COUNT - 1;
 
         videoSkipped = false;
-
         Engine.gameMode = ENGINE_VIDEOWAIT;
     }
     else {
@@ -186,7 +188,6 @@ int ProcessVideo()
                 if (!videoVidData) {
                     // video lagging uh oh
                 }
-
                 memset(Engine.videoFrameBuffer, 0, (videoWidth * videoHeight) * sizeof(uint));
                 uint px = 0;
                 for (uint i = 0; i < (videoWidth * videoHeight) * sizeof(uint); i += sizeof(uint)) {
