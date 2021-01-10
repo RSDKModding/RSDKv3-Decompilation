@@ -40,13 +40,13 @@ int InitAudioPlayback()
     StopAllSfx(); //"init"
 #if RETRO_USING_SDL
     SDL_AudioSpec want;
-    want.freq     = AUDIO_FREQUENCY;
-    want.format   = AUDIO_FORMAT;
-    want.samples  = AUDIO_SAMPLES;
-    want.channels = AUDIO_CHANNELS;
-    want.callback = ProcessAudioPlayback;
+    audioDeviceFormat.freq     = AUDIO_FREQUENCY;
+    audioDeviceFormat.format   = AUDIO_FORMAT;
+    audioDeviceFormat.samples  = AUDIO_SAMPLES;
+    audioDeviceFormat.channels = AUDIO_CHANNELS;
+    audioDeviceFormat.callback = ProcessAudioPlayback;
 
-    if (SDL_OpenAudio(&want, &audioDeviceFormat) >= 0) {
+    if (SDL_OpenAudio(&audioDeviceFormat, NULL) >= 0) {
         audioEnabled = true;
         SDL_PauseAudio(0);
     }
@@ -327,313 +327,40 @@ void ProcessAudioMixing(void *sfx, Uint8 *dst, const byte *src, SDL_AudioFormat 
         }
     }
 
-    switch (format) {
-        case AUDIO_S16LSB: {
-            Sint16 src1, src2;
-            int dst_sample;
-            const int max_audioval = ((1 << (16 - 1)) - 1);
-            const int min_audioval = -(1 << (16 - 1));
+    Sint16 src1, src2;
+    int dst_sample;
+    const int max_audioval = ((1 << (16 - 1)) - 1);
+    const int min_audioval = -(1 << (16 - 1));
 
-            len /= 2;
-            while (len--) {
-                src1 = ((src[1]) << 8 | src[0]);
-                ADJUST_VOLUME(src1, volume);
+    len /= 2;
+    while (len--) {
+        src1 = ((src[1]) << 8 | src[0]);
+        ADJUST_VOLUME(src1, volume);
 
-                if (panL != 0 || panR != 0) {
-                    if ((i % 2) != 0) {
-                        Sint16 swapr = (Sint16)(((float)(Sint16)SDL_SwapLE16(src1)) * panR);
-                        src1         = (Sint16)SDL_SwapLE16(swapr);
-                    }
-                    else {
-                        Sint16 swapl = (Sint16)(((float)(Sint16)SDL_SwapLE16(src1)) * panL);
-                        src1         = (Sint16)SDL_SwapLE16(swapl);
-                    }
-                }
-
-                src2 = ((dst[1]) << 8 | dst[0]);
-                src += 2;
-                dst_sample = src1 + src2;
-
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                else if (dst_sample < min_audioval) {
-                    dst_sample = min_audioval;
-                }
-                dst[0] = dst_sample & 0xFF;
-                dst_sample >>= 8;
-                dst[1] = dst_sample & 0xFF;
-                dst += 2;
-                i++;
+        if (panL != 0 || panR != 0) {
+            if ((i % 2) != 0) {
+                src1 *- panR;
             }
-        } break;
-        case AUDIO_S16MSB: {
-#if defined(__GNUC__) && defined(__M68000__) && !defined(__mcoldfire__) && defined(SDL_ASSEMBLY_ROUTINES)
-            SDL_MixAudio_m68k_S16MSB((short *)dst, (short *)src, (unsigned long)len, (long)volume);
-#else
-            Sint16 src1, src2;
-            int dst_sample;
-            const int max_audioval = ((1 << (16 - 1)) - 1);
-            const int min_audioval = -(1 << (16 - 1));
-
-            len /= 2;
-            while (len--) {
-                src1 = ((src[0]) << 8 | src[1]);
-                ADJUST_VOLUME(src1, volume);
-
-                if (panL != 0 || panR != 0) {
-                    if ((i % 2) != 0) {
-                        Sint16 swapr = (Sint16)(((float)(Sint16)SDL_SwapBE16(src1)) * panR);
-                        src1         = (Sint16)SDL_SwapBE16(swapr);
-                    }
-                    else {
-                        Sint16 swapl = (Sint16)(((float)(Sint16)SDL_SwapBE16(src1)) * panL);
-                        src1         = (Sint16)SDL_SwapBE16(swapl);
-                    }
-                }
-
-                src2 = ((dst[0]) << 8 | dst[1]);
-                src += 2;
-                dst_sample = src1 + src2;
-
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                else if (dst_sample < min_audioval) {
-                    dst_sample = min_audioval;
-                }
-                dst[1] = dst_sample & 0xFF;
-                dst_sample >>= 8;
-                dst[0] = dst_sample & 0xFF;
-                dst += 2;
-                i++;
+            else {
+                src1 *- panL;
             }
-#endif
-        } break;
-        case AUDIO_U16LSB: {
-            Uint16 src1, src2;
-            int dst_sample;
-            const int max_audioval = 0xFFFF;
+        }
 
-            len /= 2;
-            while (len--) {
-                src1 = ((src[1]) << 8 | src[0]);
-                ADJUST_VOLUME(src1, volume);
+        src2 = ((dst[1]) << 8 | dst[0]);
+        src += 2;
+        dst_sample = src1 + src2;
 
-                if (panL != 0 || panR != 0) {
-                    Sint16 samp = (Sint16)(SDL_SwapLE16(src1) - 32768);
-                    if ((i % 2) != 0) {
-                        Uint16 swapr = (Uint16)(Sint16)(((float)samp * panR) + 32768);
-                        src1         = (Uint16)SDL_SwapLE16(swapr);
-                    }
-                    else {
-                        Uint16 swapl = (Uint16)(Sint16)(((float)samp * panL) + 32768);
-                        src1         = (Uint16)SDL_SwapLE16(swapl);
-                    }
-                }
-
-                src2 = ((dst[1]) << 8 | dst[0]);
-                src += 2;
-                dst_sample = src1 + src2;
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                dst[0] = dst_sample & 0xFF;
-                dst_sample >>= 8;
-                dst[1] = dst_sample & 0xFF;
-                dst += 2;
-                i++;
-            }
-        } break;
-        case AUDIO_U16MSB: {
-            Uint16 src1, src2;
-            int dst_sample;
-            const int max_audioval = 0xFFFF;
-
-            len /= 2;
-            while (len--) {
-                src1 = ((src[0]) << 8 | src[1]);
-                ADJUST_VOLUME(src1, volume);
-
-                if (panL != 0 || panR != 0) {
-                    Sint16 samp = (Sint16)(SDL_SwapBE16(src1) - 32768);
-                    if ((i % 2) != 0) {
-                        Uint16 swapr = (Uint16)((Sint16)((float)samp * panR) + 32768);
-                        src1         = (Uint16)SDL_SwapBE16(swapr);
-                    }
-                    else {
-                        Uint16 swapl = (Uint16)((Sint16)((float)samp * panL) + 32768);
-                        src1         = (Uint16)SDL_SwapBE16(swapl);
-                    }
-                }
-
-                src2 = ((dst[0]) << 8 | dst[1]);
-                src += 2;
-                dst_sample = src1 + src2;
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                dst[1] = dst_sample & 0xFF;
-                dst_sample >>= 8;
-                dst[0] = dst_sample & 0xFF;
-                dst += 2;
-                i++;
-            }
-        } break;
-        case AUDIO_S32LSB: {
-            const Uint32 *src32 = (Uint32 *)src;
-            Uint32 *dst32       = (Uint32 *)dst;
-            Sint64 src1, src2;
-            Sint64 dst_sample;
-            const Sint64 max_audioval = ((((Sint64)1) << (32 - 1)) - 1);
-            const Sint64 min_audioval = -(((Sint64)1) << (32 - 1));
-
-            len /= 4;
-            while (len--) {
-                src1 = (Sint64)((Sint32)SDL_SwapLE32(*src32));
-                src32++;
-                ADJUST_VOLUME(src1, volume);
-
-                if (panL != 0 || panR != 0) {
-                    if ((i % 2) != 0) {
-                        Sint32 swapr = (Sint32)(((float)(Sint32)SDL_SwapLE32(src1)) * panR);
-                        src1         = (Sint32)SDL_SwapLE16(swapr);
-                    }
-                    else {
-                        Sint32 swapl = (Sint32)(((float)(Sint32)SDL_SwapLE32(src1)) * panL);
-                        src1         = (Sint32)SDL_SwapLE32(swapl);
-                    }
-                }
-
-                src2       = (Sint64)((Sint32)SDL_SwapLE32(*dst32));
-                dst_sample = src1 + src2;
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                else if (dst_sample < min_audioval) {
-                    dst_sample = min_audioval;
-                }
-                *(dst32++) = SDL_SwapLE32((Uint32)((Sint32)dst_sample));
-                i++;
-            }
-        } break;
-        case AUDIO_S32MSB: {
-            const Uint32 *src32 = (Uint32 *)src;
-            Uint32 *dst32       = (Uint32 *)dst;
-            Sint64 src1, src2;
-            Sint64 dst_sample;
-            const Sint64 max_audioval = ((((Sint64)1) << (32 - 1)) - 1);
-            const Sint64 min_audioval = -(((Sint64)1) << (32 - 1));
-
-            len /= 4;
-            while (len--) {
-                src1 = (Sint64)((Sint32)SDL_SwapBE32(*src32));
-                src32++;
-                ADJUST_VOLUME(src1, volume);
-
-                if (panL != 0 || panR != 0) {
-                    if ((i % 2) != 0) {
-                        Sint32 swapr = (Sint32)(((float)(Sint32)SDL_SwapBE32((uint)src1)) * panR);
-                        src1         = (Sint32)SDL_SwapBE16(swapr);
-                    }
-                    else {
-                        Sint32 swapl = (Sint32)(((float)(Sint32)SDL_SwapBE32((uint)src1)) * panL);
-                        src1         = (Sint32)SDL_SwapBE16(swapl);
-                    }
-                }
-
-                src2       = (Sint64)((Sint32)SDL_SwapBE32(*dst32));
-                dst_sample = src1 + src2;
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                else if (dst_sample < min_audioval) {
-                    dst_sample = min_audioval;
-                }
-                *(dst32++) = SDL_SwapBE32((Uint32)((Sint32)dst_sample));
-                i++;
-            }
-        } break;
-        case AUDIO_F32LSB: {
-            const float fmaxvolume = 1.0f / ((float)MAX_VOLUME);
-            const float fvolume    = (float)volume;
-            const float *src32     = (float *)src;
-            float *dst32           = (float *)dst;
-            float src1 /*, src2*/;
-            float dst1;
-            double dst_sample;
-
-            /* !!! FIXME: are these right? */
-            const double max_audioval = 3.402823466e+38F;
-            const double min_audioval = -3.402823466e+38F;
-
-            len /= 4;
-            int i = 0;
-            while (len--) {
-                src1 = ((SDL_SwapFloatLE(*src32) * fvolume) * fmaxvolume);
-                if (panL != 0 || panR != 0) {
-                    if ((i % 2) == 0) {
-                        src1 = (src1 * panR);
-                    }
-                    else {
-                        src1 = (src1 * panL);
-                    }
-                }
-
-                src32++;
-                dst1       = SDL_SwapFloatLE(*dst32);
-                dst_sample = ((double)src1) + ((double)dst1);
-
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                else if (dst_sample < min_audioval) {
-                    dst_sample = min_audioval;
-                }
-                *(dst32++) = SDL_SwapFloatLE((float)dst_sample);
-                i++;
-            }
-        } break;
-        case AUDIO_F32MSB: {
-            const float fmaxvolume = 1.0f / ((float)MAX_VOLUME);
-            const float fvolume    = (float)volume;
-            const float *src32     = (float *)src;
-            float *dst32           = (float *)dst;
-            float src1, src2;
-            double dst_sample;
-            const double max_audioval = 3.402823466e+38F;
-            const double min_audioval = -3.402823466e+38F;
-
-            len /= 4;
-            while (len--) {
-                src1 = ((SDL_SwapFloatBE(*src32) * fvolume) * fmaxvolume);
-
-                if (panL != 0 || panR != 0) {
-                    if ((i % 2) == 0) {
-                        src1 = (src1 * panR);
-                    }
-                    else {
-                        src1 = (src1 * panL);
-                    }
-                }
-
-                src2 = SDL_SwapFloatBE(*dst32);
-                src32++;
-
-                dst_sample = ((double)src1) + ((double)src2);
-                if (dst_sample > max_audioval) {
-                    dst_sample = max_audioval;
-                }
-                else if (dst_sample < min_audioval) {
-                    dst_sample = min_audioval;
-                }
-                *(dst32++) = SDL_SwapFloatBE((float)dst_sample);
-                i++;
-            }
-        } break;
-        default:
-            printLog("Unknown audio format: %d", format);
-            return;
+        if (dst_sample > max_audioval) {
+            dst_sample = max_audioval;
+        }
+        else if (dst_sample < min_audioval) {
+            dst_sample = min_audioval;
+        }
+        dst[0] = dst_sample & 0xFF;
+        dst_sample >>= 8;
+        dst[1] = dst_sample & 0xFF;
+        dst += 2;
+        i++;
     }
 }
 #endif
