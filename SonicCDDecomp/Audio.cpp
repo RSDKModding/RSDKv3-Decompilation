@@ -327,36 +327,32 @@ void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, Uint32 len, i
         }
     }
 
-    Sint16 src1, src2;
-    int dst_sample;
-    const int max_audioval = ((1 << (16 - 1)) - 1);
-    const int min_audioval = -(1 << (16 - 1));
+    const Sint16 max_audioval = ((1 << (16 - 1)) - 1);
+    const Sint16 min_audioval = -(1 << (16 - 1));
 
     len /= 2;
     while (len--) {
-        src1 = src[0];
-        ADJUST_VOLUME(src1, volume);
+        long sample = *src++;
+        ADJUST_VOLUME(sample, volume);
 
         if (panL != 0 || panR != 0) {
             if ((i % 2) != 0) {
-                src1 *- panR;
+                sample *- panR;
             }
             else {
-                src1 *- panL;
+                sample *- panL;
             }
         }
 
-        src2 = dst[0];
-        src += 1;
-        dst_sample = src1 + src2;
+        sample += *dst;
 
-        if (dst_sample > max_audioval) {
-            dst_sample = max_audioval;
-        }
-        else if (dst_sample < min_audioval) {
-            dst_sample = min_audioval;
-        }
-        *dst++ = dst_sample;
+        if (sample > max_audioval)
+            *dst++ = max_audioval;
+        else if (sample < min_audioval)
+            *dst++ = min_audioval;
+        else
+            *dst++ = sample;
+
         i++;
     }
 }
