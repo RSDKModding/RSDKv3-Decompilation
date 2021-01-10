@@ -303,7 +303,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
 }
 
 #if RETRO_USING_SDL
-void ProcessAudioMixing(Sint16 *dst, const Sint16 *src, Uint32 len, int volume, signed char pan)
+void ProcessAudioMixing(Sint16 *dst, const Sint16 *src, int len, int volume, signed char pan)
 {
     if (volume == 0)
         return;
