@@ -205,7 +205,7 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len)
             int bytes        = trackRequestMoreData(AUDIO_SAMPLES, len * 2);
             if (bytes > 0) {
                 int vol = (bgmVolume * masterVolume) / MAX_VOLUME;
-                ProcessAudioMixing(NULL, stream, musInfo.buffer, len, vol, true);
+                ProcessAudioMixing(stream, musInfo.buffer, len, vol, 0);
             }
 
             switch (bytes) {
@@ -264,7 +264,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
 
         // Mix the converted audio data into the final output
         if (get != -1)
-            ProcessAudioMixing(NULL, stream, buffer, get, (bgmVolume * masterVolume) / MAX_VOLUME, true); // TODO - Should we be using the music volume?
+            ProcessAudioMixing(stream, buffer, get, (bgmVolume * masterVolume) / MAX_VOLUME, 0); // TODO - Should we be using the music volume?
     }
     else {
         SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
@@ -282,7 +282,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
             if (sfx->sampleLength > 0) {
                 int sampleLen = (len > sfx->sampleLength) ? sfx->sampleLength : len;
 #if RETRO_USING_SDL
-                ProcessAudioMixing(sfx, stream, sfx->samplePtr, sampleLen, sfxVolume, false);
+                ProcessAudioMixing(stream, sfx->samplePtr, sampleLen, sfxVolume, sfx->pan);
 #endif
 
                 sfx->samplePtr += sampleLen;
@@ -303,7 +303,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
 }
 
 #if RETRO_USING_SDL
-void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, Uint32 len, int volume, bool music)
+void ProcessAudioMixing(Sint16 *dst, const Sint16 *src, Uint32 len, int volume, signed char pan)
 {
     if (volume == 0)
         return;
@@ -311,20 +311,17 @@ void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, Uint32 len, i
     if (volume > MAX_VOLUME)
         volume = MAX_VOLUME;
 
-    ChannelInfo *snd = (ChannelInfo *)sfx;
-
     float panL     = 0;
     float panR     = 0;
     int i          = 0;
-    if (!music) {
-        if (snd->pan < 0) {
-            panR = 1.0f - abs(snd->pan / 100.0f);
-            panL = 1.0f;
-        }
-        else if (snd->pan > 0) {
-            panL = 1.0f - abs(snd->pan / 100.0f);
-            panR = 1.0f;
-        }
+
+    if (pan < 0) {
+        panR = 1.0f - abs(pan / 100.0f);
+        panL = 1.0f;
+    }
+    else if (pan > 0) {
+        panL = 1.0f - abs(pan / 100.0f);
+        panR = 1.0f;
     }
 
     const Sint16 max_audioval = ((1 << (16 - 1)) - 1);
@@ -335,7 +332,7 @@ void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, Uint32 len, i
         long sample = *src++;
         ADJUST_VOLUME(sample, volume);
 
-        if (panL != 0 || panR != 0) {
+        if (pan != 0) {
             if ((i % 2) != 0) {
                 sample *= panR;
             }
