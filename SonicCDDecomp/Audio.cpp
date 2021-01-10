@@ -294,13 +294,13 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 
             if (sfx->samplePtr) {
                 if (sfx->sampleLength > 0) {
-                    int sampleLen = ((sfx->sampleLength/sizeof(Sint16)) < samples_to_do) ? (sfx->sampleLength/sizeof(Sint16)) : samples_to_do;
+                    int sampleLen = (sfx->sampleLength < samples_to_do) ? sfx->sampleLength : samples_to_do;
     #if RETRO_USING_SDL
                     ProcessAudioMixing(mix_buffer, sfx->samplePtr, sampleLen, sfxVolume, sfx->pan);
     #endif
 
                     sfx->samplePtr += sampleLen;
-                    sfx->sampleLength -= sampleLen*sizeof(Sint16);
+                    sfx->sampleLength -= sampleLen;
                 }
 
                 if (sfx->sampleLength <= 0) {
@@ -526,14 +526,14 @@ void LoadSfx(char *filePath, byte sfxID) {
 
                     StrCopy(sfxList[sfxID].name, filePath);
                     sfxList[sfxID].buffer = (Sint16*)convert.buf;
-                    sfxList[sfxID].length = convert.len_cvt;
+                    sfxList[sfxID].length = convert.len_cvt / sizeof(Sint16);
                     sfxList[sfxID].loaded = true;
                     SDL_FreeWAV(wav_buffer);
                 }
                 else {
                     StrCopy(sfxList[sfxID].name, filePath);
                     sfxList[sfxID].buffer = (Sint16*)wav_buffer;
-                    sfxList[sfxID].length = wav_length;
+                    sfxList[sfxID].length = wav_length / sizeof(Sint16);
                     sfxList[sfxID].loaded = true;
                 }
             }
