@@ -21,6 +21,7 @@ ChannelInfo sfxChannels[CHANNEL_COUNT];
 MusicPlaybackInfo musInfo;
 
 #if RETRO_USING_SDL
+SDL_AudioDeviceID audioDevice;
 SDL_AudioSpec audioDeviceFormat;
 SDL_AudioStream *ogv_stream;
 
@@ -42,15 +43,15 @@ int InitAudioPlayback()
     StopAllSfx(); //"init"
 #if RETRO_USING_SDL
     SDL_AudioSpec want;
-    audioDeviceFormat.freq     = AUDIO_FREQUENCY;
-    audioDeviceFormat.format   = AUDIO_FORMAT;
-    audioDeviceFormat.samples  = AUDIO_SAMPLES;
-    audioDeviceFormat.channels = AUDIO_CHANNELS;
-    audioDeviceFormat.callback = ProcessAudioPlayback;
+    want.freq     = AUDIO_FREQUENCY;
+    want.format   = AUDIO_FORMAT;
+    want.samples  = AUDIO_SAMPLES;
+    want.channels = AUDIO_CHANNELS;
+    want.callback = ProcessAudioPlayback;
 
-    if (SDL_OpenAudio(&audioDeviceFormat, NULL) >= 0) {
+    if ((audioDevice = SDL_OpenAudioDevice(nullptr, 0, &want, &audioDeviceFormat, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE)) > 0) {
         audioEnabled = true;
-        SDL_PauseAudio(0);
+        SDL_PauseAudioDevice(audioDevice, 0);
     }
     else {
         printLog("Unable to open audio device: %s", SDL_GetError());
