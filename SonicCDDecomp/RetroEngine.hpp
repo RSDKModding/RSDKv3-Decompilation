@@ -59,7 +59,7 @@ typedef unsigned int uint;
 #define DEFAULT_FULLSCREEN false
 #endif
 
-#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS
+#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA
 #define RETRO_USING_SDL (1)
 #else //Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL (0)
@@ -158,6 +158,11 @@ enum RetroBytecodeFormat {
 #include "theoraplay.h"
 
 #include "cocoaHelpers.hpp"
+#elif RETRO_PLATFORM == RETRO_VITA
+#include <SDL2/SDL.h>
+#include <vorbis/vorbisfile.h>
+#include <theora/theora.h>
+#include <theoraplay.h>
 #endif
 
 extern bool usingCWD;
