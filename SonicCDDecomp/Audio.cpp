@@ -205,7 +205,7 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len)
             int bytes        = trackRequestMoreData(AUDIO_SAMPLES, len * 2);
             if (bytes > 0) {
                 int vol = (bgmVolume * masterVolume) / MAX_VOLUME;
-                ProcessAudioMixing(NULL, stream, musInfo.buffer, audioDeviceFormat.format, len, vol, true);
+                ProcessAudioMixing(NULL, stream, musInfo.buffer, len, vol, true);
             }
 
             switch (bytes) {
@@ -264,7 +264,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
 
         // Mix the converted audio data into the final output
         if (get != -1)
-            ProcessAudioMixing(NULL, stream, buffer, audioDeviceFormat.format, get, (bgmVolume * masterVolume) / MAX_VOLUME, true); // TODO - Should we be using the music volume?
+            ProcessAudioMixing(NULL, stream, buffer, get, (bgmVolume * masterVolume) / MAX_VOLUME, true); // TODO - Should we be using the music volume?
     }
     else {
         SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
@@ -282,7 +282,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
             if (sfx->sampleLength > 0) {
                 int sampleLen = (len > sfx->sampleLength) ? sfx->sampleLength : len;
 #if RETRO_USING_SDL
-                ProcessAudioMixing(sfx, stream, sfx->samplePtr, audioDeviceFormat.format, sampleLen, sfxVolume, false);
+                ProcessAudioMixing(sfx, stream, sfx->samplePtr, sampleLen, sfxVolume, false);
 #endif
 
                 sfx->samplePtr += sampleLen;
@@ -303,7 +303,7 @@ void ProcessAudioPlayback(void *data, Uint8 *stream_uint8, int len)
 }
 
 #if RETRO_USING_SDL
-void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, SDL_AudioFormat format, Uint32 len, int volume, bool music)
+void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, Uint32 len, int volume, bool music)
 {
     if (volume == 0)
         return;

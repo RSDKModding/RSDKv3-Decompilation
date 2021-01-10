@@ -82,7 +82,7 @@ int InitAudioPlayback();
 #if RETRO_USING_SDL
 void ProcessMusicStream(void *data, Sint16 *stream, int le);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
-void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, SDL_AudioFormat format, Uint32 len, int volume, bool music);
+void ProcessAudioMixing(void *sfx, Sint16 *dst, const Sint16 *src, Uint32 len, int volume, bool music);
 
 
 inline void freeMusInfo()
