@@ -46,7 +46,7 @@ void PlayVideoFile(char *filePath) {
         callbacks.read     = videoRead;
         callbacks.close    = videoClose;
         callbacks.userdata = (void *)file;
-        videoDecoder       = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA);
+        videoDecoder       = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
 
         if (!videoDecoder) {
             printLog("Video Decoder Error!");

@@ -55,10 +55,12 @@ typedef struct THEORAPLAY_AudioPacket
 
 THEORAPLAY_Decoder *THEORAPLAY_startDecodeFile(const char *fname,
                                                const unsigned int maxframes,
-                                               THEORAPLAY_VideoFormat vidfmt);
+                                               THEORAPLAY_VideoFormat vidfmt,
+                                               unsigned int audio_bitstream);
 THEORAPLAY_Decoder *THEORAPLAY_startDecode(THEORAPLAY_Io *io,
                                            const unsigned int maxframes,
-                                           THEORAPLAY_VideoFormat vidfmt);
+                                           THEORAPLAY_VideoFormat vidfmt,
+                                           unsigned int audio_bitstream);
 void THEORAPLAY_stopDecode(THEORAPLAY_Decoder *decoder);
 
 int THEORAPLAY_isDecoding(THEORAPLAY_Decoder *decoder);
