@@ -32,3 +32,6 @@ objects/%.o: %
 
 soniccd: $(SOURCES:%=objects/%.o)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
+
+install: soniccd
+	install -Dp -m755 soniccd $(prefix)/bin/soniccd
