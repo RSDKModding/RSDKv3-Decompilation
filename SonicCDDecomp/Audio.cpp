@@ -171,6 +171,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
                     return;
             }
 
+            // Now that we know there are enough samples, read them and mix them
             int bytes_done = SDL_AudioStreamGet(musInfo.stream, musInfo.buffer, bytes_wanted);
             if (bytes_done == -1) {
                 return;
@@ -290,7 +291,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 }
 
 #if RETRO_USING_SDL
-void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, signed char pan)
+void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan)
 {
     if (volume == 0)
         return;
