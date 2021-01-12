@@ -17,7 +17,6 @@ struct TrackInfo {
 struct MusicPlaybackInfo {
 #if RETRO_USING_SDL
     OggVorbis_File vorbisFile;
-    unsigned long long audioLen;
     int vorbBitstream;
     SDL_AudioSpec spec;
     SDL_AudioStream *stream;
@@ -99,7 +98,6 @@ inline void freeMusInfo()
         musInfo.buffer       = nullptr;
         musInfo.extraBuffer  = nullptr;
         musInfo.stream       = nullptr;
-        musInfo.audioLen     = 0;
         musInfo.trackLoop    = false;
         musInfo.loopPoint    = 0;
         musInfo.loaded       = false;
@@ -120,7 +118,6 @@ inline void freeMusInfo()
         musInfo.musicFile    = nullptr;
         musInfo.buffer       = nullptr;
         musInfo.stream       = nullptr;
-        musInfo.audioLen     = 0;
         musInfo.pos          = 0;
         musInfo.len          = 0;
         musInfo.currentTrack = nullptr;

@@ -144,60 +144,7 @@ int InitAudioPlayback()
     return true;
 }
 
-#if RETRO_USING_SDL
-int readVorbisStream(void *dst, uint size)
-{
-    int tot = 0;
-    int read;
-    int to_read = size;
-    char *buf   = (char *)dst;
-    unsigned long long left   = musInfo.audioLen;
-    while (to_read && (read = (int)ov_read(&musInfo.vorbisFile, buf, to_read, 0, 2, 1, &musInfo.vorbBitstream))) {
-        if (read < 0) {
-            return 0;
-        }
-        to_read -= read;
-        buf += read;
-        tot += read;
-        left -= read;
-        if (left <= 0)
-            break;
-    }
-    return tot;
-}
-
-
-int trackRequestMoreData(uint samples, uint amount)
-{
-    int out   = amount / 2;
-    int avail = SDL_AudioStreamAvailable(musInfo.stream);
-
-    if (avail < out * 2) {
-
-        int numSamples = 0;
-        numSamples = readVorbisStream(musInfo.extraBuffer, (musInfo.spec.format & 0xFF) / 8 * samples * musInfo.spec.channels);
-
-        if (numSamples == 0)
-            return 0;
-
-        int rc = SDL_AudioStreamPut(musInfo.stream, musInfo.extraBuffer, numSamples);
-        if (rc == -1)
-            return -1;
-    }
-
-    int get = SDL_AudioStreamGet(musInfo.stream, musInfo.buffer, out);
-    if (get == -1) {
-        return -1;
-    }
-    if (get == 0)
-        get = -2;
-
-    return get;
-}
-#endif
-
-
-void ProcessMusicStream(Sint32 *stream, size_t len)
+void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
 {
     if (!musInfo.loaded)
         return;
@@ -205,22 +152,33 @@ void ProcessMusicStream(Sint32 *stream, size_t len)
         case MUSIC_READY:
         case MUSIC_PLAYING: {
 #if RETRO_USING_SDL
-            int bytes        = trackRequestMoreData(AUDIO_SAMPLES, len * sizeof(Sint16) * 2);
-            if (bytes > 0) {
-                int vol = (bgmVolume * masterVolume) / MAX_VOLUME;
-                ProcessAudioMixing(stream, musInfo.buffer, len, vol, 0);
+            while (SDL_AudioStreamAvailable(musInfo.stream) < bytes_wanted)
+            {
+                // We need more samples: get some
+                long bytes_read = ov_read(&musInfo.vorbisFile, (char*)musInfo.extraBuffer, sizeof(musInfo.extraBuffer), 0, 2, 1, &musInfo.vorbBitstream);
+
+                if (bytes_read == 0) {
+                    // We've reached the end of the file
+                    if (musInfo.trackLoop) {
+                        ov_pcm_seek(&musInfo.vorbisFile, musInfo.loopPoint);
+                        continue;
+                    }
+                    else {
+                        musicStatus = MUSIC_STOPPED;
+                        break;
+                    }
+                }
+
+                if (SDL_AudioStreamPut(musInfo.stream, musInfo.extraBuffer, bytes_read) == -1)
+                    return;
             }
 
-            switch (bytes) {
-                case -2:
-                case -1: break;
-                case 0:
-                    if (musInfo.trackLoop)
-                        ov_pcm_seek(&musInfo.vorbisFile, musInfo.loopPoint);
-                    else
-                        musicStatus = MUSIC_STOPPED;
-                    break;
+            int bytes_done = SDL_AudioStreamGet(musInfo.stream, musInfo.buffer, bytes_wanted);
+            if (bytes_done == -1) {
+                return;
             }
+            if (bytes_done != 0)
+                ProcessAudioMixing(stream, musInfo.buffer, bytes_done / sizeof(Sint16), (bgmVolume * masterVolume) / MAX_VOLUME, 0);
 #endif
         } break;
         case MUSIC_STOPPED:
@@ -248,7 +206,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
         const size_t samples_to_do = (samples_remaining < MIX_BUFFER_SAMPLES) ? samples_remaining : MIX_BUFFER_SAMPLES;
 
         // Mix music
-        ProcessMusicStream(mix_buffer, samples_to_do);
+        ProcessMusicStream(mix_buffer, samples_to_do * sizeof(Sint16));
 
         // Process music being played by a video
         if (videoPlaying) {
@@ -459,10 +417,6 @@ bool PlayMusic(int track)
         musInfo.spec.channels = musInfo.vorbisFile.vi->channels;
         musInfo.spec.freq     = musInfo.vorbisFile.vi->rate;
         musInfo.spec.samples  = 4096;
-
-        unsigned long long samples = (unsigned long long)ov_pcm_total(&musInfo.vorbisFile, -1);
-
-        musInfo.audioLen = samples * musInfo.spec.channels * 2;
         musInfo.spec.size = AUDIO_BUFFERSIZE;
 
         musInfo.stream = SDL_NewAudioStream(musInfo.spec.format, musInfo.spec.channels, musInfo.spec.freq, audioDeviceFormat.format,
@@ -471,8 +425,8 @@ bool PlayMusic(int track)
             printLog("Failed to create stream: %s", SDL_GetError());
         }
 
-        musInfo.buffer      = new Sint16[AUDIO_BUFFERSIZE];
-        musInfo.extraBuffer = new Sint16[AUDIO_BUFFERSIZE];
+        musInfo.buffer      = new Sint16[MIX_BUFFER_SAMPLES]; // Mixer's sample rate
+        musInfo.extraBuffer = new Sint16[AUDIO_BUFFERSIZE]; // Music's native sample rate
 #endif
 
         musicStatus = MUSIC_PLAYING;
