@@ -65,7 +65,7 @@ int InitAudioPlayback()
                                   audioDeviceFormat.channels, audioDeviceFormat.freq);
     if (!ogv_stream) {
         printLog("Failed to create stream: %s", SDL_GetError());
-        SDL_CloseAudio();
+        SDL_CloseAudioDevice(audioDevice);
         return false;
     }
 
