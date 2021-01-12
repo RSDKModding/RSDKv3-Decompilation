@@ -247,25 +247,32 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
                 continue;
 
             if (sfx->samplePtr) {
-                if (sfx->sampleLength > 0) {
-                    int sampleLen = (sfx->sampleLength < samples_to_do) ? sfx->sampleLength : samples_to_do;
-    #if RETRO_USING_SDL
-                    ProcessAudioMixing(mix_buffer, sfx->samplePtr, sampleLen, sfxVolume, sfx->pan);
-    #endif
+                Sint16 buffer[MIX_BUFFER_SAMPLES];
 
+                size_t samples_done = 0;
+                while (samples_done != samples_to_do) {
+                    size_t sampleLen = (sfx->sampleLength < samples_to_do - samples_done) ? sfx->sampleLength : samples_to_do - samples_done;
+                    memcpy(&buffer[samples_done], sfx->samplePtr, sampleLen * sizeof(Sint16));
+
+                    samples_done += sampleLen;
                     sfx->samplePtr += sampleLen;
                     sfx->sampleLength -= sampleLen;
+
+                    if (sfx->sampleLength <= 0) {
+                        if (sfx->loopSFX) {
+                            sfx->samplePtr    = sfxList[sfx->sfxID].buffer;
+                            sfx->sampleLength = sfxList[sfx->sfxID].length;
+                        }
+                        else {
+                            StopSfx(sfx->sfxID);
+                            break;
+                        }
+                    }
                 }
 
-                if (sfx->sampleLength <= 0) {
-                    if (sfx->loopSFX) {
-                        sfx->samplePtr    = sfxList[sfx->sfxID].buffer;
-                        sfx->sampleLength = sfxList[sfx->sfxID].length;
-                    }
-                    else {
-                        StopSfx(sfx->sfxID);
-                    }
-                }
+        #if RETRO_USING_SDL
+                ProcessAudioMixing(mix_buffer, buffer, samples_done, sfxVolume, sfx->pan);
+        #endif
             }
         }
 
