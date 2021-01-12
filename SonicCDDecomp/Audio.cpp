@@ -258,7 +258,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
                     sfx->samplePtr += sampleLen;
                     sfx->sampleLength -= sampleLen;
 
-                    if (sfx->sampleLength <= 0) {
+                    if (sfx->sampleLength == 0) {
                         if (sfx->loopSFX) {
                             sfx->samplePtr    = sfxList[sfx->sfxID].buffer;
                             sfx->sampleLength = sfxList[sfx->sfxID].length;

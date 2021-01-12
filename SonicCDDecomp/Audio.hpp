@@ -30,12 +30,12 @@ struct MusicPlaybackInfo {
 struct SFXInfo {
     char name[0x40];
     Sint16 *buffer;
-    int length;
+    size_t length;
     bool loaded;
 };
 
 struct ChannelInfo {
-    int sampleLength;
+    size_t sampleLength;
     Sint16 *samplePtr;
     int sfxID;
     byte loopSFX;
