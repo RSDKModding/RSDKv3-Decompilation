@@ -67,7 +67,7 @@ void LoadAnimationFile(const char *filePath)
                 FileRead(&frame->width, 1);
                 FileRead(&frame->height, 1);
 
-                signed char buffer = 0;
+                sbyte buffer = 0;
                 FileRead(&buffer, 1);
                 frame->pivotX = buffer;
                 FileRead(&buffer, 1);

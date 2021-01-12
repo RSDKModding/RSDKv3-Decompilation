@@ -20,7 +20,7 @@ struct Player {
     byte skidding;
     byte pushing;
     byte collisionPlane;
-    char controlMode;
+    sbyte controlMode;
     byte controlLock;
     int topSpeed;
     int acceleration;

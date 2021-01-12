@@ -1,6 +1,6 @@
 #include "RetroEngine.hpp"
 
-int FindStringToken(const char *string, const char *token, char stopID)
+int FindStringToken(const char *string, const char *token, sbyte stopID)
 {
     int tokenCharID  = 0;
     bool tokenMatch  = true;

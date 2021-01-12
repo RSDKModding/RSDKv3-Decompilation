@@ -43,7 +43,7 @@ struct ChannelInfo {
     byte *samplePtr;
     int sfxID;
     byte loopSFX;
-    char pan;
+    sbyte pan;
 };
 
 enum MusicStatuses {
@@ -149,7 +149,7 @@ inline void StopSfx(int sfx)
         }
     }
 }
-void SetSfxAttributes(int sfx, int loopCount, char pan);
+void SetSfxAttributes(int sfx, int loopCount, sbyte pan);
 
 inline void SetMusicVolume(int volume)
 {
