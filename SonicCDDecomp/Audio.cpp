@@ -150,8 +150,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
         case MUSIC_READY:
         case MUSIC_PLAYING: {
 #if RETRO_USING_SDL
-            while (SDL_AudioStreamAvailable(musInfo.stream) < bytes_wanted)
-            {
+            while (SDL_AudioStreamAvailable(musInfo.stream) < bytes_wanted) {
                 // We need more samples: get some
                 long bytes_read = ov_read(&musInfo.vorbisFile, (char*)musInfo.buffer, sizeof(musInfo.buffer), 0, 2, 1, &musInfo.vorbBitstream);
 
