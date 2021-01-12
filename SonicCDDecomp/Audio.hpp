@@ -18,10 +18,8 @@ struct MusicPlaybackInfo {
 #if RETRO_USING_SDL
     OggVorbis_File vorbisFile;
     int vorbBitstream;
-    SDL_AudioSpec spec;
     SDL_AudioStream *stream;
     Sint16 *buffer;
-    Sint16 *extraBuffer;
 #endif
     FileInfo fileInfo;
     bool trackLoop;
@@ -90,13 +88,10 @@ inline void freeMusInfo()
 
         if (musInfo.buffer)
             delete[] musInfo.buffer;
-        if (musInfo.extraBuffer)
-            delete[] musInfo.extraBuffer;
         if (musInfo.stream)
             SDL_FreeAudioStream(musInfo.stream);
         ov_clear(&musInfo.vorbisFile);
         musInfo.buffer       = nullptr;
-        musInfo.extraBuffer  = nullptr;
         musInfo.stream       = nullptr;
         musInfo.trackLoop    = false;
         musInfo.loopPoint    = 0;

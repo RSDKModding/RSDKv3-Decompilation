@@ -34,8 +34,6 @@ SDL_AudioStream *ogv_stream;
 
 #endif
 
-#define AUDIO_BUFFERSIZE (0x4000)
-
 #define MIX_BUFFER_SAMPLES (256)
 
 int InitAudioPlayback()
@@ -155,7 +153,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
             while (SDL_AudioStreamAvailable(musInfo.stream) < bytes_wanted)
             {
                 // We need more samples: get some
-                long bytes_read = ov_read(&musInfo.vorbisFile, (char*)musInfo.extraBuffer, sizeof(musInfo.extraBuffer), 0, 2, 1, &musInfo.vorbBitstream);
+                long bytes_read = ov_read(&musInfo.vorbisFile, (char*)musInfo.buffer, sizeof(musInfo.buffer), 0, 2, 1, &musInfo.vorbBitstream);
 
                 if (bytes_read == 0) {
                     // We've reached the end of the file
@@ -169,7 +167,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
                     }
                 }
 
-                if (SDL_AudioStreamPut(musInfo.stream, musInfo.extraBuffer, bytes_read) == -1)
+                if (SDL_AudioStreamPut(musInfo.stream, musInfo.buffer, bytes_read) == -1)
                     return;
             }
 
@@ -411,22 +409,13 @@ bool PlayMusic(int track)
         musInfo.vorbBitstream = -1;
         musInfo.vorbisFile.vi   = ov_info(&musInfo.vorbisFile, -1);
 
-        memset(&musInfo.spec, 0, sizeof(SDL_AudioSpec));
-
-        musInfo.spec.format   = AUDIO_S16;
-        musInfo.spec.channels = musInfo.vorbisFile.vi->channels;
-        musInfo.spec.freq     = musInfo.vorbisFile.vi->rate;
-        musInfo.spec.samples  = 4096;
-        musInfo.spec.size = AUDIO_BUFFERSIZE;
-
-        musInfo.stream = SDL_NewAudioStream(musInfo.spec.format, musInfo.spec.channels, musInfo.spec.freq, audioDeviceFormat.format,
+        musInfo.stream = SDL_NewAudioStream(AUDIO_S16, musInfo.vorbisFile.vi->channels, musInfo.vorbisFile.vi->rate, audioDeviceFormat.format,
                                       audioDeviceFormat.channels, audioDeviceFormat.freq);
         if (!musInfo.stream) {
             printLog("Failed to create stream: %s", SDL_GetError());
         }
 
-        musInfo.buffer      = new Sint16[MIX_BUFFER_SAMPLES]; // Mixer's sample rate
-        musInfo.extraBuffer = new Sint16[AUDIO_BUFFERSIZE]; // Music's native sample rate
+        musInfo.buffer      = new Sint16[MIX_BUFFER_SAMPLES];
 #endif
 
         musicStatus = MUSIC_PLAYING;
