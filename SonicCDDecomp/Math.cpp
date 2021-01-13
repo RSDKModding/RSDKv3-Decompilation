@@ -14,7 +14,7 @@ int cosVal512[512];
 int sinVal256[256];
 int cosVal256[256];
 
-int atanVal256[0x100 * 0x100];
+byte atanVal256[0x100 * 0x100];
 
 void CalculateTrigAngles()
 {
@@ -55,10 +55,12 @@ void CalculateTrigAngles()
         cosVal256[i] = (cosVal512[i * 2] >> 1);
     }
 
-    for (int X = 0; X < 0x100; ++X) {
-        for (int Y = 0; Y < 0x100; ++Y) {
-            double angle                     = atan2(Y, X);
-            atanVal256[(0x100 * X) + Y] = (int)(float)(angle * 40.743664);
+    for (int Y = 0; Y < 0x100; ++Y) {
+        byte *ATan = (byte *)&atanVal256[Y];
+        for (int X = 0; X < 0x100; ++X) {
+            float angle = atan2f(Y, X);
+            *ATan       = (signed int)(angle * 40.743664f);
+            ATan += 0x100;
         }
     }
 }

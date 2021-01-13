@@ -2562,7 +2562,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_SAVERAM: scriptEng.operands[i] = saveRAM[arrayVal]; break;
                     case VAR_ENGINELANGUAGE: scriptEng.operands[i] = Engine.language; break;
                     case VAR_OBJECTSPRITESHEET: {
-                        scriptEng.operands[i] = objectScriptList[objectEntityList[objectLoop].type].spriteSheetID;
+                        scriptEng.operands[i] = objectScriptList[objectEntityList[arrayVal].type].spriteSheetID;
                         break;
                     }
                     case VAR_ENGINEONLINEACTIVE: scriptEng.operands[i] = Engine.onlineActive; break;
@@ -4325,7 +4325,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_SAVERAM: saveRAM[arrayVal] = scriptEng.operands[i]; break;
                     case VAR_ENGINELANGUAGE: Engine.language = scriptEng.operands[i]; break;
                     case VAR_OBJECTSPRITESHEET: {
-                        scriptInfo->spriteSheetID = scriptEng.operands[i];
+                        objectScriptList[objectEntityList[arrayVal].type].spriteSheetID = scriptEng.operands[i];
                         break;
                     }
                     case VAR_ENGINEONLINEACTIVE: break;
