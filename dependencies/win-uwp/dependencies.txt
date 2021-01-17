@@ -1,0 +1,4 @@
+Download the latest SDL2 source tarball from https://www.libsdl.org/download-2.0.php, and extract it's contents to a folder called `SDL2`. 
+
+If you wish to build ARM/ARM64 architecture variants, be sure to retarget and build libogg, libtheora and libvorbis for these platforms. 
+You will need to undefine OC_X86_ASM for libtheora to build correctly, and resulting binaries aren't particularly fast, but do run.
