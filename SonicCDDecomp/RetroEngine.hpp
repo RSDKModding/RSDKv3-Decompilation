@@ -32,10 +32,14 @@ typedef unsigned int uint;
 
 // use this macro (RETRO_PLATFORM) to define platform specific code blocks and etc to run the engine
 #if defined _WIN32
+#if defined WINAPI_FAMILY
 #if WINAPI_FAMILY != WINAPI_FAMILY_APP
 #define RETRO_PLATFORM (RETRO_WIN)
 #else
 #define RETRO_PLATFORM (RETRO_UWP)
+#endif
+#else
+#define RETRO_PLATFORM (RETRO_WIN)
 #endif
 #elif defined __APPLE__
 #include <TargetConditionals.h>
