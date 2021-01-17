@@ -1,4 +1,5 @@
 #include "RetroEngine.hpp"
+#include <stdlib.h>
 
 int collisionLeft   = 0;
 int collisionTop    = 0;

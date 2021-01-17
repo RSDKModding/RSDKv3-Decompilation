@@ -1,4 +1,5 @@
 #include "RetroEngine.hpp"
+#include <stdlib.h>
 
 int stageListCount[STAGELIST_MAX];
 char stageListNames[STAGELIST_MAX][0x20] = {

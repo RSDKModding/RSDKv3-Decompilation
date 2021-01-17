@@ -37,8 +37,10 @@ bin/
 
 #safety
 *.rsdk
+*.ogv
 
 #dependencies
+[Dd]ependencies/win-uwp/**
 [Dd]ependencies/windows/SDL2/
 [Dd]ependencies/windows/libogg/
 [Dd]ependencies/windows/libvorbis/
@@ -52,6 +54,8 @@ bin/
 [Dd]ependencies/ios/[Oo]gg.framework/
 [Dd]ependencies/ios/[Vv]orbis.framework/
 [Dd]ependencies/ios/[Tt]heora.framework/
+
+SonicCDDecompUWP/Generated Files
 
 #OSX files
 *.DS_Store
