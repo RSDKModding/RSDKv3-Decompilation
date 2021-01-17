@@ -30,6 +30,9 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * If `devMenu` is enabled in the config, pressing `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time
 * If `useSteamDir` is set in the config, and the user is on Windows, the game will try to load savedata from Steam's `userdata` directory (where the Steam version saves to)
 
+# TODOs:
+* create a `cmakelists.txt` file for windows compiling so builds can be added automatically via git actions
+
 # How to build:
 ## Windows:
 * Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) to setup dependencies, then build via the Visual Studio solution
