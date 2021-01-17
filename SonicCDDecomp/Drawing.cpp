@@ -189,10 +189,6 @@ void RenderRenderDevice()
         }
     }
     else {
-        SDL_LockTexture(Engine.videoBuffer, NULL, (void **)&pixels, &pitch);
-        memcpy(pixels, Engine.videoFrameBuffer, pitch * videoHeight);
-        SDL_UnlockTexture(Engine.videoBuffer);
-
         SDL_RenderCopy(Engine.renderer, Engine.videoBuffer, NULL, &destScreenPos);
     }
 
