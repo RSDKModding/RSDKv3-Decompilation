@@ -26,12 +26,17 @@ typedef unsigned int uint;
 #define RETRO_iOS      (4)
 #define RETRO_ANDROID  (5)
 #define RETRO_WP7      (6)
-//Custom Platforms start here
-#define RETRO_VITA     (7)
+// Custom Platforms start here
+#define RETRO_VITA (7)
+#define RETRO_UWP  (8)
 
- // use this macro (RETRO_PLATFORM) to define platform specific code blocks and etc to run the engine
+// use this macro (RETRO_PLATFORM) to define platform specific code blocks and etc to run the engine
 #if defined _WIN32
+#if WINAPI_FAMILY != WINAPI_FAMILY_APP
 #define RETRO_PLATFORM (RETRO_WIN)
+#else
+#define RETRO_PLATFORM (RETRO_UWP)
+#endif
 #elif defined __APPLE__
 #include <TargetConditionals.h>
 #if TARGET_IPHONE_SIMULATOR
@@ -41,34 +46,34 @@ typedef unsigned int uint;
 #elif TARGET_OS_MAC
 #define RETRO_PLATFORM (RETRO_OSX)
 #else
-#   error "Unknown Apple platform"
-#endif 
+#error "Unknown Apple platform"
+#endif
 #elif defined __vita__
 #define RETRO_PLATFORM (RETRO_VITA)
 #else
-#define RETRO_PLATFORM (RETRO_WIN) //Default
+#define RETRO_PLATFORM (RETRO_WIN) // Default
 #endif
 
 #if RETRO_PLATFORM == RETRO_VITA
-#define BASE_PATH "ux0:data/SonicCD/"
+#define BASE_PATH            "ux0:data/SonicCD/"
 #define DEFAULT_SCREEN_XSIZE 480
-#define DEFAULT_FULLSCREEN true
+#define DEFAULT_FULLSCREEN   true
 #else
-#define BASE_PATH ""
+#define BASE_PATH            ""
 #define DEFAULT_SCREEN_XSIZE 424
-#define DEFAULT_FULLSCREEN false
+#define DEFAULT_FULLSCREEN   false
 #endif
 
-#if RETRO_PLATFORM == RETRO_WINDOWS || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA
+#if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA || RETRO_PLATFORM == RETRO_UWP
 #define RETRO_USING_SDL (1)
-#else //Since its an else & not an elif these platforms probably aren't supported yet
+#else // Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL (0)
 #endif
 
 #define RETRO_GAME_STANDARD (0)
 #define RETRO_GAME_MOBILE   (1)
 
-#if RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7
+#if RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7 || RETRO_PLATFORM == RETRO_UWP
 #define RETRO_GAMEPLATFORM (RETRO_GAME_MOBILE)
 #else
 #define RETRO_GAMEPLATFORM (RETRO_GAME_STANDARD)
@@ -80,21 +85,30 @@ typedef unsigned int uint;
 
 #define RETRO_USE_HAPTICS (1)
 
-// use *this* macro to determine what platform the game thinks its running on (since only the first 7 platforms are supported natively by scripts)
 #if RETRO_PLATFORM <= RETRO_WP7
-#define RETRO_GAMEPLATFORMID (RETRO_PLATFORM) 
+#define RETRO_GAMEPLATFORMID (RETRO_PLATFORM)
 #else
-#define RETRO_GAMEPLATFORMID (RETRO_WIN) // use *this* macro to determine what platform the game thinks its running on (since only the first 7 platforms are supported natively by scripts)
+
+// use *this* macro to determine what platform the game thinks its running on (since only the first 7 platforms are supported natively by scripts)
+#if RETRO_PLATFORM == RETRO_VITA
+#define RETRO_GAMEPLATFORMID (RETRO_WIN) 
+#elif RETRO_PLATFORM == RETRO_UWP
+#define RETRO_GAMEPLATFORMID (RETRO_ANDROID)
+#else
+#error Unspecified RETRO_GAMEPLATFORMID
 #endif
 
-enum RetroLanguages {
-    RETRO_EN = 0,
-    RETRO_FR = 1,
-    RETRO_IT = 2,
-    RETRO_DE = 3,
-    RETRO_ES = 4,
-    RETRO_JP = 5
-};
+#endif
+
+// this macro defines the touch device read by the game (UWP requires DIRECT)
+#if RETRO_UWP
+#define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_DIRECT
+#else
+#define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE
+#endif
+
+
+enum RetroLanguages { RETRO_EN = 0, RETRO_FR = 1, RETRO_IT = 2, RETRO_DE = 3, RETRO_ES = 4, RETRO_JP = 5 };
 
 enum RetroStates {
     ENGINE_DEVMENU         = 0,
@@ -136,10 +150,10 @@ enum RetroBytecodeFormat {
 };
 
 // General Defines
-#define SCREEN_YSIZE (240)
+#define SCREEN_YSIZE   (240)
 #define SCREEN_CENTERY (SCREEN_YSIZE / 2)
 
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_UWP
 #include <SDL.h>
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
@@ -168,7 +182,7 @@ enum RetroBytecodeFormat {
 extern bool usingCWD;
 extern bool engineDebugMode;
 
-//Utils
+// Utils
 #include "Ini.hpp"
 
 #include "Math.hpp"
@@ -214,11 +228,11 @@ public:
     int frameSkipTimer   = 0;
 
     bool useSteamDir = true;
-    
+
     // Ported from RSDKv5
-    bool devMenu = false;
-    int startList  = 0;
-    int startStage = 0;
+    bool devMenu         = false;
+    int startList        = 0;
+    int startStage       = 0;
     int gameSpeed        = 1;
     int fastForwardSpeed = 8;
     bool masterPaused    = false;
@@ -239,7 +253,7 @@ public:
 
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
-    const char *gameVersion       = "1.0.0";
+    const char *gameVersion = "1.0.0";
 #if RETRO_GAMEPLATFORM == RETRO_GAME_STANDARD
     const char *gamePlatform = "Standard";
 #elif RETRO_GAMEPLATFORM == RETRO_GAME_MOBILE
@@ -256,31 +270,30 @@ public:
     const char *gameHapticSetting = "Use_Haptics"; // No_Haptics is default for pc but people with controllers exist
 #endif
 
-
-    ushort *frameBuffer = nullptr;
-    ushort *frameBuffer2x = nullptr;
+    ushort *frameBuffer    = nullptr;
+    ushort *frameBuffer2x  = nullptr;
     uint *videoFrameBuffer = nullptr;
 
     bool isFullScreen = false;
 
-    bool startFullScreen = false; // if should start as fullscreen
-    bool borderless = false;
-    bool vsync = false;
-    int windowScale = 2;
-    int refreshRate       = 60; //user-picked screen update rate
-    int screenRefreshRate = 60; //hardware screen update rate
-    int targetRefreshRate = 60; //game logic update rate
+    bool startFullScreen  = false; // if should start as fullscreen
+    bool borderless       = false;
+    bool vsync            = false;
+    int windowScale       = 2;
+    int refreshRate       = 60; // user-picked screen update rate
+    int screenRefreshRate = 60; // hardware screen update rate
+    int targetRefreshRate = 60; // game logic update rate
 
     uint frameCount      = 0; // frames since scene load
     int renderFrameIndex = 0;
     int skipFrameIndex   = 0;
 
 #if RETRO_USING_SDL
-    SDL_Window *window        = nullptr;
-    SDL_Renderer *renderer    = nullptr;
-    SDL_Texture *screenBuffer = nullptr;
+    SDL_Window *window          = nullptr;
+    SDL_Renderer *renderer      = nullptr;
+    SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;
-    SDL_Texture *videoBuffer = nullptr;
+    SDL_Texture *videoBuffer    = nullptr;
 
     SDL_Event sdlEvents;
 #endif

@@ -1,12 +1,13 @@
 #include "RetroEngine.hpp"
 #include <cmath>
+#include <iostream>
 
 int globalSFXCount = 0;
 int stageSFXCount  = 0;
 
 int masterVolume  = MAX_VOLUME;
-int trackID     = -1;
-int sfxVolume   = MAX_VOLUME;
+int trackID       = -1;
+int sfxVolume     = MAX_VOLUME;
 int bgmVolume     = MAX_VOLUME;
 bool audioEnabled = false;
 
@@ -61,15 +62,14 @@ int InitAudioPlayback()
     // This is true of every .ogv file in the game (the Steam version, at least),
     // but it would be nice to make this dynamic. Unfortunately, THEORAPLAY's API
     // makes this awkward.
-    ogv_stream = SDL_NewAudioStream(AUDIO_F32, 2, 48000, audioDeviceFormat.format,
-                                  audioDeviceFormat.channels, audioDeviceFormat.freq);
+    ogv_stream = SDL_NewAudioStream(AUDIO_F32, 2, 48000, audioDeviceFormat.format, audioDeviceFormat.channels, audioDeviceFormat.freq);
     if (!ogv_stream) {
         printLog("Failed to create stream: %s", SDL_GetError());
         SDL_CloseAudioDevice(audioDevice);
         return false;
     }
 
-    #endif
+#endif
 
     FileInfo info;
     FileInfo infoStore;
@@ -152,7 +152,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
 #if RETRO_USING_SDL
             while (SDL_AudioStreamAvailable(musInfo.stream) < bytes_wanted) {
                 // We need more samples: get some
-                long bytes_read = ov_read(&musInfo.vorbisFile, (char*)musInfo.buffer, sizeof(musInfo.buffer), 0, 2, 1, &musInfo.vorbBitstream);
+                long bytes_read = ov_read(&musInfo.vorbisFile, (char *)musInfo.buffer, sizeof(musInfo.buffer), 0, 2, 1, &musInfo.vorbBitstream);
 
                 if (bytes_read == 0) {
                     // We've reached the end of the file
@@ -194,7 +194,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
     if (!audioEnabled)
         return;
 
-    Sint16 *output_buffer = (Sint16*)stream;
+    Sint16 *output_buffer = (Sint16 *)stream;
 
     size_t samples_remaining = (size_t)len / sizeof(Sint16);
     while (samples_remaining != 0) {
@@ -231,10 +231,11 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 
             // Mix the converted audio data into the final output
             if (get != -1)
-                ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), (bgmVolume * masterVolume) / MAX_VOLUME, 0); // TODO - Should we be using the music volume?
+                ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), (bgmVolume * masterVolume) / MAX_VOLUME,
+                                   0); // TODO - Should we be using the music volume?
         }
         else {
-            SDL_AudioStreamClear(ogv_stream);   // Prevent leftover audio from playing at the start of the next video
+            SDL_AudioStreamClear(ogv_stream); // Prevent leftover audio from playing at the start of the next video
         }
 
         // Mix SFX
@@ -270,15 +271,14 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
                     }
                 }
 
-        #if RETRO_USING_SDL
+#if RETRO_USING_SDL
                 ProcessAudioMixing(mix_buffer, buffer, samples_done, sfxVolume, sfx->pan);
-        #endif
+#endif
             }
         }
 
         // Clamp mixed samples back to 16-bit and write them to the output buffer
-        for (size_t i = 0; i < sizeof(mix_buffer) / sizeof(*mix_buffer); ++i)
-        {
+        for (size_t i = 0; i < sizeof(mix_buffer) / sizeof(*mix_buffer); ++i) {
             const Sint16 max_audioval = ((1 << (16 - 1)) - 1);
             const Sint16 min_audioval = -(1 << (16 - 1));
 
@@ -305,9 +305,9 @@ void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sby
     if (volume > MAX_VOLUME)
         volume = MAX_VOLUME;
 
-    float panL     = 0;
-    float panR     = 0;
-    int i          = 0;
+    float panL = 0;
+    float panR = 0;
+    int i      = 0;
 
     if (pan < 0) {
         panR = 1.0f - abs(pan / 100.0f);
@@ -361,10 +361,7 @@ long tellVorbis(void *ptr)
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
     return GetFilePosition2(&info->fileInfo);
 }
-int closeVorbis(void *ptr)
-{
-    return CloseFile2();
-}
+int closeVorbis(void *ptr) { return CloseFile2(); }
 #endif
 
 void SetMusicTrack(char *filePath, byte trackID, bool loop, uint loopPoint)
@@ -398,7 +395,7 @@ bool PlayMusic(int track)
 
         musInfo.trackLoop = trackPtr->trackLoop;
         musInfo.loopPoint = trackPtr->loopPoint;
-        musInfo.loaded       = true;
+        musInfo.loaded    = true;
 
 #if RETRO_USING_SDL
         ov_callbacks callbacks;
@@ -414,18 +411,18 @@ bool PlayMusic(int track)
         }
 
         musInfo.vorbBitstream = -1;
-        musInfo.vorbisFile.vi   = ov_info(&musInfo.vorbisFile, -1);
+        musInfo.vorbisFile.vi = ov_info(&musInfo.vorbisFile, -1);
 
         musInfo.stream = SDL_NewAudioStream(AUDIO_S16, musInfo.vorbisFile.vi->channels, musInfo.vorbisFile.vi->rate, audioDeviceFormat.format,
-                                      audioDeviceFormat.channels, audioDeviceFormat.freq);
+                                            audioDeviceFormat.channels, audioDeviceFormat.freq);
         if (!musInfo.stream) {
             printLog("Failed to create stream: %s", SDL_GetError());
         }
 
-        musInfo.buffer      = new Sint16[MIX_BUFFER_SAMPLES];
+        musInfo.buffer = new Sint16[MIX_BUFFER_SAMPLES];
 #endif
 
-        musicStatus = MUSIC_PLAYING;
+        musicStatus  = MUSIC_PLAYING;
         masterVolume = MAX_VOLUME;
         trackID      = track;
         return true;
@@ -433,7 +430,8 @@ bool PlayMusic(int track)
     return false;
 }
 
-void LoadSfx(char *filePath, byte sfxID) {
+void LoadSfx(char *filePath, byte sfxID)
+{
     FileInfo info;
     char fullPath[0x80];
 
@@ -441,7 +439,7 @@ void LoadSfx(char *filePath, byte sfxID) {
     StrAdd(fullPath, filePath);
 
     if (LoadFile(fullPath, &info)) {
-        byte* sfx = new byte[info.fileSize];
+        byte *sfx = new byte[info.fileSize];
         FileRead(sfx, info.fileSize);
         CloseFile();
 
@@ -473,18 +471,20 @@ void LoadSfx(char *filePath, byte sfxID) {
                     SDL_ConvertAudio(&convert);
 
                     StrCopy(sfxList[sfxID].name, filePath);
-                    sfxList[sfxID].buffer = (Sint16*)convert.buf;
+                    sfxList[sfxID].buffer = (Sint16 *)convert.buf;
                     sfxList[sfxID].length = convert.len_cvt / sizeof(Sint16);
                     sfxList[sfxID].loaded = true;
                     SDL_FreeWAV(wav_buffer);
                 }
                 else {
                     StrCopy(sfxList[sfxID].name, filePath);
-                    sfxList[sfxID].buffer = (Sint16*)wav_buffer;
+                    sfxList[sfxID].buffer = (Sint16 *)wav_buffer;
                     sfxList[sfxID].length = wav_length / sizeof(Sint16);
                     sfxList[sfxID].loaded = true;
                 }
             }
+
+            std::cout << sfxList[sfxID].name << std::endl;
         }
         SDL_UnlockAudio();
 #endif
@@ -500,10 +500,10 @@ void PlaySfx(int sfx, bool loop)
         }
     }
 
-    ChannelInfo *sfxInfo      = &sfxChannels[sfxChannelID];
+    ChannelInfo *sfxInfo  = &sfxChannels[sfxChannelID];
     sfxInfo->sfxID        = sfx;
-    sfxInfo->samplePtr        = sfxList[sfx].buffer;
-    sfxInfo->sampleLength     = sfxList[sfx].length;
+    sfxInfo->samplePtr    = sfxList[sfx].buffer;
+    sfxInfo->sampleLength = sfxList[sfx].length;
     sfxInfo->loopSFX      = loop;
     sfxInfo->pan          = 0;
     if (nextChannelPos == CHANNEL_COUNT)
@@ -521,11 +521,11 @@ void SetSfxAttributes(int sfx, int loopCount, sbyte pan)
     if (sfxChannel == -1)
         return; // wasn't found
 
-    //TODO: is this right? should it play an sfx here? without this rings dont play any sfx so I assume it must be?
+    // TODO: is this right? should it play an sfx here? without this rings dont play any sfx so I assume it must be?
     ChannelInfo *sfxInfo  = &sfxChannels[sfxChannel];
     sfxInfo->samplePtr    = sfxList[sfx].buffer;
     sfxInfo->sampleLength = sfxList[sfx].length;
-    sfxInfo->loopSFX     = loopCount == -1 ? sfxInfo->loopSFX : loopCount;
-    sfxInfo->pan         = pan;
-    sfxInfo->sfxID       = sfx;
+    sfxInfo->loopSFX      = loopCount == -1 ? sfxInfo->loopSFX : loopCount;
+    sfxInfo->pan          = pan;
+    sfxInfo->sfxID        = sfx;
 }
