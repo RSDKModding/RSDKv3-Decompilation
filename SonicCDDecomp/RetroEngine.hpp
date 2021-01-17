@@ -188,7 +188,6 @@ extern bool engineDebugMode;
 
 // Utils
 #include "Ini.hpp"
-
 #include "Math.hpp"
 #include "String.hpp"
 #include "Reader.hpp"
@@ -276,7 +275,6 @@ public:
 
     ushort *frameBuffer    = nullptr;
     ushort *frameBuffer2x  = nullptr;
-    uint *videoFrameBuffer = nullptr;
 
     bool isFullScreen = false;
 

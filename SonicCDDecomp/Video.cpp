@@ -1,8 +1,8 @@
 ﻿#include "RetroEngine.hpp"
 
 int currentVideoFrame = 0;
-int videoFrameCount = 0;
-int videoWidth  = 0;
+int videoFrameCount   = 0;
+int videoWidth        = 0;
 int videoHeight       = 0;
 float videoAR         = 0;
 
@@ -10,11 +10,11 @@ THEORAPLAY_Decoder *videoDecoder;
 const THEORAPLAY_VideoFrame *videoVidData;
 THEORAPLAY_Io callbacks;
 
-byte videoData = 0;
-int videoFilePos = 0;
+byte videoData    = 0;
+int videoFilePos  = 0;
 bool videoPlaying = 0;
-int vidFrameMS = 0;
-int vidBaseticks = 0;
+int vidFrameMS    = 0;
+int vidBaseticks  = 0;
 
 bool videoSkipped = false;
 
@@ -33,9 +33,17 @@ static void videoClose(THEORAPLAY_Io *io)
     fClose(file);
 }
 
-void PlayVideoFile(char *filePath) { 
+void PlayVideoFile(char *filePath)
+{
     char filepath[0x100];
-    StrCopy(filepath, BASE_PATH"videos/");
+    StrCopy(filepath, BASE_PATH "videos/");
+
+    int len = StrLength(filePath);
+
+    if (StrComp(filePath + ((size_t)len - 2), "us")) {
+        filePath[len - 2] = 0;
+    }
+
     StrAdd(filepath, filePath);
     StrAdd(filepath, ".ogv");
 
@@ -46,7 +54,7 @@ void PlayVideoFile(char *filePath) {
         callbacks.read     = videoRead;
         callbacks.close    = videoClose;
         callbacks.userdata = (void *)file;
-        videoDecoder       = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
+        videoDecoder = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_IYUV, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
 
         if (!videoDecoder) {
             printLog("Video Decoder Error!");
@@ -64,21 +72,20 @@ void PlayVideoFile(char *filePath) {
         videoWidth  = videoVidData->width;
         videoHeight = videoVidData->height;
         // commit video Aspect Ratio.
-        videoAR     = float(videoWidth) / float(videoHeight);
+        videoAR = float(videoWidth) / float(videoHeight);
 
         SetupVideoBuffer(videoWidth, videoHeight);
         vidBaseticks = SDL_GetTicks();
-        vidFrameMS     = (videoVidData->fps == 0.0) ? 0 : ((Uint32)(1000.0 / videoVidData->fps));
+        vidFrameMS   = (videoVidData->fps == 0.0) ? 0 : ((Uint32)(1000.0 / videoVidData->fps));
         videoPlaying = true;
-        trackID        = TRACK_COUNT - 1;
+        trackID      = TRACK_COUNT - 1;
 
-        videoSkipped = false;
+        videoSkipped    = false;
         Engine.gameMode = ENGINE_VIDEOWAIT;
     }
     else {
         printLog("Couldn't find file '%s'!", filepath);
     }
-    
 }
 
 void UpdateVideoFrame()
@@ -86,7 +93,7 @@ void UpdateVideoFrame()
     if (videoPlaying) {
         if (videoFrameCount > currentVideoFrame) {
             GFXSurface *surface = &gfxSurface[videoData];
-            int fileBuffer               = 0;
+            int fileBuffer      = 0;
             FileRead(&fileBuffer, 1);
             videoFilePos += fileBuffer;
             FileRead(&fileBuffer, 1);
@@ -121,8 +128,7 @@ void UpdateVideoFrame()
                     FileRead(&fileBuffer, 3);
                 } while (c != 0x100);
             }
-            ReadGifPictureData(surface->width, surface->height, interlaced,
-                                       graphicData, surface->dataPosition);
+            ReadGifPictureData(surface->width, surface->height, interlaced, graphicData, surface->dataPosition);
 
             SetFilePosition(videoFilePos);
             ++currentVideoFrame;
@@ -144,7 +150,7 @@ int ProcessVideo()
         }
 
         if (keyPress.A) {
-            if (!videoSkipped) 
+            if (!videoSkipped)
                 fadeMode = 0;
 
             videoSkipped = true;
@@ -188,12 +194,13 @@ int ProcessVideo()
                 if (!videoVidData) {
                     // video lagging uh oh
                 }
-                memset(Engine.videoFrameBuffer, 0, (videoWidth * videoHeight) * sizeof(uint));
-                uint px = 0;
-                for (uint i = 0; i < (videoWidth * videoHeight) * sizeof(uint); i += sizeof(uint)) {
-                    Engine.videoFrameBuffer[px++] = (videoVidData->pixels[i + 3] << 24 | videoVidData->pixels[i] << 16
-                                                     | videoVidData->pixels[i + 1] << 8 | videoVidData->pixels[i + 2] << 0);
-                }
+
+                int half_w     = videoVidData->width / 2;
+                const Uint8 *y = (const Uint8 *)videoVidData->pixels;
+                const Uint8 *u = y + (videoVidData->width * videoVidData->height);
+                const Uint8 *v = u + (half_w * (videoVidData->height / 2));
+
+                SDL_UpdateYUVTexture(Engine.videoBuffer, NULL, y, videoVidData->width, u, half_w, v, half_w);
 
                 THEORAPLAY_freeVideo(videoVidData);
                 videoVidData = NULL;
@@ -233,22 +240,17 @@ void StopVideoPlayback()
     }
 }
 
+void SetupVideoBuffer(int width, int height)
+{
+    Engine.videoBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, width, height);
 
-void SetupVideoBuffer(int width, int height) {
-    Engine.videoBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
-
-    if (!Engine.videoBuffer) 
+    if (!Engine.videoBuffer)
         printLog("Failed to create video buffer!");
-
-    Engine.videoFrameBuffer = new uint[width * height];
 }
-void CloseVideoBuffer() {
-    if (videoPlaying) {
-        if (Engine.videoFrameBuffer) {
-            delete[] Engine.videoFrameBuffer;
-            Engine.videoFrameBuffer = nullptr;
-        }
 
+void CloseVideoBuffer()
+{
+    if (videoPlaying) {
         SDL_DestroyTexture(Engine.videoBuffer);
         Engine.videoBuffer = nullptr;
     }
