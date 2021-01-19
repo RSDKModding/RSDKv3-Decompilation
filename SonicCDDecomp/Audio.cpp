@@ -54,7 +54,8 @@ int InitAudioPlayback()
     }
     else {
         printLog("Unable to open audio device: %s", SDL_GetError());
-        return false;
+        audioEnabled = false;
+        return false; //no audio but game wont crash
     }
 
     // Init video sound stuff
