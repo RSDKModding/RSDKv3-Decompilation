@@ -55,7 +55,7 @@ int InitAudioPlayback()
     else {
         printLog("Unable to open audio device: %s", SDL_GetError());
         audioEnabled = false;
-        return false; //no audio but game wont crash
+        return true; // no audio but game wont crash now
     }
 
     // Init video sound stuff
@@ -67,7 +67,8 @@ int InitAudioPlayback()
     if (!ogv_stream) {
         printLog("Failed to create stream: %s", SDL_GetError());
         SDL_CloseAudioDevice(audioDevice);
-        return false;
+        audioEnabled = false;
+        return true; // no audio but game wont crash now
     }
 
 #endif
@@ -375,6 +376,9 @@ void SetMusicTrack(char *filePath, byte trackID, bool loop, uint loopPoint)
 }
 bool PlayMusic(int track)
 {
+    if (!audioEnabled)
+        return false;
+
     if (track < 0 || track >= TRACK_COUNT) {
         StopMusic();
         return false;
@@ -433,6 +437,9 @@ bool PlayMusic(int track)
 
 void LoadSfx(char *filePath, byte sfxID)
 {
+    if (!audioEnabled)
+        return;
+
     FileInfo info;
     char fullPath[0x80];
 
