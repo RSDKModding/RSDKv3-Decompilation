@@ -256,7 +256,7 @@ public:
 
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
-    const char *gameVersion = "1.0.0";
+    const char *gameVersion = "1.1.0";
 #if RETRO_GAMEPLATFORM == RETRO_GAME_STANDARD
     const char *gamePlatform = "Standard";
 #elif RETRO_GAMEPLATFORM == RETRO_GAME_MOBILE
