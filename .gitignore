@@ -39,6 +39,21 @@ bin/
 *.rsdk
 *.ogv
 
+#OSX files
+*.DS_Store
+.DS_Store
+*.xactivitylog
+*.xcuserstate
+*.dia
+*.xbuild
+*.db
+*.plist
+*.idx
+*.pcm
+*.timestamp
+*.xcbkptlist
+*.xcsettings
+
 #dependencies
 [Dd]ependencies/win-uwp/**
 [Dd]ependencies/windows/SDL2/
@@ -61,21 +76,6 @@ bin/
 ![Dd]ependencies/ios/[Ii]nfo.plist
 
 SonicCDDecompUWP/Generated Files
-
-#OSX files
-*.DS_Store
-.DS_Store
-*.xactivitylog
-*.xcuserstate
-*.dia
-*.xbuild
-*.db
-*.plist
-*.idx
-*.pcm
-*.timestamp
-*.xcbkptlist
-*.xcsettings
 
 # Visual Studio 2015 cache/options directory
 .vs/
