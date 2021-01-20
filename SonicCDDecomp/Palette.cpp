@@ -62,8 +62,8 @@ void SetLimitedFade(byte paletteID, byte R, byte G, byte B, ushort alpha, int st
         ++endIndex;
     uint alpha2 = 0xFF - alpha;
     for (int i = startIndex; i < endIndex; ++i) {
-        activePalette[i] = RGB888_TO_RGB565((byte)((ushort)(B * alpha + alpha2 * activePalette32[i].b) >> 8),
+        activePalette[i] = RGB888_TO_RGB565((byte)((ushort)(R * alpha + alpha2 * activePalette32[i].r) >> 8),
                                             (byte)((ushort)(G * alpha + alpha2 * activePalette32[i].g) >> 8),
-                                            (byte)((ushort)(R * alpha + alpha2 * activePalette32[i].r) >> 8));
+                                            (byte)((ushort)(B * alpha + alpha2 * activePalette32[i].b) >> 8));
     }
 }
