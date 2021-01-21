@@ -109,30 +109,82 @@ void RenderRenderDevice()
         return;
 
 #if RETRO_USING_SDL
-    SDL_Rect destScreenPos;
-    destScreenPos.x = 0;
-    destScreenPos.y = 0;
-    destScreenPos.w = SCREEN_XSIZE;
-    destScreenPos.h = SCREEN_YSIZE;
-    
+    SDL_Rect *destScreenPos = NULL;
+    SDL_Rect destScreenPos_scaled;
+    SDL_Texture *texTarget = NULL;
+    // allows me to disable it to prevent blur on resolutions that match only on 1 axis
+    bool tmpEnhancedScaling = Engine.enhancedScaling;
+    SDL_GetWindowSize(Engine.window, &Engine.windowXSize, &Engine.windowYSize);
+    float screenxsize = SCREEN_XSIZE;
+    float screenysize = SCREEN_YSIZE;
+    // check if enhanced scaling is even necessary to be calculated by checking if the screen size is close enough on one axis
+    // unfortunately it has to be "close enough" because of floating point precision errors. dang it
+    if (tmpEnhancedScaling) {
+        bool cond1 = (std::round((Engine.windowXSize / screenxsize) * 24) / 24 == std::floor(Engine.windowXSize / screenxsize)) ? true : false;
+        bool cond2 = (std::round((Engine.windowYSize / screenysize) * 24) / 24 == std::floor(Engine.windowYSize / screenysize)) ? true : false;
+        if (cond1 || cond2)
+            tmpEnhancedScaling = false;
+    }
 
-    // This is to match the aspect ratio of the video file.
-    if (videoPlaying) {
-        float screenAR  = float(SCREEN_XSIZE) / float(SCREEN_YSIZE);
-        if (screenAR > videoAR) { // If the screen is wider than the video. (Pillarboxed)
-            uint videoW = uint(SCREEN_YSIZE * videoAR); // This is to force Pillarboxed mode if the screen is wider than the video.
-            destScreenPos.x = (SCREEN_XSIZE - videoW) / 2;  // Centers the video horizontally.
-            destScreenPos.w = videoW;
+    // get 2x resolution if HQ is enabled.
+    if (drawStageGFXHQ) {
+        screenxsize *= 2;
+        screenysize *= 2;
+    }
+
+    if (!tmpEnhancedScaling) {
+        // everything here remains the same except for assinging the rect to the switching pointer.
+        // the pointer has to be NULL when using enhanced scaling, or else the screen will be black.
+        SDL_Rect destScreenPosRect;
+        destScreenPosRect.x = 0;
+        destScreenPosRect.y = 0;
+        destScreenPosRect.w = SCREEN_XSIZE;
+        destScreenPosRect.h = SCREEN_YSIZE;
+
+        
+        if (videoPlaying) {
+            float screenAR = float(SCREEN_XSIZE) / float(SCREEN_YSIZE);
+            if (screenAR > videoAR) {                            // If the screen is wider than the video. (Pillarboxed)
+                uint videoW      = uint(SCREEN_YSIZE * videoAR); // This is to force Pillarboxed mode if the screen is wider than the video.
+                destScreenPosRect.x = (SCREEN_XSIZE - videoW) / 2;  // Centers the video horizontally.
+                destScreenPosRect.w = videoW;
+            }
+            else {
+                uint videoH      = uint(float(SCREEN_XSIZE) / videoAR); // This is to force letterbox mode if the video is wider than the screen.
+                destScreenPosRect.y = (SCREEN_YSIZE - videoH) / 2;         // Centers the video vertically.
+                destScreenPosRect.h = videoH;
+            }
+            destScreenPos = &destScreenPosRect;
         }
-        else {
-            uint videoH = uint(float(SCREEN_XSIZE) / videoAR); // This is to force letterbox mode if the video is wider than the screen.
-            destScreenPos.y = (SCREEN_YSIZE - videoH) / 2; // Centers the video vertically.
-            destScreenPos.h = videoH;
-        }
+    }
+    else {
+        // set up integer scaled texture, which is scaled to the largest integer scale of the screen buffer
+        // before you make a texture that's larger than the window itself. This texture will then be scaled
+        // up to the actual screen size using linear interpolation. This makes even window/screen scales
+        // nice and sharp, and uneven scales as sharp as possible without creating wonky pixel scales,
+        // creating a nice image.
+
+        // get integer scale
+        float scale =
+            std::fminf(std::floorf((float)Engine.windowXSize / (float)SCREEN_XSIZE), std::floorf((float)Engine.windowYSize / (float)SCREEN_YSIZE));
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear"); // set interpolation to linear
+        // create texture that's integer scaled.
+        texTarget = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET, SCREEN_XSIZE * scale, SCREEN_YSIZE * scale);
+
+        // keep aspect
+        float aspectScale      = std::fminf(Engine.windowYSize / screenysize, Engine.windowXSize / screenxsize);
+        float xoffset          = (Engine.windowXSize - (screenxsize * aspectScale)) / 2;
+        float yoffset          = (Engine.windowYSize - (screenysize * aspectScale)) / 2;
+        destScreenPos_scaled.x = std::round(xoffset);
+        destScreenPos_scaled.y = std::round(yoffset);
+        destScreenPos_scaled.w = std::round(screenxsize * aspectScale);
+        destScreenPos_scaled.h = std::round(screenysize * aspectScale);
+        // fill the screen with the texture, making lerp work.
+        SDL_RenderSetLogicalSize(Engine.renderer, Engine.windowXSize, Engine.windowYSize);
     }
 
     int pitch = 0;
-    SDL_SetRenderTarget(Engine.renderer, NULL);
+    SDL_SetRenderTarget(Engine.renderer, texTarget);
 
     // Clear the screen. This is needed to keep the
     // pillarboxes in fullscreen from displaying garbage data.
@@ -145,7 +197,7 @@ void RenderRenderDevice()
             memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE);
             SDL_UnlockTexture(Engine.screenBuffer);
 
-            SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, &destScreenPos);
+            SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, destScreenPos);
         }
         else {
             int w = 0, h = 0;
@@ -185,14 +237,32 @@ void RenderRenderDevice()
                 }
             }
             SDL_UnlockTexture(Engine.screenBuffer2x);
-            SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, &destScreenPos);
+            SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, destScreenPos);
         }
     }
     else {
-        SDL_RenderCopy(Engine.renderer, Engine.videoBuffer, NULL, &destScreenPos);
+        SDL_RenderCopy(Engine.renderer, Engine.videoBuffer, NULL, destScreenPos);
     }
 
-    SDL_RenderPresent(Engine.renderer);
+    if (tmpEnhancedScaling) {
+        // set render target back to the screen.
+        SDL_SetRenderTarget(Engine.renderer, NULL);
+        // clear the screen itself now, for same reason as above
+        SDL_RenderClear(Engine.renderer);
+        // copy texture to screen with lerp
+        SDL_RenderCopy(Engine.renderer, texTarget, NULL, &destScreenPos_scaled);
+        // finally present it
+        SDL_RenderPresent(Engine.renderer);
+        // reset everything just in case
+        SDL_RenderSetLogicalSize(Engine.renderer, SCREEN_XSIZE, SCREEN_YSIZE);
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+        // putting some FLEX TAPE® on that memory leak
+        SDL_DestroyTexture(texTarget);
+    }
+    else {
+        // no change here
+        SDL_RenderPresent(Engine.renderer);
+    }
 #endif
 }
 void ReleaseRenderDevice()
