@@ -47,7 +47,7 @@
     <ClInclude Include="..\SonicCDDecomp\Reader.hpp" />
     <ClInclude Include="..\SonicCDDecomp\resource.h" />
     <ClInclude Include="..\SonicCDDecomp\RetroEngine.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\WinRTIncludes.hpp" />
+    <ClInclude Include="WinRTIncludes.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">

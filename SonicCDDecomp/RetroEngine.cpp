@@ -1,6 +1,6 @@
 #include "RetroEngine.hpp"
 
-bool usingCWD = false;
+bool usingCWD        = false;
 bool engineDebugMode = false;
 
 RetroEngine Engine = RetroEngine();
@@ -94,8 +94,7 @@ bool processEvents()
                     touchY[i] = (finger->y * SCREEN_YSIZE * Engine.windowScale) / Engine.windowScale;
                 }
                 break;
-            case SDL_FINGERUP: touches = SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE));
-                break;
+            case SDL_FINGERUP: touches = SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE)); break;
             case SDL_KEYDOWN:
                 switch (Engine.sdlEvents.key.keysym.sym) {
                     default: break;
@@ -135,8 +134,8 @@ bool processEvents()
                                 }
                                 stageListPosition = stageListCount[activeStageList] - 1;
                             }
-                            stageMode         = STAGEMODE_LOAD;
-                            Engine.gameMode   = ENGINE_MAINGAME;
+                            stageMode       = STAGEMODE_LOAD;
+                            Engine.gameMode = ENGINE_MAINGAME;
                         }
                         break;
                     case SDLK_F3:
@@ -151,8 +150,8 @@ bool processEvents()
                                     activeStageList = 0;
                                 }
                             }
-                            stageMode         = STAGEMODE_LOAD;
-                            Engine.gameMode   = ENGINE_MAINGAME;
+                            stageMode       = STAGEMODE_LOAD;
+                            Engine.gameMode = ENGINE_MAINGAME;
                         }
                         break;
                     case SDLK_F10:
@@ -231,7 +230,6 @@ void RetroEngine::Init()
     int lower        = getLowerRate(targetRefreshRate, refreshRate);
     renderFrameIndex = targetRefreshRate / lower;
     skipFrameIndex   = refreshRate / lower;
-
 }
 
 void RetroEngine::Run()
@@ -360,6 +358,12 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
                 if (StrComp("Options.DevMenuFlag", globalVariableNames[v]))
                     globalVariables[v] = 1;
             }
+
+            if (StrComp("Engine.PlatformId", globalVariableNames[v]))
+                globalVariables[v] = RETRO_GAMEPLATFORMID;
+
+            if (StrComp("Engine.DeviceType", globalVariableNames[v]))
+                globalVariables[v] = RETRO_GAMEPLATFORM;
         }
 
         // Read SFX
@@ -419,9 +423,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
 void RetroEngine::Callback(int callbackID)
 {
     switch (callbackID) {
-        default:
-            printLog("Callback: Unknown (%d)", callbackID);
-            break;
+        default: printLog("Callback: Unknown (%d)", callbackID); break;
         case CALLBACK_DISPLAYLOGOS: // Display Logos, Called immediately
             /*if (ActiveStageList) {
                 callbackMessage = 1;
@@ -442,16 +444,12 @@ void RetroEngine::Callback(int callbackID)
             }*/
             printLog("Callback: Press Start");
             break;
-        case CALLBACK_TIMEATTACK_NOTIFY_ENTER:
-            printLog("Callback: Time Attack Notify Enter");
-            break;
-        case CALLBACK_TIMEATTACK_NOTIFY_EXIT:
-            printLog("Callback: Time Attack Notify Exit");
-            break;
+        case CALLBACK_TIMEATTACK_NOTIFY_ENTER: printLog("Callback: Time Attack Notify Enter"); break;
+        case CALLBACK_TIMEATTACK_NOTIFY_EXIT: printLog("Callback: Time Attack Notify Exit"); break;
         case CALLBACK_FINISHGAME_NOTIFY: // PC = NONE
             printLog("Callback: Finish Game Notify");
             break;
-        case CALLBACK_RETURNSTORE_SELECTED: 
+        case CALLBACK_RETURNSTORE_SELECTED:
             gameMode = ENGINE_EXITGAME;
             printLog("Callback: Return To Store Selected");
             break;
@@ -460,7 +458,7 @@ void RetroEngine::Callback(int callbackID)
             stageMode = STAGEMODE_LOAD;
             break;
         case CALLBACK_EXIT_SELECTED:
-            //gameMode = ENGINE_EXITGAME;
+            // gameMode = ENGINE_EXITGAME;
             printLog("Callback: Exit Selected");
             if (bytecodeMode == BYTECODE_PC) {
                 running = false;
@@ -490,9 +488,7 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
             printLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
             break;
-        case CALLBACK_TRIAL_ENDED:
-            printLog("Callback: PC = ???, Mobile = Trial Ended Screen");
-            break;                       // PC = ???, Mobile = Trial Ended Screen
+        case CALLBACK_TRIAL_ENDED: printLog("Callback: PC = ???, Mobile = Trial Ended Screen"); break; // PC = ???, Mobile = Trial Ended Screen
         case CALLBACK_SETTINGS_SELECTED: // PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)
             printLog("Callback: PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)");
             break;
@@ -518,10 +514,8 @@ void RetroEngine::Callback(int callbackID)
             }
             printLog("Callback: Pause Menu Requested");
             break;
-        case CALLBACK_FULL_VERSION_ONLY:
-            printLog("Callback: Full Version Only Notify");
-            break;                   // PC = ???, Mobile = Full Game Only Screen
-        case CALLBACK_STAFF_CREDITS: // PC = Staff Credits, Mobile = NONE
+        case CALLBACK_FULL_VERSION_ONLY: printLog("Callback: Full Version Only Notify"); break; // PC = ???, Mobile = Full Game Only Screen
+        case CALLBACK_STAFF_CREDITS:                                                            // PC = Staff Credits, Mobile = NONE
             if (bytecodeMode == BYTECODE_PC) {
                 for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
                     if (StrComp("CREDITS", stageList[STAGELIST_PRESENTATION][s].name)) {
@@ -536,9 +530,9 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_16: //, PC = ??? (only when online), Mobile = NONE
             printLog("Callback: Unknown (%d)", callbackID);
             break;
-        case CALLBACK_AGEGATE: 
-            //Newer versions of the game wont continue without this
-            //Thanks to Sappharad for pointing this out
+        case CALLBACK_AGEGATE:
+            // Newer versions of the game wont continue without this
+            // Thanks to Sappharad for pointing this out
             globalVariables[135] = 1;
             break;
     }

@@ -76,6 +76,7 @@ bin/
 ![Dd]ependencies/ios/[Ii]nfo.plist
 
 SonicCDDecompUWP/Generated Files
+SonicCDDecompUWP/BundleArtifacts
 SonicCDDecompUWP/Assets/*.png
 
 # Visual Studio 2015 cache/options directory
