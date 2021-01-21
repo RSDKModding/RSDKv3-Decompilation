@@ -71,7 +71,7 @@ int InitAudioPlayback()
     // This is true of every .ogv file in the game (the Steam version, at least),
     // but it would be nice to make this dynamic. Unfortunately, THEORAPLAY's API
     // makes this awkward.
-    ogv_stream = SDL_NewAudioStream(AUDIO_F32, 2, 48000, audioDeviceFormat.format, audioDeviceFormat.channels, audioDeviceFormat.freq);
+    ogv_stream = SDL_NewAudioStream(AUDIO_F32SYS, 2, 48000, audioDeviceFormat.format, audioDeviceFormat.channels, audioDeviceFormat.freq);
     if (!ogv_stream) {
         printLog("Failed to create stream: %s", SDL_GetError());
         SDL_CloseAudioDevice(audioDevice);
