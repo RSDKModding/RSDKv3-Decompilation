@@ -93,7 +93,7 @@ void UpdateVideoFrame()
     if (videoPlaying) {
         if (videoFrameCount > currentVideoFrame) {
             GFXSurface *surface = &gfxSurface[videoData];
-            int fileBuffer      = 0;
+            byte fileBuffer      = 0;
             FileRead(&fileBuffer, 1);
             videoFilePos += fileBuffer;
             FileRead(&fileBuffer, 1);

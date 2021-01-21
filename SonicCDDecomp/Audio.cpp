@@ -84,7 +84,7 @@ int InitAudioPlayback()
     FileInfo info;
     FileInfo infoStore;
     char strBuffer[0x100];
-    int fileBuffer  = 0;
+    byte fileBuffer  = 0;
     int fileBuffer2 = 0;
 
     if (LoadFile("Data/Game/Gameconfig.bin", &info)) {
@@ -103,24 +103,24 @@ int InitAudioPlayback()
         strBuffer[fileBuffer] = 0;
 
         // Read Obect Names
-        int objectCount = 0;
+        byte objectCount = 0;
         FileRead(&objectCount, 1);
-        for (int o = 0; o < objectCount; ++o) {
+        for (byte o = 0; o < objectCount; ++o) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
         }
 
         // Read Script Paths
-        for (int s = 0; s < objectCount; ++s) {
+        for (byte s = 0; s < objectCount; ++s) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
         }
 
-        int varCnt = 0;
+        byte varCnt = 0;
         FileRead(&varCnt, 1);
-        for (int v = 0; v < varCnt; ++v) {
+        for (byte v = 0; v < varCnt; ++v) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
@@ -130,9 +130,9 @@ int InitAudioPlayback()
         }
 
         // Read SFX
-        globalSFXCount = 0;
-        FileRead(&globalSFXCount, 1);
-        for (int s = 0; s < globalSFXCount; ++s) {
+        FileRead(&fileBuffer, 1);
+        globalSFXCount = fileBuffer;
+        for (byte s = 0; s < globalSFXCount; ++s) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;

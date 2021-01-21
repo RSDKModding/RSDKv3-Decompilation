@@ -38,7 +38,7 @@ byte TraceGifPrefix(uint *prefix, int code, int clearCode);
 
 void InitGifDecoder()
 {
-    int val = 0;
+    byte val = 0;
     FileRead(&val, 1);
     gifDecoder.fileState      = LOADING_IMAGE;
     gifDecoder.position       = 0;
@@ -262,7 +262,7 @@ int LoadBMPFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
 
         SetFilePosition(18);
         FileRead(&fileBuffer, 1);
@@ -319,7 +319,7 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
 
         SetFilePosition(6); // GIF89a
         FileRead(&fileBuffer, 1);
@@ -394,7 +394,7 @@ int LoadGFXFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
         FileRead(&fileBuffer, 1);
         surface->width = fileBuffer << 8;
         FileRead(&fileBuffer, 1);
@@ -455,7 +455,7 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         videoData         = sheetID;
         currentVideoFrame = 0;
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
 
         FileRead(&fileBuffer, 1);
         videoFrameCount = fileBuffer;
