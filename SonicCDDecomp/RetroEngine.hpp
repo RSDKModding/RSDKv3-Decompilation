@@ -36,6 +36,7 @@ typedef unsigned int uint;
 #if WINAPI_FAMILY != WINAPI_FAMILY_APP
 #define RETRO_PLATFORM (RETRO_WIN)
 #else
+#include "WinRTIncludes.hpp"
 #define RETRO_PLATFORM (RETRO_UWP)
 #endif
 #else
@@ -97,7 +98,7 @@ typedef unsigned int uint;
 #if RETRO_PLATFORM == RETRO_VITA
 #define RETRO_GAMEPLATFORMID (RETRO_WIN) 
 #elif RETRO_PLATFORM == RETRO_UWP
-#define RETRO_GAMEPLATFORMID (RETRO_ANDROID)
+#define RETRO_GAMEPLATFORMID (RETRO_GAME_MOBILE)
 #else
 #error Unspecified RETRO_GAMEPLATFORMID
 #endif
