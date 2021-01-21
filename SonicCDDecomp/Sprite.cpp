@@ -320,6 +320,7 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         StrCopy(surface->fileName, filePath);
 
         byte fileBuffer = 0;
+        byte fileBuffer2[2];
 
         SetFilePosition(6); // GIF89a
         FileRead(&fileBuffer, 1);
@@ -351,10 +352,10 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         FileRead(&fileBuffer, 1);
         while (fileBuffer != ',') FileRead(&fileBuffer, 1); // gif image start identifier
 
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
+        FileRead(fileBuffer2, 2);
+        FileRead(fileBuffer2, 2);
+        FileRead(fileBuffer2, 2);
+        FileRead(fileBuffer2, 2);
         FileRead(&fileBuffer, 1);
         bool interlaced = (fileBuffer & 0x40) >> 6;
         if (fileBuffer >> 7 == 1) {
