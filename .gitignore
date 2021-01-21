@@ -39,24 +39,6 @@ bin/
 *.rsdk
 *.ogv
 
-#dependencies
-[Dd]ependencies/win-uwp/**
-[Dd]ependencies/windows/SDL2/
-[Dd]ependencies/windows/libogg/
-[Dd]ependencies/windows/libvorbis/
-[Dd]ependencies/windows/libtheora/
-[Dd]ependencies/mac/SDL2.framework/
-[Dd]ependencies/mac/libogg/
-[Dd]ependencies/mac/libvorbis/
-[Dd]ependencies/mac/libtheora/
-[Dd]ependencies/ios/SDL2.framework/
-[Dd]ependencies/ios/libSDLMain.a
-[Dd]ependencies/ios/[Oo]gg.framework/
-[Dd]ependencies/ios/[Vv]orbis.framework/
-[Dd]ependencies/ios/[Tt]heora.framework/
-
-SonicCDDecompUWP/Generated Files
-
 #OSX files
 *.DS_Store
 .DS_Store
@@ -70,6 +52,30 @@ SonicCDDecompUWP/Generated Files
 *.pcm
 *.timestamp
 *.xcbkptlist
+*.xcsettings
+
+#dependencies
+[Dd]ependencies/win-uwp/**
+[Dd]ependencies/windows/SDL2/
+[Dd]ependencies/windows/libogg/
+[Dd]ependencies/windows/libvorbis/
+[Dd]ependencies/windows/libtheora/
+[Dd]ependencies/mac/SDL2.framework/
+[Dd]ependencies/mac/[Oo]gg.framework/
+[Dd]ependencies/mac/[Vv]orbis.framework/
+[Dd]ependencies/mac/[Tt]heora.framework/
+[Dd]ependencies/mac/libogg/
+[Dd]ependencies/mac/libvorbis/
+[Dd]ependencies/mac/libtheora/
+![Dd]ependencies/mac/[Ii]nfo.plist
+[Dd]ependencies/ios/SDL2.framework/
+[Dd]ependencies/ios/libSDLMain.a
+[Dd]ependencies/ios/[Oo]gg.framework/
+[Dd]ependencies/ios/[Vv]orbis.framework/
+[Dd]ependencies/ios/[Tt]heora.framework/
+![Dd]ependencies/ios/[Ii]nfo.plist
+
+SonicCDDecompUWP/Generated Files
 
 # Visual Studio 2015 cache/options directory
 .vs/

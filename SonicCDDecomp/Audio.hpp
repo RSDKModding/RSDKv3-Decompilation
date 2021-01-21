@@ -1,7 +1,7 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
-#include <malloc.h>
+#include <stdlib.h>
 
 #define TRACK_COUNT (0x10)
 #define SFX_COUNT (0x100)
