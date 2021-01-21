@@ -125,7 +125,7 @@ void InitUserdata()
 #endif
 
     char buffer[0x200];
-#if RETRO_PLATFORM == RETRO_OSX
+#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/settings.ini", getResourcesPath());
     else
@@ -270,7 +270,7 @@ void InitUserdata()
     }
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
-#if RETRO_PLATFORM == RETRO_OSX
+#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
@@ -377,7 +377,7 @@ void writeSettings() {
 void ReadUserdata()
 {
     char buffer[0x200];
-#if RETRO_PLATFORM == RETRO_OSX
+#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
@@ -409,7 +409,7 @@ void ReadUserdata()
 void WriteUserdata()
 {
     char buffer[0x200];
-#if RETRO_PLATFORM == RETRO_OSX
+#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
