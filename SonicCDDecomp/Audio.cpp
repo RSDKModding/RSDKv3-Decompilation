@@ -512,9 +512,9 @@ void LoadSfx(char *filePath, byte sfxID)
                     sfxList[sfxID].length = wav_length / sizeof(Sint16);
                     sfxList[sfxID].loaded = true;
                 }
-            }
 
-            std::cout << sfxList[sfxID].name << std::endl;
+                std::cout << sfxList[sfxID].name << std::endl;
+            }
         }
         SDL_UnlockAudio();
 #endif
