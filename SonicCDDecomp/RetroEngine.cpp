@@ -1,4 +1,8 @@
 #include "RetroEngine.hpp"
+#if RETRO_PLATFORM == RETRO_UWP
+#include <winrt/base.h>
+#include <winrt/Windows.Storage.h>
+#endif
 
 bool usingCWD        = false;
 bool engineDebugMode = false;
@@ -208,8 +212,23 @@ void RetroEngine::Init()
 {
     CalculateTrigAngles();
     GenerateBlendLookupTable();
+#if RETRO_PLATFORM == RETRO_UWP
+    static char resourcePath[256] = { 0 };
 
+    if (strlen(resourcePath) == 0) {
+        auto folder = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
+        auto path   = to_string(folder.Path());
+
+        std::copy(path.begin(), path.end(), resourcePath);
+    }
+
+    char datapath[256];
+    strcat(datapath, resourcePath);
+    strcat(datapath, "\\Data.rsdk");
+    CheckRSDKFile(datapath);
+#else
     CheckRSDKFile(BASE_PATH "Data.rsdk");
+#endif
     InitUserdata();
 
     gameMode = ENGINE_EXITGAME;
