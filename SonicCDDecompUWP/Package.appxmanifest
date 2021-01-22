@@ -3,7 +3,7 @@
   <Identity
     Name="SonicCD"
     Publisher="CN=wamwo"
-    Version="1.0.18.0" />
+    Version="1.0.22.0" />
   <mp:PhoneIdentity PhoneProductId="53f5dd53-e37b-4d27-8198-89ae27e15b1f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
   <Properties>
     <DisplayName>Sonic CD</DisplayName>
