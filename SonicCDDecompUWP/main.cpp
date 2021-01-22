@@ -15,6 +15,7 @@
 
 int SDL_main(int argc, char *argv[])
 {
+    SDL_SetHint(SDL_HINT_WINRT_HANDLE_BACK_BUTTON, "1");
     Engine.Init();
     Engine.Run();
 
