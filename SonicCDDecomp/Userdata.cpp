@@ -273,6 +273,24 @@ void InitUserdata()
     }
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
+    // Support for extra controller types SDL doesn't recognise
+#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
+    if (!usingCWD)
+        sprintf(buffer, "%s/controllerdb.txt", getResourcesPath());
+    else
+        sprintf(buffer, "%scontrollerdb.txt", gamePath);
+#else
+    sprintf(buffer, BASE_PATH "controllerdb.txt");
+#endif
+    file = fOpen(buffer, "rb");
+    if (file) {
+        fClose(file);
+
+        int nummaps = SDL_GameControllerAddMappingsFromFile(buffer);
+        if (nummaps >= 0)
+            printLog("loaded %d controller mappings from '%s'\n", buffer, nummaps);
+    }
+
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
