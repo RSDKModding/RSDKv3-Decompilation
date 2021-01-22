@@ -76,7 +76,7 @@ A: Try turning on vsync, that worked for me (on Mac)
 A: Submit an issue in the issues tab and I'll fix/add (if possible) it as soon as I can
 
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?
-A: Maybe. it took about 2-3 years of on/off work to get this to the state it is, so doing one for Sonic 1/Sonic 2 would likely take a lot of time to do, considering so much less is known about S1&S2/RSDKv4 compared to CD/RSDKv3
+A: Yes! I've done a decompilation of RSDKv4 (the engine ver that S1/S2 run on) and it can be found [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation)!
 
 ### Q: Will you do a decompilation for Sonic Mania?
 A: No. Mania is tons bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also make all _600_+ objects work
