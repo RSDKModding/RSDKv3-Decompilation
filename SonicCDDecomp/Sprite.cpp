@@ -252,6 +252,10 @@ void RemoveGraphicsFile(const char *filePath, int sheetID)
             if (gfxSurface[i].dataPosition > gfxSurface[sheetID].dataPosition)
                 gfxSurface[i].dataPosition -= gfxSurface[sheetID].height * gfxSurface[sheetID].width;
         }
+
+        if (gfxDataPosition >= SURFACE_MAX) {
+            
+        }
     }
 }
 
@@ -301,8 +305,11 @@ int LoadBMPFile(const char *filePath, byte sheetID)
             w >>= 1;
             ++surface->widthShift;
         }
-        if (gfxDataPosition >= 0x400000)
+
+        if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx size!");
+        }
 
         CloseFile();
         return true;
@@ -371,10 +378,13 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         }
 
         gfxDataPosition += surface->width * surface->height;
-        if (gfxDataPosition <= 0x3FFFFF)
+        if (gfxDataPosition < GFXDATA_MAX) {
             ReadGifPictureData(surface->width, surface->height, interlaced, graphicData, surface->dataPosition);
-        else
+        }
+        else {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx surface size!");
+        }
 
         CloseFile();
         return true;
@@ -428,8 +438,11 @@ int LoadGFXFile(const char *filePath, byte sheetID)
             w >>= 1;
             ++surface->widthShift;
         }
-        if (gfxDataPosition >= 0x400000)
+
+        if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx size!");
+        }
 
         CloseFile();
         return true;
@@ -469,8 +482,11 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         surface->width        = videoHeight;
         surface->dataPosition = gfxDataPosition;
         gfxDataPosition += surface->width * surface->height;
-        if (gfxDataPosition >= 0x400000)
+
+        if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx size!");
+        }
 
         CloseFile();
         return true;
