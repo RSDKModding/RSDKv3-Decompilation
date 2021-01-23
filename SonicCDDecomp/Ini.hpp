@@ -13,10 +13,11 @@ public:
     };
 
     struct ConfigItem {
-        ConfigItem() {
-            sprintf(section, "");
-            sprintf(key, "");
-            sprintf(value, "");
+        ConfigItem()
+        {
+            sprintf(section, "%s", "");
+            sprintf(key, "%s", "");
+            sprintf(value, "%s", "");
             hasSection = false;
             type       = INI_ITEM_STRING;
         }
