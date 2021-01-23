@@ -1,0 +1,90 @@
+ifeq ($(strip $(DEVKITARM)),)
+$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
+endif
+
+TOPDIR ?= $(CURDIR)
+include $(DEVKITARM)/3ds_rules
+
+BUILDDIR=objects_3ds
+
+LIBS_ALL = -ltheoradec -lvorbisidec -logg -lcitro2d -lcitro3d -lctru -lm
+LIBDIRS = $(CTRULIB) $(PORTLIBS)
+export LIBPATHS	= $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+ARCH	     = -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
+CFLAGS_ALL   = $(INCLUDE) $(ARCH) -g -DARM11 -D_3DS
+CXXFLAGS_ALL = $(CFLAGS_ALL) $(LIBS_ALL) -fno-rtti -std=gnu++11 -Idependencies/all/theoraplay
+LDFLAGS	     = -specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
+LDFLAGS_ALL  = $(LDFLAGS)
+
+export INCLUDE = $(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+                 -I$(CURDIR)/$(BUILD)
+
+export LD = $(CXX)
+
+SOURCES = dependencies/all/theoraplay/theoraplay.c \
+	  	SonicCDDecomp/3ds_debug.cpp \
+		SonicCDDecomp/Animation.cpp \
+		SonicCDDecomp/Audio.cpp \
+		SonicCDDecomp/Collision.cpp \
+		SonicCDDecomp/Debug.cpp \
+		SonicCDDecomp/Drawing.cpp \
+		SonicCDDecomp/Ini.cpp \
+		SonicCDDecomp/Input.cpp \
+		SonicCDDecomp/main.cpp \
+		SonicCDDecomp/Math.cpp \
+		SonicCDDecomp/Object.cpp \
+		SonicCDDecomp/Palette.cpp \
+		SonicCDDecomp/Player.cpp \
+		SonicCDDecomp/Reader.cpp \
+		SonicCDDecomp/RetroEngine.cpp \
+		SonicCDDecomp/Scene.cpp \
+		SonicCDDecomp/Scene3D.cpp \
+		SonicCDDecomp/Script.cpp \
+		SonicCDDecomp/Sprite.cpp \
+		SonicCDDecomp/String.cpp \
+		SonicCDDecomp/Text.cpp \
+		SonicCDDecomp/Userdata.cpp \
+		SonicCDDecomp/Video.cpp
+
+OBJS = $(BUILDDIR)/dependencies/all/theoraplay/theoraplay.c.o \
+        $(BUILDDIR)/SonicCDDecomp/3ds_debug.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Animation.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Audio.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Collision.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Debug.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Drawing.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Ini.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Input.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/main.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Math.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Object.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Palette.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Player.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Reader.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/RetroEngine.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Scene.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Scene3D.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Script.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Sprite.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/String.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Text.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Userdata.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/Video.cpp.o
+
+$(BUILDDIR)/%.o: %
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS_ALL) $^ -o $@ -c
+
+SonicCD.elf: $(SOURCES:%=objects_3ds/%.o)
+	$(SILENTMSG) linking $(notdir $@)
+	$(LD) $(LDFLAGS) $(OBJS)  $(LIBPATHS) $(LIBS_ALL) -o $@
+	$(NM) -CSn $@ > $(notdir $*.lst)
+
+soniccd: $(SOURCES:%=%.3dsx)
+	echo "built"
+
+clean:
+	@echo "cleaning..."
+	@rm -rf objects_3ds
+	@rm -f SonicCD.elf

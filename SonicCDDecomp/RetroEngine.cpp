@@ -253,6 +253,7 @@ void RetroEngine::Init()
 
 void RetroEngine::Run()
 {
+    #if RETRO_USING_SDL
     uint frameStart, frameEnd = SDL_GetTicks();
     float frameDelta = 0.0f;
 
@@ -309,6 +310,14 @@ void RetroEngine::Run()
             }
         }
     }
+    #elif RETRO_USING_C2D
+    // TODO: stubbed 3DS main loop, fix this later
+    while (running && aptMainLoop()) {
+	hidScanInput();
+	if (hidKeysDown() & KEY_START)
+		break;
+    }
+    #endif
 
     ReleaseAudioDevice();
     StopVideoPlayback();

@@ -9,6 +9,7 @@
 // ================
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include <cmath>
 
 // ================
@@ -30,6 +31,7 @@ typedef unsigned int uint;
 // Custom Platforms start here
 #define RETRO_VITA (7)
 #define RETRO_UWP  (8)
+#define RETRO_3DS  (9)
 
 // Platform types (Game manages platform-specific code such as HUD position using this rather than the above)
 #define RETRO_STANDARD (0)
@@ -60,6 +62,8 @@ typedef unsigned int uint;
 #endif
 #elif defined __vita__
 #define RETRO_PLATFORM (RETRO_VITA)
+#elif defined _3DS
+#define RETRO_PLATFORM (RETRO_3DS)
 #else
 #define RETRO_PLATFORM (RETRO_WIN) // Default
 #endif
@@ -72,6 +76,10 @@ typedef unsigned int uint;
 #define BASE_PATH            ""
 #define DEFAULT_SCREEN_XSIZE 424
 #define DEFAULT_FULLSCREEN   false
+#elif RETRO_PLATFORM == RETRO_3DS
+#define BASE_PATH            "/3ds/SonicCD/"
+#define DEFAULT_SCREEN_XSIZE 400
+#define DEFAULT_FULLSCREEN   true
 #else
 #define BASE_PATH            ""
 #define DEFAULT_SCREEN_XSIZE 424
@@ -81,8 +89,14 @@ typedef unsigned int uint;
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
     || RETRO_PLATFORM == RETRO_UWP
 #define RETRO_USING_SDL (1)
+#define RETRO_USING_C2D (0)
+#elif RETRO_PLATFORM == RETRO_3DS // 3DS only has support for SDL 1.2, so drawing functions
+				  // and input are being redone using libctru and Citro2D
+#define RETRO_USING_SDL (0)
+#define RETRO_USING_C2D (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL (0)
+#define RETRO_USING_C2D (0)
 #endif
 
 #if RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7
@@ -108,6 +122,8 @@ typedef unsigned int uint;
 #define RETRO_GAMEPLATFORMID (RETRO_WIN)
 #elif RETRO_PLATFORM == RETRO_UWP
 #define RETRO_GAMEPLATFORMID (UAP_GetRetroGamePlatformId())
+#elif RETRO_PLATFORM == RETRO_3DS
+#define RETRO_GAMEPLATFORMID (RETRO_WIN)
 #else
 #error Unspecified RETRO_GAMEPLATFORMID
 #endif
@@ -120,6 +136,19 @@ typedef unsigned int uint;
 #else
 #define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE
 #endif
+
+// compiler errors get thrown if this isn't defined
+#if RETRO_PLATFORM == RETRO_3DS
+#define Sint8  s8
+#define Sint16 s16
+#define Sint32 s32
+#define Sint64 s64
+#define Uint8  u8
+#define Uint16 u16
+#define Uint32 u32
+#define Uint64 u64
+#endif
+
 
 enum RetroLanguages { RETRO_EN = 0, RETRO_FR = 1, RETRO_IT = 2, RETRO_DE = 3, RETRO_ES = 4, RETRO_JP = 5 };
 
@@ -190,6 +219,13 @@ enum RetroBytecodeFormat {
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
+
+#elif RETRO_PLATFORM == RETRO_3DS
+#include <citro2d.h>
+#include <tex3ds.h>
+#include <tremor/ivorbisfile.h>
+#include <theora/theora.h>
+#include <theoraplay.h>
 #endif
 
 extern bool usingCWD;
@@ -216,6 +252,10 @@ extern bool engineDebugMode;
 #include "Video.hpp"
 #include "Userdata.hpp"
 #include "Debug.hpp"
+
+#if RETRO_PLATFORM == RETRO_3DS
+#include "3ds_debug.hpp"
+#endif
 
 class RetroEngine
 {
@@ -315,6 +355,10 @@ public:
     SDL_Texture *videoBuffer    = nullptr;
 
     SDL_Event sdlEvents;
+#elif RETRO_PLATFORM == RETRO_3DS
+    // due to the 3DS's limited resolution, image scaling isn't needed here
+    C2D_Sprite* screenBuffer;
+    C2D_Sprite* videoBuffer;
 #endif
 };
 

@@ -21,7 +21,6 @@ int RTRIGGER_DEADZONE = 20000;
 
 #if RETRO_USING_SDL
 SDL_GameController *controller;
-#endif
 
 // Easier this way
 enum ExtraSDLButtons {
@@ -38,7 +37,6 @@ enum ExtraSDLButtons {
     SDL_CONTROLLER_BUTTON_MAX_EXTRA,
 };
 
-#if RETRO_USING_SDL
 bool getControllerButton(byte buttonID)
 {
     if (SDL_GameControllerGetButton(controller, (SDL_GameControllerButton)buttonID)) {

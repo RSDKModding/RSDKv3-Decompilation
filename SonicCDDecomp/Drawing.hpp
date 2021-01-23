@@ -12,7 +12,7 @@
 
 #define DRAWLAYER_COUNT (0x7)
 
-enum FlipFlags { FLIP_NONE, FLIP_X, FLIP_Y, FLIP_XY };
+enum FlipFlags { FLIP_NO, FLIP_X, FLIP_Y, FLIP_XY };
 enum InkFlags { INK_NONE, INK_BLEND, INK_ALPHA, INK_ADD, INK_SUB };
 enum DrawFXFlags { FX_SCALE, FX_ROTATE, FX_ROTOZOOM, FX_INK, FX_TINT, FX_FLIP };
 

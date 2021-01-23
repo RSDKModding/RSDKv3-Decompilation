@@ -591,7 +591,7 @@ void DrawHLineScrollLayer(int layerID)
                 tilePxLineCnt = TILE_SIZE - tilePxXPos;
                 lineRemain -= tilePxLineCnt;
                 switch (tiles128x128.direction[chunk]) {
-                    case FLIP_NONE:
+		    case FLIP_NO:
                         gfxDataPtr    = &tilesetGFXData[tileOffsetY + tiles128x128.gfxDataPos[chunk] + tilePxXPos];
                         while (tilePxLineCnt--) {
                             if (*gfxDataPtr > 0)
@@ -653,7 +653,7 @@ void DrawHLineScrollLayer(int layerID)
                 // Loop Unrolling (faster but messier code)
                 if (tiles128x128.visualPlane[chunk] == (byte)aboveMidPoint) {
                     switch (tiles128x128.direction[chunk]) {
-                        case FLIP_NONE:
+                        case FLIP_NO:
                             gfxDataPtr = &tilesetGFXData[tiles128x128.gfxDataPos[chunk] + tileOffsetY];
                             if (*gfxDataPtr > 0)
                                 *frameBufferPtr = activePalette[*gfxDataPtr];
@@ -945,7 +945,7 @@ void DrawHLineScrollLayer(int layerID)
                 lineRemain -= tilePxLineCnt;
                 if (tiles128x128.visualPlane[chunk] == (byte)aboveMidPoint) {
                     switch (tiles128x128.direction[chunk]) {
-                        case FLIP_NONE:
+                        case FLIP_NO:
                             gfxDataPtr = &tilesetGFXData[tiles128x128.gfxDataPos[chunk] + tileOffsetY];
                             while (tilePxLineCnt--) {
                                 if (*gfxDataPtr > 0)
@@ -1094,7 +1094,7 @@ void DrawVLineScrollLayer(int layerID)
             tilePxLineCnt = 0x10 - tileY;
             lineRemain -= tilePxLineCnt;
             switch (tiles128x128.direction[chunk]) {
-                case FLIP_NONE:
+                case FLIP_NO:
                     gfxDataPtr    = &tilesetGFXData[0x10 * tileY + tileX16 + tiles128x128.gfxDataPos[chunk]];
                     while (tilePxLineCnt--) {
                         if (*gfxDataPtr > 0)
@@ -1156,7 +1156,7 @@ void DrawVLineScrollLayer(int layerID)
             // Loop Unrolling (faster but messier code)
             if (tiles128x128.visualPlane[chunk] == (byte)aboveMidPoint) {
                 switch (tiles128x128.direction[chunk]) {
-                    case FLIP_NONE:
+                    case FLIP_NO:
                         gfxDataPtr = &tilesetGFXData[tiles128x128.gfxDataPos[chunk] + tileX16];
                         if (*gfxDataPtr > 0)
                             *frameBufferPtr = activePalette[*gfxDataPtr];
@@ -1449,7 +1449,7 @@ void DrawVLineScrollLayer(int layerID)
             lineRemain -= tilePxLineCnt;
             if (tiles128x128.visualPlane[chunk] == (byte)aboveMidPoint) {
                 switch (tiles128x128.direction[chunk]) {
-                    case FLIP_NONE:
+                    case FLIP_NO:
                         gfxDataPtr    = &tilesetGFXData[0x10 * tileY + tileX16 + tiles128x128.gfxDataPos[chunk]];
                         while (tilePxLineCnt--) {
                             if (*gfxDataPtr > 0)
@@ -1543,7 +1543,7 @@ void Draw3DFloorLayer(int layerID)
                 int chunk       = tile3DFloorBuffer[(YPos >> 16 << 8) + (XPos >> 16)];
                 byte *tilePixel = &tilesetGFXData[tiles128x128.gfxDataPos[chunk]];
                 switch (tiles128x128.direction[chunk]) {
-                    case FLIP_NONE: tilePixel += 16 * (tileY & 0xF) + (tileX & 0xF); break;
+                    case FLIP_NO: tilePixel += 16 * (tileY & 0xF) + (tileX & 0xF); break;
                     case FLIP_X: tilePixel += 16 * (tileY & 0xF) + 15 - (tileX & 0xF); break;
                     case FLIP_Y: tilePixel += (tileX & 0xF) + SCREEN_YSIZE - 16 * (tileY & 0xF); break;
                     case FLIP_XY: tilePixel += 15 - (tileX & 0xF) + SCREEN_YSIZE - 16 * (tileY & 0xF); break;
@@ -1598,7 +1598,7 @@ void Draw3DSkyLayer(int layerID)
                 int chunk       = tile3DFloorBuffer[(YPos >> 16 << 8) + (XPos >> 16)];
                 byte *tilePixel = &tilesetGFXData[tiles128x128.gfxDataPos[chunk]];
                 switch (tiles128x128.direction[chunk]) {
-                    case FLIP_NONE: tilePixel += TILE_SIZE * (tileY & 0xF) + (tileX & 0xF); break;
+                    case FLIP_NO: tilePixel += TILE_SIZE * (tileY & 0xF) + (tileX & 0xF); break;
                     case FLIP_X: tilePixel += TILE_SIZE * (tileY & 0xF) + 0xF - (tileX & 0xF); break;
                     case FLIP_Y: tilePixel += (tileX & 0xF) + SCREEN_YSIZE - TILE_SIZE * (tileY & 0xF); break;
                     case FLIP_XY: tilePixel += 0xF - (tileX & 0xF) + SCREEN_YSIZE - TILE_SIZE * (tileY & 0xF); break;
@@ -1961,7 +1961,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
     byte *gfxData;
     ushort *frameBufferPtr;
     switch (direction) {
-        case FLIP_NONE:
+        case FLIP_NO:
             pitch          = SCREEN_XSIZE - width;
             gfxPitch       = surface->width - width;
             lineBuffer     = &gfxLineBuffer[YPos];
@@ -2739,9 +2739,9 @@ void DrawObjectAnimation(void *objScr, void *ent, int XPos, int YPos)
     switch (sprAnim->rotationFlag) {
         case ROTFLAG_NONE:
             switch (entity->direction) {
-                case FLIP_NONE:
+                case FLIP_NO:
                     DrawSpriteFlipped(frame->pivotX + XPos, frame->pivotY + YPos, frame->width, frame->height, frame->sprX, frame->sprY,
-                                               FLIP_NONE, frame->sheetID);
+                                               FLIP_NO, frame->sheetID);
                     break;
                 case FLIP_X:
                     DrawSpriteFlipped(XPos - frame->width - frame->pivotX, frame->pivotY + YPos, frame->width, frame->height, frame->sprX,
@@ -3107,7 +3107,7 @@ void DrawBitmapText(void *menu, int XPos, int YPos, int scale, int spacing, int 
         for (int i = 0; i < tMenu->entrySize[rowStart]; ++i) {
             ushort c             = tMenu->textData[tMenu->entryStart[rowStart] + i];
             FontCharacter *fChar = &fontCharacterList[c];
-            DrawSpriteScaled(FLIP_NONE, X >> 9, Y >> 9, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height, fChar->srcX,
+            DrawSpriteScaled(FLIP_NO, X >> 9, Y >> 9, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height, fChar->srcX,
                              fChar->srcY, textMenuSurfaceNo);
             X += fChar->xAdvance * scale;
         }

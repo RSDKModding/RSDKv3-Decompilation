@@ -159,6 +159,7 @@ void InitUserdata()
         ini.SetFloat("Audio", "BGMVolume", bgmVolume / (float)MAX_VOLUME);
         ini.SetFloat("Audio", "SFXVolume", sfxVolume / (float)MAX_VOLUME);
 
+        #if RETRO_USING_SDL
         ini.SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://wiki.libsdl.org/SDL_Scancode)");
         ini.SetInteger("Keyboard 1", "Up", inputDevice[0].keyMappings = SDL_SCANCODE_UP);
         ini.SetInteger("Keyboard 1", "Down", inputDevice[1].keyMappings = SDL_SCANCODE_DOWN);
@@ -178,6 +179,7 @@ void InitUserdata()
         ini.SetInteger("Controller 1", "B", inputDevice[5].contMappings = SDL_CONTROLLER_BUTTON_B);
         ini.SetInteger("Controller 1", "C", inputDevice[6].contMappings = SDL_CONTROLLER_BUTTON_X);
         ini.SetInteger("Controller 1", "Start", inputDevice[7].contMappings = SDL_CONTROLLER_BUTTON_START);
+        #endif
 
         ini.Write(BASE_PATH"settings.ini");
     }
@@ -203,6 +205,7 @@ void InitUserdata()
         if (!ini.GetInteger("Game", "Language", &Engine.language))
             Engine.language = RETRO_EN;
 
+        #if RETRO_USING_SDL
         if (!ini.GetBool("Window", "FullScreen", &Engine.startFullScreen))
             Engine.startFullScreen = DEFAULT_FULLSCREEN;
         if (!ini.GetBool("Window", "Borderless", &Engine.borderless))
@@ -217,6 +220,7 @@ void InitUserdata()
             SCREEN_XSIZE = DEFAULT_SCREEN_XSIZE;
         if (!ini.GetInteger("Window", "RefreshRate", &Engine.refreshRate))
             Engine.refreshRate = 60;
+        #endif
 
         float bv = 0, sv = 0;
         if (!ini.GetFloat("Audio", "BGMVolume", &bv))
@@ -237,6 +241,7 @@ void InitUserdata()
         if (sfxVolume < 0)
             sfxVolume = 0;
 
+        #if RETRO_USING_SDL
         if (!ini.GetInteger("Keyboard 1", "Up", &inputDevice[0].keyMappings))
             inputDevice[0].keyMappings = SDL_SCANCODE_UP;
         if (!ini.GetInteger("Keyboard 1", "Down", &inputDevice[1].keyMappings))
@@ -270,6 +275,7 @@ void InitUserdata()
             inputDevice[6].contMappings = SDL_CONTROLLER_BUTTON_X;
         if (!ini.GetInteger("Controller 1", "Start", &inputDevice[7].contMappings))
             inputDevice[7].contMappings = SDL_CONTROLLER_BUTTON_START;
+        #endif
     }
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
@@ -286,9 +292,11 @@ void InitUserdata()
     if (file) {
         fClose(file);
 
+	#if RETRO_USING_SDL
         int nummaps = SDL_GameControllerAddMappingsFromFile(buffer);
         if (nummaps >= 0)
             printLog("loaded %d controller mappings from '%s'\n", buffer, nummaps);
+        #endif
     }
 
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP

@@ -22,6 +22,15 @@ struct MusicPlaybackInfo {
     int vorbBitstream;
     SDL_AudioStream *stream;
     Sint16 *buffer;
+// TODO: this is only here to make the compiler shut up,
+// come up with a proper implementation later
+#elif RETRO_USING_C2D
+    char* musicFile;
+    void* stream;
+    void* currentTrack;
+    int pos;
+    int len;
+    Sint16 *buffer;
 #endif
     FileInfo fileInfo;
     bool trackLoop;
@@ -103,9 +112,9 @@ inline void freeMusInfo()
     }
 }
 #else
-void ProcessMusicStream() {}
-void ProcessAudioPlayback() {}
-void ProcessAudioMixing() {}
+void ProcessMusicStream();
+void ProcessAudioPlayback();
+void ProcessAudioMixing();
 
 inline void freeMusInfo()
 {

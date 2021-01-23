@@ -306,7 +306,9 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             const THEORAPLAY_AudioPacket *packet;
 
             while ((packet = THEORAPLAY_getAudio(videoDecoder)) != NULL) {
+		#if RETRO_USING_SDL
                 SDL_AudioStreamPut(ogv_stream, packet->samples, packet->frames * sizeof(float) * 2); // 2 for stereo
+		#endif
                 THEORAPLAY_freeAudio(packet);
             }
 
@@ -315,6 +317,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             // If we need more samples, assume we've reached the end of the file,
             // and flush the audio stream so we can get more. If we were wrong, and
             // there's still more file left, then there will be a gap in the audio. Sorry.
+            #if RETRO_USING_SDL
             if (SDL_AudioStreamAvailable(ogv_stream) < bytes_to_do)
                 SDL_AudioStreamFlush(ogv_stream);
 
@@ -325,10 +328,13 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             if (get != -1)
                 ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), (bgmVolume * masterVolume) / MAX_VOLUME,
                                    0); // TODO - Should we be using the music volume?
+            #endif
         }
         else {
+            #if RETRO_USING_SDL
             SDL_AudioStreamClear(ogv_stream); // Prevent leftover audio from playing at the start of the next video
-        }
+            #endif
+	}
 
         // Mix SFX
         for (byte i = 0; i < CHANNEL_COUNT; ++i) {
@@ -563,3 +569,17 @@ void SetSfxAttributes(int sfx, int loopCount, sbyte pan)
     sfxInfo->sfxID        = sfx;
     UNLOCK_AUDIO_DEVICE()
 }
+
+#if RETRO_USING_C2D
+void ProcessMusicStream() {
+    return;
+}
+
+void ProcessAudioPlayback() {
+    return;
+}
+
+void ProcessAudioMixing() {
+    return;
+}
+#endif

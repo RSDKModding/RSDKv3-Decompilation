@@ -35,7 +35,7 @@ void FindFloorPosition(Player *player, CollisionSensor *sensor, int startY)
                 int tileIndex = tiles128x128.tileIndex[tile];
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] != SOLID_LRB && tiles128x128.collisionFlags[player->collisionPlane][tile] != SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (XPos & tsm1) + (tileIndex << 4);
                             if (collisionMasks[player->collisionPlane].floorMasks[c] >= 0x40)
                                 break;
@@ -126,7 +126,7 @@ void FindLWallPosition(Player *player, CollisionSensor *sensor, int startX)
                 int tileIndex = tiles128x128.tileIndex[tile];
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] < SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (YPos & tsm1) + (tileIndex << 4);
                             if (collisionMasks[player->collisionPlane].lWallMasks[c] >= 0x40)
                                 break;
@@ -215,7 +215,7 @@ void FindRoofPosition(Player *player, CollisionSensor *sensor, int startY)
                 int tileIndex = tiles128x128.tileIndex[tile];
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] < SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (XPos & tsm1) + (tileIndex << 4);
                             if (collisionMasks[player->collisionPlane].roofMasks[c] <= -0x40)
                                 break;
@@ -307,7 +307,7 @@ void FindRWallPosition(Player *player, CollisionSensor *sensor, int startX)
                 int tileIndex = tiles128x128.tileIndex[tile];
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] < SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (YPos & tsm1) + (tileIndex << 4);
                             if (collisionMasks[player->collisionPlane].rWallMasks[c] <= -0x40)
                                 break;
@@ -398,7 +398,7 @@ void FloorCollision(Player *player, CollisionSensor *sensor)
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] != SOLID_LRB
                     && tiles128x128.collisionFlags[player->collisionPlane][tile] != SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (XPos & tsm1) + (tileIndex << 4);
                             if ((YPos & tsm1) <= collisionMasks[player->collisionPlane].floorMasks[c] + i - TILE_SIZE
                                 || collisionMasks[player->collisionPlane].floorMasks[c] >= tsm1)
@@ -484,7 +484,7 @@ void LWallCollision(Player *player, CollisionSensor *sensor)
                 int tileIndex = tiles128x128.tileIndex[tile];
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] != SOLID_TOP && tiles128x128.collisionFlags[player->collisionPlane][tile] < SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (YPos & tsm1) + (tileIndex << 4);
                             if ((XPos & tsm1) <= collisionMasks[player->collisionPlane].lWallMasks[c] + i - TILE_SIZE)
                                 break;
@@ -556,7 +556,7 @@ void RoofCollision(Player *player, CollisionSensor *sensor)
                 int tileIndex = tiles128x128.tileIndex[tile];
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] != SOLID_TOP && tiles128x128.collisionFlags[player->collisionPlane][tile] < SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (XPos & tsm1) + (tileIndex << 4);
                             if ((YPos & tsm1) >= collisionMasks[player->collisionPlane].roofMasks[c] + TILE_SIZE - i)
                                 break;
@@ -638,7 +638,7 @@ void RWallCollision(Player *player, CollisionSensor *sensor)
                 int tileIndex = tiles128x128.tileIndex[tile];
                 if (tiles128x128.collisionFlags[player->collisionPlane][tile] != SOLID_TOP && tiles128x128.collisionFlags[player->collisionPlane][tile] < SOLID_NONE) {
                     switch (tiles128x128.direction[tile]) {
-                        case FLIP_NONE: {
+                        case FLIP_NO: {
                             c = (YPos & tsm1) + (tileIndex << 4);
                             if ((XPos & tsm1) >= collisionMasks[player->collisionPlane].rWallMasks[c] + TILE_SIZE - i)
                                 break;
@@ -2403,7 +2403,7 @@ void BoxCollision2(int left, int top, int right, int bottom)
                 if (sensors[1].collided || sensors[0].collided) {
                     player->XPos = left - (collisionRight << 16);
                     if (player->XVelocity > 0) {
-                        if (player->boundEntity->direction == FLIP_NONE)
+                        if (player->boundEntity->direction == FLIP_NO)
                             player->pushing = 2;
                         player->XVelocity = 0;
                         player->speed     = 0;

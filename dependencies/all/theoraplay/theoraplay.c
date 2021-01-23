@@ -25,16 +25,26 @@
 #define THEORAPLAY_MUTEX_T     HANDLE
 #define sleepms(x) Sleep(x)
 #else
+#if defined _3DS
+#include "pthread3ds.h"
+#else
 #include <pthread.h>
+#endif
 #include <unistd.h>
 #define sleepms(x) usleep((x) * 1000)
 #define THEORAPLAY_THREAD_T    pthread_t
 #define THEORAPLAY_MUTEX_T     pthread_mutex_t
 #endif
 
+#if defined _3DS
+#include <theoraplay.h>
+#include <theora/theoradec.h>
+#include <tremor/ivorbiscodec.h>
+#else
 #include "theoraplay.h"
 #include "theora/theoradec.h"
 #include "vorbis/codec.h"
+#endif
 
 #define THEORAPLAY_INTERNAL 1
 
@@ -408,7 +418,12 @@ static void WorkerThread(TheoraDecoder *ctx)
         while (!ctx->halt && vpackets)
         {
             float **pcm = NULL;
-            const int frames = vorbis_synthesis_pcmout(&vdsp, &pcm);
+            #if defined _3DS
+            const int frames = vorbis_synthesis_pcmout(&vdsp, (ogg_int32_t***)&pcm);
+            #else
+	    const int frames = vorbis_synthesis_pcmout(&vdsp, &pcm);
+            #endif
+
             if (frames > 0)
             {
                 const int channels = vinfo.channels;

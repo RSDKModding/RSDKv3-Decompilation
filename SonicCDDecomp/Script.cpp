@@ -3100,10 +3100,10 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case FX_FLIP:
                         switch (entity->direction) {
                             default:
-                            case FLIP_NONE:
+                            case FLIP_NO:
                                 DrawSpriteFlipped((scriptEng.operands[2] >> 16) - xScrollOffset + spriteFrame->pivotX,
                                                   (scriptEng.operands[3] >> 16) - yScrollOffset + spriteFrame->pivotY, spriteFrame->width,
-                                                  spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, FLIP_NONE, scriptInfo->spriteSheetID);
+                                                  spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, FLIP_NO, scriptInfo->spriteSheetID);
                                 break;
                             case FLIP_X:
                                 DrawSpriteFlipped((scriptEng.operands[2] >> 16) - xScrollOffset - spriteFrame->width - spriteFrame->pivotX,
@@ -3189,9 +3189,9 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case FX_FLIP:
                         switch (entity->direction) {
                             default:
-                            case FLIP_NONE:
+                            case FLIP_NO:
                                 DrawSpriteFlipped(scriptEng.operands[2] + spriteFrame->pivotX, scriptEng.operands[3] + spriteFrame->pivotY,
-                                                  spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, FLIP_NONE,
+                                                  spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, FLIP_NO,
                                                   scriptInfo->spriteSheetID);
                                 break;
                             case FLIP_X:
@@ -3255,7 +3255,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 newEnt->propertyValue = scriptEng.operands[2];
                 newEnt->XPos          = scriptEng.operands[3];
                 newEnt->YPos          = scriptEng.operands[4];
-                newEnt->direction     = FLIP_NONE;
+                newEnt->direction     = FLIP_NO;
                 newEnt->frame         = 0;
                 newEnt->priority      = PRIORITY_ACTIVE_BOUNDS;
                 newEnt->rotation      = 0;
@@ -3315,7 +3315,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 temp->propertyValue  = scriptEng.operands[1];
                 temp->XPos           = scriptEng.operands[2];
                 temp->YPos           = scriptEng.operands[3];
-                temp->direction      = FLIP_NONE;
+                temp->direction      = FLIP_NO;
                 temp->frame          = 0;
                 temp->priority       = PRIORITY_ACTIVE;
                 temp->rotation       = 0;

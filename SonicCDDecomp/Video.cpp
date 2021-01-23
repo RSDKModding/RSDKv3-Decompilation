@@ -1,5 +1,8 @@
 ﻿#include "RetroEngine.hpp"
 
+// TODO: all of the functions here have been stubbed for 3DS.
+// Re-implement everything later.
+
 int currentVideoFrame = 0;
 int videoFrameCount   = 0;
 int videoWidth        = 0;
@@ -20,21 +23,28 @@ bool videoSkipped = false;
 
 static long videoRead(THEORAPLAY_Io *io, void *buf, long buflen)
 {
+    # if RETRO_USING_SDL
     FileIO *file    = (FileIO *)io->userdata;
     const size_t br = fRead(buf, 1, buflen * sizeof(byte), file);
     if (br == 0)
         return -1;
     return (int)br;
+    #else
+    return -1;
+    #endif
 } // IoFopenRead
 
 static void videoClose(THEORAPLAY_Io *io)
 {
+    #if RETRO_USING_SDL
     FileIO *file = (FileIO *)io->userdata;
     fClose(file);
+    #endif
 }
 
 void PlayVideoFile(char *filePath)
 {
+    #if RETRO_USING_SDL
     char filepath[0x100];
     StrCopy(filepath, BASE_PATH "videos/");
 
@@ -86,10 +96,12 @@ void PlayVideoFile(char *filePath)
     else {
         printLog("Couldn't find file '%s'!", filepath);
     }
+    #endif
 }
 
 void UpdateVideoFrame()
 {
+    #if RETRO_USING_SDL
     if (videoPlaying) {
         if (videoFrameCount > currentVideoFrame) {
             GFXSurface *surface = &gfxSurface[videoData];
@@ -138,10 +150,12 @@ void UpdateVideoFrame()
             CloseFile();
         }
     }
+    #endif
 }
 
 int ProcessVideo()
 {
+    #if RETRO_USING_SDL
     if (videoPlaying) {
         CheckKeyPress(&keyPress, 0x10);
 
@@ -209,12 +223,14 @@ int ProcessVideo()
             return 2; // its playing as expected
         }
     }
+    #endif
 
     return 0; // its not even initialised
 }
 
 void StopVideoPlayback()
 {
+    #if RETRO_USING_SDL
     if (videoPlaying) {
         // `videoPlaying` and `videoDecoder` are read by
         // the audio thread, so lock it to prevent a race
@@ -238,20 +254,25 @@ void StopVideoPlayback()
 
         SDL_UnlockAudio();
     }
+    #endif
 }
 
 void SetupVideoBuffer(int width, int height)
 {
+    #if RETRO_USING_SDL
     Engine.videoBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, width, height);
 
     if (!Engine.videoBuffer)
         printLog("Failed to create video buffer!");
+    #endif
 }
 
 void CloseVideoBuffer()
 {
+    #if RETRO_USING_SDL
     if (videoPlaying) {
         SDL_DestroyTexture(Engine.videoBuffer);
         Engine.videoBuffer = nullptr;
     }
+    #endif
 }
