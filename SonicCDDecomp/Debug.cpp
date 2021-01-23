@@ -235,7 +235,6 @@ void processStageSelect()
                 gameMenu[0].alignment        = 2;
                 gameMenu[0].selectionCount   = 1;
                 gameMenu[1].timer            = 0;
-                gameMenu[1].visibleRowCount  = 0;
                 gameMenu[1].visibleRowOffset = 0;
                 stageMode                  = DEVMENU_STAGESEL;
             }
