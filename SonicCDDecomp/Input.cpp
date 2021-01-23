@@ -19,9 +19,8 @@ int RSTICK_DEADZONE   = 20000;
 int LTRIGGER_DEADZONE = 20000;
 int RTRIGGER_DEADZONE = 20000;
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
 SDL_GameController *controller;
-#endif
 
 // Easier this way
 enum ExtraSDLButtons {
@@ -37,8 +36,9 @@ enum ExtraSDLButtons {
     SDL_CONTROLLER_BUTTON_RSTICK_RIGHT,
     SDL_CONTROLLER_BUTTON_MAX_EXTRA,
 };
+#endif
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
 bool getControllerButton(byte buttonID)
 {
     if (SDL_GameControllerGetButton(controller, (SDL_GameControllerButton)buttonID)) {
@@ -88,7 +88,7 @@ bool getControllerButton(byte buttonID)
 
 void ProcessInput()
 {
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     int length           = 0;
     const byte *keyState = SDL_GetKeyboardState(&length);
 

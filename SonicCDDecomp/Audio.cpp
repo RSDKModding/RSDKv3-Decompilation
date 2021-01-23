@@ -23,7 +23,7 @@ MusicPlaybackInfo musInfo;
 
 int trackBuffer = -1;
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
 SDL_AudioDeviceID audioDevice;
 SDL_AudioSpec audioDeviceFormat;
 SDL_AudioStream *ogv_stream;
@@ -48,7 +48,7 @@ SDL_AudioStream *ogv_stream;
 int InitAudioPlayback()
 {
     StopAllSfx(); //"init"
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_AudioSpec want;
     want.freq     = AUDIO_FREQUENCY;
     want.format   = AUDIO_FORMAT;
@@ -152,7 +152,7 @@ int InitAudioPlayback()
     return true;
 }
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
 size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
@@ -185,7 +185,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
     switch (musicStatus) {
         case MUSIC_READY:
         case MUSIC_PLAYING: {
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
             while (SDL_AudioStreamAvailable(musInfo.stream) < bytes_wanted) {
                 // We need more samples: get some
                 long bytes_read = ov_read(&musInfo.vorbisFile, (char *)musInfo.buffer, sizeof(musInfo.buffer), 0, 2, 1, &musInfo.vorbBitstream);
@@ -255,7 +255,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             musInfo.loaded    = true;
 
             unsigned long long samples = 0;
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
             ov_callbacks callbacks;
 
             callbacks.read_func  = readVorbis;
@@ -363,7 +363,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
                     }
                 }
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
                 ProcessAudioMixing(mix_buffer, buffer, samples_done, sfxVolume, sfx->pan);
 #endif
             }
@@ -388,7 +388,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
     }
 }
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
 void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan)
 {
     if (volume == 0)
@@ -473,7 +473,7 @@ void LoadSfx(char *filePath, byte sfxID)
         FileRead(sfx, info.fileSize);
         CloseFile();
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
         SDL_LockAudio();
         SDL_RWops *src = SDL_RWFromMem(sfx, info.fileSize);
         if (src == NULL) {

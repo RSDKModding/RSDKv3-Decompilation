@@ -27,7 +27,7 @@ inline int getLowerRate(int intendRate, int targetRate)
 
 bool processEvents()
 {
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     while (SDL_PollEvent(&Engine.sdlEvents)) {
         // Main Events
         switch (Engine.sdlEvents.type) {
@@ -315,7 +315,7 @@ void RetroEngine::Run()
     ReleaseRenderDevice();
     writeSettings();
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_Quit();
 #endif
 }

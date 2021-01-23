@@ -80,9 +80,9 @@ typedef unsigned int uint;
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
     || RETRO_PLATFORM == RETRO_UWP
-#define RETRO_USING_SDL (1)
+#define RETRO_USING_SDL2 (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
-#define RETRO_USING_SDL (0)
+#define RETRO_USING_SDL2 (0)
 #endif
 
 #if RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7
@@ -307,7 +307,7 @@ public:
     int windowXSize; // width of window/screen in the previous frame
     int windowYSize; // height of window/screen in the previous frame
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_Window *window          = nullptr;
     SDL_Renderer *renderer      = nullptr;
     SDL_Texture *screenBuffer   = nullptr;

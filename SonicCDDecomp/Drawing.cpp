@@ -24,7 +24,7 @@ int InitRenderDevice()
     memset(Engine.frameBuffer, 0, (SCREEN_XSIZE * SCREEN_YSIZE) * sizeof(ushort));
     memset(Engine.frameBuffer2x, 0, (SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2) * sizeof(ushort));
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
@@ -107,7 +107,7 @@ void RenderRenderDevice()
     if (Engine.gameMode == ENGINE_EXITGAME)
         return;
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_Rect *destScreenPos = NULL;
     SDL_Rect destScreenPos_scaled;
     SDL_Texture *texTarget = NULL;
@@ -270,7 +270,7 @@ void ReleaseRenderDevice()
         delete[] Engine.frameBuffer;
     if (Engine.frameBuffer2x)
         delete[] Engine.frameBuffer2x;
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_DestroyTexture(Engine.screenBuffer);
     Engine.screenBuffer = NULL;
     SDL_DestroyTexture(Engine.screenBuffer2x);

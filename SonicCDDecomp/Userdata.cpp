@@ -65,65 +65,6 @@ void InitUserdata()
     // userdata files are loaded from this directory
     sprintf(gamePath, BASE_PATH);
 
-#if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
-    if (Engine.useSteamDir) {
-#if _WIN64
-        LONG lRes             = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Wow6432Node\\Valve\\Steam", 0, KEY_READ, &hKey);
-        bool existsAndSuccess = lRes == ERROR_SUCCESS;
-        std::wstring steamPath;
-
-        if (existsAndSuccess) {
-            GetStringRegKey(hKey, L"InstallPath", steamPath, L"");
-
-            std::ifstream file(steamPath + L"/config/loginusers.vdf");
-            auto root = tyti::vdf::read(file);
-
-            std::vector<long long> SIDs;
-            for (auto &child : root.childs) {
-                long long sidVal = std::stoll(child.first);
-                SIDs.push_back(sidVal & 0xFFFFFFFF);
-            }
-
-            for (auto &sid : SIDs) {
-                std::wstring udataPath = steamPath.c_str() + std::wstring(L"/userdata/") + std::to_wstring(sid) + std::wstring(L"/200940/local/");
-
-                if (dirExists(udataPath)) {
-                    sprintf(gamePath, "%s", utf16ToUtf8(udataPath).c_str());
-                    break;
-                }
-            }
-        }
-
-#elif _WIN32
-        LONG lRes             = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Valve\\Steam", 0, KEY_READ, &hKey);
-        bool existsAndSuccess = lRes == ERROR_SUCCESS;
-        std::wstring steamPath;
-
-        if (existsAndSuccess) {
-            GetStringRegKey(hKey, L"InstallPath", steamPath, L"");
-
-            std::ifstream file(steamPath + L"/config/loginusers.vdf");
-            auto root = tyti::vdf::read(file);
-
-            std::vector<long long> SIDs;
-            for (auto &child : root.childs) {
-                long long sidVal = std::stoll(child.first);
-                SIDs.push_back(sidVal & 0xFFFFFFFF);
-            }
-
-            for (auto &sid : SIDs) {
-                std::wstring udataPath = steamPath.c_str() + std::wstring(L"/userdata/") + std::to_wstring(sid) + std::wstring(L"/200940/local/");
-
-                if (dirExists(udataPath)) {
-                    sprintf(gamePath, "%s", utf16ToUtf8(udataPath).c_str());
-                    break;
-                }
-            }
-        }
-#endif
-    }
-#endif
-
     char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
@@ -322,6 +263,66 @@ void InitUserdata()
     StrCopy(achievements[9].name, "Dr Eggman Got Served");
     StrCopy(achievements[10].name, "Just In Time");
     StrCopy(achievements[11].name, "Saviour of the Planet");
+
+    // Loaded here so it can be disabled
+#if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
+    if (Engine.useSteamDir) {
+#if _WIN64
+        LONG lRes             = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Wow6432Node\\Valve\\Steam", 0, KEY_READ, &hKey);
+        bool existsAndSuccess = lRes == ERROR_SUCCESS;
+        std::wstring steamPath;
+
+        if (existsAndSuccess) {
+            GetStringRegKey(hKey, L"InstallPath", steamPath, L"");
+
+            std::ifstream file(steamPath + L"/config/loginusers.vdf");
+            auto root = tyti::vdf::read(file);
+
+            std::vector<long long> SIDs;
+            for (auto &child : root.childs) {
+                long long sidVal = std::stoll(child.first);
+                SIDs.push_back(sidVal & 0xFFFFFFFF);
+            }
+
+            for (auto &sid : SIDs) {
+                std::wstring udataPath = steamPath.c_str() + std::wstring(L"/userdata/") + std::to_wstring(sid) + std::wstring(L"/200940/local/");
+
+                if (dirExists(udataPath)) {
+                    sprintf(gamePath, "%s", utf16ToUtf8(udataPath).c_str());
+                    break;
+                }
+            }
+        }
+
+#elif _WIN32
+        LONG lRes             = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Valve\\Steam", 0, KEY_READ, &hKey);
+        bool existsAndSuccess = lRes == ERROR_SUCCESS;
+        std::wstring steamPath;
+
+        if (existsAndSuccess) {
+            GetStringRegKey(hKey, L"InstallPath", steamPath, L"");
+
+            std::ifstream file(steamPath + L"/config/loginusers.vdf");
+            auto root = tyti::vdf::read(file);
+
+            std::vector<long long> SIDs;
+            for (auto &child : root.childs) {
+                long long sidVal = std::stoll(child.first);
+                SIDs.push_back(sidVal & 0xFFFFFFFF);
+            }
+
+            for (auto &sid : SIDs) {
+                std::wstring udataPath = steamPath.c_str() + std::wstring(L"/userdata/") + std::to_wstring(sid) + std::wstring(L"/200940/local/");
+
+                if (dirExists(udataPath)) {
+                    sprintf(gamePath, "%s", utf16ToUtf8(udataPath).c_str());
+                    break;
+                }
+            }
+        }
+#endif
+    }
+#endif
 }
 
 void writeSettings() {
