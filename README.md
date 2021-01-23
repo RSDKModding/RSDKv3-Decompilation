@@ -38,6 +38,14 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) to setup dependencies, then build via the Visual Studio solution
 * or grab a prebuilt executable from the releases section
 
+## Windows via MSYS2:
+* Download the newest version of the MSYS2 installer from [here](https://github.com/msys2/msys2-installer/releases) and install it.
+* Run the `MINGW64` prompt (from the windows Start Menu/MSYS2 64-bit/MSYS2 MinGW 64-bit), when the program starts enter `pacman -Syuu` in the prompt and hit Enter. Press `Y` when it asks if you want to update packages. If it asks you to close the prompt, do so, then restart it and run the same command again. This updates the packages to their latest versions.
+* Now install the dependencies with the following command: `pacman -S make git mingw-w64-i686-gcc mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libtheora`
+* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
+* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
+* Then run `make -j4` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+
 ## Windows UWP (Phone, Xbox, etc.):
 * Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, copy your `Data.rsdk` and `videos` folder into `SonicCDDecompUWP`, then build and deploy via the UWP Visual Studio solution
 
@@ -46,7 +54,12 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * or grab a prebuilt executable from the releases section
 
 ## Linux:
-* Clone the repo, install your distro's SDL2, libogg, libtheora, and libvorbisfile packages, and then run `make` in the cloned repo's directory
+* To setup your build enviroment and library dependecies run the following commands:
+* Ubuntu (Mint, Pop!_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev`
+* Arch Linux: `sudo pacman -Sy base-devel git sdl2 libvorbis libogg libtheora`
+* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
+* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
+* Then run `make -j4` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
 
 ## iOS:
 * Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
