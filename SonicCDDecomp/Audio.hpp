@@ -3,6 +3,10 @@
 
 #include <stdlib.h>
 
+#include <vorbis/vorbisfile.h>
+
+#include "SDL.h"
+
 #define TRACK_COUNT (0x10)
 #define SFX_COUNT (0x100)
 #define CHANNEL_COUNT (0x4)

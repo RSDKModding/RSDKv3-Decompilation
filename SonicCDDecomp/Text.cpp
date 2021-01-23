@@ -7,7 +7,7 @@ FontCharacter fontCharacterList[FONTCHAR_COUNT];
 
 void LoadFontFile(const char *filePath)
 {
-    int fileBuffer = 0;
+    byte fileBuffer = 0;
     int cnt        = 0;
     FileInfo info;
     if (LoadFile(filePath, &info)) {
@@ -298,9 +298,9 @@ void LoadConfigListText(TextMenu *menu, int listNo)
 {
     FileInfo info;
     char strBuf[0x100];
-    int fileBuffer = 0;
-    int count      = 0;
-    int strLen     = 0;
+    byte fileBuffer = 0;
+    byte count      = 0;
+    byte strLen     = 0;
     if (LoadFile("Data/Game/GameConfig.bin", &info)) {
         // Name
         FileRead(&strLen, 1);

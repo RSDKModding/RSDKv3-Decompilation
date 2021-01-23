@@ -71,7 +71,7 @@ int InitAudioPlayback()
     // This is true of every .ogv file in the game (the Steam version, at least),
     // but it would be nice to make this dynamic. Unfortunately, THEORAPLAY's API
     // makes this awkward.
-    ogv_stream = SDL_NewAudioStream(AUDIO_F32, 2, 48000, audioDeviceFormat.format, audioDeviceFormat.channels, audioDeviceFormat.freq);
+    ogv_stream = SDL_NewAudioStream(AUDIO_F32SYS, 2, 48000, audioDeviceFormat.format, audioDeviceFormat.channels, audioDeviceFormat.freq);
     if (!ogv_stream) {
         printLog("Failed to create stream: %s", SDL_GetError());
         SDL_CloseAudioDevice(audioDevice);
@@ -84,7 +84,7 @@ int InitAudioPlayback()
     FileInfo info;
     FileInfo infoStore;
     char strBuffer[0x100];
-    int fileBuffer  = 0;
+    byte fileBuffer  = 0;
     int fileBuffer2 = 0;
 
     if (LoadFile("Data/Game/Gameconfig.bin", &info)) {
@@ -103,24 +103,24 @@ int InitAudioPlayback()
         strBuffer[fileBuffer] = 0;
 
         // Read Obect Names
-        int objectCount = 0;
+        byte objectCount = 0;
         FileRead(&objectCount, 1);
-        for (int o = 0; o < objectCount; ++o) {
+        for (byte o = 0; o < objectCount; ++o) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
         }
 
         // Read Script Paths
-        for (int s = 0; s < objectCount; ++s) {
+        for (byte s = 0; s < objectCount; ++s) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
         }
 
-        int varCnt = 0;
+        byte varCnt = 0;
         FileRead(&varCnt, 1);
-        for (int v = 0; v < varCnt; ++v) {
+        for (byte v = 0; v < varCnt; ++v) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
@@ -130,9 +130,9 @@ int InitAudioPlayback()
         }
 
         // Read SFX
-        globalSFXCount = 0;
-        FileRead(&globalSFXCount, 1);
-        for (int s = 0; s < globalSFXCount; ++s) {
+        FileRead(&fileBuffer, 1);
+        globalSFXCount = fileBuffer;
+        for (byte s = 0; s < globalSFXCount; ++s) {
             FileRead(&fileBuffer, 1);
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
@@ -323,8 +323,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 
             // Mix the converted audio data into the final output
             if (get != -1)
-                ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), (bgmVolume * masterVolume) / MAX_VOLUME,
-                                   0); // TODO - Should we be using the music volume?
+                ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), MAX_VOLUME, 0);
         }
         else {
             SDL_AudioStreamClear(ogv_stream); // Prevent leftover audio from playing at the start of the next video
@@ -512,9 +511,9 @@ void LoadSfx(char *filePath, byte sfxID)
                     sfxList[sfxID].length = wav_length / sizeof(Sint16);
                     sfxList[sfxID].loaded = true;
                 }
-            }
 
-            std::cout << sfxList[sfxID].name << std::endl;
+                std::cout << sfxList[sfxID].name << std::endl;
+            }
         }
         SDL_UnlockAudio();
 #endif
