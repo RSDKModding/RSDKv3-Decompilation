@@ -1893,6 +1893,7 @@ void ClearScriptData()
     aliasCount = COMMONALIAS_COUNT;
     lineID = 0;
 
+    ClearGraphicsData();
     ClearAnimationData();
 
     for (int p = 0; p < PLAYER_COUNT; ++p) {
