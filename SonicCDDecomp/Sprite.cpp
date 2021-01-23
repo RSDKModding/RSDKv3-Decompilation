@@ -252,10 +252,6 @@ void RemoveGraphicsFile(const char *filePath, int sheetID)
             if (gfxSurface[i].dataPosition > gfxSurface[sheetID].dataPosition)
                 gfxSurface[i].dataPosition -= gfxSurface[sheetID].height * gfxSurface[sheetID].width;
         }
-
-        if (gfxDataPosition >= SURFACE_MAX) {
-            
-        }
     }
 }
 
