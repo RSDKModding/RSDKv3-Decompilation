@@ -5,7 +5,9 @@
 
 #include <vorbis/vorbisfile.h>
 
+#if RETRO_PLATFORM == RETRO_VITA
 #include "SDL.h"
+#endif
 
 #define TRACK_COUNT (0x10)
 #define SFX_COUNT (0x100)
