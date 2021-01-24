@@ -284,7 +284,8 @@ size_t FileRead(void *dest, int size, File *file)
         if (Engine.usingDataFile) {
             while (size > 0) {
                 if (file->info.bufferPosition == file->readSize)
-                    FillFileBuffer(file);
+                    if (FillFileBuffer(file) == 0)
+                        break;
 
                 *data = encryptionStringB[file->info.eStringPosB] ^ file->info.eStringNo ^ file->fileBuffer[file->info.bufferPosition++];
                 if (file->info.eNybbleSwap)
@@ -323,7 +324,8 @@ size_t FileRead(void *dest, int size, File *file)
         else {
             while (size > 0) {
                 if (file->info.bufferPosition == file->readSize)
-                    FillFileBuffer(file);
+                    if (FillFileBuffer(file) == 0)
+                        break;
 
                 *data++ = file->fileBuffer[file->info.bufferPosition++];
                 size--;
