@@ -89,8 +89,8 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo);
 
 inline size_t FillFileBuffer()
 {
-    if (globalFileInfo.readPos + 0x2000 <= globalFileInfo.fileSize)
-        readSize = 0x2000;
+    if (globalFileInfo.readPos + sizeof(fileBuffer) <= globalFileInfo.fileSize)
+        readSize = sizeof(fileBuffer);
     else 
         readSize = globalFileInfo.fileSize - globalFileInfo.readPos;
 
