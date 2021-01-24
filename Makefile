@@ -31,6 +31,7 @@ SOURCES = dependencies/all/theoraplay/theoraplay.c \
 		SonicCDDecomp/Userdata.cpp \
 		SonicCDDecomp/Video.cpp
 
+OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
 all: soniccd
@@ -41,11 +42,11 @@ objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $< -o $@ -c
 
-soniccd: $(SOURCES:%=objects/%.o)
+soniccd: $(OBJECTS)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
 install: soniccd
 	install -Dp -m755 soniccd $(prefix)/bin/soniccd
 
-clean: $(SOURCES:%=objects/%.o)
+clean: $(OBJECTS)
 	 rm $^
