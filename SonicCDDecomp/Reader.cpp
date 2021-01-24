@@ -7,8 +7,8 @@ FileInfo globalFileInfo;
 byte fileBuffer[0x2000];
 int vFileSize;
 int readSize;
-char encryptionStringA[] = { "4RaS9D7KaEbxcp2o5r6t" };
-char encryptionStringB[] = { "3tRaUxLmEaSn" };
+static const char encryptionStringA[] = { "4RaS9D7KaEbxcp2o5r6t" };
+static const char encryptionStringB[] = { "3tRaUxLmEaSn" };
 
 FileIO *cFileHandle = nullptr;
 FileIO *cFileHandleStream = nullptr;

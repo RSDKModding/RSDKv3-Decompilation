@@ -52,8 +52,6 @@ extern FileInfo globalFileInfo;
 extern byte fileBuffer[0x2000];
 extern int vFileSize;
 extern int readSize;
-extern char encryptionStringA[21];
-extern char encryptionStringB[13];
 
 extern FileIO *cFileHandle;
 extern FileIO *cFileHandleStream;
