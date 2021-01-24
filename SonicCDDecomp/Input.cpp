@@ -135,6 +135,37 @@ void ProcessInput()
     }
     else if (inputType == 1)
         inputDevice[8].setReleased();
+#elif RETRO_PLATFORM == RETRO_3DS
+    hidScanInput();
+    u32 kDown  = hidKeysDown();
+    u32 kHold  = hidKeysHeld();
+
+    // as of right now, key bindings for the 3DS version are hard-coded
+    // this might change later, probably not tho
+    if (kDown)
+        inputDevice[8].press = true;
+    else
+        inputDevice[8].press = false;
+
+    if (kHold)
+        inputDevice[8].hold = true;
+    else
+        inputDevice[8].hold = false;
+
+    for (int i = 0; i < keyCount; i++) {
+
+       if (kDown & _3DSKeys[i]) {
+           inputDevice[i].press = true;
+       }
+       else
+           inputDevice[i].press = false;
+
+       if (kHold  & _3DSKeys[i]) {
+           inputDevice[i].hold = true;
+       }
+       else
+           inputDevice[i].hold = false;
+    }
 #endif
 }
 

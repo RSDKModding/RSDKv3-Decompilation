@@ -12,6 +12,20 @@ struct InputData {
     bool start;
 };
 
+#if RETRO_PLATFORM == RETRO_3DS
+const unsigned int _3DSKeys[8] = {
+	KEY_UP,
+	KEY_DOWN,
+	KEY_LEFT,
+	KEY_RIGHT,
+	KEY_A,
+	KEY_B,
+	KEY_Y,
+	KEY_START
+};
+const int keyCount = 8;
+#endif
+
 struct InputButton {
     bool press, hold;
     int keyMappings, contMappings;

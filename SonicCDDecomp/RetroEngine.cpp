@@ -294,13 +294,6 @@ void RetroEngine::Run()
         for (int s = 0; s < gameSpeed; ++s) {
             ProcessInput();
 
-#if RETRO_USING_C2D
-	    // for debugging purposes only atm
-	    hidScanInput();
-	    if (hidKeysDown() & KEY_B)
-		    break;
-#endif
-
             if (!masterPaused || frameStep) {
                 switch (gameMode) {
                     case ENGINE_DEVMENU: processStageSelect(); break;
