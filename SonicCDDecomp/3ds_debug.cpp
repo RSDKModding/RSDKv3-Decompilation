@@ -8,5 +8,5 @@ void DebugConsoleInit() {
 	printf("--------------------------------\n");
 
 	printf("The programmer has a nap.\n");
-	printf("Hold out! Programmer!\n");
+	printf("Hold out! Programmer!\n\n");
 }

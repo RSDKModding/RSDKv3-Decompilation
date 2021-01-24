@@ -357,6 +357,7 @@ public:
     SDL_Event sdlEvents;
 #elif RETRO_PLATFORM == RETRO_3DS
     // due to the 3DS's limited resolution, image scaling isn't needed here
+    C3D_RenderTarget* topScreen;
     C2D_Sprite* screenBuffer;
     C2D_Sprite* videoBuffer;
 #endif

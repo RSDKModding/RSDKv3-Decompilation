@@ -95,6 +95,12 @@ int InitRenderDevice()
     Engine.isFullScreen = true;
 #endif
     
+#elif RETRO_USING_C2D
+    C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+    C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
+    C2D_Prepare();
+
+    Engine.topScreen = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
 #endif
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;
@@ -262,6 +268,12 @@ void RenderRenderDevice()
         // no change here
         SDL_RenderPresent(Engine.renderer);
     }
+#elif RETRO_USING_C2D
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    // should just draw red atm
+    C2D_TargetClear(Engine.topScreen, C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
+    C2D_SceneBegin(Engine.topScreen);
+    C3D_FrameEnd(0);
 #endif
 }
 void ReleaseRenderDevice()
@@ -278,6 +290,10 @@ void ReleaseRenderDevice()
 
     SDL_DestroyRenderer(Engine.renderer);
     SDL_DestroyWindow(Engine.window);
+#elif RETRO_USING_C2D
+    C2D_Fini();
+    C3D_Fini();
+    gfxExit();
 #endif
 }
 
