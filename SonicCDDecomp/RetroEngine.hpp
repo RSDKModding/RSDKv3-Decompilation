@@ -226,6 +226,7 @@ enum RetroBytecodeFormat {
 #include <tremor/ivorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
+#include "3ds/3ds_debug.hpp"
 #endif
 
 extern bool usingCWD;
@@ -252,10 +253,6 @@ extern bool engineDebugMode;
 #include "Video.hpp"
 #include "Userdata.hpp"
 #include "Debug.hpp"
-
-#if RETRO_PLATFORM == RETRO_3DS
-#include "3ds_debug.hpp"
-#endif
 
 class RetroEngine
 {
