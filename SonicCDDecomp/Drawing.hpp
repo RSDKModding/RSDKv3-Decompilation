@@ -3,7 +3,7 @@
 
 #define SPRITESHEETS_MAX (16)
 #define SURFACE_MAX      (24)
-#define GFXDATA_MAX      (0x200000)
+#define GFXDATA_MAX      (0x400000)
 
 #define BLENDTABLE_YSIZE (0x100)
 #define BLENDTABLE_XSIZE (0x20)

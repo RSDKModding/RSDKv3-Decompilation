@@ -38,7 +38,7 @@ byte TraceGifPrefix(uint *prefix, int code, int clearCode);
 
 void InitGifDecoder()
 {
-    int val = 0;
+    byte val = 0;
     FileRead(&val, 1);
     gifDecoder.fileState      = LOADING_IMAGE;
     gifDecoder.position       = 0;
@@ -262,7 +262,7 @@ int LoadBMPFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
 
         SetFilePosition(18);
         FileRead(&fileBuffer, 1);
@@ -301,8 +301,11 @@ int LoadBMPFile(const char *filePath, byte sheetID)
             w >>= 1;
             ++surface->widthShift;
         }
-        if (gfxDataPosition >= 0x400000)
+
+        if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx size!");
+        }
 
         CloseFile();
         return true;
@@ -316,7 +319,8 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
+        byte fileBuffer2[2];
 
         SetFilePosition(6); // GIF89a
         FileRead(&fileBuffer, 1);
@@ -348,10 +352,10 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         FileRead(&fileBuffer, 1);
         while (fileBuffer != ',') FileRead(&fileBuffer, 1); // gif image start identifier
 
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
+        FileRead(fileBuffer2, 2);
+        FileRead(fileBuffer2, 2);
+        FileRead(fileBuffer2, 2);
+        FileRead(fileBuffer2, 2);
         FileRead(&fileBuffer, 1);
         bool interlaced = (fileBuffer & 0x40) >> 6;
         if (fileBuffer >> 7 == 1) {
@@ -371,10 +375,13 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         }
 
         gfxDataPosition += surface->width * surface->height;
-        if (gfxDataPosition <= 0x3FFFFF)
+        if (gfxDataPosition < GFXDATA_MAX) {
             ReadGifPictureData(surface->width, surface->height, interlaced, graphicData, surface->dataPosition);
-        else
+        }
+        else {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx surface size!");
+        }
 
         CloseFile();
         return true;
@@ -388,7 +395,7 @@ int LoadGFXFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
         FileRead(&fileBuffer, 1);
         surface->width = fileBuffer << 8;
         FileRead(&fileBuffer, 1);
@@ -428,8 +435,11 @@ int LoadGFXFile(const char *filePath, byte sheetID)
             w >>= 1;
             ++surface->widthShift;
         }
-        if (gfxDataPosition >= 0x400000)
+
+        if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx size!");
+        }
 
         CloseFile();
         return true;
@@ -446,7 +456,7 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         videoData         = sheetID;
         currentVideoFrame = 0;
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
 
         FileRead(&fileBuffer, 1);
         videoFrameCount = fileBuffer;
@@ -469,8 +479,11 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         surface->width        = videoHeight;
         surface->dataPosition = gfxDataPosition;
         gfxDataPosition += surface->width * surface->height;
-        if (gfxDataPosition >= 0x400000)
+
+        if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
+            printLog("WARNING: Exceeded max gfx size!");
+        }
 
         CloseFile();
         return true;

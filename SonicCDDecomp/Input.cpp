@@ -11,7 +11,7 @@ int touchY[8];
 int touchID[8];
 int touches = 0;
 
-InputButton inputDevice[9];
+InputButton inputDevice[INPUT_MAX];
 int inputType = 0;
 
 int LSTICK_DEADZONE   = 20000;
@@ -91,10 +91,10 @@ void ProcessInput()
     const byte *keyState = SDL_GetKeyboardState(&length);
 
     if (inputType == 0) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < INPUT_MAX - 1; i++) {
             if (keyState[inputDevice[i].keyMappings]) {
                 inputDevice[i].setHeld();
-                inputDevice[8].setHeld();
+                inputDevice[INPUT_ANY].setHeld();
                 continue;
             }
             else if (inputDevice[i].hold)
@@ -102,10 +102,10 @@ void ProcessInput()
         }
     }
     else if (inputType == 1) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < INPUT_MAX - 1; i++) {
             if (getControllerButton(inputDevice[i].contMappings)) {
                 inputDevice[i].setHeld();
-                inputDevice[8].setHeld();
+                inputDevice[INPUT_ANY].setHeld();
                 continue;
             }
             else if (inputDevice[i].hold)
@@ -113,13 +113,14 @@ void ProcessInput()
         }
     }
 
-    if (keyState[inputDevice[0].keyMappings] || keyState[inputDevice[1].keyMappings] || keyState[inputDevice[2].keyMappings]
-        || keyState[inputDevice[3].keyMappings] || keyState[inputDevice[4].keyMappings] || keyState[inputDevice[5].keyMappings]
-        || keyState[inputDevice[6].keyMappings] || keyState[inputDevice[7].keyMappings]) {
+    if (keyState[inputDevice[INPUT_UP].keyMappings] || keyState[inputDevice[INPUT_DOWN].keyMappings] || keyState[inputDevice[INPUT_LEFT].keyMappings]
+        || keyState[inputDevice[INPUT_RIGHT].keyMappings] || keyState[inputDevice[INPUT_BUTTONA].keyMappings]
+        || keyState[inputDevice[INPUT_BUTTONB].keyMappings] || keyState[inputDevice[INPUT_BUTTONC].keyMappings]
+        || keyState[inputDevice[INPUT_START].keyMappings]) {
         inputType = 0;
     }
     else if (inputType == 0)
-        inputDevice[8].setReleased();
+        inputDevice[INPUT_ANY].setReleased();
 
     if (getControllerButton(SDL_CONTROLLER_BUTTON_A) || getControllerButton(SDL_CONTROLLER_BUTTON_B) || getControllerButton(SDL_CONTROLLER_BUTTON_X)
         || getControllerButton(SDL_CONTROLLER_BUTTON_Y) || getControllerButton(SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
@@ -172,43 +173,43 @@ void ProcessInput()
 void CheckKeyPress(InputData *input, byte flags)
 {
     if (flags & 0x1)
-        input->up = inputDevice[0].press;
+        input->up = inputDevice[INPUT_UP].press;
     if (flags & 0x2)
-        input->down = inputDevice[1].press;
+        input->down = inputDevice[INPUT_DOWN].press;
     if (flags & 0x4)
-        input->left = inputDevice[2].press;
+        input->left = inputDevice[INPUT_LEFT].press;
     if (flags & 0x8)
-        input->right = inputDevice[3].press;
+        input->right = inputDevice[INPUT_RIGHT].press;
     if (flags & 0x10)
-        input->A = inputDevice[4].press;
+        input->A = inputDevice[INPUT_BUTTONA].press;
     if (flags & 0x20)
-        input->B = inputDevice[5].press;
+        input->B = inputDevice[INPUT_BUTTONB].press;
     if (flags & 0x40)
-        input->C = inputDevice[6].press;
+        input->C = inputDevice[INPUT_BUTTONC].press;
     if (flags & 0x80)
-        input->start = inputDevice[7].press;
+        input->start = inputDevice[INPUT_START].press;
     if (flags & 0x80)
-        anyPress = inputDevice[8].press;
+        anyPress = inputDevice[INPUT_ANY].press;
 }
 
 void CheckKeyDown(InputData *input, byte flags)
 {
     if (flags & 0x1)
-        input->up = inputDevice[0].hold;
+        input->up = inputDevice[INPUT_UP].hold;
     if (flags & 0x2)
-        input->down = inputDevice[1].hold;
+        input->down = inputDevice[INPUT_DOWN].hold;
     if (flags & 0x4)
-        input->left = inputDevice[2].hold;
+        input->left = inputDevice[INPUT_LEFT].hold;
     if (flags & 0x8)
-        input->right = inputDevice[3].hold;
+        input->right = inputDevice[INPUT_RIGHT].hold;
     if (flags & 0x10)
-        input->A = inputDevice[4].hold;
+        input->A = inputDevice[INPUT_BUTTONA].hold;
     if (flags & 0x20)
-        input->B = inputDevice[5].hold;
+        input->B = inputDevice[INPUT_BUTTONB].hold;
     if (flags & 0x40)
-        input->C = inputDevice[6].hold;
+        input->C = inputDevice[INPUT_BUTTONC].hold;
     if (flags & 0x80)
-        input->start = inputDevice[7].hold;
+        input->start = inputDevice[INPUT_START].hold;
 }
 
 void QueueHapticEffect(int hapticID)

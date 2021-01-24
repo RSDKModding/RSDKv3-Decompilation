@@ -347,7 +347,7 @@ public:
     int windowXSize; // width of window/screen in the previous frame
     int windowYSize; // height of window/screen in the previous frame
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_Window *window          = nullptr;
     SDL_Renderer *renderer      = nullptr;
     SDL_Texture *screenBuffer   = nullptr;
