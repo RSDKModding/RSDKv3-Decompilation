@@ -31,6 +31,8 @@ extern int saveRAM[SAVEDATA_MAX];
 extern Achievement achievements[ACHIEVEMENT_MAX];
 extern LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 
+extern int controlMode;
+
 inline int GetGlobalVariableByName(const char *name)
 {
     for (int v = 0; v < globalVariablesCount; ++v) {

@@ -1,4 +1,5 @@
 CXXFLAGS_ALL = $(shell pkg-config --cflags --static sdl2 vorbisfile vorbis theoradec) -Idependencies/all/theoraplay $(CXXFLAGS)
+CXXFLAGS_ALL = -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags sdl2 vorbisfile vorbis theoradec) -Idependencies/all/theoraplay $(CXXFLAGS)
 LDFLAGS_ALL = $(LDFLAGS)
 LIBS_ALL = $(shell pkg-config --libs --static sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
 
@@ -26,9 +27,15 @@ SOURCES = dependencies/all/theoraplay/theoraplay.c \
 		SonicCDDecomp/Userdata.cpp \
 		SonicCDDecomp/Video.cpp
 
+DEPENDENCIES = $(SOURCES:%=objects/%.d)
+
+all: soniccd
+
+include $(wildcard $(DEPENDENCIES))
+
 objects/%.o: %
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) $^ -o $@ -c
+	$(CXX) $(CXXFLAGS_ALL) $< -o $@ -c
 
 soniccd: $(SOURCES:%=objects/%.o)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)

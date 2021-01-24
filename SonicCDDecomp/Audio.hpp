@@ -3,6 +3,10 @@
 
 #include <stdlib.h>
 
+#include <vorbis/vorbisfile.h>
+
+#include "SDL.h"
+
 #define TRACK_COUNT (0x10)
 #define SFX_COUNT (0x100)
 #define CHANNEL_COUNT (0x4)
@@ -17,7 +21,7 @@ struct TrackInfo {
 };
 
 struct MusicPlaybackInfo {
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     OggVorbis_File vorbisFile;
     int vorbBitstream;
     SDL_AudioStream *stream;
@@ -71,13 +75,13 @@ extern ChannelInfo sfxChannels[CHANNEL_COUNT];
 
 extern MusicPlaybackInfo musInfo;
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
 extern SDL_AudioSpec audioDeviceFormat;
 #endif
 
 int InitAudioPlayback();
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
 void ProcessMusicStream(void *data, Sint16 *stream, int len);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
 void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan);

@@ -254,8 +254,8 @@ void LoadStageFiles(void)
     StopAllSfx();
     FileInfo infoStore;
     FileInfo info;
-    int fileBuffer  = 0;
-    int fileBuffer2 = 0;
+    byte fileBuffer  = 0;
+    byte fileBuffer2 = 0;
     int scriptID    = 1;
     char strBuffer[0x100];
 
@@ -279,9 +279,9 @@ void LoadStageFiles(void)
             FileRead(&fileBuffer, 1);
             FileRead(&strBuffer, fileBuffer);
 
-            int globalObjectCount = 0;
+            byte globalObjectCount = 0;
             FileRead(&globalObjectCount, 1);
-            for (int i = 0; i < globalObjectCount; ++i) {
+            for (byte i = 0; i < globalObjectCount; ++i) {
                 FileRead(&fileBuffer2, 1);
                 FileRead(strBuffer, fileBuffer2);
                 strBuffer[fileBuffer2] = 0;
@@ -296,7 +296,7 @@ void LoadStageFiles(void)
                 SetFileInfo(&infoStore);
             }
             else {
-                for (int i = 0; i < globalObjectCount; ++i) {
+                for (byte i = 0; i < globalObjectCount; ++i) {
                     FileRead(&fileBuffer2, 1);
                     FileRead(strBuffer, fileBuffer2);
                     strBuffer[fileBuffer2] = 0;
@@ -319,16 +319,16 @@ void LoadStageFiles(void)
                 SetPaletteEntry(-1, i, clr[0], clr[1], clr[2]);
             }
 
-            int stageObjectCount = 0;
+            byte stageObjectCount = 0;
             FileRead(&stageObjectCount, 1);
-            for (int i = 0; i < stageObjectCount; ++i) {
+            for (byte i = 0; i < stageObjectCount; ++i) {
                 FileRead(&fileBuffer2, 1);
                 FileRead(strBuffer, fileBuffer2);
                 strBuffer[fileBuffer2] = 0;
                 SetObjectTypeName(strBuffer, scriptID + i);
             }
             if (Engine.usingBytecode) {
-                for (int i = 0; i < stageObjectCount; ++i) {
+                for (byte i = 0; i < stageObjectCount; ++i) {
                     FileRead(&fileBuffer2, 1);
                     FileRead(strBuffer, fileBuffer2);
                     strBuffer[fileBuffer2] = 0;
@@ -339,7 +339,7 @@ void LoadStageFiles(void)
                 SetFileInfo(&infoStore);
             }
             else {
-                for (int i = 0; i < stageObjectCount; ++i) {
+                for (byte i = 0; i < stageObjectCount; ++i) {
                     FileRead(&fileBuffer2, 1);
                     FileRead(strBuffer, fileBuffer2);
                     strBuffer[fileBuffer2] = 0;
@@ -352,7 +352,8 @@ void LoadStageFiles(void)
                 }
             }
 
-            FileRead(&stageSFXCount, 1);
+            FileRead(&fileBuffer2, 1);
+            stageSFXCount = fileBuffer2;
             for (int i = 0; i < stageSFXCount; ++i) {
                 FileRead(&fileBuffer2, 1);
                 FileRead(strBuffer, fileBuffer2);
@@ -443,7 +444,7 @@ void LoadActLayout()
 {
     FileInfo info;
     if (LoadActFile(".bin", stageListPosition, &info)) {
-        int length = 0;
+        byte length = 0;
         FileRead(&length, 1);
         titleCardWord2 = (byte)length;
         for (int i = 0; i < length; i++) {
@@ -471,7 +472,7 @@ void LoadActLayout()
 
         for (int i = 0; i < 0x10000; ++i) stageLayouts[0].tiles[i] = 0;
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
         for (int y = 0; y < stageLayouts[0].height; ++y) {
             ushort *tiles = &stageLayouts[0].tiles[(y * 0x100)];
             for (int x = 0; x < stageLayouts[0].width; ++x) {
@@ -538,8 +539,8 @@ void LoadStageBackground()
 
     FileInfo info;
     if (LoadStageFile("Backgrounds.bin", stageListPosition, &info)) {
-        int fileBuffer = 0;
-        int layerCount = 0;
+        byte fileBuffer = 0;
+        byte layerCount = 0;
         FileRead(&layerCount, 1);
         FileRead(&hParallax.entryCount, 1);
         for (int i = 0; i < hParallax.entryCount; ++i) {
@@ -658,7 +659,7 @@ void LoadStageCollisions()
     FileInfo info;
     if (LoadStageFile("CollisionMasks.bin", stageListPosition, &info)) {
 
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
         int tileIndex  = 0;
         for (int t = 0; t < 1024; ++t) {
             for (int p = 0; p < 2; ++p) {
@@ -827,7 +828,8 @@ void LoadStageGIFFile(int stageID)
 {
     FileInfo info;
     if (LoadStageFile("16x16Tiles.gif", stageID, &info)) {
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
+        int fileBuffer2 = 0;
 
         SetFilePosition(6); // GIF89a
         FileRead(&fileBuffer, 1);
@@ -863,17 +865,17 @@ void LoadStageGIFFile(int stageID)
         FileRead(&fileBuffer, 1);
         while (fileBuffer != ',') FileRead(&fileBuffer, 1); // gif image start identifier
 
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
-        FileRead(&fileBuffer, 2);
+        FileRead(&fileBuffer2, 2);
+        FileRead(&fileBuffer2, 2);
+        FileRead(&fileBuffer2, 2);
+        FileRead(&fileBuffer2, 2);
         FileRead(&fileBuffer, 1);
         bool interlaced = (fileBuffer & 0x40) >> 6;
         if ((unsigned int)fileBuffer >> 7 == 1) {
             int c = 128;
             do {
                 ++c;
-                FileRead(&fileBuffer, 3);
+                FileRead(&fileBuffer2, 3);
             } while (c != 256);
         }
 
@@ -892,7 +894,7 @@ void LoadStageGFXFile(int stageID)
 {
     FileInfo info;
     if (LoadStageFile("16x16Tiles.gfx", stageID, &info)) {
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
         FileRead(&fileBuffer, 1);
         int width = fileBuffer << 8;
         FileRead(&fileBuffer, 1);
