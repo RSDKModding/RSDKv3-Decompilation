@@ -97,14 +97,11 @@ int InitAudioPlayback()
 #endif
 
     FileInfo info;
-    FileInfo infoStore;
     char strBuffer[0x100];
     byte fileBuffer  = 0;
     int fileBuffer2 = 0;
 
     if (LoadFile("Data/Game/GameConfig.bin", &info)) {
-        infoStore = info;
-
         FileRead(&fileBuffer, 1);
         FileRead(strBuffer, fileBuffer);
         strBuffer[fileBuffer] = 0;
@@ -152,9 +149,9 @@ int InitAudioPlayback()
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
 
-            GetFileInfo(&infoStore);
+            GetFileInfo(&info);
             LoadSfx(strBuffer, s);
-            SetFileInfo(&infoStore);
+            SetFileInfo(&info);
         }
 
         CloseFile();
