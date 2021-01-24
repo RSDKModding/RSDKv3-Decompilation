@@ -12,7 +12,7 @@ LIBDIRS = $(CTRULIB) $(PORTLIBS)
 export LIBPATHS	= $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 ARCH	     = -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
-CFLAGS_ALL   = $(INCLUDE) $(ARCH) -g -DARM11 -D_3DS
+CFLAGS_ALL   = $(INCLUDE) $(ARCH) -g -O2 -DARM11 -D_3DS
 CXXFLAGS_ALL = $(CFLAGS_ALL) $(LIBS_ALL) -fno-rtti -std=gnu++11 -Idependencies/all/theoraplay
 LDFLAGS	     = -specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 LDFLAGS_ALL  = $(LDFLAGS)
@@ -48,7 +48,7 @@ SOURCES = dependencies/all/theoraplay/theoraplay.c \
 		SonicCDDecomp/Video.cpp
 
 OBJS = $(BUILDDIR)/dependencies/all/theoraplay/theoraplay.c.o \
-        $(BUILDDIR)/SonicCDDecomp/3ds_debug.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/3ds_debug.cpp.o \
 	$(BUILDDIR)/SonicCDDecomp/Animation.cpp.o \
 	$(BUILDDIR)/SonicCDDecomp/Audio.cpp.o \
 	$(BUILDDIR)/SonicCDDecomp/Collision.cpp.o \
@@ -79,9 +79,12 @@ $(BUILDDIR)/%.o: %
 SonicCD.elf: $(SOURCES:%=objects_3ds/%.o)
 	$(SILENTMSG) linking $(notdir $@)
 	$(LD) $(LDFLAGS) $(OBJS)  $(LIBPATHS) $(LIBS_ALL) -o $@
-	$(NM) -CSn $@ > $(notdir $*.lst)
 
-soniccd: $(SOURCES:%=%.3dsx)
+SonicCD.3dsx: SonicCD.elf
+	$(SILENTCMD)3dsxtool $< $@ $(_3DSXFLAGS)
+	$(SILENTMSG) built ... $(notdir $@)
+
+soniccd: SonicCD.3dsx
 	echo "built"
 
 clean:

@@ -228,8 +228,13 @@ void RetroEngine::Init()
     CheckRSDKFile(datapath);
 #else
     CheckRSDKFile(BASE_PATH "Data.rsdk");
-#endif
+#if RETRO_PLATFORM != RETRO_3DS
+    // for some reason, there are a lot of memory errors here
     InitUserdata();
+#else
+    printf("Settings data stubbed. Fix later.\n");
+#endif
+#endif
 
     gameMode = ENGINE_EXITGAME;
     running  = false;
@@ -253,18 +258,36 @@ void RetroEngine::Init()
 
 void RetroEngine::Run()
 {
-    #if RETRO_USING_SDL
+#if RETRO_USING_SDL
     uint frameStart, frameEnd = SDL_GetTicks();
+#elif RETRO_USING_C2D
+    uint frameStart = svcGetSystemTick();
+    uint frameEnd = frameStart;
+#endif
     float frameDelta = 0.0f;
 
+
+#if RETRO_USING_SDL
     while (running) {
         frameStart = SDL_GetTicks();
+#elif RETRO_USING_C2D
+    while (running && aptMainLoop()) {
+	frameStart = svcGetSystemTick();
+#endif
         frameDelta = frameStart - frameEnd;
 
         if (frameDelta < 1000.0f / (float)refreshRate)
+#if RETRO_USING_SDL
             SDL_Delay(1000.0f / (float)refreshRate - frameDelta);
+#elif RETRO_USING_C2D
+	    svcSleepThread(1000.0f / (float)refreshRate - frameDelta);
+#endif
 
+#if RETRO_USING_SDL
         frameEnd = SDL_GetTicks();
+#elif RETRO_USING_C2D
+	frameEnd = svcGetSystemTick();
+#endif
 
         running = processEvents();
 
@@ -310,14 +333,6 @@ void RetroEngine::Run()
             }
         }
     }
-    #elif RETRO_USING_C2D
-    // TODO: stubbed 3DS main loop, fix this later
-    while (running && aptMainLoop()) {
-	hidScanInput();
-	if (hidKeysDown() & KEY_START)
-		break;
-    }
-    #endif
 
     ReleaseAudioDevice();
     StopVideoPlayback();
