@@ -1238,7 +1238,6 @@ void ProcessPathGrip(Player *player)
             SetPathGripSensors(player);
         else
             checkDist = -2;
-
     }
 
     switch (player->collisionMode) {

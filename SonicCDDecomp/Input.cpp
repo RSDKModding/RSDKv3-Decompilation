@@ -20,7 +20,13 @@ int LTRIGGER_DEADZONE = 20000;
 int RTRIGGER_DEADZONE = 20000;
 
 #if RETRO_USING_SDL2
-SDL_GameController *controller;
+SDL_GameController *controller = nullptr;
+#endif
+
+#if RETRO_USING_SDL1
+byte keyState[SDLK_LAST];
+
+SDL_Joystick *controller = nullptr;
 #endif
 
 #if RETRO_USING_SDL2
@@ -123,6 +129,73 @@ void ProcessInput()
     }
     else if (inputType == 1)
         inputDevice[INPUT_ANY].setReleased();
+#elif RETRO_USING_SDL1
+    if (SDL_NumJoysticks() > 0) {
+        controller = SDL_JoystickOpen(0);
+
+        // There's a problem opening the joystick
+        if (controller == NULL) {
+            // Uh oh
+        }
+        else {
+            inputType = 1;
+        }
+    }
+    else {
+        if (controller) {
+            // Close the joystick
+            SDL_JoystickClose(controller);
+        }
+        controller = nullptr;
+        inputType  = 0;
+    }
+
+    if (inputType == 0) {
+        for (int i = 0; i < INPUT_MAX - 1; i++) {
+            if (keyState[inputDevice[i].keyMappings]) {
+                inputDevice[i].setHeld();
+                inputDevice[INPUT_ANY].setHeld();
+                continue;
+            }
+            else if (inputDevice[i].hold)
+                inputDevice[i].setReleased();
+        }
+    }
+    else if (inputType == 1 && controller) {
+        for (int i = 0; i < INPUT_MAX - 1; i++) {
+            if (SDL_JoystickGetButton(controller, inputDevice[i].contMappings)) {
+                inputDevice[i].setHeld();
+                inputDevice[INPUT_ANY].setHeld();
+                continue;
+            }
+            else if (inputDevice[i].hold)
+                inputDevice[i].setReleased();
+        }
+    }
+
+    bool isPressed = false;
+    for (int i = 0; i < INPUT_MAX - 1; i++) {
+        if (keyState[inputDevice[i].keyMappings]) {
+            isPressed = true;
+            break;
+        }
+    }
+    if (isPressed)
+        inputType = 0;
+    else if (inputType == 0)
+        inputDevice[INPUT_ANY].setReleased();
+
+    int buttonCnt = 0;
+    if (controller)
+        buttonCnt = SDL_JoystickNumButtons(controller);
+    bool flag = false;
+    for (int i = 0; i < buttonCnt; ++i) {
+        flag      = true;
+        inputType = 1;
+    }
+    if (!flag && inputType == 1) {
+        inputDevice[INPUT_ANY].setReleased();
+    }
 #endif
 }
 

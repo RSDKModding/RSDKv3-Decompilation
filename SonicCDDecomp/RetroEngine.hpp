@@ -80,8 +80,10 @@ typedef unsigned int uint;
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
     || RETRO_PLATFORM == RETRO_UWP
+#define RETRO_USING_SDL1 (0)
 #define RETRO_USING_SDL2 (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
+#define RETRO_USING_SDL1 (0)
 #define RETRO_USING_SDL2 (0)
 #endif
 
@@ -167,7 +169,11 @@ enum RetroBytecodeFormat {
 #define SCREEN_CENTERY (SCREEN_YSIZE / 2)
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_USING_SDL2
 #include <SDL.h>
+#elif RETRO_USING_SDL1
+#include <SDL.h>
+#endif
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
@@ -313,6 +319,16 @@ public:
     SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;
     SDL_Texture *videoBuffer    = nullptr;
+
+    SDL_Event sdlEvents;
+#endif
+
+#if RETRO_USING_SDL1
+    SDL_Surface *windowSurface = nullptr;
+
+    SDL_Surface *screenBuffer   = nullptr;
+    SDL_Surface *screenBuffer2x = nullptr;
+    SDL_Surface *videoBuffer    = nullptr;
 
     SDL_Event sdlEvents;
 #endif

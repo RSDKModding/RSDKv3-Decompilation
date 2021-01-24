@@ -32,7 +32,8 @@ int InitRenderDevice()
     SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
     SDL_SetHint(SDL_HINT_WINRT_HANDLE_BACK_BUTTON, "1");
 
-    Engine.window = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE, SCREEN_YSIZE, SDL_WINDOW_ALLOW_HIGHDPI);
+    Engine.window   = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE * Engine.windowScale,
+                                     SCREEN_YSIZE * Engine.windowScale, SDL_WINDOW_ALLOW_HIGHDPI);
     Engine.renderer = SDL_CreateRenderer(Engine.window, -1, SDL_RENDERER_ACCELERATED);
 
     if (!Engine.window) {
@@ -69,9 +70,6 @@ int InitRenderDevice()
         SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
         Engine.isFullScreen = true;
     }
-    else {
-        SDL_SetWindowSize(Engine.window, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
-    }
 
     if (Engine.borderless) {
         SDL_RestoreWindow(Engine.window);
@@ -96,6 +94,58 @@ int InitRenderDevice()
 #endif
     
 #endif
+
+#if RETRO_USING_SDL1
+    SDL_Init(SDL_INIT_EVERYTHING);
+
+    //SDL1.2 doesn't support hints it seems
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+    //SDL_SetHint(SDL_HINT_RENDER_VSYNC, Engine.vsync ? "1" : "0");
+    //SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+    //SDL_SetHint(SDL_HINT_WINRT_HANDLE_BACK_BUTTON, "1");
+
+    Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 32, SDL_SWSURFACE);
+    if (!Engine.windowSurface) {
+        printLog("ERROR: failed to create window!\nerror msg: %s", SDL_GetError());
+        return 0;
+    }
+    // Set the window caption
+    SDL_WM_SetCaption(gameTitle, NULL);
+
+    Engine.screenBuffer =
+        SDL_CreateRGBSurface(0, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, 0xF800, 0x7E0, 0x1F, 0x00);
+
+    if (!Engine.screenBuffer) {
+        printLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
+        return 0;
+    }
+
+    /*Engine.screenBuffer2x = SDL_SetVideoMode(SCREEN_XSIZE * 2, SCREEN_YSIZE * 2, 16, SDL_SWSURFACE);
+
+    if (!Engine.screenBuffer2x) {
+        printLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
+        return 0;
+    }*/
+
+    if (Engine.startFullScreen) {
+        Engine.windowSurface =
+            SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE | SDL_FULLSCREEN);
+        SDL_ShowCursor(SDL_FALSE);
+        Engine.isFullScreen = true;
+    }
+
+    // TODO: not supported in 1.2?
+    if (Engine.borderless) {
+        // SDL_RestoreWindow(Engine.window);
+        // SDL_SetWindowBordered(Engine.window, SDL_FALSE);
+    }
+
+    // SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+    Engine.useHQModes = false; // disabled
+    Engine.borderless = false; // disabled
+#endif
+
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;
     // OBJECT_BORDER_Y2 = SCREEN_YSIZE + 0x100;
@@ -263,6 +313,45 @@ void RenderRenderDevice()
         SDL_RenderPresent(Engine.renderer);
     }
 #endif
+
+#if RETRO_USING_SDL1
+    ushort *px = (ushort *)Engine.screenBuffer->pixels;
+    int w      = SCREEN_XSIZE * Engine.windowScale;
+    int h      = SCREEN_YSIZE * Engine.windowScale;
+
+    //TODO: there's gotta be a way to have SDL1.2 fill the window with the surface... right?
+    if (Engine.gameMode != ENGINE_VIDEOWAIT) {
+        if (Engine.windowScale == 1) {
+            memcpy(Engine.screenBuffer->pixels, Engine.frameBuffer, Engine.screenBuffer->pitch * SCREEN_YSIZE);
+        }
+        else {
+            // TODO: this better, I really dont know how to use SDL1.2 well lol
+            int dx = 0, dy = 0;
+            do {
+                do {
+                    int x = (int)(dx * (1.0f / Engine.windowScale));
+                    int y = (int)(dy * (1.0f / Engine.windowScale));
+
+                    px[dx + (dy * w)] = Engine.frameBuffer[x + (y * SCREEN_XSIZE)];
+
+                    dx++;
+                } while (dx < w);
+                dy++;
+                dx = 0;
+            } while (dy < h);
+        }
+        // Apply image to screen
+        SDL_BlitSurface(Engine.screenBuffer, NULL, Engine.windowSurface, NULL);
+    }
+    else {
+        // Apply image to screen
+        SDL_BlitSurface(Engine.videoBuffer, NULL, Engine.windowSurface, NULL);
+    }
+
+
+    // Update Screen
+    SDL_Flip(Engine.windowSurface);
+#endif
 }
 void ReleaseRenderDevice()
 {
@@ -278,6 +367,10 @@ void ReleaseRenderDevice()
 
     SDL_DestroyRenderer(Engine.renderer);
     SDL_DestroyWindow(Engine.window);
+#endif
+
+#if RETRO_USING_SDL1
+    SDL_FreeSurface(Engine.screenBuffer);
 #endif
 }
 

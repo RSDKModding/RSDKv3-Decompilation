@@ -23,12 +23,15 @@ struct TrackInfo {
 };
 
 struct MusicPlaybackInfo {
-#if RETRO_USING_SDL2
     OggVorbis_File vorbisFile;
     int vorbBitstream;
-    SDL_AudioStream *stream;
-    Sint16 *buffer;
+#if RETRO_USING_SDL1
+    SDL_AudioSpec spec;
 #endif
+#if RETRO_USING_SDL2
+    SDL_AudioStream *stream;
+#endif
+    Sint16 *buffer;
     FileInfo fileInfo;
     bool trackLoop;
     uint loopPoint;
@@ -77,13 +80,13 @@ extern ChannelInfo sfxChannels[CHANNEL_COUNT];
 
 extern MusicPlaybackInfo musInfo;
 
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
 extern SDL_AudioSpec audioDeviceFormat;
 #endif
 
 int InitAudioPlayback();
 
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
 void ProcessMusicStream(void *data, Sint16 *stream, int len);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
 void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan);
@@ -96,11 +99,15 @@ inline void freeMusInfo()
 
         if (musInfo.buffer)
             delete[] musInfo.buffer;
+#if RETRO_USING_SDL2
         if (musInfo.stream)
             SDL_FreeAudioStream(musInfo.stream);
+#endif
         ov_clear(&musInfo.vorbisFile);
         musInfo.buffer       = nullptr;
-        musInfo.stream       = nullptr;
+#if RETRO_USING_SDL2
+        musInfo.stream = nullptr;
+#endif
         musInfo.trackLoop    = false;
         musInfo.loopPoint    = 0;
         musInfo.loaded       = false;
