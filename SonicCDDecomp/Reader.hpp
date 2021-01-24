@@ -85,7 +85,7 @@ inline bool CloseFile(File *file = &cFile)
 
 size_t FileRead(void *dest, int size, File *file = &cFile);
 
-bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file = &cFile);
+bool ParseVirtualFileSystem(const char *filePath, File *file = &cFile);
 
 inline size_t FillFileBuffer(File *file = &cFile)
 {

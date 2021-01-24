@@ -57,7 +57,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file)
         file->info.bufferPosition = 0;
         file->readSize       = 0;
         file->info.readPos        = 0;
-        if (!ParseVirtualFileSystem(fileInfo, file)) {
+        if (!ParseVirtualFileSystem(fileInfo->fileName, file)) {
             fClose(file->handle);
             file->handle = NULL;
             printLog("Couldn't load file '%s'", filePath);
@@ -100,7 +100,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file)
     return true;
 }
 
-bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file)
+bool ParseVirtualFileSystem(const char *filePath, File *file)
 {
     char filename[0x50];
     char fullFilename[0x50];
@@ -114,18 +114,18 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file)
 
     int j             = 0;
     file->info.virtualFileOffset = 0;
-    for (int i = 0; fileInfo->fileName[i]; i++) {
-        if (fileInfo->fileName[i] == '/') {
+    for (int i = 0; filePath[i]; i++) {
+        if (filePath[i] == '/') {
             fNamePos = i;
             j        = 0;
         }
         else {
             ++j;
         }
-        fullFilename[i] = fileInfo->fileName[i];
+        fullFilename[i] = filePath[i];
     }
     ++fNamePos;
-    for (i = 0; i < j; ++i) filename[i] = fileInfo->fileName[i + fNamePos];
+    for (i = 0; i < j; ++i) filename[i] = filePath[i + fNamePos];
     filename[j]            = 0;
     fullFilename[fNamePos] = 0;
 
