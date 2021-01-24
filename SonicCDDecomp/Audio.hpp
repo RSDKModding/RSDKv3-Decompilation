@@ -5,7 +5,7 @@
 
 #include <vorbis/vorbisfile.h>
 
-#if RETRO_PLATFORM == RETRO_VITA
+#if RETRO_PLATFORM != RETRO_VITA
 #include "SDL.h"
 #endif
 
