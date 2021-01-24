@@ -277,12 +277,12 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file)
 
 size_t FileRead(void *dest, int size, File *file)
 {
-    size_t result = 0;
+    size_t bytes_read = 0;
     byte *data = (byte *)dest;
 
     if (file->info.readPos <= file->info.fileSize) {
         if (Engine.usingDataFile) {
-            while (size > 0) {
+            while (bytes_read != size) {
                 if (file->info.bufferPosition == file->readSize)
                     if (FillFileBuffer(file) == 0)
                         break;
@@ -317,24 +317,22 @@ size_t FileRead(void *dest, int size, File *file)
                     }
                 }
                 ++data;
-                --size;
-                ++result;
+                ++bytes_read;
             }
         }
         else {
-            while (size > 0) {
+            while (bytes_read != size) {
                 if (file->info.bufferPosition == file->readSize)
                     if (FillFileBuffer(file) == 0)
                         break;
 
                 *data++ = file->fileBuffer[file->info.bufferPosition++];
-                size--;
-                ++result;
+                ++bytes_read;
             }
         }
     }
 
-    return result;
+    return bytes_read;
 }
 
 void SetFileInfo(FileInfo *fileInfo, File *file)
