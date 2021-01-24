@@ -3,18 +3,10 @@
 
 char rsdkName[0x400];
 
-char fileName[0x100];
+FileInfo globalFileInfo;
 byte fileBuffer[0x2000];
-int fileSize;
 int vFileSize;
-int readPos;
 int readSize;
-int bufferPosition;
-int virtualFileOffset;
-byte eStringPosA;
-byte eStringPosB;
-byte eStringNo;
-byte eNybbleSwap;
 char encryptionStringA[] = { "4RaS9D7KaEbxcp2o5r6t" };
 char encryptionStringB[] = { "3tRaUxLmEaSn" };
 
@@ -56,7 +48,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
 {
     MEM_ZEROP(fileInfo);
     StrCopy(fileInfo->fileName, filePath);
-    StrCopy(fileName, filePath);
+    StrCopy(globalFileInfo.fileName, filePath);
 
     if (cFileHandle)
         fClose(cFileHandle);
@@ -66,24 +58,24 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     if (Engine.usingDataFile) {
         cFileHandle = fOpen(rsdkName, "rb");
         fSeek(cFileHandle, 0, SEEK_END);
-        fileSize       = (int)fTell(cFileHandle);
-        bufferPosition = 0;
+        globalFileInfo.fileSize       = (int)fTell(cFileHandle);
+        globalFileInfo.bufferPosition = 0;
         readSize       = 0;
-        readPos        = 0;
+        globalFileInfo.readPos        = 0;
         if (!ParseVirtualFileSystem(fileInfo)) {
             fClose(cFileHandle);
             cFileHandle = NULL;
             printLog("Couldn't load file '%s'", filePath);
             return false;
         }
-        fileInfo->readPos           = readPos;
+        fileInfo->readPos           = globalFileInfo.readPos;
         fileInfo->fileSize          = vFileSize;
-        fileInfo->virtualFileOffset = virtualFileOffset;
-        fileInfo->eStringNo         = eStringNo;
-        fileInfo->eStringPosB       = eStringPosB;
-        fileInfo->eStringPosA       = eStringPosA;
-        fileInfo->eNybbleSwap       = eNybbleSwap;
-        fileInfo->bufferPosition    = bufferPosition;
+        fileInfo->virtualFileOffset = globalFileInfo.virtualFileOffset;
+        fileInfo->eStringNo         = globalFileInfo.eStringNo;
+        fileInfo->eStringPosB       = globalFileInfo.eStringPosB;
+        fileInfo->eStringPosA       = globalFileInfo.eStringPosA;
+        fileInfo->eNybbleSwap       = globalFileInfo.eNybbleSwap;
+        fileInfo->bufferPosition    = globalFileInfo.bufferPosition;
     }
     else {
         cFileHandle = fOpen(fileInfo->fileName, "rb");
@@ -91,13 +83,13 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
             printLog("Couldn't load file '%s'", filePath);
             return false;
         }
-        virtualFileOffset = 0;
+        globalFileInfo.virtualFileOffset = 0;
         fSeek(cFileHandle, 0, SEEK_END);
         fileInfo->fileSize = (int)fTell(cFileHandle);
-        fileSize           = fileInfo->fileSize;
+        globalFileInfo.fileSize           = fileInfo->fileSize;
         fSeek(cFileHandle, 0, SEEK_SET);
-        readPos = 0;
-        fileInfo->readPos           = readPos;
+        globalFileInfo.readPos = 0;
+        fileInfo->readPos           = globalFileInfo.readPos;
         fileInfo->virtualFileOffset = 0;
         fileInfo->eStringNo         = 0;
         fileInfo->eStringPosB       = 0;
@@ -105,7 +97,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         fileInfo->eNybbleSwap       = 0;
         fileInfo->bufferPosition    = 0;
     }
-    bufferPosition = 0;
+    globalFileInfo.bufferPosition = 0;
     readSize       = 0;
 
     printLog("Loaded File '%s'", filePath);
@@ -126,7 +118,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
     byte fileBuffer = 0;
 
     int j             = 0;
-    virtualFileOffset = 0;
+    globalFileInfo.virtualFileOffset = 0;
     for (int i = 0; fileInfo->fileName[i]; i++) {
         if (fileInfo->fileName[i] == '/') {
             fNamePos = i;
@@ -144,9 +136,9 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
 
     fSeek(cFileHandle, 0, SEEK_SET);
     Engine.usingDataFile = false;
-    bufferPosition       = 0;
+    globalFileInfo.bufferPosition       = 0;
     readSize             = 0;
-    readPos              = 0;
+    globalFileInfo.readPos              = 0;
 
     FileRead(&fileBuffer, 1);
     headerSize = fileBuffer;
@@ -186,7 +178,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
             //Grab info for next dir to know when we've found an error
             //Ignore dir name we dont care
             if (i == dirCount - 1) {
-                nextFileOffset = fileSize - headerSize; //There is no next dir, so just make this the EOF
+                nextFileOffset = globalFileInfo.fileSize - headerSize; //There is no next dir, so just make this the EOF
             }
             else {
                 FileRead(&fileBuffer, 1);
@@ -224,20 +216,20 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
     }
     else {
         fSeek(cFileHandle, fileOffset + headerSize, SEEK_SET);
-        bufferPosition    = 0;
+        globalFileInfo.bufferPosition    = 0;
         readSize          = 0;
-        readPos           = 0;
-        virtualFileOffset = fileOffset + headerSize;
+        globalFileInfo.readPos           = 0;
+        globalFileInfo.virtualFileOffset = fileOffset + headerSize;
         i                 = 0;
         while (i < 1) {
             FileRead(&fileBuffer, 1);
-            ++virtualFileOffset;
+            ++globalFileInfo.virtualFileOffset;
             j = 0;
             while (j < fileBuffer) {
                 FileRead(&stringBuffer[j], 1);
                 stringBuffer[j] = ~stringBuffer[j];
                 ++j;
-                ++virtualFileOffset;
+                ++globalFileInfo.virtualFileOffset;
             }
             stringBuffer[j] = 0;
 
@@ -251,7 +243,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
                 j += fileBuffer << 16;
                 FileRead(&fileBuffer, 1);
                 j += fileBuffer << 24;
-                virtualFileOffset += 4;
+                globalFileInfo.virtualFileOffset += 4;
                 vFileSize = j;
             }
             else {
@@ -263,24 +255,24 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
                 j += fileBuffer << 16;
                 FileRead(&fileBuffer, 1);
                 j += fileBuffer << 24;
-                virtualFileOffset += 4;
-                virtualFileOffset += j;
+                globalFileInfo.virtualFileOffset += 4;
+                globalFileInfo.virtualFileOffset += j;
             }
 
             //No File has been found (next file would be in a new dir)
-            if (virtualFileOffset >= nextFileOffset + headerSize) {
+            if (globalFileInfo.virtualFileOffset >= nextFileOffset + headerSize) {
                 Engine.usingDataFile = true;
                 return false;
             }
-            fSeek(cFileHandle, virtualFileOffset, SEEK_SET);
-            bufferPosition = 0;
+            fSeek(cFileHandle, globalFileInfo.virtualFileOffset, SEEK_SET);
+            globalFileInfo.bufferPosition = 0;
             readSize       = 0;
-            readPos        = virtualFileOffset;
+            globalFileInfo.readPos        = globalFileInfo.virtualFileOffset;
         }
-        eStringNo            = (vFileSize & 0x1FCu) >> 2;
-        eStringPosB          = (eStringNo % 9) + 1;
-        eStringPosA          = (eStringNo % eStringPosB) + 1;
-        eNybbleSwap          = false;
+        globalFileInfo.eStringNo            = (vFileSize & 0x1FCu) >> 2;
+        globalFileInfo.eStringPosB          = (globalFileInfo.eStringNo % 9) + 1;
+        globalFileInfo.eStringPosA          = (globalFileInfo.eStringNo % globalFileInfo.eStringPosB) + 1;
+        globalFileInfo.eNybbleSwap          = false;
         Engine.usingDataFile = true;
         return true;
     }
@@ -292,39 +284,39 @@ void FileRead(void *dest, int size)
 {
     byte *data = (byte *)dest;
 
-    if (readPos <= fileSize) {
+    if (globalFileInfo.readPos <= globalFileInfo.fileSize) {
         if (Engine.usingDataFile) {
             while (size > 0) {
-                if (bufferPosition == readSize)
+                if (globalFileInfo.bufferPosition == readSize)
                     FillFileBuffer();
 
-                *data = encryptionStringB[eStringPosB] ^ eStringNo ^ fileBuffer[bufferPosition++];
-                if (eNybbleSwap)
+                *data = encryptionStringB[globalFileInfo.eStringPosB] ^ globalFileInfo.eStringNo ^ fileBuffer[globalFileInfo.bufferPosition++];
+                if (globalFileInfo.eNybbleSwap)
                     *data = 16 * (*data & 0xF) + ((signed int)*data >> 4);
-                *data ^= encryptionStringA[eStringPosA++];
-                ++eStringPosB;
-                if (eStringPosA <= 19 || eStringPosB <= 11) {
-                    if (eStringPosA > 19) {
-                        eStringPosA = 1;
-                        eNybbleSwap ^= 1u;
+                *data ^= encryptionStringA[globalFileInfo.eStringPosA++];
+                ++globalFileInfo.eStringPosB;
+                if (globalFileInfo.eStringPosA <= 19 || globalFileInfo.eStringPosB <= 11) {
+                    if (globalFileInfo.eStringPosA > 19) {
+                        globalFileInfo.eStringPosA = 1;
+                        globalFileInfo.eNybbleSwap ^= 1u;
                     }
-                    if (eStringPosB > 11) {
-                        eStringPosB = 1;
-                        eNybbleSwap ^= 1u;
+                    if (globalFileInfo.eStringPosB > 11) {
+                        globalFileInfo.eStringPosB = 1;
+                        globalFileInfo.eNybbleSwap ^= 1u;
                     }
                 }
                 else {
-                    ++eStringNo;
-                    eStringNo &= 0x7Fu;
-                    if (eNybbleSwap) {
-                        eNybbleSwap = 0;
-                        eStringPosA = (eStringNo % 12) + 6;
-                        eStringPosB = (eStringNo % 5) + 4;
+                    ++globalFileInfo.eStringNo;
+                    globalFileInfo.eStringNo &= 0x7Fu;
+                    if (globalFileInfo.eNybbleSwap) {
+                        globalFileInfo.eNybbleSwap = 0;
+                        globalFileInfo.eStringPosA = (globalFileInfo.eStringNo % 12) + 6;
+                        globalFileInfo.eStringPosB = (globalFileInfo.eStringNo % 5) + 4;
                     }
                     else {
-                        eNybbleSwap = 1;
-                        eStringPosA = (eStringNo % 15) + 3;
-                        eStringPosB = (eStringNo % 7) + 1;
+                        globalFileInfo.eNybbleSwap = 1;
+                        globalFileInfo.eStringPosA = (globalFileInfo.eStringNo % 15) + 3;
+                        globalFileInfo.eStringPosB = (globalFileInfo.eStringNo % 7) + 1;
                     }
                 }
                 ++data;
@@ -333,10 +325,10 @@ void FileRead(void *dest, int size)
         }
         else {
             while (size > 0) {
-                if (bufferPosition == readSize)
+                if (globalFileInfo.bufferPosition == readSize)
                     FillFileBuffer();
 
-                *data++ = fileBuffer[bufferPosition++];
+                *data++ = fileBuffer[globalFileInfo.bufferPosition++];
                 size--;
             }
         }
@@ -347,94 +339,94 @@ void SetFileInfo(FileInfo *fileInfo)
 {
     if (Engine.usingDataFile) {
         cFileHandle       = fOpen(rsdkName, "rb");
-        virtualFileOffset = fileInfo->virtualFileOffset;
+        globalFileInfo.virtualFileOffset = fileInfo->virtualFileOffset;
         vFileSize         = fileInfo->fileSize;
         fSeek(cFileHandle, 0, SEEK_END);
-        fileSize = (int)fTell(cFileHandle);
-        readPos  = fileInfo->readPos;
-        fSeek(cFileHandle, readPos, SEEK_SET);
+        globalFileInfo.fileSize = (int)fTell(cFileHandle);
+        globalFileInfo.readPos  = fileInfo->readPos;
+        fSeek(cFileHandle, globalFileInfo.readPos, SEEK_SET);
         FillFileBuffer();
-        bufferPosition = fileInfo->bufferPosition;
-        eStringPosA    = fileInfo->eStringPosA;
-        eStringPosB    = fileInfo->eStringPosB;
-        eStringNo      = fileInfo->eStringNo;
-        eNybbleSwap    = fileInfo->eNybbleSwap;
+        globalFileInfo.bufferPosition = fileInfo->bufferPosition;
+        globalFileInfo.eStringPosA    = fileInfo->eStringPosA;
+        globalFileInfo.eStringPosB    = fileInfo->eStringPosB;
+        globalFileInfo.eStringNo      = fileInfo->eStringNo;
+        globalFileInfo.eNybbleSwap    = fileInfo->eNybbleSwap;
     }
     else {
-        StrCopy(fileName, fileInfo->fileName);
+        StrCopy(globalFileInfo.fileName, fileInfo->fileName);
         cFileHandle       = fOpen(fileInfo->fileName, "rb");
-        virtualFileOffset = 0;
-        fileSize          = fileInfo->fileSize;
-        readPos           = fileInfo->readPos;
-        fSeek(cFileHandle, readPos, SEEK_SET);
+        globalFileInfo.virtualFileOffset = 0;
+        globalFileInfo.fileSize          = fileInfo->fileSize;
+        globalFileInfo.readPos           = fileInfo->readPos;
+        fSeek(cFileHandle, globalFileInfo.readPos, SEEK_SET);
         FillFileBuffer();
-        bufferPosition = fileInfo->bufferPosition;
-        eStringPosA    = 0;
-        eStringPosB    = 0;
-        eStringNo      = 0;
-        eNybbleSwap    = 0;
+        globalFileInfo.bufferPosition = fileInfo->bufferPosition;
+        globalFileInfo.eStringPosA    = 0;
+        globalFileInfo.eStringPosB    = 0;
+        globalFileInfo.eStringNo      = 0;
+        globalFileInfo.eNybbleSwap    = 0;
     }
 }
 
 size_t GetFilePosition()
 {
     if (Engine.usingDataFile)
-        return bufferPosition + readPos - readSize - virtualFileOffset;
+        return globalFileInfo.bufferPosition + globalFileInfo.readPos - readSize - globalFileInfo.virtualFileOffset;
     else
-        return bufferPosition + readPos - readSize;
+        return globalFileInfo.bufferPosition + globalFileInfo.readPos - readSize;
 }
 
 void SetFilePosition(int newPos)
 {
     if (Engine.usingDataFile) {
-        readPos     = virtualFileOffset + newPos;
-        eStringNo   = (vFileSize & 0x1FCu) >> 2;
-        eStringPosB = (eStringNo % 9) + 1;
-        eStringPosA = (eStringNo % eStringPosB) + 1;
-        eNybbleSwap = false;
+        globalFileInfo.readPos     = globalFileInfo.virtualFileOffset + newPos;
+        globalFileInfo.eStringNo   = (vFileSize & 0x1FCu) >> 2;
+        globalFileInfo.eStringPosB = (globalFileInfo.eStringNo % 9) + 1;
+        globalFileInfo.eStringPosA = (globalFileInfo.eStringNo % globalFileInfo.eStringPosB) + 1;
+        globalFileInfo.eNybbleSwap = false;
         while (newPos) {
-            ++eStringPosA;
-            ++eStringPosB;
-            if (eStringPosA <= 19 || eStringPosB <= 11) {
-                if (eStringPosA > 19) {
-                    eStringPosA = 1;
-                    eNybbleSwap ^= 1u;
+            ++globalFileInfo.eStringPosA;
+            ++globalFileInfo.eStringPosB;
+            if (globalFileInfo.eStringPosA <= 19 || globalFileInfo.eStringPosB <= 11) {
+                if (globalFileInfo.eStringPosA > 19) {
+                    globalFileInfo.eStringPosA = 1;
+                    globalFileInfo.eNybbleSwap ^= 1u;
                 }
-                if (eStringPosB > 11) {
-                    eStringPosB = 1;
-                    eNybbleSwap ^= 1u;
+                if (globalFileInfo.eStringPosB > 11) {
+                    globalFileInfo.eStringPosB = 1;
+                    globalFileInfo.eNybbleSwap ^= 1u;
                 }
             }
             else {
-                ++eStringNo;
-                eStringNo &= 0x7Fu;
-                if (eNybbleSwap) {
-                    eNybbleSwap = false;
-                    eStringPosA = (eStringNo % 12) + 6;
-                    eStringPosB = (eStringNo % 5) + 4;
+                ++globalFileInfo.eStringNo;
+                globalFileInfo.eStringNo &= 0x7Fu;
+                if (globalFileInfo.eNybbleSwap) {
+                    globalFileInfo.eNybbleSwap = false;
+                    globalFileInfo.eStringPosA = (globalFileInfo.eStringNo % 12) + 6;
+                    globalFileInfo.eStringPosB = (globalFileInfo.eStringNo % 5) + 4;
                 }
                 else {
-                    eNybbleSwap = true;
-                    eStringPosA = (eStringNo % 15) + 3;
-                    eStringPosB = (eStringNo % 7) + 1;
+                    globalFileInfo.eNybbleSwap = true;
+                    globalFileInfo.eStringPosA = (globalFileInfo.eStringNo % 15) + 3;
+                    globalFileInfo.eStringPosB = (globalFileInfo.eStringNo % 7) + 1;
                 }
             }
             --newPos;
         }
     }
     else {
-        readPos = newPos;
+        globalFileInfo.readPos = newPos;
     }
-    fSeek(cFileHandle, readPos, SEEK_SET);
+    fSeek(cFileHandle, globalFileInfo.readPos, SEEK_SET);
     FillFileBuffer();
 }
 
 bool ReachedEndOfFile()
 {
     if (Engine.usingDataFile)
-        return bufferPosition + readPos - readSize - virtualFileOffset >= vFileSize;
+        return globalFileInfo.bufferPosition + globalFileInfo.readPos - readSize - globalFileInfo.virtualFileOffset >= vFileSize;
     else
-        return bufferPosition + readPos - readSize >= fileSize;
+        return globalFileInfo.bufferPosition + globalFileInfo.readPos - readSize >= globalFileInfo.fileSize;
 }
 
 size_t FileRead2(FileInfo *info, void *dest, int size)

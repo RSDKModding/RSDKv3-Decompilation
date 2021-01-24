@@ -48,18 +48,10 @@ struct FileInfo {
 
 extern char rsdkName[0x400];
 
-extern char fileName[0x100];
+extern FileInfo globalFileInfo;
 extern byte fileBuffer[0x2000];
-extern int fileSize;
 extern int vFileSize;
-extern int readPos;
 extern int readSize;
-extern int bufferPosition;
-extern int virtualFileOffset;
-extern byte eStringPosA;
-extern byte eStringPosB;
-extern byte eStringNo;
-extern byte eNybbleSwap;
 extern char encryptionStringA[21];
 extern char encryptionStringB[13];
 
@@ -97,28 +89,28 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo);
 
 inline size_t FillFileBuffer()
 {
-    if (readPos + 0x2000 <= fileSize)
+    if (globalFileInfo.readPos + 0x2000 <= globalFileInfo.fileSize)
         readSize = 0x2000;
     else 
-        readSize = fileSize - readPos;
+        readSize = globalFileInfo.fileSize - globalFileInfo.readPos;
 
     size_t result = fRead(fileBuffer, 1u, readSize, cFileHandle);
-    readPos += readSize;
-    bufferPosition = 0;
+    globalFileInfo.readPos += readSize;
+    globalFileInfo.bufferPosition = 0;
     return result;
 }
 
 inline void GetFileInfo(FileInfo *fileInfo)
 {
-    StrCopy(fileInfo->fileName, fileName);
-    fileInfo->bufferPosition = bufferPosition;
-    fileInfo->readPos        = readPos - readSize;
-    fileInfo->fileSize       = fileSize;
-    fileInfo->virtualFileOffset = virtualFileOffset;
-    fileInfo->eStringPosA    = eStringPosA;
-    fileInfo->eStringPosB    = eStringPosB;
-    fileInfo->eStringNo      = eStringNo;
-    fileInfo->eNybbleSwap    = eNybbleSwap;
+    StrCopy(fileInfo->fileName, globalFileInfo.fileName);
+    fileInfo->bufferPosition = globalFileInfo.bufferPosition;
+    fileInfo->readPos        = globalFileInfo.readPos - readSize;
+    fileInfo->fileSize       = globalFileInfo.fileSize;
+    fileInfo->virtualFileOffset = globalFileInfo.virtualFileOffset;
+    fileInfo->eStringPosA    = globalFileInfo.eStringPosA;
+    fileInfo->eStringPosB    = globalFileInfo.eStringPosB;
+    fileInfo->eStringNo      = globalFileInfo.eStringNo;
+    fileInfo->eNybbleSwap    = globalFileInfo.eNybbleSwap;
 }
 void SetFileInfo(FileInfo *fileInfo);
 size_t GetFilePosition();
