@@ -15,8 +15,7 @@ int hitboxCount = 0;
 
 void LoadAnimationFile(const char *filePath)
 {
-    FileInfo info;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         byte fileBuffer = 0;
         char strBuf[0x21];
         byte sheetIDs[0x18];
@@ -32,6 +31,7 @@ void LoadAnimationFile(const char *filePath)
                 int i = 0;
                 for (; i < fileBuffer; ++i) FileRead(&strBuf[i], 1);
                 strBuf[i] = 0;
+                FileInfo info;
                 GetFileInfo(&info);
                 CloseFile();
                 sheetIDs[s] = AddGraphicsFile(strBuf);

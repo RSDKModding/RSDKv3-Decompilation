@@ -208,8 +208,8 @@ inline bool CheckCurrentStageFolder(int stage)
 }
 
 void LoadStageFiles();
-int LoadActFile(const char *ext, int stageID, FileInfo *info);
-int LoadStageFile(const char *filePath, int stageID, FileInfo *info);
+int LoadActFile(const char *ext, int stageID);
+int LoadStageFile(const char *filePath, int stageID);
 
 void LoadActLayout();
 void LoadStageBackground();

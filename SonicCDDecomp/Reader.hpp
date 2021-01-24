@@ -72,7 +72,7 @@ inline void CopyFilePath(char *dest, const char *src)
 }
 bool CheckRSDKFile(const char *filePath);
 
-bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file = &cFile);
+bool LoadFile(const char *filePath, File *file = &cFile);
 inline bool CloseFile(File *file = &cFile)
 {
     int result = 0;

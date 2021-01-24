@@ -9,8 +9,7 @@ void LoadFontFile(const char *filePath)
 {
     byte fileBuffer = 0;
     int cnt        = 0;
-    FileInfo info;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         while (!ReachedEndOfFile()) {
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].id = fileBuffer;
@@ -85,9 +84,8 @@ void LoadFontFile(const char *filePath)
 void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
 {
     bool flag = false;
-    FileInfo info;
     byte fileBuffer = 0;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         menu->textDataPos                     = 0;
         menu->rowCount                         = 0;
         menu->entryStart[menu->rowCount] = menu->textDataPos;
@@ -296,12 +294,11 @@ void EditTextMenuEntry(TextMenu *menu, const char *text, int rowID)
 }
 void LoadConfigListText(TextMenu *menu, int listNo)
 {
-    FileInfo info;
     char strBuf[0x100];
     byte fileBuffer = 0;
     byte count      = 0;
     byte strLen     = 0;
-    if (LoadFile("Data/Game/GameConfig.bin", &info)) {
+    if (LoadFile("Data/Game/GameConfig.bin")) {
         // Name
         FileRead(&strLen, 1);
         FileRead(&strBuf, strLen);

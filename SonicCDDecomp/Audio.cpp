@@ -98,12 +98,11 @@ int InitAudioPlayback()
 
 #endif
 
-    FileInfo info;
     char strBuffer[0x100];
     byte fileBuffer  = 0;
     int fileBuffer2 = 0;
 
-    if (LoadFile("Data/Game/GameConfig.bin", &info)) {
+    if (LoadFile("Data/Game/GameConfig.bin")) {
         FileRead(&fileBuffer, 1);
         FileRead(strBuffer, fileBuffer);
         strBuffer[fileBuffer] = 0;
@@ -151,6 +150,7 @@ int InitAudioPlayback()
             FileRead(strBuffer, fileBuffer);
             strBuffer[fileBuffer] = 0;
 
+            FileInfo info;
             GetFileInfo(&info);
             LoadSfx(strBuffer, s);
             SetFileInfo(&info);
@@ -169,27 +169,31 @@ int InitAudioPlayback()
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
 size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
-    MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
-    return FileRead(mem, (int)(size * nmemb), &cFileStream) / size;
+    File *file = (File*)ptr;
+    return FileRead(mem, (int)(size * nmemb), file) / size;
 }
 int seekVorbis(void *ptr, ogg_int64_t offset, int whence)
 {
-    MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
+    File *file = (File*)ptr;
     switch (whence) {
         case SEEK_SET: whence = 0; break;
-        case SEEK_CUR: whence = (int)GetFilePosition(&cFileStream); break;
-        case SEEK_END: whence = info->fileInfo.fileSize; break;
+        case SEEK_CUR: whence = (int)GetFilePosition(file); break;
+        case SEEK_END: whence = file->info.fileSize; break;
         default: break;
     }
-    SetFilePosition((int)(whence + offset), &cFileStream);
-    return GetFilePosition(&cFileStream) <= info->fileInfo.fileSize;
+    SetFilePosition((int)(whence + offset), file);
+    return GetFilePosition(file) <= file->info.fileSize;
 }
 long tellVorbis(void *ptr)
 {
-    MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
-    return GetFilePosition(&cFileStream);
+    File *file = (File*)ptr;
+    return GetFilePosition(file);
 }
-int closeVorbis(void *ptr) { return CloseFile(&cFileStream); }
+int closeVorbis(void *ptr)
+{
+    File *file = (File*)ptr;
+    return CloseFile(file);
+}
 #endif
 
 void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
@@ -318,7 +322,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
         if (musInfo.loaded)
             StopMusic();
 
-        if (LoadFile(trackPtr->fileName, &musInfo.fileInfo, &cFileStream)) {
+        if (LoadFile(trackPtr->fileName, &cFileStream)) {
 
             musInfo.trackLoop = trackPtr->trackLoop;
             musInfo.loopPoint = trackPtr->loopPoint;
@@ -332,7 +336,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             callbacks.tell_func  = tellVorbis;
             callbacks.close_func = closeVorbis;
 
-            int error = ov_open_callbacks(&musInfo, &musInfo.vorbisFile, NULL, 0, callbacks);
+            int error = ov_open_callbacks(&cFileStream, &musInfo.vorbisFile, NULL, 0, callbacks);
             if (error != 0) {
             }
 
@@ -594,22 +598,21 @@ void LoadSfx(char *filePath, byte sfxID)
     if (!audioEnabled)
         return;
 
-    FileInfo info;
     char fullPath[0x80];
 
     StrCopy(fullPath, "Data/SoundFX/");
     StrAdd(fullPath, filePath);
 
-    if (LoadFile(fullPath, &info)) {
-        byte *sfx = new byte[info.fileSize];
-        FileRead(sfx, info.fileSize);
+    if (LoadFile(fullPath)) {
+        byte *sfx = new byte[cFile.info.fileSize];
+        FileRead(sfx, cFile.info.fileSize);
         CloseFile();
 
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
         SDL_LockAudio();
-        SDL_RWops *src = SDL_RWFromMem(sfx, info.fileSize);
+        SDL_RWops *src = SDL_RWFromMem(sfx, cFile.info.fileSize);
         if (src == NULL) {
-            printLog("Unable to open sfx: %s", info.fileName);
+            printLog("Unable to open sfx: %s", cFile.info.fileName);
         }
         else {
             SDL_AudioSpec wav_spec;
@@ -620,7 +623,7 @@ void LoadSfx(char *filePath, byte sfxID)
             SDL_RWclose(src);
             delete[] sfx;
             if (wav == NULL) {
-                printLog("Unable to read sfx: %s", info.fileName);
+                printLog("Unable to read sfx: %s", cFile.info.fileName);
             }
             else {
                 SDL_AudioCVT convert;

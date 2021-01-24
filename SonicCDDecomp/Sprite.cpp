@@ -257,8 +257,7 @@ void RemoveGraphicsFile(const char *filePath, int sheetID)
 
 int LoadBMPFile(const char *filePath, byte sheetID)
 {
-    FileInfo info;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
@@ -283,7 +282,7 @@ int LoadBMPFile(const char *filePath, byte sheetID)
         FileRead(&fileBuffer, 1);
         surface->height += fileBuffer << 24;
 
-        SetFilePosition(info.fileSize - surface->height * surface->width);
+        SetFilePosition(cFile.info.fileSize - surface->height * surface->width);
         surface->dataPosition = gfxDataPosition;
         byte *gfxData         = &graphicData[surface->dataPosition + surface->width * (surface->height - 1)];
         for (int y = 0; y < surface->height; ++y) {
@@ -314,8 +313,7 @@ int LoadBMPFile(const char *filePath, byte sheetID)
 }
 int LoadGIFFile(const char *filePath, byte sheetID)
 {
-    FileInfo info;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
@@ -390,8 +388,7 @@ int LoadGIFFile(const char *filePath, byte sheetID)
 }
 int LoadGFXFile(const char *filePath, byte sheetID)
 {
-    FileInfo info;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
@@ -448,8 +445,7 @@ int LoadGFXFile(const char *filePath, byte sheetID)
 }
 int LoadRSVFile(const char *filePath, byte sheetID)
 {
-    FileInfo info;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
@@ -493,8 +489,7 @@ int LoadRSVFile(const char *filePath, byte sheetID)
 int LoadPVRFile(const char *filePath, byte sheetID)
 {
     // ONLY READS "PVRTC 2bpp RGB" PVR FILES
-    FileInfo info;
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 

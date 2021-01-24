@@ -10,8 +10,6 @@ File cFile;
 
 bool CheckRSDKFile(const char *filePath)
 {
-    FileInfo info;
-
     Engine.usingDataFile = false;
     Engine.usingBytecode = false;
 
@@ -26,12 +24,12 @@ bool CheckRSDKFile(const char *filePath)
     }
 
     cFile.handle = NULL;
-    if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
+    if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin")) {
         Engine.usingBytecode = true;
         Engine.bytecodeMode  = BYTECODE_MOBILE;
         CloseFile();
     }
-    else if (LoadFile("Data/Scripts/ByteCode/GS000.bin", &info)) {
+    else if (LoadFile("Data/Scripts/ByteCode/GS000.bin")) {
         Engine.usingBytecode = true;
         Engine.bytecodeMode  = BYTECODE_PC;
         CloseFile();
@@ -39,10 +37,9 @@ bool CheckRSDKFile(const char *filePath)
     return Engine.usingDataFile;
 }
 
-bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file)
+bool LoadFile(const char *filePath, File *file)
 {
-    MEM_ZEROP(fileInfo);
-    StrCopy(fileInfo->fileName, filePath);
+    MEM_ZERO(file->info);
     StrCopy(file->info.fileName, filePath);
 
     if (file->handle)
@@ -57,40 +54,25 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file)
         file->info.bufferPosition = 0;
         file->readSize       = 0;
         file->info.readPos        = 0;
-        if (!ParseVirtualFileSystem(fileInfo->fileName, file)) {
+        if (!ParseVirtualFileSystem(filePath, file)) {
             fClose(file->handle);
             file->handle = NULL;
             printLog("Couldn't load file '%s'", filePath);
             return false;
         }
-        fileInfo->readPos           = file->info.readPos;
-        fileInfo->fileSize          = file->info.fileSize;
-        fileInfo->virtualFileOffset = file->info.virtualFileOffset;
-        fileInfo->eStringNo         = file->info.eStringNo;
-        fileInfo->eStringPosB       = file->info.eStringPosB;
-        fileInfo->eStringPosA       = file->info.eStringPosA;
-        fileInfo->eNybbleSwap       = file->info.eNybbleSwap;
-        fileInfo->bufferPosition    = file->info.bufferPosition;
     }
     else {
-        file->handle = fOpen(fileInfo->fileName, "rb");
+        file->handle = fOpen(filePath, "rb");
         if (!file->handle) {
             printLog("Couldn't load file '%s'", filePath);
             return false;
         }
         file->info.virtualFileOffset = 0;
         fSeek(file->handle, 0, SEEK_END);
-        fileInfo->fileSize = (int)fTell(file->handle);
-        file->actualFileSize           = fileInfo->fileSize;
+        file->info.fileSize = (int)fTell(file->handle);
+        file->actualFileSize           = file->info.fileSize;
         fSeek(file->handle, 0, SEEK_SET);
-        file->info.readPos = 0;
-        fileInfo->readPos           = file->info.readPos;
-        fileInfo->virtualFileOffset = 0;
-        fileInfo->eStringNo         = 0;
-        fileInfo->eStringPosB       = 0;
-        fileInfo->eStringPosA       = 0;
-        fileInfo->eNybbleSwap       = 0;
-        fileInfo->bufferPosition    = 0;
+        file->info.readPos           = 0;
     }
     file->info.bufferPosition = 0;
     file->readSize       = 0;

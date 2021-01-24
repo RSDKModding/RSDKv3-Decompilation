@@ -20,13 +20,12 @@ int paletteMode = 0;
 
 void LoadPalette(const char *filePath, int paletteID, int startPaletteIndex, int startIndex, int endIndex)
 {
-    FileInfo info;
     char fullPath[0x80];
 
     StrCopy(fullPath, "Data/Palettes/");
     StrAdd(fullPath, filePath);
 
-    if (LoadFile(fullPath, &info)) {
+    if (LoadFile(fullPath)) {
         SetFilePosition(3 * startIndex);
         if (paletteID >= PALETTE_COUNT || paletteID < 0)
             paletteID = 0;

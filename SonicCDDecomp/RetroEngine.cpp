@@ -361,12 +361,11 @@ void RetroEngine::Run()
 
 bool RetroEngine::LoadGameConfig(const char *filePath)
 {
-    FileInfo info;
     byte fileBuffer  = 0;
     byte fileBuffer2 = 0;
     char data[0x40];
 
-    if (LoadFile(filePath, &info)) {
+    if (LoadFile(filePath)) {
         FileRead(&fileBuffer, 1);
         FileRead(gameWindowText, fileBuffer);
         gameWindowText[fileBuffer] = 0;
