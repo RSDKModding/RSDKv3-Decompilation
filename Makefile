@@ -31,10 +31,14 @@ SOURCES = dependencies/all/theoraplay/theoraplay.c \
 		SonicCDDecomp/Userdata.cpp \
 		SonicCDDecomp/Video.cpp
 
+	  
+ifneq ($(FORCE_CASE_INSENSITIVE),)
+	CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
+	SOURCES += SonicCDDecomp/fcaseopen.c
+endif
+
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
-
-all: soniccd
 
 include $(wildcard $(DEPENDENCIES))
 
@@ -42,11 +46,12 @@ objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $< -o $@ -c
 
-soniccd: $(OBJECTS)
+bin/soniccd: $(SOURCES:%=objects/%.o)
+	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
-install: soniccd
-	install -Dp -m755 soniccd $(prefix)/bin/soniccd
+install: bin/soniccd
+	install -Dp -m755 bin/soniccd $(prefix)/bin/soniccd
 
-clean: $(OBJECTS) $(DEPENDENCIES) soniccd
-	 rm $^
+clean:
+	 rm -r -f bin && rm -r -f objects
