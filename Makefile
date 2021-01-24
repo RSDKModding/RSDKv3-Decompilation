@@ -48,5 +48,5 @@ soniccd: $(OBJECTS)
 install: soniccd
 	install -Dp -m755 soniccd $(prefix)/bin/soniccd
 
-clean: $(OBJECTS)
+clean: $(OBJECTS) $(DEPENDENCIES) soniccd
 	 rm $^
