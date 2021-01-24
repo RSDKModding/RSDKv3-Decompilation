@@ -13,6 +13,27 @@ int gfxDataPosition;
 GFXSurface gfxSurface[SURFACE_MAX];
 byte graphicData[GFXDATA_MAX];
 
+#if RETRO_PLATFORM == RETRO_3DS
+void CopyToFramebuffer() {
+    u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, 0, 0);
+    ushort* tfb = new ushort[SCREEN_XSIZE * SCREEN_YSIZE]; 
+
+    // kinda assume that SCREEN_XSIZE = 400 and SCREEN_YSIZE = 240 here
+    // framebuffer data is rotated 90 degrees internally
+    const int screenSize = SCREEN_XSIZE * SCREEN_YSIZE;
+    for (int y = 0; y < SCREEN_YSIZE; y++) {
+        for (int x = 0; x < SCREEN_XSIZE; x++) {
+	    tfb[(x * SCREEN_YSIZE) + y] = 
+            Engine.frameBuffer[screenSize - (y * SCREEN_XSIZE) + x];
+
+	}
+    }
+
+    memcpy(fb, tfb, 4 * 240 * 400);
+    delete tfb;
+}
+#endif
+
 int InitRenderDevice()
 {
     char gameTitle[0x40];
@@ -96,11 +117,14 @@ int InitRenderDevice()
 #endif
     
 #elif RETRO_USING_C2D
-    C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
-    C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
-    C2D_Prepare();
+    //C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+    //C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
+    //C2D_Prepare();
 
-    Engine.topScreen = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
+    //Engine.topScreen = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
+    //Engine.videoBuffer = C3D_GetFrameBuf();
+    gfxSetScreenFormat(GFX_TOP, GSP_RGB565_OES);
+    gfxSetDoubleBuffering(GFX_TOP, false);
 #endif
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;
@@ -187,27 +211,49 @@ void RenderRenderDevice()
         // fill the screen with the texture, making lerp work.
         SDL_RenderSetLogicalSize(Engine.renderer, Engine.windowXSize, Engine.windowYSize);
     }
+#endif
 
     int pitch = 0;
+#if RETRO_USING_SDL
     SDL_SetRenderTarget(Engine.renderer, texTarget);
 
     // Clear the screen. This is needed to keep the
     // pillarboxes in fullscreen from displaying garbage data.
     SDL_RenderClear(Engine.renderer);
+#elif RETRO_USING_C2D
+    //C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    // should just draw red atm
+    //C2D_TargetClear(Engine.topScreen, C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
+    //C2D_SceneBegin(Engine.topScreen);
+    //Engine.videoBuffer->colorBuf = Engine.frameBuffer;
+    //C3D_SetFrameBuf(Engine.videoBuffer);
+    //
+    // implementation taken from here: https://gbatemp.net/threads/best-way-to-draw-pixel-buffer.445173/
+    CopyToFramebuffer();
+    gfxFlushBuffers();
+    gfxSwapBuffers();
+    gspWaitForVBlank();
+#endif
 
     ushort *pixels = NULL;
     if (Engine.gameMode != ENGINE_VIDEOWAIT) {
         if (!drawStageGFXHQ) {
+#if RETRO_USING_SDL
             SDL_LockTexture(Engine.screenBuffer, NULL, (void **)&pixels, &pitch);
             memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE);
             SDL_UnlockTexture(Engine.screenBuffer);
 
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, destScreenPos);
+#elif RETRO_USING_C2D
+	    memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE);
+#endif
         }
         else {
             int w = 0, h = 0;
+#if RETRO_USING_SDL
             SDL_QueryTexture(Engine.screenBuffer2x, NULL, NULL, &w, &h);
             SDL_LockTexture(Engine.screenBuffer2x, NULL, (void **)&pixels, &pitch);
+#endif
 
             ushort *framebufferPtr = Engine.frameBuffer;
             for (int y = 0; y < (SCREEN_YSIZE / 2) + 12; ++y) {
@@ -241,14 +287,19 @@ void RenderRenderDevice()
                     pixels++;
                 }
             }
+#if RETRO_USING_SDL
             SDL_UnlockTexture(Engine.screenBuffer2x);
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, destScreenPos);
+#endif
         }
     }
     else {
+#if RETRO_USING_SDL
         SDL_RenderCopy(Engine.renderer, Engine.videoBuffer, NULL, destScreenPos);
+#endif
     }
 
+#if RETRO_USING_SDL
     if (tmpEnhancedScaling) {
         // set render target back to the screen.
         SDL_SetRenderTarget(Engine.renderer, NULL);
@@ -268,12 +319,10 @@ void RenderRenderDevice()
         // no change here
         SDL_RenderPresent(Engine.renderer);
     }
-#elif RETRO_USING_C2D
-    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    // should just draw red atm
-    C2D_TargetClear(Engine.topScreen, C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
-    C2D_SceneBegin(Engine.topScreen);
-    C3D_FrameEnd(0);
+#endif
+    
+#if RETRO_USING_C2D
+    //C3D_FrameEnd(0);
 #endif
 }
 void ReleaseRenderDevice()
