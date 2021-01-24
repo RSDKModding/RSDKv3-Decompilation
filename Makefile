@@ -1,6 +1,7 @@
+CXXFLAGS_ALL = $(shell pkg-config --cflags --static sdl2 vorbisfile vorbis theoradec) -Idependencies/all/theoraplay $(CXXFLAGS)
 CXXFLAGS_ALL = -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags sdl2 vorbisfile vorbis theoradec) -Idependencies/all/theoraplay $(CXXFLAGS)
 LDFLAGS_ALL = $(LDFLAGS)
-LIBS_ALL = $(shell pkg-config --libs sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
+LIBS_ALL = $(shell pkg-config --libs --static sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
 
 SOURCES = dependencies/all/theoraplay/theoraplay.c \
 		SonicCDDecomp/Animation.cpp \
