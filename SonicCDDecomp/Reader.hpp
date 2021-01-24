@@ -50,7 +50,7 @@ struct File {
     FileIO *handle;
     FileInfo info;
     byte fileBuffer[0x2000];
-    int vFileSize;
+    int actualFileSize;
     int readSize;
 };
 
@@ -89,10 +89,10 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file = &cFile);
 
 inline size_t FillFileBuffer(File *file = &cFile)
 {
-    if (file->info.readPos + sizeof(file->fileBuffer) <= file->info.fileSize)
+    if (file->info.readPos + sizeof(file->fileBuffer) <= file->actualFileSize)
         file->readSize = sizeof(file->fileBuffer);
     else 
-        file->readSize = file->info.fileSize - file->info.readPos;
+        file->readSize = file->actualFileSize - file->info.readPos;
 
     size_t result = fRead(file->fileBuffer, 1u, file->readSize, file->handle);
     file->info.readPos += file->readSize;
@@ -105,7 +105,7 @@ inline void GetFileInfo(FileInfo *fileInfo, File *file = &cFile)
     StrCopy(fileInfo->fileName, file->info.fileName);
     fileInfo->bufferPosition = file->info.bufferPosition;
     fileInfo->readPos        = file->info.readPos - file->readSize;
-    fileInfo->fileSize       = file->info.fileSize;
+    fileInfo->fileSize       = file->actualFileSize;
     fileInfo->virtualFileOffset = file->info.virtualFileOffset;
     fileInfo->eStringPosA    = file->info.eStringPosA;
     fileInfo->eStringPosB    = file->info.eStringPosB;

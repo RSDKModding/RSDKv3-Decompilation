@@ -53,7 +53,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file)
     if (Engine.usingDataFile) {
         file->handle = fOpen(rsdkName, "rb");
         fSeek(file->handle, 0, SEEK_END);
-        file->info.fileSize       = (int)fTell(file->handle);
+        file->actualFileSize       = (int)fTell(file->handle);
         file->info.bufferPosition = 0;
         file->readSize       = 0;
         file->info.readPos        = 0;
@@ -64,7 +64,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file)
             return false;
         }
         fileInfo->readPos           = file->info.readPos;
-        fileInfo->fileSize          = file->vFileSize;
+        fileInfo->fileSize          = file->info.fileSize;
         fileInfo->virtualFileOffset = file->info.virtualFileOffset;
         fileInfo->eStringNo         = file->info.eStringNo;
         fileInfo->eStringPosB       = file->info.eStringPosB;
@@ -81,7 +81,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo, File *file)
         file->info.virtualFileOffset = 0;
         fSeek(file->handle, 0, SEEK_END);
         fileInfo->fileSize = (int)fTell(file->handle);
-        file->info.fileSize           = fileInfo->fileSize;
+        file->actualFileSize           = fileInfo->fileSize;
         fSeek(file->handle, 0, SEEK_SET);
         file->info.readPos = 0;
         fileInfo->readPos           = file->info.readPos;
@@ -173,7 +173,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file)
             //Grab info for next dir to know when we've found an error
             //Ignore dir name we dont care
             if (i == dirCount - 1) {
-                nextFileOffset = file->info.fileSize - headerSize; //There is no next dir, so just make this the EOF
+                nextFileOffset = file->actualFileSize - headerSize; //There is no next dir, so just make this the EOF
             }
             else {
                 FileRead(&fileBuffer, 1, file);
@@ -239,7 +239,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file)
                 FileRead(&fileBuffer, 1, file);
                 j += fileBuffer << 24;
                 file->info.virtualFileOffset += 4;
-                file->vFileSize = j;
+                file->info.fileSize = j;
             }
             else {
                 FileRead(&fileBuffer, 1, file);
@@ -264,7 +264,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file)
             file->readSize       = 0;
             file->info.readPos        = file->info.virtualFileOffset;
         }
-        file->info.eStringNo            = (file->vFileSize & 0x1FCu) >> 2;
+        file->info.eStringNo            = (file->info.fileSize & 0x1FCu) >> 2;
         file->info.eStringPosB          = (file->info.eStringNo % 9) + 1;
         file->info.eStringPosA          = (file->info.eStringNo % file->info.eStringPosB) + 1;
         file->info.eNybbleSwap          = false;
@@ -280,7 +280,7 @@ size_t FileRead(void *dest, int size, File *file)
     size_t bytes_read = 0;
     byte *data = (byte *)dest;
 
-    if (file->info.readPos <= file->info.fileSize) {
+    if (file->info.readPos <= file->actualFileSize) {
         if (Engine.usingDataFile) {
             while (bytes_read != size) {
                 if (ReachedEndOfFile(file))
@@ -344,9 +344,9 @@ void SetFileInfo(FileInfo *fileInfo, File *file)
     if (Engine.usingDataFile) {
         file->handle       = fOpen(rsdkName, "rb");
         file->info.virtualFileOffset = fileInfo->virtualFileOffset;
-        file->vFileSize         = fileInfo->fileSize;
+        file->info.fileSize         = fileInfo->fileSize;
         fSeek(file->handle, 0, SEEK_END);
-        file->info.fileSize = (int)fTell(file->handle);
+        file->actualFileSize = (int)fTell(file->handle);
         file->info.readPos  = fileInfo->readPos;
         fSeek(file->handle, file->info.readPos, SEEK_SET);
         FillFileBuffer(file);
@@ -360,7 +360,7 @@ void SetFileInfo(FileInfo *fileInfo, File *file)
         StrCopy(file->info.fileName, fileInfo->fileName);
         file->handle       = fOpen(fileInfo->fileName, "rb");
         file->info.virtualFileOffset = 0;
-        file->info.fileSize          = fileInfo->fileSize;
+        file->actualFileSize          = fileInfo->fileSize;
         file->info.readPos           = fileInfo->readPos;
         fSeek(file->handle, file->info.readPos, SEEK_SET);
         FillFileBuffer(file);
@@ -384,7 +384,7 @@ void SetFilePosition(int newPos, File *file)
 {
     if (Engine.usingDataFile) {
         file->info.readPos     = file->info.virtualFileOffset + newPos;
-        file->info.eStringNo   = (file->vFileSize & 0x1FCu) >> 2;
+        file->info.eStringNo   = (file->info.fileSize & 0x1FCu) >> 2;
         file->info.eStringPosB = (file->info.eStringNo % 9) + 1;
         file->info.eStringPosA = (file->info.eStringNo % file->info.eStringPosB) + 1;
         file->info.eNybbleSwap = false;
@@ -428,7 +428,7 @@ void SetFilePosition(int newPos, File *file)
 bool ReachedEndOfFile(File *file)
 {
     if (Engine.usingDataFile)
-        return file->info.bufferPosition + file->info.readPos - file->readSize - file->info.virtualFileOffset >= file->vFileSize;
+        return file->info.bufferPosition + file->info.readPos - file->readSize - file->info.virtualFileOffset >= file->info.fileSize;
     else
-        return file->info.bufferPosition + file->info.readPos - file->readSize >= file->info.fileSize;
+        return file->info.bufferPosition + file->info.readPos - file->readSize >= file->actualFileSize;
 }
