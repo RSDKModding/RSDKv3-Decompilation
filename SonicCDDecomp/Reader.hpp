@@ -57,7 +57,6 @@ struct File {
 extern char rsdkName[0x400];
 
 extern File cFile;
-extern File cFileStream;
 
 inline void CopyFilePath(char *dest, const char *src)
 {
@@ -84,7 +83,7 @@ inline bool CloseFile(File *file = &cFile)
     return result;
 }
 
-void FileRead(void *dest, int size, File *file = &cFile);
+size_t FileRead(void *dest, int size, File *file = &cFile);
 
 bool ParseVirtualFileSystem(FileInfo *fileInfo, File *file = &cFile);
 
@@ -117,19 +116,5 @@ void SetFileInfo(FileInfo *fileInfo, File *file = &cFile);
 size_t GetFilePosition(File *file = &cFile);
 void SetFilePosition(int newPos, File *file = &cFile);
 bool ReachedEndOfFile(File *file = &cFile);
-
-
-size_t FileRead2(FileInfo *info, void *dest, int size); // For Music Streaming
-inline bool CloseFile2()
-{
-    int result = 0;
-    if (cFileStream.handle)
-        result = fClose(cFileStream.handle);
-
-    cFileStream.handle = NULL;
-    return result;
-}
-size_t GetFilePosition2(FileInfo *info);
-void SetFilePosition2(FileInfo *info, int newPos);
 
 #endif // !READER_H

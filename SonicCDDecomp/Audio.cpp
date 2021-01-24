@@ -23,6 +23,8 @@ MusicPlaybackInfo musInfo;
 
 int trackBuffer = -1;
 
+static File cFileStream;
+
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
 SDL_AudioSpec audioDeviceFormat;
 
@@ -168,26 +170,26 @@ int InitAudioPlayback()
 size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
-    return FileRead2(&info->fileInfo, mem, (int)(size * nmemb));
+    return FileRead(mem, (int)(size * nmemb), &cFileStream) / size;
 }
 int seekVorbis(void *ptr, ogg_int64_t offset, int whence)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
     switch (whence) {
         case SEEK_SET: whence = 0; break;
-        case SEEK_CUR: whence = (int)GetFilePosition2(&info->fileInfo); break;
+        case SEEK_CUR: whence = (int)GetFilePosition(&cFileStream); break;
         case SEEK_END: whence = info->fileInfo.fileSize; break;
         default: break;
     }
-    SetFilePosition2(&info->fileInfo, (int)(whence + offset));
-    return GetFilePosition2(&info->fileInfo) <= info->fileInfo.fileSize;
+    SetFilePosition((int)(whence + offset), &cFileStream);
+    return GetFilePosition(&cFileStream) <= info->fileInfo.fileSize;
 }
 long tellVorbis(void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
-    return GetFilePosition2(&info->fileInfo);
+    return GetFilePosition(&cFileStream);
 }
-int closeVorbis(void *ptr) { return CloseFile2(); }
+int closeVorbis(void *ptr) { return CloseFile(&cFileStream); }
 #endif
 
 void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
@@ -316,9 +318,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
         if (musInfo.loaded)
             StopMusic();
 
-        if (LoadFile(trackPtr->fileName, &musInfo.fileInfo)) {
-            cFileStream.handle = cFile.handle;
-            cFile.handle                  = nullptr;
+        if (LoadFile(trackPtr->fileName, &musInfo.fileInfo, &cFileStream)) {
 
             musInfo.trackLoop = trackPtr->trackLoop;
             musInfo.loopPoint = trackPtr->loopPoint;
