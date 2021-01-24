@@ -46,15 +46,18 @@ struct FileInfo {
     byte eNybbleSwap;
 };
 
+struct File {
+    FileIO *handle;
+    FileInfo info;
+    byte fileBuffer[0x2000];
+    int vFileSize;
+    int readSize;
+};
+
 extern char rsdkName[0x400];
 
-extern FileInfo globalFileInfo;
-extern byte fileBuffer[0x2000];
-extern int vFileSize;
-extern int readSize;
-
-extern FileIO *cFileHandle;
-extern FileIO *cFileHandleStream;
+extern File cFile;
+extern File cFileStream;
 
 inline void CopyFilePath(char *dest, const char *src)
 {
@@ -74,10 +77,10 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo);
 inline bool CloseFile()
 {
     int result = 0;
-    if (cFileHandle)
-        result = fClose(cFileHandle);
+    if (cFile.handle)
+        result = fClose(cFile.handle);
 
-    cFileHandle = NULL;
+    cFile.handle = NULL;
     return result;
 }
 
@@ -87,28 +90,28 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo);
 
 inline size_t FillFileBuffer()
 {
-    if (globalFileInfo.readPos + sizeof(fileBuffer) <= globalFileInfo.fileSize)
-        readSize = sizeof(fileBuffer);
+    if (cFile.info.readPos + sizeof(cFile.fileBuffer) <= cFile.info.fileSize)
+        cFile.readSize = sizeof(cFile.fileBuffer);
     else 
-        readSize = globalFileInfo.fileSize - globalFileInfo.readPos;
+        cFile.readSize = cFile.info.fileSize - cFile.info.readPos;
 
-    size_t result = fRead(fileBuffer, 1u, readSize, cFileHandle);
-    globalFileInfo.readPos += readSize;
-    globalFileInfo.bufferPosition = 0;
+    size_t result = fRead(cFile.fileBuffer, 1u, cFile.readSize, cFile.handle);
+    cFile.info.readPos += cFile.readSize;
+    cFile.info.bufferPosition = 0;
     return result;
 }
 
 inline void GetFileInfo(FileInfo *fileInfo)
 {
-    StrCopy(fileInfo->fileName, globalFileInfo.fileName);
-    fileInfo->bufferPosition = globalFileInfo.bufferPosition;
-    fileInfo->readPos        = globalFileInfo.readPos - readSize;
-    fileInfo->fileSize       = globalFileInfo.fileSize;
-    fileInfo->virtualFileOffset = globalFileInfo.virtualFileOffset;
-    fileInfo->eStringPosA    = globalFileInfo.eStringPosA;
-    fileInfo->eStringPosB    = globalFileInfo.eStringPosB;
-    fileInfo->eStringNo      = globalFileInfo.eStringNo;
-    fileInfo->eNybbleSwap    = globalFileInfo.eNybbleSwap;
+    StrCopy(fileInfo->fileName, cFile.info.fileName);
+    fileInfo->bufferPosition = cFile.info.bufferPosition;
+    fileInfo->readPos        = cFile.info.readPos - cFile.readSize;
+    fileInfo->fileSize       = cFile.info.fileSize;
+    fileInfo->virtualFileOffset = cFile.info.virtualFileOffset;
+    fileInfo->eStringPosA    = cFile.info.eStringPosA;
+    fileInfo->eStringPosB    = cFile.info.eStringPosB;
+    fileInfo->eStringNo      = cFile.info.eStringNo;
+    fileInfo->eNybbleSwap    = cFile.info.eNybbleSwap;
 }
 void SetFileInfo(FileInfo *fileInfo);
 size_t GetFilePosition();
@@ -120,10 +123,10 @@ size_t FileRead2(FileInfo *info, void *dest, int size); // For Music Streaming
 inline bool CloseFile2()
 {
     int result = 0;
-    if (cFileHandleStream)
-        result = fClose(cFileHandleStream);
+    if (cFileStream.handle)
+        result = fClose(cFileStream.handle);
 
-    cFileHandleStream = NULL;
+    cFileStream.handle = NULL;
     return result;
 }
 size_t GetFilePosition2(FileInfo *info);

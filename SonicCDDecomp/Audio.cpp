@@ -320,8 +320,8 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
             StopMusic();
 
         if (LoadFile(trackPtr->fileName, &musInfo.fileInfo)) {
-            cFileHandleStream = cFileHandle;
-            cFileHandle                  = nullptr;
+            cFileStream.handle = cFile.handle;
+            cFile.handle                  = nullptr;
 
             musInfo.trackLoop = trackPtr->trackLoop;
             musInfo.loopPoint = trackPtr->loopPoint;
