@@ -124,7 +124,7 @@ int InitRenderDevice()
     //Engine.topScreen = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     //Engine.videoBuffer = C3D_GetFrameBuf();
     gfxSetScreenFormat(GFX_TOP, GSP_RGB565_OES);
-    gfxSetDoubleBuffering(GFX_TOP, false);
+    //gfxSetDoubleBuffering(GFX_TOP, false);
 #endif
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;

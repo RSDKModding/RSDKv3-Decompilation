@@ -34,7 +34,7 @@ struct MusicPlaybackInfo {
     Sint16 *buffer;
 // TODO: this is only here to make the compiler shut up,
 // come up with a proper implementation later
-#elif RETRO_USING_C2D
+#elif RETRO_PLATFORM == RETRO_3DS
     char* musicFile;
     void* stream;
     void* currentTrack;
