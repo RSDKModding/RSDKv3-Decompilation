@@ -33,36 +33,23 @@ bool CheckRSDKFile(const char *filePath)
         Engine.usingDataFile = true;
         StrCopy(rsdkName, filePath);
         fClose(cFileHandle);
-        cFileHandle = NULL;
-        if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
-            Engine.usingBytecode = true;
-            Engine.bytecodeMode  = BYTECODE_MOBILE;
-            CloseFile();
-        }
-        else if (LoadFile("Data/Scripts/ByteCode/GS000.bin", &info)) {
-            Engine.usingBytecode = true;
-            Engine.bytecodeMode  = BYTECODE_PC;
-            CloseFile();
-        }
-        return true;
     }
     else {
         Engine.usingDataFile = false;
-        cFileHandle = NULL;
-        if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
-            Engine.usingBytecode = true;
-            Engine.bytecodeMode  = BYTECODE_MOBILE;
-            CloseFile();
-        }
-        else if (LoadFile("Data/Scripts/ByteCode/GS000.bin", &info)) {
-            Engine.usingBytecode = true;
-            Engine.bytecodeMode  = BYTECODE_PC;
-            CloseFile();
-        }
-        return false;
     }
 
-    return false;
+    cFileHandle = NULL;
+    if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
+        Engine.usingBytecode = true;
+        Engine.bytecodeMode  = BYTECODE_MOBILE;
+        CloseFile();
+    }
+    else if (LoadFile("Data/Scripts/ByteCode/GS000.bin", &info)) {
+        Engine.usingBytecode = true;
+        Engine.bytecodeMode  = BYTECODE_PC;
+        CloseFile();
+    }
+    return Engine.usingDataFile;
 }
 
 bool LoadFile(const char *filePath, FileInfo *fileInfo)
