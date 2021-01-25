@@ -95,7 +95,10 @@ void _3ds_audioDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
 	int totalSamples = 0;
 	int currentSection;
 	long ret = -1;
-	while (totalSamples < SAMPLES_PER_BUF && ret != 0) {
+	while (totalSamples < SAMPLES_PER_BUF) {
+		if (musicStatus != MUSIC_PLAYING)
+			break;
+
 		s8* buffer = wbuf->data_pcm8 + (totalSamples * CHANNELS_PER_SAMPLE);
 		const size_t bufferSize = (SAMPLES_PER_BUF - totalSamples) * CHANNELS_PER_SAMPLE;
 
@@ -105,6 +108,18 @@ void _3ds_audioDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
 			printf("error in stream, cannot flush audio\n");
 			return;
 		}
+
+                if (ret == 0) {
+                    // We've reached the end of the file
+                    if (m->trackLoop) {
+                        ov_pcm_seek(&m->vorbisFile, m->loopPoint);
+                        continue;
+                    }
+                    else {
+                        musicStatus = MUSIC_STOPPED;
+                        break;
+                    }
+                }
 
 		totalSamples += ret / CHANNELS_PER_SAMPLE;
 	}
