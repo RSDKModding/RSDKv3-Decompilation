@@ -35,6 +35,8 @@ struct MusicPlaybackInfo {
 // TODO: this is only here to make the compiler shut up,
 // come up with a proper implementation later
 #elif RETRO_PLATFORM == RETRO_3DS
+    OggVorbis_File vorbisFile;
+    int vorbBitstream;
     char* musicFile;
     void* stream;
     void* currentTrack;

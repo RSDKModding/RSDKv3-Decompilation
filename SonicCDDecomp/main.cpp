@@ -25,9 +25,11 @@ int main(int argc, char *argv[])
     awaitInput();
 
     Engine.Init();
+    printf("Audio enabled: %d\n", audioEnabled);
     printf("Engine succesfully initialised.\n");
     awaitInput();
 
+    
     printf("Running engine...\n");
     Engine.Run();
 

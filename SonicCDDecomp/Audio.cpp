@@ -79,6 +79,11 @@ int InitAudioPlayback()
         return true; // no audio but game wont crash now
     }
 
+#elif RETRO_PLATFORM == RETRO_3DS
+    bool rtn = _3ds_audioInit();
+    if (!rtn) {
+        return true;
+    }
 #endif
 
     FileInfo info;
@@ -460,6 +465,10 @@ bool PlayMusic(int track)
     trackBuffer = track;
     musicStatus = MUSIC_LOADING;
     UNLOCK_AUDIO_DEVICE()
+
+#if RETRO_PLATFORM == RETRO_3DS
+    LightEvent_Signal(&s_event);
+#endif
     return true;
 }
 

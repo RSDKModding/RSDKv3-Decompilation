@@ -224,9 +224,11 @@ enum RetroBytecodeFormat {
 #include <citro2d.h>
 #include <tex3ds.h>
 #include <tremor/ivorbisfile.h>
+#include <tremor/ivorbiscodec.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
 #include "3ds/3ds_debug.hpp"
+#include "3ds/3ds_audio.hpp"
 #endif
 
 extern bool usingCWD;
