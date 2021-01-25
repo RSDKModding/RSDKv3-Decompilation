@@ -49,7 +49,7 @@ objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $< -o $@ -c
 
-bin/soniccd: $(SOURCES:%=objects/%.o)
+bin/soniccd: $(OBJECTS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
