@@ -33,7 +33,7 @@ SOURCES = \
   SonicCDDecomp/Video.cpp
 
 	  
-ifneq ($(FORCE_CASE_INSENSITIVE),)
+ifeq ($(FORCE_CASE_INSENSITIVE),1)
   CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
   SOURCES += SonicCDDecomp/fcaseopen.c
 endif
