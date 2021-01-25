@@ -106,7 +106,7 @@ void _3ds_audioDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
 			return;
 		}
 
-		totalSamples += ret / 2;
+		totalSamples += ret / CHANNELS_PER_SAMPLE;
 	}
 
 	wbuf->nsamples = totalSamples / 2;

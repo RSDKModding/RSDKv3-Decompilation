@@ -1,4 +1,4 @@
-#define SAMPLE_RATE         (41000)
+#define SAMPLE_RATE         (44100)
 #define SAMPLES_PER_BUF     (SAMPLE_RATE * 120 / 1000)
 #define CHANNELS_PER_SAMPLE (2)
 
