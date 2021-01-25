@@ -40,6 +40,8 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
+all: bin/soniccd
+
 include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
