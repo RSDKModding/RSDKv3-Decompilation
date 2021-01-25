@@ -3,7 +3,7 @@
 
 #include "../RetroEngine.hpp"
 
-ndspWaveBuf s_waveBufs[3];
+ndspWaveBuf s_waveBufs[4];
 int16_t* s_audioBuffer = nullptr;
 
 LightEvent s_event;
@@ -42,7 +42,7 @@ bool _3ds_audioInit() {
 
 	ndspChnReset(0);
 	ndspSetOutputMode(NDSP_OUTPUT_STEREO);
-	ndspChnSetInterp(0, NDSP_INTERP_LINEAR);
+	ndspChnSetInterp(0, NDSP_INTERP_POLYPHASE);
 	ndspChnSetRate(0, SAMPLE_RATE);
 	ndspChnSetFormat(0, NDSP_FORMAT_STEREO_PCM16);
 
@@ -96,24 +96,22 @@ void _3ds_audioDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
 	int currentSection;
 	long ret = -1;
 	while (totalSamples < SAMPLES_PER_BUF && ret != 0) {
-		int16_t* buffer = wbuf->data_pcm16 + (totalSamples * CHANNELS_PER_SAMPLE);
+		s8* buffer = wbuf->data_pcm8 + (totalSamples * CHANNELS_PER_SAMPLE);
 		const size_t bufferSize = (SAMPLES_PER_BUF - totalSamples) * CHANNELS_PER_SAMPLE;
 
-		long ret = ov_read(&musInfo.vorbisFile, (char*)buffer, sizeof(buffer),
+		long ret = ov_read(&musInfo.vorbisFile, (char*)buffer, bufferSize,
 					&musInfo.vorbBitstream);
 		if (ret < -1) {
 			printf("error in stream, cannot flush audio\n");
 			return;
 		}
 
-		totalSamples += ret / sizeof(int16_t);
-		printf("samples read: %d\n", totalSamples);
+		totalSamples += ret / 2;
 	}
 
-	wbuf->nsamples = totalSamples;
+	wbuf->nsamples = totalSamples / 2;
 	ndspChnWaveBufAdd(0, wbuf);
-	DSP_FlushDataCache(wbuf->data_pcm16, totalSamples * CHANNELS_PER_SAMPLE * sizeof(int16_t));
-	printf("audio buffer flushed\n");
+	DSP_FlushDataCache(wbuf->data_pcm8, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s8));
 }
 
 void _3ds_audioThread(void* const nul) {

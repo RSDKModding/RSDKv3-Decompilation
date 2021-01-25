@@ -6,9 +6,10 @@
 #define THREAD_STACK_SZ     (32 * 1024)
 
 #define WAVEBUF_SIZE        (SAMPLES_PER_BUF * CHANNELS_PER_SAMPLE * sizeof(int16_t))
+#define MIX_BUFFER_SAMPLES  (256)
+#define BYTES_PER_SAMPLE    (4)
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-#define MIX_BUFFER_SAMPLES (256)
 
 bool _3ds_audioInit();
 void _3ds_audioExit();
