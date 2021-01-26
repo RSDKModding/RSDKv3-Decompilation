@@ -532,6 +532,20 @@ void LoadSfx(char *filePath, byte sfxID)
             }
         }
         SDL_UnlockAudio();
+#elif RETRO_PLATFORM == RETRO_3DS
+    uint wav_length =   ((unsigned char)sfx[43] << 24) | 
+	    		((unsigned char)sfx[42] << 16) | 
+			((unsigned char)sfx[41] << 8)  | 
+			(unsigned char)sfx[40];
+
+    sfxList[sfxID].buffer = (s16*) malloc(wav_length);
+    memcpy(sfxList[sfxID].buffer, sfx + 44, wav_length);
+    StrCopy(sfxList[sfxID].name, filePath);
+    sfxList[sfxID].length = wav_length / sizeof(s16);
+    sfxList[sfxID].loaded = true;
+    printf("Load: %s, %d samples\n", sfxList[sfxID].name, sfxList[sfxID].length);
+
+    delete[] sfx;
 #endif
     }
 }
@@ -554,6 +568,10 @@ void PlaySfx(int sfx, bool loop)
     sfxInfo->pan          = 0;
     if (nextChannelPos == CHANNEL_COUNT)
         nextChannelPos = 0;
+    printf("Play: %s\n", sfxList[sfx].name);
+#if RETRO_PLATFORM == RETRO_3DS
+    LightEvent_Signal(&s_event);
+#endif
     UNLOCK_AUDIO_DEVICE()
 }
 void SetSfxAttributes(int sfx, int loopCount, sbyte pan)

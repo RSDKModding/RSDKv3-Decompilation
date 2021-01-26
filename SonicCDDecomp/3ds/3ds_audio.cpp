@@ -43,12 +43,17 @@ bool _3ds_audioInit() {
 
 	ndspSetOutputMode(NDSP_OUTPUT_STEREO);
 
+	ndspChnReset(0);
+	ndspChnSetInterp(0, NDSP_INTERP_POLYPHASE);
+	ndspChnSetRate(0, SAMPLE_RATE);
+	ndspChnSetFormat(0, NDSP_FORMAT_STEREO_PCM16);
+
 	// set up all NDSP channels
-	for (int i = 0; i < _3DS_MAX_CHANNELS; i++) {
+	for (int i = 1; i < _3DS_MAX_CHANNELS; i++) {
 		ndspChnReset(i);
-		ndspChnSetInterp(i, NDSP_INTERP_POLYPHASE);
+		ndspChnSetInterp(i, NDSP_INTERP_LINEAR);
 		ndspChnSetRate(i, SAMPLE_RATE);
-		ndspChnSetFormat(i, NDSP_FORMAT_STEREO_PCM16);
+		ndspChnSetFormat(i, NDSP_FORMAT_MONO_PCM8);
 	}
 
 	const size_t bufferSize = (WAVEBUF_SIZE * ARRAY_SIZE(s_waveBufs))
@@ -230,13 +235,16 @@ void _3ds_sfxLogic() {
 		if (sfx->sfxID < 0)
 			continue;
 
-		if (sfx->samplePtr) {
-			printf("SFX to play: %d\n", i);
-			for (byte j = 0; j < ARRAY_SIZE(s_sfxWaveBufs); j++) {
-				if (s_sfxWaveBufs[j].status == NDSP_WBUF_DONE) {
-					_3ds_sfxDecode(sfx, &s_sfxWaveBufs[j]);
-					break;
-				}
+		if (sfx->samplePtr == nullptr) {
+			//printf("null pointer\n");
+			continue;
+		}
+
+		for (byte j = 0; j < ARRAY_SIZE(s_sfxWaveBufs); j++) {
+			if (s_sfxWaveBufs[j].status == NDSP_WBUF_DONE) {
+				_3ds_sfxDecode(sfx, &s_sfxWaveBufs[j]);
+				sfx->samplePtr = nullptr;
+				break;
 			}
 		}
 	}
@@ -245,11 +253,12 @@ void _3ds_sfxLogic() {
 void _3ds_sfxDecode(ChannelInfo* sfx, ndspWaveBuf* wbuf) {
 	int totalSamples = 0;
 	int channelToUse = -1;
+	/*
 	while (totalSamples < SFX_SAMPLE_SZ) {
-		s16* buffer = wbuf->data_pcm16 + (totalSamples * CHANNELS_PER_SAMPLE);
+		u8* buffer = (u8*) wbuf->data_pcm8 + (totalSamples * CHANNELS_PER_SAMPLE);
 
 		size_t sampleLen = (sfx->sampleLength < SFX_SAMPLE_SZ - totalSamples) ? sfx->sampleLength : SFX_SAMPLE_SZ - totalSamples;
-		memcpy(&buffer[totalSamples], sfx->samplePtr, sampleLen * sizeof(s16));
+		memcpy(&buffer[totalSamples], sfx->samplePtr, sampleLen * sizeof(u8));
 
  		totalSamples += sampleLen;
  		sfx->samplePtr += sampleLen;
@@ -267,6 +276,7 @@ void _3ds_sfxDecode(ChannelInfo* sfx, ndspWaveBuf* wbuf) {
 		}
 
 	}
+	*/
 	
 	// find an open NDSP channel to play on
 	for (int i = 0; i < _3DS_MAX_CHANNELS; i++) {
@@ -282,9 +292,10 @@ void _3ds_sfxDecode(ChannelInfo* sfx, ndspWaveBuf* wbuf) {
 		return;
 	}
 
-	wbuf->nsamples = totalSamples;
+	memcpy(wbuf->data_pcm8, sfx->samplePtr, SFX_BUFFER_SZ);
+	wbuf->nsamples = sfx->sampleLength;
 	ndspChnWaveBufAdd(channelToUse, wbuf);
-	DSP_FlushDataCache(wbuf->data_pcm8, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s8));
+	DSP_FlushDataCache(wbuf->data_pcm8, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s16));
 }
 
 void _3ds_audioThread(void* const nul) {
