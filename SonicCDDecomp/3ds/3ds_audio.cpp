@@ -4,6 +4,7 @@
 #include "../RetroEngine.hpp"
 
 ndspWaveBuf s_waveBufs[4];
+ndspWaveBuf s_sfxWaveBufs[CHANNEL_COUNT];
 int16_t* s_audioBuffer = nullptr;
 
 LightEvent s_event;
@@ -40,13 +41,18 @@ int closeVorbis(void *ptr) { return CloseFile2(); }
 bool _3ds_audioInit() {
 	ndspInit();
 
-	ndspChnReset(0);
 	ndspSetOutputMode(NDSP_OUTPUT_STEREO);
-	ndspChnSetInterp(0, NDSP_INTERP_POLYPHASE);
-	ndspChnSetRate(0, SAMPLE_RATE);
-	ndspChnSetFormat(0, NDSP_FORMAT_STEREO_PCM16);
 
-	const size_t bufferSize = WAVEBUF_SIZE * ARRAY_SIZE(s_waveBufs);
+	// set up all NDSP channels
+	for (int i = 0; i < _3DS_MAX_CHANNELS; i++) {
+		ndspChnReset(i);
+		ndspChnSetInterp(i, NDSP_INTERP_POLYPHASE);
+		ndspChnSetRate(i, SAMPLE_RATE);
+		ndspChnSetFormat(i, NDSP_FORMAT_STEREO_PCM16);
+	}
+
+	const size_t bufferSize = (WAVEBUF_SIZE * ARRAY_SIZE(s_waveBufs))
+					+ (SFX_BUFFER_SZ * ARRAY_SIZE(s_sfxWaveBufs));
 	s_audioBuffer = (int16_t*) linearAlloc(bufferSize);
 	if (!s_audioBuffer) {
 		printf("Failed to allocate audio buffer. Audio playback disabled.\n");
@@ -54,6 +60,7 @@ bool _3ds_audioInit() {
 		return false;
 	}
 
+	// music buffers
 	memset(&s_waveBufs, 0, sizeof(s_waveBufs));
 	int16_t* buffer = s_audioBuffer;
 
@@ -62,6 +69,14 @@ bool _3ds_audioInit() {
 		s_waveBufs[i].status     = NDSP_WBUF_DONE;
 
 		buffer += WAVEBUF_SIZE / sizeof(buffer[0]);
+	}
+
+	// sfx buffers
+	for (size_t i = 0; i < ARRAY_SIZE(s_sfxWaveBufs); i++) {
+		s_sfxWaveBufs[i].data_vaddr = buffer;
+		s_sfxWaveBufs[i].status     = NDSP_WBUF_DONE;
+
+		buffer += SFX_BUFFER_SZ;
 	}
 
 	// set up callback function for NDSP decoding
@@ -91,13 +106,90 @@ void _3ds_audioCallback(void* const nul) {
 	LightEvent_Signal(&s_event);
 }
 
-void _3ds_audioDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
+void _3ds_musicLogic() {
+	//if (trackBuffer != -1) {
+	//	printf("Current track: %d\n", trackBuffer);
+	//}
+
+	// loading new music track
+	if (musicStatus == MUSIC_LOADING) {
+		//printf("Music Load\n");
+		if (trackBuffer < 0 || trackBuffer >= TRACK_COUNT) {
+			StopMusic();
+			return;
+		}
+
+		TrackInfo *trackPtr = &musicTracks[trackBuffer];
+
+		if (!trackPtr->fileName[0]) {
+			printf("Could not load track.\n");
+			StopMusic();
+			return;
+		}
+
+		if (musInfo.loaded)
+			StopMusic();
+
+		if (LoadFile(trackPtr->fileName, &musInfo.fileInfo)) {
+			cFileHandleStream = cFileHandle;
+			cFileHandle                  = nullptr;
+
+			musInfo.trackLoop = trackPtr->trackLoop;
+			musInfo.loopPoint = trackPtr->loopPoint;
+			musInfo.loaded    = true;
+
+			unsigned long long samples = 0;
+
+			ov_callbacks callbacks;
+
+			callbacks.read_func  = readVorbis;
+			callbacks.seek_func  = seekVorbis;
+			callbacks.tell_func  = tellVorbis;
+			callbacks.close_func = closeVorbis;
+
+			int error = ov_open_callbacks(&musInfo, &musInfo.vorbisFile, 
+					NULL, 0, callbacks);
+			if (error != 0) {
+				printf("Error reading ogg file.\n");
+			}
+
+			musInfo.vorbBitstream = -1;
+			musInfo.vorbisFile.vi = ov_info(&musInfo.vorbisFile, -1);
+			musInfo.buffer = new Sint16[MIX_BUFFER_SAMPLES];
+
+			musicStatus  = MUSIC_PLAYING;
+			masterVolume = MAX_VOLUME;
+			trackID      = trackBuffer;
+			trackBuffer  = -1;
+		}
+	}
+
+	if (musicStatus == MUSIC_PLAYING) {
+		for (size_t i = 0; i < ARRAY_SIZE(s_waveBufs); i++) {
+
+			if (s_waveBufs[i].status != NDSP_WBUF_DONE) {
+				//printf("WaveBuf %d Status: %d\n", i, s_waveBufs[i].status);
+				continue;
+			}
+
+			//printf("Found open wbuf: %d\n", i);
+
+			_3ds_musicDecode(&musInfo, &s_waveBufs[i]);
+		}
+	}
+
+
+}
+
+void _3ds_musicDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
 	int totalSamples = 0;
 	int currentSection;
 	long ret = -1;
 	while (totalSamples < SAMPLES_PER_BUF) {
-		if (musicStatus != MUSIC_PLAYING)
+		if (musicStatus != MUSIC_PLAYING) {
+			ndspChnWaveBufClear(0);
 			return;
+		}
 
 		s8* buffer = wbuf->data_pcm8 + (totalSamples * CHANNELS_PER_SAMPLE);
 		const size_t bufferSize = (SAMPLES_PER_BUF - totalSamples) * CHANNELS_PER_SAMPLE;
@@ -129,80 +221,78 @@ void _3ds_audioDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
 	DSP_FlushDataCache(wbuf->data_pcm8, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s8));
 }
 
+void _3ds_sfxLogic() {
+	for (byte i = 0; i < CHANNEL_COUNT; i++) {
+		ChannelInfo* sfx = &sfxChannels[i];
+		if (sfx == NULL)
+			continue;
+
+		if (sfx->sfxID < 0)
+			continue;
+
+		if (sfx->samplePtr) {
+			printf("SFX to play: %d\n", i);
+			for (byte j = 0; j < ARRAY_SIZE(s_sfxWaveBufs); j++) {
+				if (s_sfxWaveBufs[j].status == NDSP_WBUF_DONE) {
+					_3ds_sfxDecode(sfx, &s_sfxWaveBufs[j]);
+					break;
+				}
+			}
+		}
+	}
+}
+
+void _3ds_sfxDecode(ChannelInfo* sfx, ndspWaveBuf* wbuf) {
+	int totalSamples = 0;
+	int channelToUse = -1;
+	while (totalSamples < SFX_SAMPLE_SZ) {
+		s16* buffer = wbuf->data_pcm16 + (totalSamples * CHANNELS_PER_SAMPLE);
+
+		size_t sampleLen = (sfx->sampleLength < SFX_SAMPLE_SZ - totalSamples) ? sfx->sampleLength : SFX_SAMPLE_SZ - totalSamples;
+		memcpy(&buffer[totalSamples], sfx->samplePtr, sampleLen * sizeof(s16));
+
+ 		totalSamples += sampleLen;
+ 		sfx->samplePtr += sampleLen;
+ 		sfx->sampleLength -= sampleLen;
+
+              	if (sfx->sampleLength == 0) {
+                	if (sfx->loopSFX) {
+                        	sfx->samplePtr    = sfxList[sfx->sfxID].buffer;
+                            	sfx->sampleLength = sfxList[sfx->sfxID].length;
+                        }
+                        else {
+                            	StopSfx(sfx->sfxID);
+                            	return;
+                        }
+		}
+
+	}
+	
+	// find an open NDSP channel to play on
+	for (int i = 0; i < _3DS_MAX_CHANNELS; i++) {
+		if (!ndspChnIsPlaying(i)) {
+			channelToUse = i;
+			break;
+		}
+	}
+
+	// it's honestly incredibly unlikely this will ever happen but just in case
+	if (channelToUse == -1) {
+		printf("All NDSP channels busy. Ignoring SFX.\n");
+		return;
+	}
+
+	wbuf->nsamples = totalSamples;
+	ndspChnWaveBufAdd(channelToUse, wbuf);
+	DSP_FlushDataCache(wbuf->data_pcm8, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s8));
+}
+
 void _3ds_audioThread(void* const nul) {
 	printf("Audio thread running\n");
 
 	while (!s_quit) {
-		if (trackBuffer != -1) {
-			printf("Current track: %d\n", trackBuffer);
-		}
-
-		// loading new music track
-		if (musicStatus == MUSIC_LOADING) {
-			printf("Music Load\n");
-			if (trackBuffer < 0 || trackBuffer >= TRACK_COUNT) {
-				StopMusic();
-				continue;
-			}
-
-			TrackInfo *trackPtr = &musicTracks[trackBuffer];
-
-			if (!trackPtr->fileName[0]) {
-				printf("Could not load track.\n");
-				StopMusic();
-				continue;
-			}
-
-			if (musInfo.loaded)
-				StopMusic();
-
-			if (LoadFile(trackPtr->fileName, &musInfo.fileInfo)) {
-				cFileHandleStream = cFileHandle;
-				cFileHandle                  = nullptr;
-
-				musInfo.trackLoop = trackPtr->trackLoop;
-				musInfo.loopPoint = trackPtr->loopPoint;
-				musInfo.loaded    = true;
-
-				unsigned long long samples = 0;
-
-				ov_callbacks callbacks;
-
-				callbacks.read_func  = readVorbis;
-				callbacks.seek_func  = seekVorbis;
-				callbacks.tell_func  = tellVorbis;
-				callbacks.close_func = closeVorbis;
-
-				int error = ov_open_callbacks(&musInfo, &musInfo.vorbisFile, 
-						NULL, 0, callbacks);
-				if (error != 0) {
-					printf("Error reading ogg file.\n");
-				}
-
-				musInfo.vorbBitstream = -1;
-				musInfo.vorbisFile.vi = ov_info(&musInfo.vorbisFile, -1);
-				musInfo.buffer = new Sint16[MIX_BUFFER_SAMPLES];
-
-				musicStatus  = MUSIC_PLAYING;
-				masterVolume = MAX_VOLUME;
-				trackID      = trackBuffer;
-				trackBuffer  = -1;
-			}
-		}
-
-		if (musicStatus == MUSIC_PLAYING) {
-			for (size_t i = 0; i < ARRAY_SIZE(s_waveBufs); i++) {
-
-				if (s_waveBufs[i].status != NDSP_WBUF_DONE) {
-					printf("WaveBuf %d Status: %d\n", i, s_waveBufs[i].status);
-					continue;
-				}
-
-				printf("Found open wbuf: %d\n", i);
-
-				_3ds_audioDecode(&musInfo, &s_waveBufs[i]);
-			}
-		}
+		_3ds_musicLogic();
+		_3ds_sfxLogic();
 
 		LightEvent_Wait(&s_event);
 	}
