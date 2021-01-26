@@ -97,7 +97,7 @@ void _3ds_audioDecode(MusicPlaybackInfo* m, ndspWaveBuf* wbuf) {
 	long ret = -1;
 	while (totalSamples < SAMPLES_PER_BUF) {
 		if (musicStatus != MUSIC_PLAYING)
-			break;
+			return;
 
 		s8* buffer = wbuf->data_pcm8 + (totalSamples * CHANNELS_PER_SAMPLE);
 		const size_t bufferSize = (SAMPLES_PER_BUF - totalSamples) * CHANNELS_PER_SAMPLE;
