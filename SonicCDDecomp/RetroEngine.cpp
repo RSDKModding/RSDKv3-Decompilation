@@ -228,12 +228,7 @@ void RetroEngine::Init()
     CheckRSDKFile(datapath);
 #else
     CheckRSDKFile(BASE_PATH "Data.rsdk");
-#if RETRO_PLATFORM != RETRO_3DS
-    // for some reason, there are a lot of memory errors here
     InitUserdata();
-#else
-    printf("Settings data stubbed. Fix later.\n");
-#endif
 #endif
 
     gameMode = ENGINE_EXITGAME;
