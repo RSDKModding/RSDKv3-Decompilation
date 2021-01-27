@@ -27,10 +27,11 @@ inline int getLowerRate(int intendRate, int targetRate)
 
 bool processEvents()
 {
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
     while (SDL_PollEvent(&Engine.sdlEvents)) {
         // Main Events
         switch (Engine.sdlEvents.type) {
+#if RETRO_USING_SDL2
             case SDL_WINDOWEVENT:
                 switch (Engine.sdlEvents.window.event) {
                     case SDL_WINDOWEVENT_MAXIMIZED: {
@@ -54,30 +55,44 @@ bool processEvents()
             case SDL_APP_WILLENTERBACKGROUND: /*Engine.Callback(CALLBACK_ENTERBG);*/ break;
             case SDL_APP_WILLENTERFOREGROUND: /*Engine.Callback(CALLBACK_ENTERFG);*/ break;
             case SDL_APP_TERMINATING: Engine.gameMode = ENGINE_EXITGAME; break;
+#endif
             case SDL_MOUSEMOTION:
+#if RETRO_USING_SDL2
                 if (SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE)) <= 0) { // Touch always takes priority over mouse
+#endif
                     SDL_GetMouseState(&touchX[0], &touchY[0]);
                     touchX[0] /= Engine.windowScale;
                     touchY[0] /= Engine.windowScale;
                     touches = 1;
+#if RETRO_USING_SDL2
                 }
+#endif
                 break;
             case SDL_MOUSEBUTTONDOWN:
+#if RETRO_USING_SDL2
                 if (SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE)) <= 0) { // Touch always takes priority over mouse
+#endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 1; break;
                     }
                     touches = 1;
+#if RETRO_USING_SDL2
                 }
+#endif
                 break;
             case SDL_MOUSEBUTTONUP:
+#if RETRO_USING_SDL2
                 if (SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE)) <= 0) { // Touch always takes priority over mouse
+#endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 0; break;
                     }
                     touches = 1;
+#if RETRO_USING_SDL2
                 }
+#endif
                 break;
+#if RETRO_USING_SDL2
             case SDL_FINGERMOTION:
                 touches = SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE));
                 for (int i = 0; i < touches; i++) {
@@ -99,6 +114,7 @@ bool processEvents()
                 }
                 break;
             case SDL_FINGERUP: touches = SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE)); break;
+#endif
             case SDL_KEYDOWN:
                 switch (Engine.sdlEvents.key.keysym.sym) {
                     default: break;
@@ -109,14 +125,30 @@ bool processEvents()
                     case SDLK_F4:
                         Engine.isFullScreen ^= 1;
                         if (Engine.isFullScreen) {
+#if RETRO_USING_SDL1
+                            Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16,
+                                                                    SDL_SWSURFACE | SDL_FULLSCREEN);
+                            SDL_ShowCursor(SDL_FALSE);
+#endif
+
+#if RETRO_USING_SDL2
                             SDL_RestoreWindow(Engine.window);
                             SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+#endif
                         }
                         else {
+#if RETRO_USING_SDL1
+                            Engine.windowSurface =
+                                SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE);
+                            SDL_ShowCursor(SDL_TRUE);
+#endif
+
+#if RETRO_USING_SDL2
                             SDL_SetWindowFullscreen(Engine.window, 0);
                             SDL_SetWindowSize(Engine.window, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
                             SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
                             SDL_RestoreWindow(Engine.window);
+#endif
                         }
                         break;
                     case SDLK_F1:
@@ -190,6 +222,10 @@ bool processEvents()
                         break;
 #endif
                 }
+
+#if RETRO_USING_SDL1
+                keyState[Engine.sdlEvents.key.keysym.sym] = 1;
+#endif
                 break;
             case SDL_KEYUP:
                 switch (Engine.sdlEvents.key.keysym.sym) {
@@ -200,6 +236,9 @@ bool processEvents()
                     case SDLK_BACKSPACE: Engine.gameSpeed = 1; break;
 #endif
                 }
+#if RETRO_USING_SDL1
+                keyState[Engine.sdlEvents.key.keysym.sym] = 0;
+#endif
                 break;
             case SDL_QUIT: Engine.gameMode = ENGINE_EXITGAME; return false;
         }

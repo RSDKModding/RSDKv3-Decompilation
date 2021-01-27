@@ -88,15 +88,19 @@ typedef unsigned int uint;
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
     || RETRO_PLATFORM == RETRO_UWP
-#define RETRO_USING_SDL (1)
-#define RETRO_USING_C2D (0)
+
+#define RETRO_USING_SDL2 (1)
+#define RETRO_USING_SDL1 (0)
+#define RETRO_USING_C2D  (0)
 #elif RETRO_PLATFORM == RETRO_3DS // 3DS only has support for SDL 1.2, so drawing functions
 				  // and input are being redone using libctru and Citro2D
-#define RETRO_USING_SDL (0)
-#define RETRO_USING_C2D (1)
+#define RETRO_USING_SDL2 (0)
+#define RETRO_USING_SDL1 (0)
+#define RETRO_USING_C2D  (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
-#define RETRO_USING_SDL (0)
-#define RETRO_USING_C2D (0)
+#define RETRO_USING_SDL2 (0)
+#define RETRO_USING_SDL1 (0)
+#define RETRO_USING_C2D  (0)
 #endif
 
 #if RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7
@@ -131,10 +135,12 @@ typedef unsigned int uint;
 #endif
 
 // this macro defines the touch device read by the game (UWP requires DIRECT)
-#if RETRO_UWP
+#if defined(RETRO_UWP) && defined(SDL_TOUCH_DEVICE_DIRECT)
 #define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_DIRECT
-#else
+#elif defined(SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE)
 #define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE
+#else
+#define RETRO_TOUCH_DEVICE 0
 #endif
 
 // compiler errors get thrown if this isn't defined
@@ -196,7 +202,11 @@ enum RetroBytecodeFormat {
 #define SCREEN_CENTERY (SCREEN_YSIZE / 2)
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_USING_SDL2
 #include <SDL.h>
+#elif RETRO_USING_SDL1
+#include <SDL.h>
+#endif
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
@@ -361,6 +371,16 @@ public:
     // due to the 3DS's limited resolution, image scaling isn't needed here
     C3D_RenderTarget* topScreen;
     C3D_FrameBuf* videoBuffer;
+#endif
+
+#if RETRO_USING_SDL1
+    SDL_Surface *windowSurface = nullptr;
+
+    SDL_Surface *screenBuffer   = nullptr;
+    SDL_Surface *screenBuffer2x = nullptr;
+    SDL_Surface *videoBuffer    = nullptr;
+
+    SDL_Event sdlEvents;
 #endif
 };
 

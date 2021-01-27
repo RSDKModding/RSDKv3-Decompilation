@@ -79,6 +79,7 @@ extern int RTRIGGER_DEADZONE;
 #if RETRO_USING_SDL2
 extern SDL_GameController *controller;
 
+// Easier this way
 enum ExtraSDLButtons {
     SDL_CONTROLLER_BUTTON_ZL = SDL_CONTROLLER_BUTTON_MAX + 1,
     SDL_CONTROLLER_BUTTON_ZR,
@@ -105,6 +106,12 @@ inline void controllerClose(byte controllerID)
         return;
     inputType = 0;
 }
+#endif
+
+#if RETRO_USING_SDL1
+extern byte keyState[SDLK_LAST];
+
+extern SDL_Joystick *controller;
 #endif
 
 void ProcessInput();
