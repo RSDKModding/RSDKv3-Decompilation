@@ -264,37 +264,41 @@ void RetroEngine::Run()
 #if RETRO_USING_SDL
     uint frameStart, frameEnd = SDL_GetTicks();
 #elif RETRO_USING_C2D
-    uint frameStart = svcGetSystemTick();
+    uint frameStart = osGetTime(); //svcGetSystemTick();
     uint frameEnd = frameStart;
 #endif
     float frameDelta = 0.0f;
-
+	float msPerFrame = 1000.f / 59.94f;
 
 #if RETRO_USING_SDL
     while (running) {
         frameStart = SDL_GetTicks();
 #elif RETRO_USING_C2D
     while (running && aptMainLoop()) {
-	frameStart = svcGetSystemTick();
+	frameStart = osGetTime(); //svcGetSystemTick();
 #endif
-        frameDelta = frameStart - frameEnd;
+        frameDelta += frameStart - frameEnd;
+		
+		if (frameDelta > msPerFrame * 4)
+			frameDelta = msPerFrame * 4;
 
-        if (frameDelta < 1000.0f / (float)refreshRate)
-#if RETRO_USING_SDL
-            SDL_Delay(1000.0f / (float)refreshRate - frameDelta);
-#elif RETRO_USING_C2D
-	    svcSleepThread(1000.0f / (float)refreshRate - frameDelta);
-#endif
+//        if (frameDelta < 1000.0f / (float)refreshRate)
+//#if RETRO_USING_SDL
+//            SDL_Delay(1000.0f / (float)refreshRate - frameDelta);
+//#elif RETRO_USING_C2D
+//	    svcSleepThread(1000.0f / (float)refreshRate - frameDelta);
+//#endif
 
 #if RETRO_USING_SDL
         frameEnd = SDL_GetTicks();
 #elif RETRO_USING_C2D
-	frameEnd = svcGetSystemTick();
+	frameEnd = osGetTime(); //svcGetSystemTick();
 #endif
 
         running = processEvents();
 
-        for (int s = 0; s < gameSpeed; ++s) {
+        //for (int s = 0; s < gameSpeed; ++s) {
+		for (; frameDelta >= msPerFrame; frameDelta -= msPerFrame) {
             ProcessInput();
 
             if (!masterPaused || frameStep) {
@@ -331,10 +335,13 @@ void RetroEngine::Run()
                     default: break;
                 }
 
-                RenderRenderDevice();
-                frameStep = false;
+                //RenderRenderDevice();
+                //frameStep = false;
             }
         }
+		
+		RenderRenderDevice();
+        frameStep = false;
     }
 
     ReleaseAudioDevice();
