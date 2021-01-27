@@ -98,6 +98,10 @@ bool _3ds_audioInit() {
 }
 
 void _3ds_audioExit() {
+	s_quit = true;
+	threadJoin(audioThreadID, UINT64_MAX);
+	threadFree(audioThreadID);
+
 	ndspChnReset(0);
 	linearFree(s_audioBuffer);
 }

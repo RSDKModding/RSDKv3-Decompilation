@@ -340,8 +340,8 @@ void ReleaseRenderDevice()
     SDL_DestroyRenderer(Engine.renderer);
     SDL_DestroyWindow(Engine.window);
 #elif RETRO_USING_C2D
-    C2D_Fini();
-    C3D_Fini();
+    //C2D_Fini();
+    //C3D_Fini();
     gfxExit();
 #endif
 }

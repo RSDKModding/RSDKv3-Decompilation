@@ -330,6 +330,9 @@ void RetroEngine::Run()
     }
 
     ReleaseAudioDevice();
+#if RETRO_PLATOFRM == RETRO_3DS
+    _3ds_audioExit();
+#endif
     StopVideoPlayback();
     ReleaseRenderDevice();
     writeSettings();
