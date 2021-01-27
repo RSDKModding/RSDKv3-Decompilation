@@ -303,7 +303,7 @@ public:
     bool showPaletteOverlay = false;
     bool useHQModes         = true;
 
-    void Init();
+    bool Init();
     void Run();
 
     bool LoadGameConfig(const char *Filepath);

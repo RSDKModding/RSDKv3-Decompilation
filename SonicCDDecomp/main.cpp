@@ -38,7 +38,13 @@ int main(int argc, char *argv[])
     awaitInput();
 
     printf("RetroEngine init\n");
-    Engine.Init();
+    if (!Engine.Init()) {
+	    printf("Press any button to continue.\n");
+	    awaitInput();
+	    gfxExit();
+	    return 0;
+    }
+
     printf("Audio enabled: %d\n", audioEnabled);
     printf("Engine succesfully initialised.\n");
     //awaitInput();

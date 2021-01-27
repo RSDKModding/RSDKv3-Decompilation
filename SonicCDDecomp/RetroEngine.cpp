@@ -208,7 +208,7 @@ bool processEvents()
     return true;
 }
 
-void RetroEngine::Init()
+bool RetroEngine::Init()
 {
     CalculateTrigAngles();
     GenerateBlendLookupTable();
@@ -227,7 +227,13 @@ void RetroEngine::Init()
     strcat(datapath, "\\Data.rsdk");
     CheckRSDKFile(datapath);
 #else
-    CheckRSDKFile(BASE_PATH "Data.rsdk");
+    if (!CheckRSDKFile(BASE_PATH "Data.rsdk")) {
+	    printf("Error: RSDK file not found.\n"
+	           "Make sure you have the Data.rsdk\n"
+		   "file from the PC release oF\n"
+		   "Sonic CD at /3ds/SonicCD\n");
+	    return false;
+    }
     InitUserdata();
 #endif
 
@@ -249,6 +255,8 @@ void RetroEngine::Init()
     int lower        = getLowerRate(targetRefreshRate, refreshRate);
     renderFrameIndex = targetRefreshRate / lower;
     skipFrameIndex   = refreshRate / lower;
+
+    return true;
 }
 
 void RetroEngine::Run()

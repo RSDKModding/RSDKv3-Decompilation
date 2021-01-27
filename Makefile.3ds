@@ -17,6 +17,12 @@ CXXFLAGS_ALL = $(CFLAGS_ALL) $(LIBS_ALL) -fno-rtti -std=gnu++11 -Idependencies/a
 LDFLAGS	     = -specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 LDFLAGS_ALL  = $(LDFLAGS)
 
+TARGET = SonicCD
+
+APP_TITLE = Sonic CD
+APP_DESCRIPTION = Unofficial port of the 2011 Sonic CD remake to the 3DS
+APP_AUTHOR = rubberduckycooly, SaturnSH2x2 et. al.
+
 export INCLUDE = $(foreach dir,$(LIBDIRS),-I$(dir)/include) \
                  -I$(CURDIR)/$(BUILD)
 
@@ -78,7 +84,7 @@ $(BUILDDIR)/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $^ -o $@ -c
 
-SonicCD.elf: $(SOURCES:%=objects_3ds/%.o)
+$(TARGET).elf: $(SOURCES:%=objects_3ds/%.o)
 	$(SILENTMSG) linking $(notdir $@)
 	$(LD) $(LDFLAGS) $(OBJS)  $(LIBPATHS) $(LIBS_ALL) -o $@
 
