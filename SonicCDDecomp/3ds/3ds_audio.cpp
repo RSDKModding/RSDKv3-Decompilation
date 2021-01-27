@@ -13,6 +13,7 @@ volatile bool s_quit = false;
 Thread audioThreadID;
 
 // taken from Audio.cpp
+#if !RETRO_USING_SDL1_AUDIO
 size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
@@ -314,3 +315,5 @@ void _3ds_audioThread(void* const nul) {
 
 	printf("exiting audio thread...\n");
 }
+
+#endif

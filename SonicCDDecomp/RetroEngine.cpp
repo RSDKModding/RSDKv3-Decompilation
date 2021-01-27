@@ -384,15 +384,15 @@ void RetroEngine::Run()
     }
 
     ReleaseAudioDevice();
-#if RETRO_PLATOFRM == RETRO_3DS
+#if RETRO_PLATOFRM == RETRO_3DS && !RETRO_USING_SDL1_AUDIO
     _3ds_audioExit();
 #endif
     StopVideoPlayback();
     ReleaseRenderDevice();
     writeSettings();
 
-#if RETRO_USING_SDL2
-    SDL_Quit();
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2 || RETRO_USING_SDL1_AUDIO
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
 #endif
 }
 

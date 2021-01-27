@@ -7,7 +7,7 @@ include $(DEVKITARM)/3ds_rules
 
 BUILDDIR=objects_3ds
 
-LIBS_ALL = -ltheoradec -lvorbisidec -logg -lcitro2d -lcitro3d -lctru -lm
+LIBS_ALL = -lSDL -ltheoradec -lvorbisidec -logg -lcitro2d -lcitro3d -lctru -lm
 LIBDIRS = $(CTRULIB) $(PORTLIBS)
 export LIBPATHS	= $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 

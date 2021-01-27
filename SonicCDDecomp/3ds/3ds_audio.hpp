@@ -17,6 +17,7 @@
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 #define ADJUST_VOLUME(s, v) (s = (s * v) / MAX_VOLUME)
 
+#if !RETRO_USING_SDL1_AUDIO
 bool _3ds_audioInit();
 void _3ds_audioExit();
 void _3ds_musicLogic();
@@ -28,3 +29,4 @@ void _3ds_audioThread(void* const nul);
 
 extern int trackBuffer;
 extern LightEvent s_event;
+#endif
