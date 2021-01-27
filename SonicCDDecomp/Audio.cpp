@@ -617,7 +617,7 @@ bool PlayMusic(int track)
     musicStatus = MUSIC_LOADING;
     UNLOCK_AUDIO_DEVICE()
 
-#if RETRO_PLATFORM == RETRO_3DS
+#if RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_SDL1_AUDIO
     LightEvent_Signal(&s_event);
 #endif
     return true;
@@ -736,7 +736,7 @@ void PlaySfx(int sfx, bool loop)
     if (nextChannelPos == CHANNEL_COUNT)
         nextChannelPos = 0;
     printf("Play: %s\n", sfxList[sfx].name);
-#if RETRO_PLATFORM == RETRO_3DS
+#if RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_SDL1_AUDIO
     LightEvent_Signal(&s_event);
 #endif
     UNLOCK_AUDIO_DEVICE()
