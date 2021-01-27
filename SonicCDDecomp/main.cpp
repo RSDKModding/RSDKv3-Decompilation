@@ -4,7 +4,7 @@
 void awaitInput() {
      while (aptMainLoop()) {
 	hidScanInput();
-	if (hidKeysDown() & KEY_B)
+	if (hidKeysDown())
 		break;
 
 	gfxFlushBuffers();
@@ -26,13 +26,22 @@ int main(int argc, char *argv[])
 
     gfxInitDefault();
     DebugConsoleInit();
+    printf("v1.0 Alpha\n");
+    printf("This port is far from complete. You\n"
+           "may experience bugs, glitches, and\n"
+	   "other oddities that might detract\n"
+	   "from your overall experience.\n\n"
+	   "Also, don't enter the special\n"
+	   "stages, the floor is broken.\n\n"
+	   "Press any button to continue.\n");
 
     awaitInput();
 
+    printf("RetroEngine init\n");
     Engine.Init();
     printf("Audio enabled: %d\n", audioEnabled);
     printf("Engine succesfully initialised.\n");
-    awaitInput();
+    //awaitInput();
 
     
     printf("Running engine...\n");
