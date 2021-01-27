@@ -339,6 +339,10 @@ void InitUserdata()
 #endif
     }
 #endif
+
+#if RETRO_PLATFORM == RETRO_3DS
+    Engine.useHQModes = false; //fixes broken special stage floors
+#endif
 }
 
 void writeSettings() {
