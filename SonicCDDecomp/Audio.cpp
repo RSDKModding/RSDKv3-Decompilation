@@ -539,7 +539,18 @@ void LoadSfx(char *filePath, byte sfxID)
 			(unsigned char)sfx[40];
 
     sfxList[sfxID].buffer = (s16*) malloc(wav_length);
-    memcpy(sfxList[sfxID].buffer, sfx + 44, wav_length);
+    //memcpy(sfxList[sfxID].buffer, sfx + 44, wav_length);
+	
+	//convert unsigned 8-bit audio to signed 8-bit
+	u8* in = (u8*)sfx + 44;
+	u8* out = (u8*)sfxList[sfxID].buffer;
+	for (unsigned long i = 0; i < wav_length; ++i)
+	{
+		*out = *in - 128;
+		out++;
+		in++;
+	}
+	
     StrCopy(sfxList[sfxID].name, filePath);
     sfxList[sfxID].length = wav_length / sizeof(s16);
     sfxList[sfxID].loaded = true;
