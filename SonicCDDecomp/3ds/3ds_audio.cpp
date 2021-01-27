@@ -53,7 +53,7 @@ bool _3ds_audioInit() {
 		ndspChnReset(i);
 		ndspChnSetInterp(i, NDSP_INTERP_LINEAR);
 		ndspChnSetRate(i, SAMPLE_RATE);
-		ndspChnSetFormat(i, NDSP_FORMAT_MONO_PCM8);
+		ndspChnSetFormat(i, NDSP_FORMAT_STEREO_PCM8);
 	}
 
 	const size_t bufferSize = (WAVEBUF_SIZE * ARRAY_SIZE(s_waveBufs))
@@ -295,7 +295,7 @@ void _3ds_sfxDecode(ChannelInfo* sfx, ndspWaveBuf* wbuf) {
 	memcpy(wbuf->data_pcm8, sfx->samplePtr, SFX_BUFFER_SZ);
 	wbuf->nsamples = sfx->sampleLength;
 	ndspChnWaveBufAdd(channelToUse, wbuf);
-	DSP_FlushDataCache(wbuf->data_pcm8, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s16));
+	DSP_FlushDataCache(wbuf->data_pcm8, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s8));
 }
 
 void _3ds_audioThread(void* const nul) {

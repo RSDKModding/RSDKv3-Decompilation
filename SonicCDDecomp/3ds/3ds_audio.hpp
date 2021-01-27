@@ -15,6 +15,7 @@
 #define _3DS_MAX_CHANNELS   (24)
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#define ADJUST_VOLUME(s, v) (s = (s * v) / MAX_VOLUME)
 
 bool _3ds_audioInit();
 void _3ds_audioExit();

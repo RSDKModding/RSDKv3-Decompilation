@@ -126,7 +126,8 @@ inline void freeMusInfo()
 #else
 void ProcessMusicStream();
 void ProcessAudioPlayback();
-void ProcessAudioMixing();
+void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan);
+
 
 inline void freeMusInfo()
 {

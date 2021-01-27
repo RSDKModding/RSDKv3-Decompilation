@@ -399,7 +399,6 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
     }
 }
 
-#if RETRO_USING_SDL2
 void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan)
 {
     if (volume == 0)
@@ -439,7 +438,6 @@ void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sby
         i++;
     }
 }
-#endif
 
 void SetMusicTrack(char *filePath, byte trackID, bool loop, uint loopPoint)
 {
@@ -533,26 +531,29 @@ void LoadSfx(char *filePath, byte sfxID)
         }
         SDL_UnlockAudio();
 #elif RETRO_PLATFORM == RETRO_3DS
-    uint wav_length =   ((unsigned char)sfx[43] << 24) | 
-	    		((unsigned char)sfx[42] << 16) | 
-			((unsigned char)sfx[41] << 8)  | 
-			(unsigned char)sfx[40];
+    //uint wav_length =   ((unsigned char)sfx[43] << 24) | 
+    //	    		((unsigned char)sfx[42] << 16) | 
+    //			((unsigned char)sfx[41] << 8)  | 
+    //			(unsigned char)sfx[40];
 
-    sfxList[sfxID].buffer = (s16*) malloc(wav_length);
+    uint wav_length = info.fileSize - 44;
+    sfxList[sfxID].buffer = (s16*) malloc(wav_length * CHANNELS_PER_SAMPLE);
     //memcpy(sfxList[sfxID].buffer, sfx + 44, wav_length);
 	
-	//convert unsigned 8-bit audio to signed 8-bit
-	u8* in = (u8*)sfx + 44;
-	u8* out = (u8*)sfxList[sfxID].buffer;
-	for (unsigned long i = 0; i < wav_length; ++i)
-	{
-		*out = *in - 128;
-		out++;
-		in++;
-	}
+    //convert unsigned 8-bit audio to signed 8-bit
+    u8* in = (u8*)sfx + 44;
+    u8* out = (u8*)sfxList[sfxID].buffer;
+    for (unsigned long i = 0; i < wav_length; ++i)
+    {
+        *out = *in - 128;
+        out++;
+	*out = *in - 128;
+	out++;
+        in++;
+    }
 	
     StrCopy(sfxList[sfxID].name, filePath);
-    sfxList[sfxID].length = wav_length / sizeof(s16);
+    sfxList[sfxID].length = wav_length / sizeof(s8);
     sfxList[sfxID].loaded = true;
     printf("Load: %s, %d samples\n", sfxList[sfxID].name, sfxList[sfxID].length);
 
@@ -587,6 +588,9 @@ void PlaySfx(int sfx, bool loop)
 }
 void SetSfxAttributes(int sfx, int loopCount, sbyte pan)
 {
+    // we'll do this right eventually, but this is a hack
+    // to get ring SFX to play, albeit without the stereo alternation
+    /*
     LOCK_AUDIO_DEVICE()
     int sfxChannel = -1;
     for (int i = 0; i < CHANNEL_COUNT; ++i) {
@@ -606,6 +610,8 @@ void SetSfxAttributes(int sfx, int loopCount, sbyte pan)
     sfxInfo->pan          = pan;
     sfxInfo->sfxID        = sfx;
     UNLOCK_AUDIO_DEVICE()
+    */
+    PlaySfx(sfx, false);
 }
 
 #if RETRO_USING_C2D
@@ -617,7 +623,4 @@ void ProcessAudioPlayback() {
     return;
 }
 
-void ProcessAudioMixing() {
-    return;
-}
 #endif
