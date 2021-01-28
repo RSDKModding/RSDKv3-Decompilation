@@ -88,14 +88,20 @@ $(TARGET).elf: $(SOURCES:%=objects_3ds/%.o)
 	$(SILENTMSG) linking $(notdir $@)
 	$(LD) $(LDFLAGS) $(OBJS)  $(LIBPATHS) $(LIBS_ALL) -o $@
 
-SonicCD.3dsx: SonicCD.elf
+$(TARGET).3dsx: $(TARGET).elf
 	$(SILENTCMD)3dsxtool $< $@ $(_3DSXFLAGS)
 	$(SILENTMSG) built ... $(notdir $@)
-
-soniccd: SonicCD.3dsx
-	echo "built"
 
 clean:
 	@echo "cleaning..."
 	@rm -rf objects_3ds
 	@rm -f SonicCD.elf
+	@rm -f SonicCD.cia
+	@rm -f resources/*.bnr
+	@rm -f resources/*.icn
+
+cia: $(TARGET).elf
+	@bannertool makebanner -i resources/banner.png -a resources/jingle.wav -o resources/banner.bnr
+	@bannertool makesmdh -s "Sonic CD" -l "Sonic CD" -p "Rubberduckycooly, SaturnSH2x2" -i resources/48x48.png -o resources/icon.icn
+	@makerom -f cia -o $(TARGET).cia -DAPP_ENCRYPTED=false -elf $(TARGET).elf -rsf resources/SonicCD.rsf -exefslogo -target t -icon resources/icon.icn -banner resources/banner.bnr
+	@echo "built cia"
