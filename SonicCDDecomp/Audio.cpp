@@ -742,7 +742,6 @@ void PlaySfx(int sfx, bool loop)
     sfxInfo->pan          = 0;
     if (nextChannelPos == CHANNEL_COUNT)
         nextChannelPos = 0;
-    printf("Play: %s\n", sfxList[sfx].name);
 #if RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_SDL1_AUDIO
     LightEvent_Signal(&s_event);
 #endif

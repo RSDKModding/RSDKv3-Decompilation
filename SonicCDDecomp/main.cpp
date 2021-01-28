@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
 
     gfxInitDefault();
     DebugConsoleInit();
-    printf("v1.1a\n");
     printf("This port is far from complete. You\n"
            "may experience bugs, glitches, and\n"
 	   "other oddities that might detract\n"
