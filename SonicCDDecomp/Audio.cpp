@@ -248,6 +248,13 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
             while (bytes_gotten < bytes_wanted) {
                 // We need more samples: get some
 #if RETRO_PLATFORM == RETRO_3DS
+		// admittedly kinda hacky, but the audio will just freeze after
+		// time traveling if we don't do this
+		if (musicStatus != MUSIC_PLAYING) {
+			ndspChnWaveBufClear(0);
+			return;
+		}
+
 		long bytes_read = ov_read(&musInfo.vorbisFile, (char*)musInfo.buffer,
 				sizeof(musInfo.buffer) > (bytes_wanted - bytes_gotten) ? 
 					(bytes_wanted - bytes_gotten) : sizeof(musInfo.buffer),
