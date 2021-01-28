@@ -26,14 +26,11 @@ int main(int argc, char *argv[])
 
     gfxInitDefault();
     DebugConsoleInit();
-    printf("v1.0 Alpha\n");
+    printf("v1.1a\n");
     printf("This port is far from complete. You\n"
            "may experience bugs, glitches, and\n"
 	   "other oddities that might detract\n"
-	   "from your overall experience.\n\n"
-	   "Also, don't enter the special\n"
-	   "stages, the floor is broken.\n\n"
-	   "Press any button to continue.\n");
+	   "from your overall experience.\n\n");
 
     awaitInput();
 
