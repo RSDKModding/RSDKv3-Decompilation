@@ -103,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: SonicCD-Linux
-          path: soniccd
+          path: bin/soniccd
 
   psvita:
     runs-on: ubuntu-latest
