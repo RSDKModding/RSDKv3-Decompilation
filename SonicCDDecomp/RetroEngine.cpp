@@ -300,7 +300,7 @@ bool RetroEngine::Init()
 
 void RetroEngine::Run()
 {
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
     uint frameStart, frameEnd = SDL_GetTicks();
 #elif RETRO_USING_C2D
     uint frameStart = osGetTime(); //svcGetSystemTick();
@@ -309,10 +309,10 @@ void RetroEngine::Run()
     float frameDelta = 0.0f;
 	float msPerFrame = 1000.f / 59.94f;
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
     while (running) {
         frameStart = SDL_GetTicks();
-#elif RETRO_USING_C2D
+#elif RETRO_PLATFORM == RETRO_3DS
     while (running && aptMainLoop()) {
 	frameStart = osGetTime(); //svcGetSystemTick();
 #endif
@@ -328,9 +328,9 @@ void RetroEngine::Run()
 //	    svcSleepThread(1000.0f / (float)refreshRate - frameDelta);
 //#endif
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
         frameEnd = SDL_GetTicks();
-#elif RETRO_USING_C2D
+#elif RETRO_PLATFORM == RETRO_3DS
 	frameEnd = osGetTime(); //svcGetSystemTick();
 #endif
 

@@ -34,7 +34,6 @@ struct MusicPlaybackInfo {
 #endif
 #if RETRO_USING_SDL2
     SDL_AudioStream *stream;
-    Sint16 *buffer;
 // TODO: this is only here to make the compiler shut up,
 // come up with a proper implementation later
 #elif RETRO_PLATFORM == RETRO_3DS

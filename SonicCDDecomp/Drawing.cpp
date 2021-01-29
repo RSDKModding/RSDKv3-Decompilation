@@ -1660,7 +1660,9 @@ void DrawVLineScrollLayer(int layerID)
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     //TODO: this
 #endif
 }
@@ -1712,8 +1714,9 @@ void Draw3DFloorLayer(int layerID)
         }
     }
 #endif
+#if RETRO_USING_C2D
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -1792,7 +1795,9 @@ void Draw3DSkyLayer(int layerID)
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -1848,7 +1853,9 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -1889,7 +1896,9 @@ void SetFadeHQ(int R, int G, int B, int A)
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif 
 }
@@ -1925,7 +1934,9 @@ void DrawTintRectangle(int XPos, int YPos, int width, int height)
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2028,7 +2039,9 @@ void DrawScaledTintMask(int direction, int XPos, int YPos, int pivotX, int pivot
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2075,7 +2088,9 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2204,7 +2219,9 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
         // TODO: this
 #endif
 }
@@ -2313,7 +2330,9 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2464,7 +2483,9 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2622,7 +2643,9 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2669,7 +2692,9 @@ void DrawBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int 
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2741,7 +2766,9 @@ void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX,
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2812,7 +2839,9 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -2876,7 +2905,9 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -3112,7 +3143,9 @@ void DrawFace(void *v, uint colour)
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
@@ -3241,7 +3274,9 @@ void DrawTexturedFace(void *v, byte sheetID)
     }
 #endif
 
-#if RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_USING_C2D
+
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
 }
