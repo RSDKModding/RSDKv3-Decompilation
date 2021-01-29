@@ -116,8 +116,16 @@ int InitRenderDevice()
 #endif
     
 #elif RETRO_USING_C2D
+    gfxInitDefault();
+    DebugConsoleInit();
+    C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+    C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
+    C2D_Prepare();
 
+    Engine.topScreen = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
 #elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
+    gfxInitDefault();
+    DebugConsoleInit(); 
     gfxSetScreenFormat(GFX_TOP, GSP_RGB565_OES);
 #endif
 
@@ -260,14 +268,17 @@ void RenderRenderDevice()
 #endif
 
     int pitch = 0;
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_SetRenderTarget(Engine.renderer, texTarget);
 
     // Clear the screen. This is needed to keep the
     // pillarboxes in fullscreen from displaying garbage data.
     SDL_RenderClear(Engine.renderer);
 #elif RETRO_USING_C2D
-
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    C2D_TargetClear(Engine.topScreen, C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
+    C2D_SceneBegin(Engine.topScreen);
+    C3D_FrameEnd(0);
 #elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
     CopyToFramebuffer();
     gfxFlushBuffers();
@@ -278,7 +289,7 @@ void RenderRenderDevice()
     ushort *pixels = NULL;
     if (Engine.gameMode != ENGINE_VIDEOWAIT) {
         if (!drawStageGFXHQ) {
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
             SDL_LockTexture(Engine.screenBuffer, NULL, (void **)&pixels, &pitch);
             memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE);
             SDL_UnlockTexture(Engine.screenBuffer);
@@ -292,7 +303,7 @@ void RenderRenderDevice()
         }
         else {
             int w = 0, h = 0;
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
             SDL_QueryTexture(Engine.screenBuffer2x, NULL, NULL, &w, &h);
             SDL_LockTexture(Engine.screenBuffer2x, NULL, (void **)&pixels, &pitch);
 #endif
@@ -329,19 +340,19 @@ void RenderRenderDevice()
                     pixels++;
                 }
             }
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
             SDL_UnlockTexture(Engine.screenBuffer2x);
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, destScreenPos);
 #endif
         }
     }
     else {
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
         SDL_RenderCopy(Engine.renderer, Engine.videoBuffer, NULL, destScreenPos);
 #endif
     }
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     if (tmpEnhancedScaling) {
         // set render target back to the screen.
         SDL_SetRenderTarget(Engine.renderer, NULL);
@@ -416,10 +427,9 @@ void ReleaseRenderDevice()
     SDL_DestroyRenderer(Engine.renderer);
     SDL_DestroyWindow(Engine.window);
 #elif RETRO_USING_C2D
-
+    C2D_Fini();
+    C3D_Fini();
 #elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
-    //C2D_Fini();
-    //C3D_Fini();
     gfxExit();
 #endif
 

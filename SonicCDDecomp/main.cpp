@@ -24,16 +24,16 @@ int main(int argc, char *argv[])
     // for the game to even run at full speed
     osSetSpeedupEnable(true);
 
-    gfxInitDefault();
-    DebugConsoleInit();
-    printf("This port is far from complete. You\n"
-           "may experience bugs, glitches, and\n"
-	   "other oddities that might detract\n"
-	   "from your overall experience.\n\n");
+    //gfxInitDefault();
+    //DebugConsoleInit();
+    //printf("This port is far from complete. You\n"
+    //       "may experience bugs, glitches, and\n"
+//	   "other oddities that might detract\n"
+//	   "from your overall experience.\n\n");
 
-    awaitInput();
+    //awaitInput();
 
-    printf("RetroEngine init\n");
+    //printf("RetroEngine init\n");
     if (!Engine.Init()) {
 	    printf("Press any button to continue.\n");
 	    awaitInput();
