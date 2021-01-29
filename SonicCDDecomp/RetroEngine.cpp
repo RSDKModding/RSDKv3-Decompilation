@@ -302,7 +302,7 @@ void RetroEngine::Run()
 {
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
     uint frameStart, frameEnd = SDL_GetTicks();
-#elif RETRO_USING_C2D
+#elif RETRO_PLATFORM == RETRO_3DS
     uint frameStart = osGetTime(); //svcGetSystemTick();
     uint frameEnd = frameStart;
 #endif

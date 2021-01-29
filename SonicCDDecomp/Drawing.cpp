@@ -14,6 +14,7 @@ GFXSurface gfxSurface[SURFACE_MAX];
 byte graphicData[GFXDATA_MAX];
 
 #if RETRO_PLATFORM == RETRO_3DS
+// implementation taken from here: https://gbatemp.net/threads/best-way-to-draw-pixel-buffer.445173/
 void CopyToFramebuffer() {
     u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, 0, 0);
     ushort* tfb = new ushort[SCREEN_XSIZE * SCREEN_YSIZE]; 
@@ -115,14 +116,9 @@ int InitRenderDevice()
 #endif
     
 #elif RETRO_USING_C2D
-    //C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
-    //C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
-    //C2D_Prepare();
 
-    //Engine.topScreen = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
-    //Engine.videoBuffer = C3D_GetFrameBuf();
+#elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
     gfxSetScreenFormat(GFX_TOP, GSP_RGB565_OES);
-    //gfxSetDoubleBuffering(GFX_TOP, false);
 #endif
 
 #if RETRO_USING_SDL1
@@ -271,14 +267,8 @@ void RenderRenderDevice()
     // pillarboxes in fullscreen from displaying garbage data.
     SDL_RenderClear(Engine.renderer);
 #elif RETRO_USING_C2D
-    //C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    // should just draw red atm
-    //C2D_TargetClear(Engine.topScreen, C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
-    //C2D_SceneBegin(Engine.topScreen);
-    //Engine.videoBuffer->colorBuf = Engine.frameBuffer;
-    //C3D_SetFrameBuf(Engine.videoBuffer);
-    //
-    // implementation taken from here: https://gbatemp.net/threads/best-way-to-draw-pixel-buffer.445173/
+
+#elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
     CopyToFramebuffer();
     gfxFlushBuffers();
     gfxSwapBuffers();
@@ -295,6 +285,8 @@ void RenderRenderDevice()
 
             SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, destScreenPos);
 #elif RETRO_USING_C2D
+
+#elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
 	    memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE);
 #endif
         }
@@ -424,6 +416,8 @@ void ReleaseRenderDevice()
     SDL_DestroyRenderer(Engine.renderer);
     SDL_DestroyWindow(Engine.window);
 #elif RETRO_USING_C2D
+
+#elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
     //C2D_Fini();
     //C3D_Fini();
     gfxExit();

@@ -97,7 +97,7 @@ typedef unsigned int uint;
 				  // and input are being redone using libctru and Citro2D
 #define RETRO_USING_SDL2       (0)
 #define RETRO_USING_SDL1       (0)
-#define RETRO_USING_C2D        (1)
+#define RETRO_USING_C2D        (0)
 #define RETRO_USING_SDL1_AUDIO (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL2       (0)
