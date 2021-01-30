@@ -308,6 +308,8 @@ void RetroEngine::Run()
 #endif
     float frameDelta = 0.0f;
 	float msPerFrame = 1000.f / 59.94f;
+	unsigned int frameTime = 0;
+	bool fullspeed = false;
 
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
     while (running) {
@@ -316,10 +318,17 @@ void RetroEngine::Run()
     while (running && aptMainLoop()) {
 	frameStart = osGetTime(); //svcGetSystemTick();
 #endif
-        frameDelta += frameStart - frameEnd;
+		frameTime = frameStart - frameEnd;
+		frameEnd = frameStart;
 		
-		if (frameDelta > msPerFrame * 4)
-			frameDelta = msPerFrame * 4;
+		if (frameTime <= ceil(msPerFrame*2)+1) {
+			fullspeed = true;
+		} else {
+			frameDelta += frameTime;
+			
+			if (frameDelta > msPerFrame * 4)
+				frameDelta = msPerFrame * 4;
+		}
 
 //        if (frameDelta < 1000.0f / (float)refreshRate)
 //#if RETRO_USING_SDL
@@ -328,16 +337,16 @@ void RetroEngine::Run()
 //	    svcSleepThread(1000.0f / (float)refreshRate - frameDelta);
 //#endif
 
-#if RETRO_USING_SDL1 || RETRO_USING_SDL2
-        frameEnd = SDL_GetTicks();
-#elif RETRO_PLATFORM == RETRO_3DS
-	frameEnd = osGetTime(); //svcGetSystemTick();
-#endif
+//#if RETRO_USING_SDL1 || RETRO_USING_SDL2
+//        frameEnd = SDL_GetTicks();
+//#elif RETRO_PLATFORM == RETRO_3DS
+//	frameEnd = osGetTime(); //svcGetSystemTick();
+//#endif
 
         running = processEvents();
 
         //for (int s = 0; s < gameSpeed; ++s) {
-		for (; frameDelta >= msPerFrame; frameDelta -= msPerFrame) {
+		for (; fullspeed || frameDelta >= msPerFrame; frameDelta -= msPerFrame) {
             ProcessInput();
 
             if (!masterPaused || frameStep) {
@@ -373,11 +382,18 @@ void RetroEngine::Run()
                         break;
                     default: break;
                 }
+				
+				if (fullspeed) break;
 
                 //RenderRenderDevice();
                 //frameStep = false;
             }
         }
+		
+		if (fullspeed) {
+			frameDelta = 0;
+			fullspeed = false;
+		}
 		
 		RenderRenderDevice();
         frameStep = false;
