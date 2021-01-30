@@ -19,9 +19,10 @@ LDFLAGS_ALL  = $(LDFLAGS)
 
 TARGET = SonicCD
 
-APP_TITLE = Sonic CD
-APP_DESCRIPTION = Unofficial port of the 2011 Sonic CD remake to the 3DS
-APP_AUTHOR = rubberduckycooly, SaturnSH2x2 et. al.
+APP_TITLE := Sonic CD
+APP_DESCRIPTION := Unofficial port of the 2011 Sonic CD remake to the 3DS
+APP_AUTHOR := rubberduckycooly, SaturnSH2x2 et. al.
+APP_ICON := resources/48x48.png
 
 export INCLUDE = $(foreach dir,$(LIBDIRS),-I$(dir)/include) \
                  -I$(CURDIR)/$(BUILD)
@@ -80,28 +81,36 @@ OBJS = $(BUILDDIR)/dependencies/all/theoraplay/theoraplay.c.o \
 	$(BUILDDIR)/SonicCDDecomp/Userdata.cpp.o \
 	$(BUILDDIR)/SonicCDDecomp/Video.cpp.o
 
+export _3DSXDEPS	:=	$(if $(NO_SMDH),,$(TARGET).smdh)
+
+ifeq ($(strip $(NO_SMDH)),)
+	export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
+endif
+
+ifneq ($(ROMFS),)
+	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
+endif
+
 $(BUILDDIR)/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $^ -o $@ -c
+
+$(TARGET).3dsx: $(TARGET).elf $(_3DSXDEPS)
 
 $(TARGET).elf: $(SOURCES:%=objects_3ds/%.o)
 	$(SILENTMSG) linking $(notdir $@)
 	$(LD) $(LDFLAGS) $(OBJS)  $(LIBPATHS) $(LIBS_ALL) -o $@
 
-$(TARGET).3dsx: $(TARGET).elf
-	$(SILENTCMD)3dsxtool $< $@ $(_3DSXFLAGS)
-	$(SILENTMSG) built ... $(notdir $@)
-
 clean:
 	@echo "cleaning..."
 	@rm -rf objects_3ds
+	@rm -f SonicCD.3dsx
+	@rm -f SonicCD.smdh
 	@rm -f SonicCD.elf
 	@rm -f SonicCD.cia
-	@rm -f resources/*.bnr
-	@rm -f resources/*.icn
 
 cia: $(TARGET).elf
-	@bannertool makebanner -i resources/banner.png -a resources/jingle.wav -o resources/banner.bnr
-	@bannertool makesmdh -s "Sonic CD" -l "Sonic CD" -p "Rubberduckycooly, SaturnSH2x2" -i resources/48x48.png -o resources/icon.icn
-	@makerom -f cia -o $(TARGET).cia -DAPP_ENCRYPTED=false -elf $(TARGET).elf -rsf resources/SonicCD.rsf -exefslogo -target t -icon resources/icon.icn -banner resources/banner.bnr
+	@bannertool makebanner -i resources/banner.png -a resources/jingle.wav -o "$(BUILDDIR)/banner.bnr"
+	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -o "$(BUILDDIR)/icon.icn"
+	@makerom -f cia -o "$(TARGET).cia" -DAPP_ENCRYPTED=false -elf "$(TARGET).elf" -rsf resources/SonicCD.rsf -exefslogo -target t -icon "$(BUILDDIR)/icon.icn" -banner "$(BUILDDIR)/banner.bnr"
 	@echo "built cia"
