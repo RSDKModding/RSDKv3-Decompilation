@@ -231,6 +231,11 @@ int AddGraphicsFile(const char *filePath)
         case 'x': LoadGFXFile(sheetPath, sheetID); break; // Not in lite/sf ver
     }
 
+#if RETRO_USING_C2D
+    printf("Adding sprite sheet: %d\n", sheetID);
+    _3ds_cacheGfxSurface(sheetID);
+#endif
+
     return sheetID;
 }
 void RemoveGraphicsFile(const char *filePath, int sheetID)
@@ -253,6 +258,11 @@ void RemoveGraphicsFile(const char *filePath, int sheetID)
                 gfxSurface[i].dataPosition -= gfxSurface[sheetID].height * gfxSurface[sheetID].width;
         }
     }
+
+#if RETRO_USING_C2D
+    printf("Deleting sprite sheet: %d\n", sheetID);
+    _3ds_delGfxSurface(sheetID);
+#endif
 }
 
 int LoadBMPFile(const char *filePath, byte sheetID)

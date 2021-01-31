@@ -271,8 +271,9 @@ extern bool engineDebugMode;
 #include "Debug.hpp"
 
 #if RETRO_PLATFORM == RETRO_3DS
-#include "3ds/3ds_debug.hpp"
-#include "3ds/3ds_audio.hpp"
+#include "3ds/debug_3ds.hpp"
+//#include "3ds/3ds_audio.hpp"
+#include "3ds/render_3ds.hpp"
 #endif
 
 class RetroEngine

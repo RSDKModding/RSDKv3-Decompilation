@@ -30,8 +30,9 @@ export INCLUDE = $(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 export LD = $(CXX)
 
 SOURCES = dependencies/all/theoraplay/theoraplay.c \
-	  	SonicCDDecomp/3ds/3ds_debug.cpp \
-		SonicCDDecomp/3ds/3ds_audio.cpp \
+	  	SonicCDDecomp/3ds/debug_3ds.cpp \
+		SonicCDDecomp/3ds/audio_3ds.cpp \
+		SonicCDDecomp/3ds/render_3ds.cpp \
 		SonicCDDecomp/Animation.cpp \
 		SonicCDDecomp/Audio.cpp \
 		SonicCDDecomp/Collision.cpp \
@@ -56,8 +57,9 @@ SOURCES = dependencies/all/theoraplay/theoraplay.c \
 		SonicCDDecomp/Video.cpp
 
 OBJS = $(BUILDDIR)/dependencies/all/theoraplay/theoraplay.c.o \
-	$(BUILDDIR)/SonicCDDecomp/3ds/3ds_debug.cpp.o \
-	$(BUILDDIR)/SonicCDDecomp/3ds/3ds_audio.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/3ds/debug_3ds.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/3ds/audio_3ds.cpp.o \
+	$(BUILDDIR)/SonicCDDecomp/3ds/render_3ds.cpp.o \
 	$(BUILDDIR)/SonicCDDecomp/Animation.cpp.o \
 	$(BUILDDIR)/SonicCDDecomp/Audio.cpp.o \
 	$(BUILDDIR)/SonicCDDecomp/Collision.cpp.o \
