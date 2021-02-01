@@ -4,8 +4,13 @@ short blendLookupTable[BLENDTABLE_SIZE];
 short subtractLookupTable[BLENDTABLE_SIZE];
 short tintLookupTable[TINTTABLE_SIZE];
 
+#if RETRO_PLATFORM == RETRO_3DS
+int SCREEN_XSIZE = 400;
+int SCREEN_CENTERX = 200;
+#else
 int SCREEN_XSIZE   = 424;
 int SCREEN_CENTERX = 424 / 2;
+#endif
 
 DrawListEntry drawListEntries[DRAWLAYER_COUNT];
 
@@ -2093,7 +2098,6 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
 #endif
 
 #if RETRO_USING_C2D
-    /*
     s8 index = -1;
     for (s8 i = 0; i < SPRITES_MAX; i++) {
         if (!_3ds_sprites[i].enabled) {
@@ -2106,8 +2110,10 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
         return;
 
     _3ds_sprites[index].enabled = 1;
-    _3ds_sprites[index].sprite.image.
-    */
+    Tex3DS_SubTexture* subtex = _3ds_sprites[index].image.subtex;
+    subtex->width  = (u16) width;
+    subtex->height = (u16) height;
+    
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
