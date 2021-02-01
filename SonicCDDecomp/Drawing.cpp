@@ -2093,7 +2093,21 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
 #endif
 
 #if RETRO_USING_C2D
+    /*
+    s8 index = -1;
+    for (s8 i = 0; i < SPRITES_MAX; i++) {
+        if (!_3ds_sprites[i].enabled) {
+	    index = i;
+	    break;
+	}
+    }
 
+    if (index == -1)
+        return;
+
+    _3ds_sprites[index].enabled = 1;
+    _3ds_sprites[index].sprite.image.
+    */
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif

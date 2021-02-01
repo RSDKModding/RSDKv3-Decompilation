@@ -1,6 +1,7 @@
 #include "../RetroEngine.hpp"
 
-C3D_Tex _3ds_textureData[SURFACE_MAX];
+C3D_Tex      _3ds_textureData[SURFACE_MAX];
+_3ds_sprite  _3ds_sprites[SPRITES_MAX];
 
 // NOTE: we going the mobile route for HW rendering and 
 // will probably just use tints for mid-frame palette
@@ -28,6 +29,7 @@ void _3ds_cacheGfxSurface(int sheetID) {
         	        	int w = width;
         	while (w--) {
             		if (*gfxDataPtr > 0)
+				*bufferPtr = activePalette[*gfxDataPtr];
             		++gfxDataPtr;
         	}
 
