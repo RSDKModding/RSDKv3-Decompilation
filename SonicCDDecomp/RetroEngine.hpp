@@ -114,9 +114,13 @@ typedef unsigned int uint;
 #define RETRO_GAMEPLATFORM (RETRO_STANDARD)
 #endif
 
-#define RETRO_SW_RENDER  (0)
-#define RETRO_HW_RENDER  (1)
+#define RETRO_SW_RENDER  (1)
+#define RETRO_HW_RENDER  (0)
+#if RETRO_USING_C2D
 #define RETRO_RENDERTYPE (RETRO_HW_RENDER)
+#else
+#define RETRO_RENDERTYPE (RETRO_SW_RENDER)
+#endif
 
 #define RETRO_USE_HAPTICS (1)
 
