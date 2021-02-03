@@ -284,6 +284,9 @@ void RenderRenderDevice()
     C2D_TargetClear(Engine.topScreen, C2D_Color32f(0.1f, 0.1f, 0.1f, 1.0f));
     C2D_SceneBegin(Engine.topScreen);
 
+    // old code to test that textures were loading properly
+    
+    /*
     Tex3DS_SubTexture subtex = {
 	    .width = gfxSurface[0].width,
 	    .height = gfxSurface[0].height,
@@ -297,6 +300,15 @@ void RenderRenderDevice()
     img.subtex = &subtex;
 
     C2D_DrawImageAt(img, 0, 0, 0);
+    */
+
+    for (int i = 0; i < spriteIndex; i++) {
+        C2D_Sprite spr;
+	spr.image.tex = &_3ds_textureData[_3ds_sprites[i].sid];
+	spr.image.subtex = &_3ds_sprites[i].subtex;
+	spr.params = _3ds_sprites[i].params;
+	C2D_DrawSprite(&spr);
+    }
 
     C3D_FrameEnd(0);
     // reset sprite index each frame
@@ -2115,20 +2127,37 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
 #endif
 
 #if RETRO_USING_C2D
-    /*
-    _3ds_sprites[spriteIndex].image.tex = &_3ds_textureData[sheetID];
-    Tex3DS_SubTexture* subtex = _3ds_sprites[spriteIndex].image.subtex;
+    // we don't actually draw the sprite immediately, we only 
+    // set up a sprite to be drawn next C2D_SceneBegin
+    if (spriteIndex < SPRITES_MAX) {
+	_3ds_sprite spr;
+	spr.sid = sheetID;
 
-    subtex->width  = (u16) width;
-    subtex->height = (u16) height;
-    subtex->left   = sprX / (float) width;
-    subtex->top    = sprY / (float) height;
-    subtex->right  = (sprX + width)  / (float) width;
-    subtex->bottom = (sprY + height) / (float) height;
+	// set texture reference to sheet ID
+	spr.image.tex = &_3ds_textureData[sheetID];
 
-    if (spriteIndex < SPRITES_MAX)
+	// set up subtexture
+	spr.subtex.width  = gfxSurface[sheetID].width;
+	spr.subtex.height = gfxSurface[sheetID].height;
+	spr.subtex.left   = (float) sprX                / _3ds_textureData[sheetID].width;
+	spr.subtex.top    = 1 - (float) sprY            / _3ds_textureData[sheetID].height;
+	spr.subtex.right  = (float) (sprX + width)      / _3ds_textureData[sheetID].width;
+	spr.subtex.bottom = 1 - (float) (sprY + height) / _3ds_textureData[sheetID].height;
+
+	// set up draw params
+	spr.params.pos.x = XPos;
+	spr.params.pos.y = YPos;
+	spr.params.pos.w = width;
+	spr.params.pos.h = height;
+	spr.params.center.x = 0;
+	spr.params.center.y = 0;
+	spr.params.depth = 0;
+	spr.params.angle = 0;
+
+	_3ds_sprites[spriteIndex] = spr;
+
         spriteIndex++;
-	*/
+    }
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif

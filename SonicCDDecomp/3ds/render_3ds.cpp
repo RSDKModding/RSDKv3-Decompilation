@@ -4,10 +4,10 @@
 #define BUILD_PIXEL_RGB5551(R,G,B) (((int) (R) << 11) | ((int) (G) << 6) | (int) ((B) << 1) | 1)
 #define RGB565_to_RGBA5551(px) (BUILD_PIXEL_RGB5551( (px & 0xf800) >> 11, (px & 0x07e0) >> 6, (px & 0x001f)))
 
-int spriteIndex;
+int spriteIndex = 0;
 
-C3D_Tex     _3ds_textureData[SURFACE_MAX];
-C2D_Sprite  _3ds_sprites[SPRITES_MAX];
+C3D_Tex      _3ds_textureData[SURFACE_MAX];
+_3ds_sprite  _3ds_sprites[SPRITES_MAX];
 
 /*
    JeffRuLz's texture handling code from OpenHCL was referenced heavily here

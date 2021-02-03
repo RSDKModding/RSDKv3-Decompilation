@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     
     // at this point in time, N3DS clock speeds are necessary
     // for the game to even run at full speed
-    osSetSpeedupEnable(true);
+    //osSetSpeedupEnable(true);
 
     //gfxInitDefault();
     //DebugConsoleInit();
