@@ -280,11 +280,8 @@ void RenderRenderDevice()
     // pillarboxes in fullscreen from displaying garbage data.
     SDL_RenderClear(Engine.renderer);
 #elif RETRO_USING_C2D
-    _3ds_delGfxSurface(1);
-    _3ds_cacheGfxSurface(1);
-
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    C2D_TargetClear(Engine.topScreen, C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
+    C2D_TargetClear(Engine.topScreen, C2D_Color32f(0.1f, 0.1f, 0.1f, 1.0f));
     C2D_SceneBegin(Engine.topScreen);
 
     Tex3DS_SubTexture subtex = {
@@ -302,8 +299,6 @@ void RenderRenderDevice()
     C2D_DrawImageAt(img, 0, 0, 0);
 
     C3D_FrameEnd(0);
-    printf("File name: %s\n", gfxSurface[0].fileName);
-
     // reset sprite index each frame
     spriteIndex = 0;
 #elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D

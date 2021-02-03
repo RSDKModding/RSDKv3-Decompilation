@@ -1,5 +1,9 @@
 #include "../RetroEngine.hpp"
 
+// https://github.com/bubble2k16/snes9x_3ds/blob/3e5cdba3577aafefb0860966a3daf694ece8e168/source/pixform.h#L248
+#define BUILD_PIXEL_RGB5551(R,G,B) (((int) (R) << 11) | ((int) (G) << 6) | (int) ((B) << 1) | 1)
+#define RGB565_to_RGBA5551(px) (BUILD_PIXEL_RGB5551( (px & 0xf800) >> 11, (px & 0x07e0) >> 6, (px & 0x001f)))
+
 int spriteIndex;
 
 C3D_Tex     _3ds_textureData[SURFACE_MAX];
@@ -70,15 +74,6 @@ static inline int powOfTwo(int in)
 	return out;
 }
 
-static inline u32 RGB565_to_RGBA8(u16 pixel) {
-	byte a = 0xff;
-	byte r = (byte) (pixel & 0x001f);
-	byte g = (byte) (pixel & 0x07e0) >> 5;
-	byte b = (byte) (pixel & 0xf800) >> 11;
-
-	return (r & (g << 8) & (b << 16) & (a << 24));
-}
-
 // NOTE: we going the mobile route for HW rendering and 
 // will probably just use tints for mid-frame palette
 // changes in stages like Tidal Tempest
@@ -102,19 +97,22 @@ void _3ds_cacheGfxSurface(int sheetID) {
 	int w = powOfTwo(width);
 	int h = powOfTwo(height);
 
-	ushort* buffer     = (ushort*) linearAlloc(w * h * sizeof(u16));
-	ushort* bufferPtr  = buffer;
+	u16* buffer     = (u16*) linearAlloc(w * h * sizeof(u16));
+	u16* bufferPtr  = buffer;
 	byte* gptr = gfxDataPtr;
  	for (int i = 0; i < w * h; ) {
-		// RGB 5 + 6 + 5 = 16 bits
-		ushort  tile[8 * 8] = { 0 };
-		ushort* tilePtr = tile;
+		u16  tile[8 * 8] = { 0 };
+		u16* tilePtr = tile;
 		
 		for (int ty = 0; ty < 8; ty++) {
 			gptr = gfxDataPtr + (width * y) + x;
 			for (int tx = 0; tx < 8; tx++) {
-				if (x < width && y < height)
-					*tilePtr = activePalette[*gptr];
+				if (x < width && y < height) {
+					if (*gptr >> 0)
+						*tilePtr = RGB565_to_RGBA5551(activePalette[*gptr]);
+					else
+						*tilePtr = 0;
+				}
 				tilePtr++;
 
 				gptr++;
@@ -140,7 +138,7 @@ void _3ds_cacheGfxSurface(int sheetID) {
 			*(bufferPtr++) = tile[a];
 	}
 
-	C3D_TexInitVRAM(&_3ds_textureData[sheetID], w, h, GPU_RGB565);
+	C3D_TexInitVRAM(&_3ds_textureData[sheetID], w, h, GPU_RGBA5551);
 	C3D_TexUpload(&_3ds_textureData[sheetID], buffer);
 
 	linearFree(buffer);
