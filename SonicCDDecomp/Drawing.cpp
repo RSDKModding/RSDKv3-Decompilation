@@ -304,9 +304,9 @@ void RenderRenderDevice()
 
     for (int i = 0; i < spriteIndex; i++) {
         C2D_Sprite spr;
-	spr.image.tex = &_3ds_textureData[_3ds_sprites[i].sid];
+	spr.image.tex    = &_3ds_textureData[_3ds_sprites[i].sid];
 	spr.image.subtex = &_3ds_sprites[i].subtex;
-	spr.params = _3ds_sprites[i].params;
+	spr.params       = _3ds_sprites[i].params;
 	C2D_DrawSprite(&spr);
     }
 
@@ -2127,37 +2127,7 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
 #endif
 
 #if RETRO_USING_C2D
-    // we don't actually draw the sprite immediately, we only 
-    // set up a sprite to be drawn next C2D_SceneBegin
-    if (spriteIndex < SPRITES_MAX) {
-	_3ds_sprite spr;
-	spr.sid = sheetID;
-
-	// set texture reference to sheet ID
-	spr.image.tex = &_3ds_textureData[sheetID];
-
-	// set up subtexture
-	spr.subtex.width  = gfxSurface[sheetID].width;
-	spr.subtex.height = gfxSurface[sheetID].height;
-	spr.subtex.left   = (float) sprX                / _3ds_textureData[sheetID].width;
-	spr.subtex.top    = 1 - (float) sprY            / _3ds_textureData[sheetID].height;
-	spr.subtex.right  = (float) (sprX + width)      / _3ds_textureData[sheetID].width;
-	spr.subtex.bottom = 1 - (float) (sprY + height) / _3ds_textureData[sheetID].height;
-
-	// set up draw params
-	spr.params.pos.x = XPos;
-	spr.params.pos.y = YPos;
-	spr.params.pos.w = width;
-	spr.params.pos.h = height;
-	spr.params.center.x = 0;
-	spr.params.center.y = 0;
-	spr.params.depth = 0;
-	spr.params.angle = 0;
-
-	_3ds_sprites[spriteIndex] = spr;
-
-        spriteIndex++;
-    }
+    _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, 0);
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
@@ -2288,7 +2258,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
 #endif
 
 #if RETRO_USING_C2D
-
+    _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, direction);
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
         // TODO: this
 #endif

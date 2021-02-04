@@ -5,8 +5,8 @@
 
 typedef struct {
 	int sid;
-	C2D_Image image;
-	Tex3DS_SubTexture subtex;   // image requires a const reference
+	C3D_Tex* tex;
+	Tex3DS_SubTexture subtex;
 	C2D_DrawParams params;
 } _3ds_sprite;
 
@@ -17,5 +17,6 @@ extern _3ds_sprite  _3ds_sprites[SPRITES_MAX];
 
 void _3ds_cacheGfxSurface(int sheetID);
 void _3ds_delGfxSurface(int sheetID);
-
+void _3ds_prepSprite(int XPos, int YPos, int width, int height, 
+		     int sprX, int sprY, int sheetID, int direction);
 #endif

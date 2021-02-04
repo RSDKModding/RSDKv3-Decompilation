@@ -138,7 +138,7 @@ void _3ds_cacheGfxSurface(int sheetID) {
 			*(bufferPtr++) = tile[a];
 	}
 
-	C3D_TexInitVRAM(&_3ds_textureData[sheetID], w, h, GPU_RGBA5551);
+	C3D_TexInit(&_3ds_textureData[sheetID], w, h, GPU_RGBA5551);
 	C3D_TexUpload(&_3ds_textureData[sheetID], buffer);
 
 	linearFree(buffer);
@@ -148,3 +148,53 @@ void _3ds_delGfxSurface(int sheetID) {
 	C3D_TexDelete(&_3ds_textureData[sheetID]);
 }
 
+void _3ds_prepSprite(int XPos, int YPos, int width, int height, 
+		     int sprX, int sprY, int sheetID, int direction) {
+    	// we don't actually draw the sprite immediately, we only 
+    	// set up a sprite to be drawn next C2D_SceneBegin
+    	if (spriteIndex < SPRITES_MAX) {
+		_3ds_sprite spr;
+
+		// set up reference to texture
+		spr.sid = sheetID;
+
+		// set up subtexture
+		spr.subtex.width  = gfxSurface[sheetID].width;
+		spr.subtex.height = gfxSurface[sheetID].height;
+		spr.subtex.left   = (float) sprX                / _3ds_textureData[sheetID].width;
+		spr.subtex.top    = 1 - (float) sprY            / _3ds_textureData[sheetID].height;
+		spr.subtex.right  = (float) (sprX + width)      / _3ds_textureData[sheetID].width;
+		spr.subtex.bottom = 1 - (float) (sprY + height) / _3ds_textureData[sheetID].height;
+
+		// set up draw params
+		spr.params.pos.x = XPos;
+		spr.params.pos.y = YPos;
+		switch (direction) {
+			case FLIP_X:
+				spr.params.pos.w = -width;
+				spr.params.pos.h = height;
+				break;
+			case FLIP_Y:
+				spr.params.pos.w = width;
+				spr.params.pos.h = -height;
+				break;
+			case FLIP_XY:
+				spr.params.pos.w = -width;
+				spr.params.pos.h = -height;
+				break;
+			default:
+				spr.params.pos.w = width;
+				spr.params.pos.h = height;
+				break;
+		}
+
+		spr.params.center.x = 0;
+		spr.params.center.y = 0;
+		spr.params.depth = 0;
+		spr.params.angle = 0;
+
+		_3ds_sprites[spriteIndex] = spr;
+
+        	spriteIndex++;
+    	}
+}
