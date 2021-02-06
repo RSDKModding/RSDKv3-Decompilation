@@ -149,7 +149,8 @@ void _3ds_delGfxSurface(int sheetID) {
 }
 
 void _3ds_prepSprite(int XPos, int YPos, int width, int height, 
-		     int sprX, int sprY, int sheetID, int direction) {
+		     int sprX, int sprY, int sheetID, int direction,
+		     float scaleX, float scaleY, float angle) {
     	// we don't actually draw the sprite immediately, we only 
     	// set up a sprite to be drawn next C2D_SceneBegin
     	if (spriteIndex < SPRITES_MAX) {
@@ -171,30 +172,28 @@ void _3ds_prepSprite(int XPos, int YPos, int width, int height,
 		spr.params.pos.y = YPos;
 		switch (direction) {
 			case FLIP_X:
-				spr.params.pos.w = -width;
-				spr.params.pos.h = height;
+				spr.params.pos.w = -width * scaleX;
+				spr.params.pos.h = height * scaleY;
 				break;
 			case FLIP_Y:
-				spr.params.pos.w = width;
-				spr.params.pos.h = -height;
+				spr.params.pos.w = width   * scaleX;
+				spr.params.pos.h = -height * scaleY;
 				break;
 			case FLIP_XY:
-				spr.params.pos.w = -width;
-				spr.params.pos.h = -height;
+				spr.params.pos.w = -width  * scaleX;
+				spr.params.pos.h = -height * scaleY;
 				break;
 			default:
-				spr.params.pos.w = width;
-				spr.params.pos.h = height;
+				spr.params.pos.w = width  * scaleX;
+				spr.params.pos.h = height * scaleY;
 				break;
 		}
 
-		spr.params.center.x = 0;
-		spr.params.center.y = 0;
+		spr.params.center.x = (spr.subtex.right - spr.subtex.left)   / 2;
+		spr.params.center.y = (spr.subtex.top   - spr.subtex.bottom) / 2;
 		spr.params.depth = 0;
-		spr.params.angle = 0;
+		spr.params.angle = angle;
 
 		_3ds_sprites[spriteIndex] = spr;
-
-        	spriteIndex++;
     	}
 }

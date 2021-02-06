@@ -5,6 +5,12 @@
 
 typedef struct {
 	int sid;
+
+	float xscale;
+	float yscale;
+
+	float angle;
+
 	C3D_Tex* tex;
 	Tex3DS_SubTexture subtex;
 	C2D_DrawParams params;
@@ -18,5 +24,6 @@ extern _3ds_sprite  _3ds_sprites[SPRITES_MAX];
 void _3ds_cacheGfxSurface(int sheetID);
 void _3ds_delGfxSurface(int sheetID);
 void _3ds_prepSprite(int XPos, int YPos, int width, int height, 
-		     int sprX, int sprY, int sheetID, int direction);
+		     int sprX, int sprY, int sheetID, int direction,
+		     float scaleX, float scaleY, float angle);
 #endif

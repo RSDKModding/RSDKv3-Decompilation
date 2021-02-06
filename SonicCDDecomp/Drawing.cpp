@@ -307,6 +307,7 @@ void RenderRenderDevice()
 	spr.image.tex    = &_3ds_textureData[_3ds_sprites[i].sid];
 	spr.image.subtex = &_3ds_sprites[i].subtex;
 	spr.params       = _3ds_sprites[i].params;
+
 	C2D_DrawSprite(&spr);
     }
 
@@ -2127,7 +2128,8 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
 #endif
 
 #if RETRO_USING_C2D
-    _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, 0);
+    _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, 0, 1.0f, 1.0f, 0.0f);
+    spriteIndex++;
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
@@ -2258,7 +2260,8 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
 #endif
 
 #if RETRO_USING_C2D
-    _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, direction);
+    _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, direction, 1.0f, 1.0f, 0.0f);
+    spriteIndex++;
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
         // TODO: this
 #endif
@@ -2369,7 +2372,16 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
 #endif
 
 #if RETRO_USING_C2D
+    int trueScaleX    = 4 * scaleX;
+    int trueScaleY    = 4 * scaleY;
+    float finalScaleX = (float) trueScaleX / 2048.0f;
+    float finalScaleY = (float) trueScaleY / 2048.0f;
+    int trueXPos      = XPos - (trueScaleX * pivotX >> 11);
+    int trueYPos      = YPos - (trueScaleY * pivotY >> 11);
 
+    _3ds_prepSprite(trueXPos, trueYPos, width, height, sprX, sprY, sheetID, 0,
+		    finalScaleX, finalScaleY, 0.0f); 
+    spriteIndex++;
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
@@ -2377,6 +2389,7 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
 void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY, int sprX, int sprY, int width, int height, int rotation,
                                 int sheetID)
 {
+	printf("angle: %d\n", rotation);
 #if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int sprXPos    = (pivotX + sprX) << 9;
     int sprYPos    = (pivotY + sprY) << 9;
@@ -2522,7 +2535,32 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 #endif
 
 #if RETRO_USING_C2D
+    int trueXPos, trueYPos;
+    float radians = rotation * M_PI / 256.0f;	// thanks to RMG/Rich for helping me out here
 
+    switch (direction) {
+	case FLIP_X:
+		trueXPos = XPos - width + pivotX;
+		trueYPos = YPos - pivotY;
+		break;
+	case FLIP_Y:
+		trueXPos = XPos - pivotX;
+		trueYPos = YPos - height + pivotY;
+		break;
+	case FLIP_XY:
+		trueXPos = XPos - width  + pivotX;
+		trueYPos = YPos - height + pivotY;
+		break;
+	default:
+		trueXPos = XPos - pivotX;
+		trueYPos = YPos - pivotY;
+		break;
+    };
+
+    _3ds_prepSprite(trueXPos, trueYPos, 
+		    width, height, sprX, sprY, sheetID, direction,
+		    1.0f, 1.0f, radians); 
+    spriteIndex++;
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
     // TODO: this
 #endif
