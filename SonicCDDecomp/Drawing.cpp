@@ -159,7 +159,7 @@ void RenderRenderDevice()
 
 #if RETRO_USING_SDL2
     SDL_Rect *destScreenPos = NULL;
-    SDL_Rect destScreenPos_scaled;
+    SDL_Rect destScreenPos_scaled, destScreenPosRect;
     SDL_Texture *texTarget = NULL;
     // allows me to disable it to prevent blur on resolutions that match only on 1 axis
     bool tmpEnhancedScaling = Engine.enhancedScaling;
@@ -184,7 +184,6 @@ void RenderRenderDevice()
     if (!tmpEnhancedScaling) {
         // everything here remains the same except for assinging the rect to the switching pointer.
         // the pointer has to be NULL when using enhanced scaling, or else the screen will be black.
-        SDL_Rect destScreenPosRect;
         destScreenPosRect.x = 0;
         destScreenPosRect.y = 0;
         destScreenPosRect.w = SCREEN_XSIZE;
