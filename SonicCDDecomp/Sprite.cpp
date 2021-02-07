@@ -233,7 +233,7 @@ int AddGraphicsFile(const char *filePath)
 
 #if RETRO_USING_C2D
     //printf("Adding sprite sheet: %d\n", sheetID);
-    _3ds_cacheGfxSurface(sheetID);
+    _3ds_cacheSpriteSurface(sheetID);
 #endif
 
     return sheetID;
@@ -261,7 +261,7 @@ void RemoveGraphicsFile(const char *filePath, int sheetID)
 
 #if RETRO_USING_C2D
     //printf("Deleting sprite sheet: %d\n", sheetID);
-    _3ds_delGfxSurface(sheetID);
+    _3ds_delSpriteSurface(sheetID);
 #endif
 }
 

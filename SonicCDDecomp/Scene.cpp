@@ -259,6 +259,10 @@ void LoadStageFiles(void)
     int scriptID    = 1;
     char strBuffer[0x100];
 
+#if RETRO_USING_C2D
+    _3ds_delTileSurface();
+#endif
+
     if (!CheckCurrentStageFolder(stageListPosition)) {
         printLog("Loading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
         ReleaseStageSfx();
@@ -373,6 +377,7 @@ void LoadStageFiles(void)
         else {
             LoadStageGFXFile(stageListPosition);
         }
+
         LoadStageCollisions();
         LoadStageBackground();
     }
@@ -415,6 +420,12 @@ void LoadStageFiles(void)
     xScrollB                 = (playerList[0].XPos >> 16) - SCREEN_CENTERX + SCREEN_XSIZE;
     yScrollA = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP;
     yScrollB                 = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP + SCREEN_YSIZE;
+#if RETRO_USING_C2D
+    printf("caching tileset...\n");
+    _3ds_cacheTileSurface(tilesetGFXData);
+#endif
+
+
 }
 int LoadActFile(const char *ext, int stageID, FileInfo *info)
 {

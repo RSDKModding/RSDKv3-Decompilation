@@ -5,9 +5,16 @@
 #define RGB565_to_RGBA5551(px) (BUILD_PIXEL_RGB5551( (px & 0xf800) >> 11, (px & 0x07e0) >> 6, (px & 0x001f)))
 
 int spriteIndex = 0;
+int tileIndex = 0;
 
 C3D_Tex      _3ds_textureData[SURFACE_MAX];
+C3D_Tex      _3ds_tilesetData[TILE_MAXSIZE];
 _3ds_sprite  _3ds_sprites[SPRITES_MAX];
+_3ds_tile    _3ds_tiles[TILES_MAX_3DS];
+
+byte paletteIndex = 0;
+byte cachedPalettes = 0;
+byte maxPaletteCycles = 0;
 
 /*
    JeffRuLz's texture handling code from OpenHCL was referenced heavily here
@@ -74,19 +81,63 @@ static inline int powOfTwo(int in)
 	return out;
 }
 
-// NOTE: we going the mobile route for HW rendering and 
-// will probably just use tints for mid-frame palette
-// changes in stages like Tidal Tempest
-// As such, there's no need to keep track of palette changes
-// for sprites in VRAM
-//
-// decodes sprite into a texture using the current active palette data
-void _3ds_cacheGfxSurface(int sheetID) {
+// 3DS doesn't like 16x16384 tiles
+// who knew
+void _3ds_rearrangeTileData(byte* gfxDataPtr, byte* dstPtr) {
+	const int swidth = 16,  sheight = 16384;
+	const int dwidth = 512, dheight = 512;
+	int sx = 0, sy = 0, dx = 0, dy = 0;
+	byte* sptr = gfxDataPtr;
+	byte* dptr = dstPtr;
+
+	for (int i = 0; i < 512 * 512; i++) {
+		sptr = gfxDataPtr + (swidth * sy) + sx;
+		dptr = dstPtr + (dwidth * dy) + dx;
+
+		*dptr = *sptr;
+
+		sx++;
+		if (sx >= swidth) {
+			sx = 0;
+			sy++;
+		}
+
+		dx = sx + (16 * (sy / 512));
+		dy = sy % 512;
+	}
+}
+
+void _3ds_cacheSpriteSurface(int sheetID) {
 	GFXSurface* surf = &gfxSurface[sheetID];
 	int height = surf->height;
 	int width  = surf->width;
 	int depth  = surf->depth;
     	byte *gfxDataPtr   = &graphicData[surf->dataPosition];
+	_3ds_cacheGfxSurface(gfxDataPtr, &_3ds_textureData[sheetID], width, height, false);
+}
+
+void _3ds_delSpriteSurface(int sheetID) {
+	C3D_TexDelete(&_3ds_textureData[sheetID]);
+}
+
+void _3ds_cacheTileSurface(byte* tilesetGfxPtr) {
+	//if (cachedPalettes >= TILE_MAXSIZE)
+	//	return;
+
+	byte* temp = (byte*) malloc(512 * 512 * sizeof(byte));
+	_3ds_rearrangeTileData(tilesetGfxPtr, temp);
+	_3ds_cacheGfxSurface(temp, &_3ds_tilesetData[cachedPalettes], 512, 512, true);
+	cachedPalettes++;
+	free(temp);
+}
+
+void _3ds_delTileSurface() {
+	for (int i = 0; i < cachedPalettes; i++) 
+		C3D_TexDelete(&_3ds_tilesetData[i]);
+}
+
+void _3ds_cacheGfxSurface(byte* gfxDataPtr, C3D_Tex* dst,
+			  int width, int height, bool write) {
         byte *lineBuffer   = &gfxLineBuffer[0];
 	activePalette = fullPalette[*lineBuffer];
 
@@ -108,7 +159,7 @@ void _3ds_cacheGfxSurface(int sheetID) {
 			gptr = gfxDataPtr + (width * y) + x;
 			for (int tx = 0; tx < 8; tx++) {
 				if (x < width && y < height) {
-					if (*gptr >> 0)
+					if (*gptr > 0)
 						*tilePtr = RGB565_to_RGBA5551(activePalette[*gptr]);
 					else
 						*tilePtr = 0;
@@ -138,14 +189,18 @@ void _3ds_cacheGfxSurface(int sheetID) {
 			*(bufferPtr++) = tile[a];
 	}
 
-	C3D_TexInit(&_3ds_textureData[sheetID], w, h, GPU_RGBA5551);
-	C3D_TexUpload(&_3ds_textureData[sheetID], buffer);
+	C3D_TexInit(dst, w, h, GPU_RGBA5551);
+	C3D_TexUpload(dst, buffer);
+
+	// write buffer to file
+	if (write) {
+		FILE* f = fopen("/temp.buf", "w+");
+		fwrite(buffer, w * h * sizeof(s16), 1, f);
+		fclose(f);
+		printf("saved to temp.buf\n");
+	}
 
 	linearFree(buffer);
-}
-
-void _3ds_delGfxSurface(int sheetID) {
-	C3D_TexDelete(&_3ds_textureData[sheetID]);
 }
 
 void _3ds_prepSprite(int XPos, int YPos, int width, int height, 
@@ -189,11 +244,47 @@ void _3ds_prepSprite(int XPos, int YPos, int width, int height,
 				break;
 		}
 
-		spr.params.center.x = (spr.subtex.right - spr.subtex.left)   / 2;
-		spr.params.center.y = (spr.subtex.top   - spr.subtex.bottom) / 2;
+		if (angle) {
+			spr.params.center.x = (spr.subtex.right - spr.subtex.left)   / 2;
+			spr.params.center.y = (spr.subtex.top   - spr.subtex.bottom) / 2;
+		} else {
+			spr.params.center.x = 0.0f;
+			spr.params.center.y = 0.0f;
+		}
+
 		spr.params.depth = 0;
 		spr.params.angle = angle;
 
 		_3ds_sprites[spriteIndex] = spr;
     	}
+}
+
+void _3ds_prepTile(int XPos, int YPos, int tileX, int tileY, int direction) {
+	const int tileSize = 16;
+
+	if (tileIndex < TILES_MAX_3DS) {
+		_3ds_tile tile;
+
+		// convert coordinates to work with the 3DS tile texture data
+		tileX = tileX + (16 * (tileX / 512));
+		tileY = tileY % 512;
+
+		tile.subtex.width  = tileSize;
+		tile.subtex.height = tileSize;
+		tile.subtex.left = (float) tileX / _3ds_tilesetData[0].width;
+		tile.subtex.top = 1 - (float) tileY / _3ds_tilesetData[0].height;
+		tile.subtex.right = (float) (tileX + tileSize) / _3ds_tilesetData[0].width;
+		tile.subtex.bottom = 1 - (float) (tileY + tileSize) / _3ds_tilesetData[0].height;
+
+		tile.params.pos.x = XPos;
+		tile.params.pos.y = YPos;
+		tile.params.center.x = 0;
+		tile.params.center.y = 0;
+
+		tile.params.depth = 0;
+		tile.params.angle = 0;
+
+		_3ds_tiles[tileIndex] = tile;
+		tileIndex++;
+	}
 }

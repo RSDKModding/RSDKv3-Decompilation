@@ -123,7 +123,6 @@ int InitRenderDevice()
 #elif RETRO_USING_C2D
     gfxInitDefault();
     DebugConsoleInit();
-    //gfxSetScreenFormat(GFX_TOP, GSP_RGB565_OES);
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
@@ -286,20 +285,29 @@ void RenderRenderDevice()
 
     // old code to test that textures were loading properly
     
-    /*
     Tex3DS_SubTexture subtex = {
-	    .width = gfxSurface[0].width,
-	    .height = gfxSurface[0].height,
+	    .width = 512,
+	    .height = 512,
 	    .left = 0.0f,
 	    .top = 1.0f,
 	    .right = 1.0f,
 	    .bottom = 0.0f
     };
     C2D_Image img;
-    img.tex = &_3ds_textureData[0];
+    img.tex = &_3ds_tilesetData[0];
     img.subtex = &subtex;
 
-    C2D_DrawImageAt(img, 0, 0, 0);
+    C2D_DrawImageAt(img, 0, 5, 0);
+
+    /*
+    for (int i = 0; i < tileIndex; i++) {
+	C2D_Sprite tile;
+	tile.image.tex = &_3ds_textureData[0];
+	tile.image.subtex = &_3ds_tiles[i].subtex;
+	tile.params = _3ds_tiles[i].params;
+
+	C2D_DrawSprite(&tile);
+    }
     */
 
     for (int i = 0; i < spriteIndex; i++) {
@@ -314,6 +322,7 @@ void RenderRenderDevice()
     C3D_FrameEnd(0);
     // reset sprite index each frame
     spriteIndex = 0;
+    tileIndex = 0;
 #elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
     CopyToFramebuffer();
     gfxFlushBuffers();
@@ -681,9 +690,8 @@ void DrawStageGFX(void)
 
 void DrawHLineScrollLayer(int layerID)
 {
-#if RETRO_RENDERTYPE == RETRO_SW_RENDER
     TileLayer *layer = &stageLayouts[activeTileLayers[layerID]];
-    int screenwidth16       = (SCREEN_XSIZE >> 4) - 1;
+    int screenwidth16       = (SCREEN_XSIZE >> 4) - 1;		 	// tiles onscreen
     int layerwidth          = layer->width;
     int layerheight         = layer->height;
     bool aboveMidPoint      = layerID >= tLayerMidPoint;
@@ -694,11 +702,11 @@ void DrawHLineScrollLayer(int layerID)
 
     int yscrollOffset = 0;
     if (activeTileLayers[layerID]) { // BG Layer
-        int yScroll    = yScrollOffset * layer->parallaxFactor >> 8;
+        int yScroll    = yScrollOffset * layer->parallaxFactor >> 8;	// BG scrolling speed?
         int fullheight = layerheight << 7;
         layer->scrollPos += layer->scrollSpeed;
         if (layer->scrollPos > fullheight << 16)
-            layer->scrollPos -= fullheight << 16;
+            layer->scrollPos -= fullheight << 16;			// BG layer, so, BG looping
         yscrollOffset    = (yScroll + (layer->scrollPos >> 16)) % fullheight;
         layerheight      = fullheight >> 7;
         lineScroll       = layer->lineScroll;
@@ -782,6 +790,7 @@ void DrawHLineScrollLayer(int layerID)
             if (tiles128x128.visualPlane[chunk] == (byte)aboveMidPoint) {
                 tilePxLineCnt = TILE_SIZE - tilePxXPos;
                 lineRemain -= tilePxLineCnt;
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
                 switch (tiles128x128.direction[chunk]) {
 		    case FLIP_NO:
                         gfxDataPtr    = &tilesetGFXData[tileOffsetY + tiles128x128.gfxDataPos[chunk] + tilePxXPos];
@@ -821,6 +830,9 @@ void DrawHLineScrollLayer(int layerID)
                         break;
                     default: break;
                 }
+#elif RETRO_USING_C2D
+		_3ds_prepTile(0, 0, tilePxXPos, tileOffsetY, tiles128x128.direction[chunk]);
+#endif
             }
             else {
                 frameBufferPtr += tileXPxRemain;
@@ -1194,7 +1206,6 @@ void DrawHLineScrollLayer(int layerID)
             }
         }
     }
-#endif
 }
 void DrawVLineScrollLayer(int layerID)
 {
@@ -2389,7 +2400,6 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
 void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY, int sprX, int sprY, int width, int height, int rotation,
                                 int sheetID)
 {
-	printf("angle: %d\n", rotation);
 #if RETRO_RENDERTYPE == RETRO_SW_RENDER
     int sprXPos    = (pivotX + sprX) << 9;
     int sprYPos    = (pivotY + sprY) << 9;
@@ -2537,19 +2547,27 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 #if RETRO_USING_C2D
     int trueXPos, trueYPos;
     float radians = rotation * M_PI / 256.0f;	// thanks to RMG/Rich for helping me out here
+    int angle     = rotation & 0x1FF;
+    if (angle < 0)
+        angle += 0x200;
+    if (angle)
+        angle = 0x200 - angle;
+
+    float w = width * cos(radians);
+    float h = height * cos(radians);
 
     switch (direction) {
 	case FLIP_X:
-		trueXPos = XPos - width + pivotX;
+		trueXPos = XPos - w + pivotX;
 		trueYPos = YPos - pivotY;
 		break;
 	case FLIP_Y:
 		trueXPos = XPos - pivotX;
-		trueYPos = YPos - height + pivotY;
+		trueYPos = YPos - h + pivotY;
 		break;
 	case FLIP_XY:
-		trueXPos = XPos - width  + pivotX;
-		trueYPos = YPos - height + pivotY;
+		trueXPos = XPos - w  + pivotX;
+		trueYPos = YPos - h + pivotY;
 		break;
 	default:
 		trueXPos = XPos - pivotX;
