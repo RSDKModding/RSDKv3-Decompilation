@@ -269,8 +269,8 @@ void _3ds_prepTile(int XPos, int YPos, int tileX, int tileY, int direction) {
 		tileX = tileX + (16 * (tileX / 512));
 		tileY = tileY % 512;
 
-		tile.subtex.width  = tileSize;
-		tile.subtex.height = tileSize;
+		tile.subtex.width  = 512;
+		tile.subtex.height = 512;
 		tile.subtex.left = (float) tileX / _3ds_tilesetData[0].width;
 		tile.subtex.top = 1 - (float) tileY / _3ds_tilesetData[0].height;
 		tile.subtex.right = (float) (tileX + tileSize) / _3ds_tilesetData[0].width;
@@ -278,6 +278,8 @@ void _3ds_prepTile(int XPos, int YPos, int tileX, int tileY, int direction) {
 
 		tile.params.pos.x = XPos;
 		tile.params.pos.y = YPos;
+		tile.params.pos.w = 16;
+		tile.params.pos.h = 16;
 		tile.params.center.x = 0;
 		tile.params.center.y = 0;
 

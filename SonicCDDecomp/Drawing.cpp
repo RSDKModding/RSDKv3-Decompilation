@@ -285,6 +285,7 @@ void RenderRenderDevice()
 
     // old code to test that textures were loading properly
     
+    /*
     Tex3DS_SubTexture subtex = {
 	    .width = 512,
 	    .height = 512,
@@ -298,17 +299,15 @@ void RenderRenderDevice()
     img.subtex = &subtex;
 
     C2D_DrawImageAt(img, 0, 5, 0);
-
-    /*
+*/
     for (int i = 0; i < tileIndex; i++) {
 	C2D_Sprite tile;
-	tile.image.tex = &_3ds_textureData[0];
+	tile.image.tex = &_3ds_tilesetData[paletteIndex];
 	tile.image.subtex = &_3ds_tiles[i].subtex;
 	tile.params = _3ds_tiles[i].params;
 
 	C2D_DrawSprite(&tile);
     }
-    */
 
     for (int i = 0; i < spriteIndex; i++) {
         C2D_Sprite spr;
@@ -831,7 +830,7 @@ void DrawHLineScrollLayer(int layerID)
                     default: break;
                 }
 #elif RETRO_USING_C2D
-		_3ds_prepTile(0, 0, tilePxXPos, tileOffsetY, tiles128x128.direction[chunk]);
+		_3ds_prepTile(0, 0, 0, 0, tiles128x128.direction[chunk]);
 #endif
             }
             else {
