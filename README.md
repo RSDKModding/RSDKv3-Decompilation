@@ -42,13 +42,12 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, copy your `Data.rsdk` and `videos` folder into `SonicCDDecompUWP`, then build and deploy via the UWP Visual Studio solution
 
 ## Windows via MSYS2 (64-bit Only):
-
 * Download the newest version of the MSYS2 installer from [here](https://www.msys2.org/) and install it.
 * Run the MINGW64 prompt (from the windows Start Menu/MSYS2 64-bit/MSYS2 MinGW 64-bit), when the program starts enter `pacman -Syuu` in the prompt and hit Enter. Press `Y` when it asks if you want to update packages. If it asks you to close the prompt, do so, then restart it and run the same command again. This updates the packages to their latest versions.
 * Now install the dependencies with the following command: `pacman -S make git mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libtheora`
 * Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
-* Then run `make CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+* Then run `make CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores would be -j9)
 
 
 ## Mac:
@@ -61,7 +60,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora`
 * Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
-* Then run `make CXXFLAGS=-O2 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+* Then run `make CXXFLAGS=-O2 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores would be -j9)
 
 ## iOS:
 * Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
@@ -69,6 +68,13 @@ Even if your platform isn't supported by the official releases, you **must** buy
 ## PS Vita:
 * Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
 NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
+
+## Wii U:
+* Install [devkitPPC](https://devkitpro.org/wiki/Getting_Started), and its `wiiu-dev` and `wiiu-sdl2` packages.
+* Build and install the `ppc-libtheora` package in the `dependencies/wii-u` folder (`makepkg -cirs` should work).
+* Compile the engine with `make CXXFLAGS=-O2 WIIU=1 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores would be -j9).
+* The compiled engine can be found in the `bin` folder, named `soniccd.rpx`. This can be copied to your SD card's `wiiu/apps` folder, and then ran through the Homebrew Launcher.
+* You must copy Sonic CD's assets into a `SonicCD` folder on the root of your SD card.
 
 ## Other platforms:
 Currently the only "officially" supported platforms are the ones listed above, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
