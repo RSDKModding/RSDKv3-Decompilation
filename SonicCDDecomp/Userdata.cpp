@@ -87,7 +87,11 @@ void InitUserdata()
         ini.SetInteger("Dev", "StartingScene", Engine.startStage = 0);
         ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
         ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir = true);
+#if RETRO_PLATFORM == RETRO_WIIU
+        ini.SetBool("Dev", "UseHQModes", Engine.useHQModes = false); // Laggy on Wii U
+#else
         ini.SetBool("Dev", "UseHQModes", Engine.useHQModes = true);
+#endif
 
         ini.SetInteger("Game", "Language", Engine.language = RETRO_EN);
         ini.SetInteger("Game", "OriginalControls", -1);
