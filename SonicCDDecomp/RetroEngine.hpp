@@ -30,6 +30,7 @@ typedef unsigned int uint;
 // Custom Platforms start here
 #define RETRO_VITA (7)
 #define RETRO_UWP  (8)
+#define RETRO_WIIU (9)
 
 // Platform types (Game manages platform-specific code such as HUD position using this rather than the above)
 #define RETRO_STANDARD (0)
@@ -60,6 +61,8 @@ typedef unsigned int uint;
 #endif
 #elif defined __vita__
 #define RETRO_PLATFORM (RETRO_VITA)
+#elif defined __WIIU__
+#define RETRO_PLATFORM (RETRO_WIIU)
 #else
 #define RETRO_PLATFORM (RETRO_WIN) // Default
 #endif
@@ -72,6 +75,10 @@ typedef unsigned int uint;
 #define BASE_PATH            ""
 #define DEFAULT_SCREEN_XSIZE 424
 #define DEFAULT_FULLSCREEN   false
+#elif RETRO_PLATFORM == RETRO_WIIU
+#define BASE_PATH            "SonicCD/" // 'chdir' will be used in combination with this (the SD card path is obtained at runtime).
+#define DEFAULT_SCREEN_XSIZE 400        // Steam assets don't work at 424x240, so use a safe default. If users want it, they can configure it themselves.
+#define DEFAULT_FULLSCREEN   true       // Wii U doesn't have a windowing system
 #else
 #define BASE_PATH            ""
 #define DEFAULT_SCREEN_XSIZE 424
@@ -79,7 +86,7 @@ typedef unsigned int uint;
 #endif
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
-    || RETRO_PLATFORM == RETRO_UWP
+    || RETRO_PLATFORM == RETRO_UWP || RETRO_PLATFORM == RETRO_WIIU
 #define RETRO_USING_SDL1 (0)
 #define RETRO_USING_SDL2 (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
@@ -106,7 +113,7 @@ typedef unsigned int uint;
 #else
 
 // use *this* macro to determine what platform the game thinks its running on (since only the first 7 platforms are supported natively by scripts)
-#if RETRO_PLATFORM == RETRO_VITA
+#if RETRO_PLATFORM == RETRO_VITA || RETRO_PLATFORM == RETRO_WIIU
 #define RETRO_GAMEPLATFORMID (RETRO_WIN)
 #elif RETRO_PLATFORM == RETRO_UWP
 #define RETRO_GAMEPLATFORMID (UAP_GetRetroGamePlatformId())
@@ -198,6 +205,11 @@ enum RetroBytecodeFormat {
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
+#elif RETRO_PLATFORM == RETRO_WIIU
+#include "SDL.h"
+#include <vorbis/vorbisfile.h>
+#include <theora/theora.h>
+#include "theoraplay.h"
 #endif
 
 extern bool usingCWD;
