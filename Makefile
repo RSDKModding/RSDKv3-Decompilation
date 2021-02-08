@@ -3,16 +3,19 @@ ifeq ($(STATIC),1)
   CXXFLAGS_ALL += -static
 endif
 
-CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -Idependencies/all/theoraplay $(CXXFLAGS)
-LDFLAGS_ALL += $(LDFLAGS)
-LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) $(LIBS)
+PKG_CONFIG = pkg-config
 
 ifeq ($(WIIU),1)
   include $(DEVKITPRO)/wut/share/wut_rules
   CXXFLAGS_ALL += -D__WIIU__ -D__WUT__ -ffunction-sections -I$(WUT_ROOT)/include
   LDFLAGS_ALL += $(MACHDEP) $(RPXSPECS) -L$(WUT_ROOT)/lib
   LIBS_ALL += -lwut
+  PKG_CONFIG = $(DEVKITPRO)/portlibs/wiiu/bin/powerpc-eabi-pkg-config
 endif
+
+CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell $(PKG_CONFIG) --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -Idependencies/all/theoraplay $(CXXFLAGS)
+LDFLAGS_ALL += $(LDFLAGS)
+LIBS_ALL += $(shell $(PKG_CONFIG) --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) $(LIBS)
 
 SOURCES = \
   dependencies/all/theoraplay/theoraplay.c \
