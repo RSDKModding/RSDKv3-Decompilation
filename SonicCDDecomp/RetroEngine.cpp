@@ -2,6 +2,9 @@
 #if RETRO_PLATFORM == RETRO_UWP
 #include <winrt/base.h>
 #include <winrt/Windows.Storage.h>
+#elif RETRO_PLATFORM == RETRO_WIIU
+#include <unistd.h>
+#include <whb/sdcard.h>
 #endif
 
 bool usingCWD        = false;
@@ -249,6 +252,19 @@ bool processEvents()
 
 void RetroEngine::Init()
 {
+#if RETRO_PLATFORM == RETRO_WIIU
+    // chdir into the SD card
+	if (!WHBMountSdCard())
+		return;
+
+    const char *sd_path = WHBGetSdCardMountPath();
+
+    if (sd_path == NULL)
+        return;
+
+    chdir(sd_path);
+#endif
+
     CalculateTrigAngles();
     GenerateBlendLookupTable();
 #if RETRO_PLATFORM == RETRO_UWP
@@ -356,6 +372,10 @@ void RetroEngine::Run()
 
 #if RETRO_USING_SDL2
     SDL_Quit();
+#endif
+
+#if RETRO_PLATFORM == RETRO_WIIU
+    WHBUnmountSdCard();
 #endif
 }
 
