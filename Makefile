@@ -7,6 +7,13 @@ CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONF
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) $(LIBS)
 
+ifeq ($(WIIU),1)
+  include $(DEVKITPRO)/wut/share/wut_rules
+  CXXFLAGS_ALL += -D__WIIU__ -D__WUT__ -ffunction-sections -I$(WUT_ROOT)/include
+  LDFLAGS_ALL += $(MACHDEP) $(RPXSPECS) -L$(WUT_ROOT)/lib
+  LIBS_ALL += -lwut
+endif
+
 SOURCES = \
   dependencies/all/theoraplay/theoraplay.c \
   SonicCDDecomp/Animation.cpp \
@@ -32,7 +39,7 @@ SOURCES = \
   SonicCDDecomp/Userdata.cpp \
   SonicCDDecomp/Video.cpp
 
-	  
+
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
   CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
   SOURCES += SonicCDDecomp/fcaseopen.c
@@ -41,7 +48,12 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
+
+ifeq ($(WIIU),1)
+all: bin/soniccd.rpx
+else
 all: bin/soniccd
+endif
 
 include $(wildcard $(DEPENDENCIES))
 
@@ -49,12 +61,18 @@ objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $< -o $@ -c
 
+ifeq ($(WIIU),1)
+bin/soniccd.elf: $(OBJECTS)
+else
 bin/soniccd: $(OBJECTS)
+endif
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
+ifneq ($(WIIU),1)
 install: bin/soniccd
 	install -Dp -m755 bin/soniccd $(prefix)/bin/soniccd
+endif
 
 clean:
 	 rm -r -f bin && rm -r -f objects
