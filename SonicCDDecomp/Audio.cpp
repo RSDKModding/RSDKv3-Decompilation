@@ -307,63 +307,61 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
         return;
 
     if (musicStatus == MUSIC_LOADING) {
-        if (trackBuffer < 0 || trackBuffer >= TRACK_COUNT) {
-            StopMusic();
-            return;
-        }
+        // Stop (and free) any currently-playing music
+        StopMusic();
 
-        TrackInfo *trackPtr = &musicTracks[trackBuffer];
+        if (trackBuffer < 0 || trackBuffer < TRACK_COUNT) {
+            TrackInfo *trackPtr = &musicTracks[trackBuffer];
 
-        if (!trackPtr->fileName[0]) {
-            StopMusic();
-            return;
-        }
+            if (trackPtr->fileName[0] != '\0') {
+                if (LoadFile(trackPtr->fileName, &cFileStream)) {
+                    ov_callbacks callbacks;
 
-        if (musInfo.loaded)
-            StopMusic();
+                    callbacks.read_func  = readVorbis;
+                    callbacks.seek_func  = seekVorbis;
+                    callbacks.tell_func  = tellVorbis;
+                    callbacks.close_func = closeVorbis;
 
-        if (LoadFile(trackPtr->fileName, &cFileStream)) {
+                    int error = ov_open_callbacks(&cFileStream, &musInfo.vorbisFile, NULL, 0, callbacks);
+                    if (error != 0) {
+                        CloseFile(&cFileStream);
+                        printLog("ov_open_callbacks failed");
+                    }
+                    else {
+                        musInfo.vorbBitstream = -1;
+                        musInfo.vorbisFile.vi = ov_info(&musInfo.vorbisFile, -1);
 
-            musInfo.trackLoop = trackPtr->trackLoop;
-            musInfo.loopPoint = trackPtr->loopPoint;
-            musInfo.loaded    = true;
+                    #if RETRO_USING_SDL2
+                        musInfo.stream = SDL_NewAudioStream(AUDIO_S16, musInfo.vorbisFile.vi->channels, musInfo.vorbisFile.vi->rate, audioDeviceFormat.format,
+                                                            audioDeviceFormat.channels, audioDeviceFormat.freq);
+                        if (musInfo.stream == nullptr) {
+                            ov_clear(&musInfo.vorbisFile);
+                            CloseFile(&cFileStream);
+                            printLog("Failed to create stream: %s", SDL_GetError());
+                        }
+                        else
+                    #endif
+                        {
+                        #if RETRO_USING_SDL1
+                            musInfo.spec.format   = AUDIO_S16;
+                            musInfo.spec.channels = musInfo.vorbisFile.vi->channels;
+                            musInfo.spec.freq     = (int)musInfo.vorbisFile.vi->rate;
+                        #endif
 
-            unsigned long long samples = 0;
-            ov_callbacks callbacks;
+                            musInfo.buffer = new Sint16[MIX_BUFFER_SAMPLES];
 
-            callbacks.read_func  = readVorbis;
-            callbacks.seek_func  = seekVorbis;
-            callbacks.tell_func  = tellVorbis;
-            callbacks.close_func = closeVorbis;
+                            musInfo.trackLoop = trackPtr->trackLoop;
+                            musInfo.loopPoint = trackPtr->loopPoint;
+                            musInfo.loaded    = true;
 
-            int error = ov_open_callbacks(&cFileStream, &musInfo.vorbisFile, NULL, 0, callbacks);
-            if (error != 0) {
+                            musicStatus  = MUSIC_PLAYING;
+                            masterVolume = MAX_VOLUME;
+                            trackID      = trackBuffer;
+                            trackBuffer  = -1;
+                        }
+                    }
+                }
             }
-
-            musInfo.vorbBitstream = -1;
-            musInfo.vorbisFile.vi = ov_info(&musInfo.vorbisFile, -1);
-
-#if RETRO_USING_SDL2
-            musInfo.stream = SDL_NewAudioStream(AUDIO_S16, musInfo.vorbisFile.vi->channels, musInfo.vorbisFile.vi->rate, audioDeviceFormat.format,
-                                                audioDeviceFormat.channels, audioDeviceFormat.freq);
-            if (!musInfo.stream) {
-                printLog("Failed to create stream: %s", SDL_GetError());
-            }
-#endif
-
-#if RETRO_USING_SDL1
-            musInfo.spec.format   = AUDIO_S16;
-            musInfo.spec.channels = musInfo.vorbisFile.vi->channels;
-            musInfo.spec.freq     = (int)musInfo.vorbisFile.vi->rate;
-#endif
-
-            musInfo.buffer = new Sint16[MIX_BUFFER_SAMPLES];
-
-
-            musicStatus  = MUSIC_PLAYING;
-            masterVolume = MAX_VOLUME;
-            trackID      = trackBuffer;
-            trackBuffer  = -1;
         }
     }
 
