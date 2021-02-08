@@ -19,7 +19,14 @@
 #include <string.h>
 #include <assert.h>
 
-#ifdef _WIN32
+#include "../../../SonicCDDecomp/RetroEngine.hpp"
+
+#if RETRO_USING_SDL2
+#include "SDL.h"
+#define sleepms(x) SDL_Delay(x)
+#define THEORAPLAY_THREAD_T    SDL_Thread*
+#define THEORAPLAY_MUTEX_T     SDL_mutex*
+#elif defined(_WIN32)
 #include <windows.h>
 #define THEORAPLAY_THREAD_T    HANDLE
 #define THEORAPLAY_MUTEX_T     HANDLE
@@ -137,8 +144,36 @@ typedef struct TheoraDecoder
     AudioPacket *audiolisttail;
 } TheoraDecoder;
 
+#if RETRO_USING_SDL2
+static inline int Thread_Create(TheoraDecoder *ctx, void *(*routine) (void*))
+{
+    ctx->worker = SDL_CreateThread((int(*)(void*))routine, "", ctx);
 
-#ifdef _WIN32
+    return ctx->worker == NULL;
+}
+static inline void Thread_Join(THEORAPLAY_THREAD_T thread)
+{
+    SDL_WaitThread(thread, NULL);
+}
+static inline int Mutex_Create(TheoraDecoder *ctx)
+{
+    ctx->lock = SDL_CreateMutex();
+
+    return ctx->lock == NULL;
+}
+static inline void Mutex_Destroy(THEORAPLAY_MUTEX_T mutex)
+{
+    SDL_DestroyMutex(mutex);
+}
+static inline void Mutex_Lock(THEORAPLAY_MUTEX_T mutex)
+{
+    SDL_LockMutex(mutex);
+}
+static inline void Mutex_Unlock(THEORAPLAY_MUTEX_T mutex)
+{
+    SDL_UnlockMutex(mutex);
+}
+#elif defined(_WIN32)
 static inline int Thread_Create(TheoraDecoder *ctx, void *(*routine) (void*))
 {
     ctx->worker = CreateThread(
@@ -199,7 +234,6 @@ static inline void Mutex_Unlock(THEORAPLAY_MUTEX_T mutex)
     pthread_mutex_unlock(&mutex);
 }
 #endif
-
 
 static int FeedMoreOggData(THEORAPLAY_Io *io, ogg_sync_state *sync)
 {
