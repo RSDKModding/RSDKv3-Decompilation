@@ -36,6 +36,7 @@ enum DevMenuMenus {
     DEVMENU_STAGELISTSEL,
     DEVMENU_STAGESEL,
     DEVMENU_SCRIPTERROR,
+    DEVMENU_MODMENU,
 };
 
 void initDevMenu();

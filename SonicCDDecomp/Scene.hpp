@@ -100,7 +100,7 @@ struct LineScroll {
     int parallaxFactor[PARALLAX_COUNT];
     int scrollSpeed[PARALLAX_COUNT];
     int scrollPos[PARALLAX_COUNT];
-    int tilePos[PARALLAX_COUNT];
+    int linePos[PARALLAX_COUNT];
     int deform[PARALLAX_COUNT];
     byte entryCount;
 };
@@ -237,7 +237,7 @@ inline void Copy16x16Tile(ushort dest, ushort src)
     while (cnt--) *destPtr++ = *srcPtr++;
 }
 
-void SetLayerDeformation(int deformID, int deformationA, int deformationB, int deformType, int deformOffset, int deformCount);
+void SetLayerDeformation(int selectedDef, int waveLength, int waveType, int deformType, int YPos, int waveSize);
 
 void SetPlayerScreenPosition(Player *player);
 void SetPlayerScreenPositionCDStyle(Player *player);

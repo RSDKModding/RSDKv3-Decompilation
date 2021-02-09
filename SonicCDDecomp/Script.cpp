@@ -1325,9 +1325,10 @@ void AppendIntegerToString(char *text, int value)
 }
 bool ConvertStringToInteger(char *text, int *value)
 {
-    int charID   = 0;
+    int charID    = 0;
     bool negative = false;
-    *value       = 0;
+    int base      = 10;
+    *value        = 0;
     if (*text != '+' && !(*text >= '0' && *text <= '9') && *text != '-')
         return false;
     int strLength = StrLength(text) - 1;
@@ -1342,22 +1343,53 @@ bool ConvertStringToInteger(char *text, int *value)
         --strLength;
     }
 
+    if (text[charID] == '0') {
+        if (text[charID + 1] == 'x' || text[charID + 1] == 'X') {
+            charID += 2;
+            strLength -= 2;
+            base = 0x10;
+        }
+    }
+
     while (strLength > -1) {
-        if (text[charID] < '0' || text[charID] > '9') {
+        if (text[charID] < '0' || text[charID] > (base == 10 ? '9' : (base == 0x10 ? 'F' : '1'))) {
             return 0;
         }
         if (strLength <= 0) {
-            *value = text[charID] + *value - '0';
+            if (text[charID] >= '0' && text[charID] <= '9') {
+                *value = text[charID] + *value - '0';
+            }
+            else if (text[charID] >= 'a' && text[charID] <= 'f') {
+                charVal = text[charID] - 'a';
+                charVal += 10;
+                *value += charVal;
+            }
+            else if (text[charID] >= 'A' && text[charID] <= 'F') {
+                charVal = text[charID] - 'A';
+                charVal += 10;
+                *value += charVal;
+            }
         }
         else {
             int strlen = strLength + 1;
-            for (charVal = text[charID] - '0'; --strlen; charVal *= 10)
+            charVal    = 0;
+            if (text[charID] >= '0' && text[charID] <= '9') {
+                charVal = text[charID] - '0';
+            }
+            else if (text[charID] >= 'a' && text[charID] <= 'f') {
+                charVal = text[charID] - 'a';
+                charVal += 10;
+            }
+            else if (text[charID] >= 'A' && text[charID] <= 'F') {
+                charVal = text[charID] - 'A';
+                charVal += 10;
+            }
+            for (; --strlen; charVal *= base)
                 ;
             *value += charVal;
         }
         --strLength;
         ++charID;
-
     }
     if (negative)
         *value = -*value;

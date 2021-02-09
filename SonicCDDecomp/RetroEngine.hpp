@@ -48,6 +48,8 @@ typedef unsigned int uint;
 #define RETRO_PLATFORM (RETRO_WIN)
 #endif
 #elif defined __APPLE__
+#define RETRO_USING_MOUSE
+#define RETRO_USING_TOUCH
 #include <TargetConditionals.h>
 #if TARGET_IPHONE_SIMULATOR
 #define RETRO_PLATFORM (RETRO_iOS)
@@ -74,6 +76,8 @@ typedef unsigned int uint;
 #define DEFAULT_FULLSCREEN   false
 #else
 #define BASE_PATH            ""
+#define RETRO_USING_MOUSE
+#define RETRO_USING_TOUCH
 #define DEFAULT_SCREEN_XSIZE 424
 #define DEFAULT_FULLSCREEN   false
 #endif
@@ -98,6 +102,34 @@ typedef unsigned int uint;
 #define RETRO_SW_RENDER  (0)
 #define RETRO_HW_RENDER  (1)
 #define RETRO_RENDERTYPE (RETRO_SW_RENDER)
+
+#ifdef USE_SW_REN
+#undef RETRO_RENDERTYPE
+#define RETRO_RENDERTYPE (RETRO_SW_RENDER)
+#endif
+
+#ifdef USE_HW_REN
+#undef RETRO_RENDERTYPE
+#define RETRO_RENDERTYPE (RETRO_HW_RENDER)
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
+#define RETRO_USING_OPENGL (0)
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
+#define RETRO_USING_OPENGL (1)
+#endif
+
+#define RETRO_SOFTWARE_RENDER (RETRO_RENDERTYPE == RETRO_SW_RENDER)
+#define RETRO_HARDWARE_RENDER (RETRO_RENDERTYPE == RETRO_HW_RENDER)
+
+#if RETRO_USING_OPENGL
+#include <GL/glew.h>
+#include <GL/glu.h>
+
+#if RETRO_USING_SDL2
+#include <SDL_opengl.h>
+#endif
+#endif
 
 #define RETRO_USE_HAPTICS (1)
 
@@ -236,9 +268,13 @@ public:
             gamePlatform = "Mobile";
     }
 
-    bool usingDataFile = false;
-    bool usingBytecode = false;
-    byte bytecodeMode  = BYTECODE_MOBILE;
+    bool usingDataFile      = false;
+    bool usingDataFileStore = false;
+    bool usingBytecode      = false;
+    byte bytecodeMode       = BYTECODE_MOBILE;
+    bool forceFolder        = false;
+
+    char dataFile[0x80];
 
     bool initialised = false;
     bool running     = false;
@@ -284,9 +320,9 @@ public:
     const char *gameVersion = "1.1.0";
     const char *gamePlatform;
 
-#if RETRO_RENDERTYPE == RETRO_SW_RENDER
+#if RETRO_SOFTWARE_RENDER
     const char *gameRenderType = "SW_Rendering";
-#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
+#elif RETRO_HARDWARE_RENDER
     const char *gameRenderType = "HW_Rendering";
 #endif
 
@@ -294,8 +330,10 @@ public:
     const char *gameHapticSetting = "Use_Haptics"; // No_Haptics is default for pc but people with controllers exist
 #endif
 
+#if RETRO_SOFTWARE_RENDER
     ushort *frameBuffer   = nullptr;
     ushort *frameBuffer2x = nullptr;
+#endif
 
     bool isFullScreen = false;
 
@@ -318,11 +356,18 @@ public:
 #if RETRO_USING_SDL2
     SDL_Window *window          = nullptr;
     SDL_Renderer *renderer      = nullptr;
+#if RETRO_SOFTWARE_RENDER
     SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;
     SDL_Texture *videoBuffer    = nullptr;
+#endif
 
     SDL_Event sdlEvents;
+
+#if RETRO_USING_OPENGL
+    SDL_GLContext m_glContext; // OpenGL context
+#endif
+
 #endif
 
 #if RETRO_USING_SDL1

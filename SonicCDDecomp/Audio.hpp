@@ -85,6 +85,7 @@ extern SDL_AudioSpec audioDeviceFormat;
 #endif
 
 int InitAudioPlayback();
+void LoadGlobalSfx();
 
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
 void ProcessMusicStream(void *data, Sint16 *stream, int len);
@@ -111,6 +112,7 @@ inline void freeMusInfo()
         musInfo.trackLoop    = false;
         musInfo.loopPoint    = 0;
         musInfo.loaded       = false;
+        musicStatus          = MUSIC_STOPPED;
 
         SDL_UnlockAudio();
     }
@@ -123,15 +125,18 @@ void ProcessAudioMixing() {}
 inline void freeMusInfo()
 {
     if (musInfo.loaded) {
-        if (musInfo.musicFile)
-            delete[] musInfo.musicFile;
-        musInfo.musicFile    = nullptr;
-        musInfo.buffer       = nullptr;
-        musInfo.stream       = nullptr;
-        musInfo.pos          = 0;
-        musInfo.len          = 0;
-        musInfo.currentTrack = nullptr;
-        musInfo.loaded       = false;
+        SDL_LockAudio();
+
+        if (musInfo.buffer)
+            delete[] musInfo.buffer;
+        ov_clear(&musInfo.vorbisFile);
+        musInfo.buffer    = nullptr;
+        musInfo.trackLoop = false;
+        musInfo.loopPoint = 0;
+        musInfo.loaded    = false;
+        musicStatus       = MUSIC_STOPPED;
+
+        SDL_UnlockAudio();
     }
 }
 #endif
@@ -185,7 +190,8 @@ inline void StopAllSfx()
 }
 inline void ReleaseGlobalSfx()
 {
-    for (int i = globalSFXCount; i >= 0; --i) {
+    StopAllSfx();
+    for (int i = globalSFXCount - 1; i >= 0; --i) {
         if (sfxList[i].loaded) {
             StrCopy(sfxList[i].name, "");
             free(sfxList[i].buffer);

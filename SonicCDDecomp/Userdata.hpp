@@ -6,7 +6,13 @@
 #define ACHIEVEMENT_MAX (0x40)
 #define LEADERBOARD_MAX (0x80)
 
+#define MOD_MAX (0x100)
+
 #define SAVEDATA_MAX (0x2000)
+
+#include <string>
+#include <map>
+#include <unordered_map>
 
 enum OnlineMenuTypes {
     ONLINEMENU_ACHIEVEMENTS = 0,
@@ -22,16 +28,33 @@ struct LeaderboardEntry {
     int status;
 };
 
+struct ModInfo {
+    std::string name;
+    std::string desc;
+    std::string author;
+    std::string version;
+    std::map<std::string, std::string> fileMap;
+    std::string folder;
+    bool useScripts;
+    bool active;
+};
+
 extern int globalVariablesCount;
 extern int globalVariables[GLOBALVAR_COUNT];
 extern char globalVariableNames[GLOBALVAR_COUNT][0x20];
 
 extern char gamePath[0x100];
+extern char modsPath[0x100];
 extern int saveRAM[SAVEDATA_MAX];
 extern Achievement achievements[ACHIEVEMENT_MAX];
 extern LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 
 extern int controlMode;
+extern bool disableTouchControls;
+
+extern ModInfo modList[MOD_MAX];
+extern int modCount;
+extern bool forceUseScripts;
 
 inline int GetGlobalVariableByName(const char *name)
 {
@@ -116,5 +139,8 @@ void SetAchievement(int achievementID, int achievementDone);
 void SetLeaderboard(int leaderboardID, int result);
 inline void LoadAchievementsMenu() { ReadUserdata(); }
 inline void LoadLeaderboardsMenu() { ReadUserdata(); }
+
+void initMods();
+void saveMods();
 
 #endif //!USERDATA_H

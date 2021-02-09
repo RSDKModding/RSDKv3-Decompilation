@@ -56,16 +56,23 @@ int globalVariables[GLOBALVAR_COUNT];
 char globalVariableNames[GLOBALVAR_COUNT][0x20];
 
 char gamePath[0x100];
+char modsPath[0x100];
 int saveRAM[SAVEDATA_MAX];
 Achievement achievements[ACHIEVEMENT_MAX];
 LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 
 int controlMode = -1;
+bool disableTouchControls = false;
+
+ModInfo modList[MOD_MAX];
+int modCount = 0;
+bool forceUseScripts = false;
 
 void InitUserdata()
 {
     // userdata files are loaded from this directory
     sprintf(gamePath, BASE_PATH);
+    sprintf(modsPath, BASE_PATH);
 
     char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
@@ -90,7 +97,8 @@ void InitUserdata()
         ini.SetBool("Dev", "UseHQModes", Engine.useHQModes = true);
 
         ini.SetInteger("Game", "Language", Engine.language = RETRO_EN);
-        ini.SetInteger("Game", "OriginalControls", -1);
+        ini.SetInteger("Game", "OriginalControls", controlMode = -1);
+        ini.SetBool("Game", "DisableTouchControls", disableTouchControls = false);
 
         ini.SetBool("Window", "FullScreen", Engine.startFullScreen = DEFAULT_FULLSCREEN);
         ini.SetBool("Window", "Borderless", Engine.borderless = false);
@@ -168,11 +176,16 @@ void InitUserdata()
         if (!ini.GetBool("Dev", "UseHQModes", &Engine.useHQModes))
             Engine.useHQModes = true;
 
+        if (!ini.GetString("Dev", "DataFile", Engine.dataFile))
+            StrCopy(Engine.dataFile, "Data.rsdk");
+
         if (!ini.GetInteger("Game", "Language", &Engine.language))
             Engine.language = RETRO_EN;
         
         if (!ini.GetInteger("Game", "OriginalControls", &controlMode))
             controlMode = -1;
+        if (!ini.GetBool("Game", "DisableTouchControls", &disableTouchControls))
+            disableTouchControls = false;
 
         if (!ini.GetBool("Window", "FullScreen", &Engine.startFullScreen))
             Engine.startFullScreen = DEFAULT_FULLSCREEN;
@@ -414,10 +427,15 @@ void writeSettings() {
     ini.SetComment("Dev", "UseHQComment","Determines if applicable rendering modes (such as 3D floor from special stages) will render in \"High Quality\" mode or standard mode");
     ini.SetBool("Dev", "UseHQModes", Engine.useHQModes);
 
+    ini.SetComment("Dev", "DataFileComment", "Determines what RSDK file will be loaded");
+    ini.SetString("Dev", "DataFile", Engine.dataFile);
+
     ini.SetComment("Game", "LangComment", "Sets the game language (0 = EN, 1 = FR, 2 = IT, 3 = DE, 4 = ES, 5 = JP)");
     ini.SetInteger("Game", "Language", Engine.language);
     ini.SetComment("Game", "OGCtrlComment", "Sets the game's spindash style (-1 = let save file decide, 0 = S2, 1 = CD)");
     ini.SetInteger("Game", "OriginalControls", controlMode);
+    ini.SetComment("Game", "DTCtrlComment", "Determines if the game should hide the touch controls UI");
+    ini.SetBool("Game", "DisableTouchControls", disableTouchControls);
 
     ini.SetComment("Window", "FSComment", "Determines if the window will be fullscreen or not");
     ini.SetBool("Window", "FullScreen", Engine.startFullScreen);
@@ -588,6 +606,156 @@ void SetLeaderboard(int leaderboardID, int result)
                 leaderboard[leaderboardID].status = result;
                 WriteUserdata();
                 return;
+        }
+    }
+}
+
+#include <string>
+#include <ghc/filesystem.hpp>
+
+void initMods()
+{
+    modCount        = 0;
+    forceUseScripts = false;
+
+    char modBuf[0x100];
+    sprintf(modBuf, "%smods/", modsPath);
+    ghc::filesystem::path modPath(modBuf);
+
+    if (ghc::filesystem::exists(modPath) && ghc::filesystem::is_directory(modPath)) {
+        try {
+            auto rdi = ghc::filesystem::directory_iterator(modPath);
+            for (auto de : rdi) {
+                if (de.is_directory()) {
+                    ghc::filesystem::path modDirPath = de.path();
+
+                    ModInfo *info = &modList[modCount];
+
+                    char modName[0x100];
+                    info->active = false;
+
+                    std::string modDir            = modDirPath.c_str();
+                    const std::string mod_inifile = modDir + "/mod.ini";
+
+                    FileIO *f = fOpen(mod_inifile.c_str(), "r");
+                    if (f) {
+                        fClose(f);
+                        IniParser modSettings(mod_inifile.c_str());
+
+                        info->name    = "Unnamed Mod";
+                        info->desc    = "";
+                        info->author  = "Unknown Author";
+                        info->version = "1.0.0";
+                        info->folder  = modDirPath.filename();
+
+                        char infoBuf[0x100];
+                        // Name
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Name", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->name = infoBuf;
+                        // Desc
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Description", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->desc = infoBuf;
+                        // Author
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Author", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->author = infoBuf;
+                        // Version
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Version", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->version = infoBuf;
+
+                        info->active = false;
+                        modSettings.GetBool("", "Active", &info->active);
+
+                        // Check for Data replacements
+                        ghc::filesystem::path dataPath(modDir + "/Data");
+
+                        if (ghc::filesystem::exists(dataPath) && ghc::filesystem::is_directory(dataPath)) {
+                            try {
+                                auto data_rdi = ghc::filesystem::recursive_directory_iterator(dataPath);
+                                for (auto data_de : data_rdi) {
+                                    if (data_de.is_regular_file()) {
+                                        char modBuf[0x100];
+                                        StrCopy(modBuf, data_de.path().c_str());
+                                        char folderTest[4][0x10] = {
+                                            "Data/",
+                                            "Data\\",
+                                            "data/",
+                                            "data\\",
+                                        };
+                                        int tokenPos = -1;
+                                        for (int i = 0; i < 4; ++i) {
+                                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
+                                            if (tokenPos >= 0)
+                                                break;
+                                        }
+
+                                        if (tokenPos >= 0) {
+                                            char buffer[0x80];
+                                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
+                                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
+                                            }
+
+                                            printLog(modBuf);
+                                            std::string path(buffer);
+                                            std::string modPath(modBuf);
+                                            info->fileMap.insert(std::pair<std::string, std::string>(path, modBuf));
+                                        }
+                                    }
+                                }
+                            } catch (ghc::filesystem::filesystem_error fe) {
+                                printLog("Data Folder Scanning Error: ");
+                                printLog(fe.what());
+                            }
+                        }
+
+                        info->useScripts = false;
+                        modSettings.GetBool("", "TxtScripts", &info->useScripts);
+                        if (info->useScripts && info->active)
+                            forceUseScripts = true;
+                    }
+                    modCount++;
+                }
+            }
+        } catch (ghc::filesystem::filesystem_error fe) {
+            printLog("Mods Folder Scanning Error: ");
+            printLog(fe.what());
+        }
+    }
+}
+void saveMods()
+{
+    char modBuf[0x100];
+    sprintf(modBuf, "%smods/", modsPath);
+    ghc::filesystem::path modPath(modBuf);
+
+    if (ghc::filesystem::exists(modPath) && ghc::filesystem::is_directory(modPath)) {
+        for (int m = 0; m < modCount; ++m) {
+            ModInfo *info                 = &modList[m];
+            std::string modDir            = modPath.c_str();
+            const std::string mod_inifile = modDir + info->folder + "/mod.ini";
+
+            FileIO *f = fOpen(mod_inifile.c_str(), "w");
+            if (f) {
+                fClose(f);
+                IniParser modSettings;
+
+                modSettings.SetString("", "Name", (char *)info->name.c_str());
+                modSettings.SetString("", "Description", (char *)info->desc.c_str());
+                modSettings.SetString("", "Author", (char *)info->author.c_str());
+                modSettings.SetString("", "Version", (char *)info->version.c_str());
+                if (info->useScripts)
+                    modSettings.SetBool("", "TxtScripts", info->useScripts);
+                modSettings.SetBool("", "Active", info->active);
+
+                modSettings.Write(mod_inifile.c_str());
+            }
         }
     }
 }

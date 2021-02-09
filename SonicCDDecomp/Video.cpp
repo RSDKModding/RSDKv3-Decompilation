@@ -209,11 +209,15 @@ int ProcessVideo()
                 const Uint8 *v = u + (half_w * (videoVidData->height / 2));
 
 #if RETRO_USING_SDL2
+#if RETRO_SOFTWARE_RENDER
                 SDL_UpdateYUVTexture(Engine.videoBuffer, NULL, y, videoVidData->width, u, half_w, v, half_w);
 #endif
+#endif
 #if RETRO_USING_SDL1
+#if RETRO_SOFTWARE_RENDER
                 uint *videoFrameBuffer = (uint *)Engine.videoBuffer->pixels;
                 memcpy(videoFrameBuffer, videoVidData->pixels, videoVidData->width * videoVidData->height * sizeof(uint));
+#endif
 #endif
 
                 THEORAPLAY_freeVideo(videoVidData);
@@ -256,6 +260,7 @@ void StopVideoPlayback()
 
 void SetupVideoBuffer(int width, int height)
 {
+#if RETRO_SOFTWARE_RENDER
 #if RETRO_USING_SDL1
     Engine.videoBuffer = SDL_CreateRGBSurface(0, width, height, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 #endif
@@ -265,10 +270,12 @@ void SetupVideoBuffer(int width, int height)
 
     if (!Engine.videoBuffer)
         printLog("Failed to create video buffer!");
+#endif
 }
 
 void CloseVideoBuffer()
 {
+#if RETRO_SOFTWARE_RENDER
     if (videoPlaying) {
 #if RETRO_USING_SDL1
         SDL_FreeSurface(Engine.videoBuffer);
@@ -278,4 +285,5 @@ void CloseVideoBuffer()
 #endif
         Engine.videoBuffer = nullptr;
     }
+#endif
 }
