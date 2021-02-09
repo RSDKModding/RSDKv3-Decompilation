@@ -21,7 +21,7 @@ int gfxDataPosition;
 GFXSurface gfxSurface[SURFACE_MAX];
 byte graphicData[GFXDATA_MAX];
 
-#if RETRO_PLATFORM == RETRO_3DS
+#if RETRO_PLATFORM == RETRO_3DS && RETRO_SOFTWARE_RENDER
 // implementation taken from here: https://gbatemp.net/threads/best-way-to-draw-pixel-buffer.445173/
 void CopyToFramebuffer() {
     u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, 0, 0);

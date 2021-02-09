@@ -100,7 +100,7 @@ typedef unsigned int uint;
 #elif RETRO_PLATFORM == RETRO_3DS
 #define RETRO_USING_SDL2       (0)
 #define RETRO_USING_SDL1       (0)
-#define RETRO_USING_C2D        (0)
+#define RETRO_USING_C2D        (1)
 #define RETRO_USING_SDL1_AUDIO (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL2       (0)
@@ -120,8 +120,10 @@ typedef unsigned int uint;
 #define RETRO_SW_RENDER  (1)
 #define RETRO_HW_RENDER  (0)
 #if RETRO_USING_C2D
+#undef RETRO_RENDERTYPE
 #define RETRO_RENDERTYPE (RETRO_HW_RENDER)
 #else
+#undef RETRO_RENDERTYPE
 #define RETRO_RENDERTYPE (RETRO_SW_RENDER)
 #endif
 
@@ -138,7 +140,11 @@ typedef unsigned int uint;
 #if RETRO_RENDERTYPE == RETRO_SW_RENDER
 #define RETRO_USING_OPENGL (0)
 #elif RETRO_RENDERTYPE == RETRO_HW_RENDER
+#if RETRO_PLATFORM == RETRO_3DS
+#define RETRO_USING_OPENGL (0)
+#else
 #define RETRO_USING_OPENGL (1)
+#endif
 #endif
 
 #define RETRO_SOFTWARE_RENDER (RETRO_RENDERTYPE == RETRO_SW_RENDER)
@@ -157,10 +163,9 @@ typedef unsigned int uint;
 
 #if RETRO_PLATFORM <= RETRO_WP7
 #define RETRO_GAMEPLATFORMID (RETRO_PLATFORM)
-#else
 
 // use *this* macro to determine what platform the game thinks its running on (since only the first 7 platforms are supported natively by scripts)
-#if RETRO_PLATFORM == RETRO_VITA
+#elif RETRO_PLATFORM == RETRO_VITA
 #define RETRO_GAMEPLATFORMID (RETRO_WIN)
 #elif RETRO_PLATFORM == RETRO_UWP
 #define RETRO_GAMEPLATFORMID (UAP_GetRetroGamePlatformId())
@@ -170,7 +175,7 @@ typedef unsigned int uint;
 #error Unspecified RETRO_GAMEPLATFORMID
 #endif
 
-#endif
+//#endif
 
 // this macro defines the touch device read by the game (UWP requires DIRECT)
 #if defined(RETRO_UWP) && defined(SDL_TOUCH_DEVICE_DIRECT)
@@ -322,6 +327,10 @@ public:
             gamePlatform = "Mobile";
     }
 
+#if RETRO_USING_C2D
+    C3D_RenderTarget* topScreen;
+#endif
+
     bool usingDataFile      = false;
     bool usingDataFileStore = false;
     bool usingBytecode      = false;
@@ -417,16 +426,9 @@ public:
 #endif
 
     SDL_Event sdlEvents;
-#if RETRO_PLATFORM == RETRO_3DS
-    // due to the 3DS's limited resolution, image scaling isn't needed here
-    C3D_RenderTarget* topScreen;
-    C3D_FrameBuf* videoBuffer;
-#endif
-
 #if RETRO_USING_OPENGL
     SDL_GLContext m_glContext; // OpenGL context
 #endif
-
 #endif
 
 #if RETRO_USING_SDL1
@@ -438,6 +440,8 @@ public:
 
     SDL_Event sdlEvents;
 #endif
+
+
 };
 
 extern RetroEngine Engine;
