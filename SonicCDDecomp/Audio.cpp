@@ -107,13 +107,20 @@ int InitAudioPlayback()
     }
 #endif
 
+    LoadGlobalSfx();
+
+    return true;
+}
+
+void LoadGlobalSfx()
+{
     FileInfo info;
     FileInfo infoStore;
     char strBuffer[0x100];
-    byte fileBuffer  = 0;
+    byte fileBuffer = 0;
     int fileBuffer2 = 0;
 
-    if (LoadFile("Data/Game/Gameconfig.bin", &info)) {
+    if (LoadFile("Data/Game/GameConfig.bin", &info)) {
         infoStore = info;
 
         FileRead(&fileBuffer, 1);
@@ -174,8 +181,6 @@ int InitAudioPlayback()
     // sfxDataPosStage = sfxDataPos;
     nextChannelPos = 0;
     for (int i = 0; i < CHANNEL_COUNT; ++i) sfxChannels[i].sfxID = -1;
-
-    return true;
 }
 
 #if RETRO_USING_SDL1_AUDIO || RETRO_USING_SDL2
@@ -190,18 +195,22 @@ int seekVorbis(void *ptr, ogg_int64_t offset, int whence)
     switch (whence) {
         case SEEK_SET: whence = 0; break;
         case SEEK_CUR: whence = (int)GetFilePosition2(&info->fileInfo); break;
-        case SEEK_END: whence = info->fileInfo.fileSize; break;
+        case SEEK_END: whence = info->fileInfo.vFileSize; break;
         default: break;
     }
     SetFilePosition2(&info->fileInfo, (int)(whence + offset));
-    return GetFilePosition2(&info->fileInfo) <= info->fileInfo.fileSize;
+    return GetFilePosition2(&info->fileInfo) <= info->fileInfo.vFileSize;
 }
 long tellVorbis(void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
     return GetFilePosition2(&info->fileInfo);
 }
-int closeVorbis(void *ptr) { return CloseFile2(); }
+int closeVorbis(void *ptr)
+{
+    MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
+    return CloseFile2(&info->fileInfo);
+}
 #endif
 
 void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
@@ -344,10 +353,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
         if (musInfo.loaded)
             StopMusic();
 
-        if (LoadFile(trackPtr->fileName, &musInfo.fileInfo)) {
-            cFileHandleStream = cFileHandle;
-            cFileHandle                  = nullptr;
-
+        if (LoadFile2(trackPtr->fileName, &musInfo.fileInfo)) {
             musInfo.trackLoop = trackPtr->trackLoop;
             musInfo.loopPoint = trackPtr->loopPoint;
             musInfo.loaded    = true;

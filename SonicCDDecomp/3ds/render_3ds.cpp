@@ -111,7 +111,7 @@ void _3ds_cacheSpriteSurface(int sheetID) {
 	GFXSurface* surf = &gfxSurface[sheetID];
 	int height = surf->height;
 	int width  = surf->width;
-	int depth  = surf->depth;
+	int depth  = 0;
     	byte *gfxDataPtr   = &graphicData[surf->dataPosition];
 	_3ds_cacheGfxSurface(gfxDataPtr, &_3ds_textureData[sheetID], width, height, false);
 }

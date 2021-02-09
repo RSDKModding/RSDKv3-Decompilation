@@ -50,6 +50,8 @@ typedef unsigned int uint;
 #define RETRO_PLATFORM (RETRO_WIN)
 #endif
 #elif defined __APPLE__
+#define RETRO_USING_MOUSE
+#define RETRO_USING_TOUCH
 #include <TargetConditionals.h>
 #if TARGET_IPHONE_SIMULATOR
 #define RETRO_PLATFORM (RETRO_iOS)
@@ -82,6 +84,8 @@ typedef unsigned int uint;
 #define DEFAULT_FULLSCREEN   true
 #else
 #define BASE_PATH            ""
+#define RETRO_USING_MOUSE
+#define RETRO_USING_TOUCH
 #define DEFAULT_SCREEN_XSIZE 424
 #define DEFAULT_FULLSCREEN   false
 #endif
@@ -93,11 +97,10 @@ typedef unsigned int uint;
 #define RETRO_USING_SDL1       (0)
 #define RETRO_USING_C2D        (0)
 #define RETRO_USING_SDL1_AUDIO (0)
-#elif RETRO_PLATFORM == RETRO_3DS // 3DS only has support for SDL 1.2, so drawing functions
-				  // and input are being redone using libctru and Citro2D
+#elif RETRO_PLATFORM == RETRO_3DS
 #define RETRO_USING_SDL2       (0)
 #define RETRO_USING_SDL1       (0)
-#define RETRO_USING_C2D        (1)
+#define RETRO_USING_C2D        (0)
 #define RETRO_USING_SDL1_AUDIO (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL2       (0)
@@ -120,6 +123,34 @@ typedef unsigned int uint;
 #define RETRO_RENDERTYPE (RETRO_HW_RENDER)
 #else
 #define RETRO_RENDERTYPE (RETRO_SW_RENDER)
+#endif
+
+#ifdef USE_SW_REN
+#undef RETRO_RENDERTYPE
+#define RETRO_RENDERTYPE (RETRO_SW_RENDER)
+#endif
+
+#ifdef USE_HW_REN
+#undef RETRO_RENDERTYPE
+#define RETRO_RENDERTYPE (RETRO_HW_RENDER)
+#endif
+
+#if RETRO_RENDERTYPE == RETRO_SW_RENDER
+#define RETRO_USING_OPENGL (0)
+#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
+#define RETRO_USING_OPENGL (1)
+#endif
+
+#define RETRO_SOFTWARE_RENDER (RETRO_RENDERTYPE == RETRO_SW_RENDER)
+#define RETRO_HARDWARE_RENDER (RETRO_RENDERTYPE == RETRO_HW_RENDER)
+
+#if RETRO_USING_OPENGL
+#include <GL/glew.h>
+#include <GL/glu.h>
+#endif
+
+#if RETRO_USING_SDL2
+#include <SDL_opengl.h>
 #endif
 
 #define RETRO_USE_HAPTICS (1)
@@ -291,9 +322,13 @@ public:
             gamePlatform = "Mobile";
     }
 
-    bool usingDataFile = false;
-    bool usingBytecode = false;
-    byte bytecodeMode  = BYTECODE_MOBILE;
+    bool usingDataFile      = false;
+    bool usingDataFileStore = false;
+    bool usingBytecode      = false;
+    byte bytecodeMode       = BYTECODE_MOBILE;
+    bool forceFolder        = false;
+
+    char dataFile[0x80];
 
     bool initialised = false;
     bool running     = false;
@@ -339,9 +374,9 @@ public:
     const char *gameVersion = "1.1.0";
     const char *gamePlatform;
 
-#if RETRO_RENDERTYPE == RETRO_SW_RENDER
+#if RETRO_SOFTWARE_RENDER
     const char *gameRenderType = "SW_Rendering";
-#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
+#elif RETRO_HARDWARE_RENDER
     const char *gameRenderType = "HW_Rendering";
 #endif
 
@@ -349,8 +384,10 @@ public:
     const char *gameHapticSetting = "Use_Haptics"; // No_Haptics is default for pc but people with controllers exist
 #endif
 
+#if RETRO_SOFTWARE_RENDER
     ushort *frameBuffer   = nullptr;
     ushort *frameBuffer2x = nullptr;
+#endif
 
     bool isFullScreen = false;
 
@@ -373,15 +410,23 @@ public:
 #if RETRO_USING_SDL2
     SDL_Window *window          = nullptr;
     SDL_Renderer *renderer      = nullptr;
+#if RETRO_SOFTWARE_RENDER
     SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;
     SDL_Texture *videoBuffer    = nullptr;
+#endif
 
     SDL_Event sdlEvents;
-#elif RETRO_PLATFORM == RETRO_3DS
+#if RETRO_PLATFORM == RETRO_3DS
     // due to the 3DS's limited resolution, image scaling isn't needed here
     C3D_RenderTarget* topScreen;
     C3D_FrameBuf* videoBuffer;
+#endif
+
+#if RETRO_USING_OPENGL
+    SDL_GLContext m_glContext; // OpenGL context
+#endif
+
 #endif
 
 #if RETRO_USING_SDL1

@@ -56,16 +56,23 @@ int globalVariables[GLOBALVAR_COUNT];
 char globalVariableNames[GLOBALVAR_COUNT][0x20];
 
 char gamePath[0x100];
+char modsPath[0x100];
 int saveRAM[SAVEDATA_MAX];
 Achievement achievements[ACHIEVEMENT_MAX];
 LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 
 int controlMode = -1;
+bool disableTouchControls = false;
+
+ModInfo modList[MOD_MAX];
+int modCount = 0;
+bool forceUseScripts = false;
 
 void InitUserdata()
 {
     // userdata files are loaded from this directory
     sprintf(gamePath, BASE_PATH);
+    sprintf(modsPath, BASE_PATH);
 
     char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
@@ -126,7 +133,6 @@ void InitUserdata()
         #endif
 
         ini->Write(BASE_PATH"settings.ini");
-
     }
     else {
         fClose(file);
@@ -148,11 +154,16 @@ void InitUserdata()
         if (!ini->GetBool("Dev", "UseHQModes", &Engine.useHQModes))
             Engine.useHQModes = true;
 
+        if (!ini->GetString("Dev", "DataFile", Engine.dataFile))
+            StrCopy(Engine.dataFile, "Data.rsdk");
+
         if (!ini->GetInteger("Game", "Language", &Engine.language))
             Engine.language = RETRO_EN;
         
         if (!ini->GetInteger("Game", "OriginalControls", &controlMode))
             controlMode = -1;
+        if (!ini->GetBool("Game", "DisableTouchControls", &disableTouchControls))
+            disableTouchControls = false;
 
         #if RETRO_USING_SDL
         if (!ini->GetBool("Window", "FullScreen", &Engine.startFullScreen))
@@ -425,7 +436,6 @@ void writeSettings() {
 
     ini->SetFloat("Audio", "BGMVolume", bgmVolume / (float)MAX_VOLUME);
     ini->SetFloat("Audio", "SFXVolume", sfxVolume / (float)MAX_VOLUME);
-
 #if RETRO_USING_SDL2
     ini->SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://wiki.libsdl.org/SDL_Scancode)");
 #endif
@@ -580,4 +590,161 @@ void SetLeaderboard(int leaderboardID, int result)
                 return;
         }
     }
+}
+
+// rendering first, then mod loading
+#if RETRO_PLATFORM != RETRO_3DS
+#include <string>
+#include <ghc/filesystem.hpp>
+#endif
+
+void initMods()
+{
+#if RETRO_PLATFORM != RETRO_3DS
+    modCount        = 0;
+    forceUseScripts = false;
+
+    char modBuf[0x100];
+    sprintf(modBuf, "%smods/", modsPath);
+    ghc::filesystem::path modPath(modBuf);
+
+    if (ghc::filesystem::exists(modPath) && ghc::filesystem::is_directory(modPath)) {
+        try {
+            auto rdi = ghc::filesystem::directory_iterator(modPath);
+            for (auto de : rdi) {
+                if (de.is_directory()) {
+                    ghc::filesystem::path modDirPath = de.path();
+
+                    ModInfo *info = &modList[modCount];
+
+                    char modName[0x100];
+                    info->active = false;
+
+                    std::string modDir            = modDirPath.c_str();
+                    const std::string mod_inifile = modDir + "/mod.ini";
+
+                    FileIO *f = fOpen(mod_inifile.c_str(), "r");
+                    if (f) {
+                        fClose(f);
+                        IniParser modSettings(mod_inifile.c_str());
+
+                        info->name    = "Unnamed Mod";
+                        info->desc    = "";
+                        info->author  = "Unknown Author";
+                        info->version = "1.0.0";
+                        info->folder  = modDirPath.filename();
+
+                        char infoBuf[0x100];
+                        // Name
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Name", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->name = infoBuf;
+                        // Desc
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Description", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->desc = infoBuf;
+                        // Author
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Author", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->author = infoBuf;
+                        // Version
+                        StrCopy(infoBuf, "");
+                        modSettings.GetString("", "Version", infoBuf);
+                        if (!StrComp(infoBuf, ""))
+                            info->version = infoBuf;
+
+                        info->active = false;
+                        modSettings.GetBool("", "Active", &info->active);
+
+                        // Check for Data replacements
+                        ghc::filesystem::path dataPath(modDir + "/Data");
+
+                        if (ghc::filesystem::exists(dataPath) && ghc::filesystem::is_directory(dataPath)) {
+                            try {
+                                auto data_rdi = ghc::filesystem::recursive_directory_iterator(dataPath);
+                                for (auto data_de : data_rdi) {
+                                    if (data_de.is_regular_file()) {
+                                        char modBuf[0x100];
+                                        StrCopy(modBuf, data_de.path().c_str());
+                                        char folderTest[4][0x10] = {
+                                            "Data/",
+                                            "Data\\",
+                                            "data/",
+                                            "data\\",
+                                        };
+                                        int tokenPos = -1;
+                                        for (int i = 0; i < 4; ++i) {
+                                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
+                                            if (tokenPos >= 0)
+                                                break;
+                                        }
+
+                                        if (tokenPos >= 0) {
+                                            char buffer[0x80];
+                                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
+                                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
+                                            }
+
+                                            printLog(modBuf);
+                                            std::string path(buffer);
+                                            std::string modPath(modBuf);
+                                            info->fileMap.insert(std::pair<std::string, std::string>(path, modBuf));
+                                        }
+                                    }
+                                }
+                            } catch (ghc::filesystem::filesystem_error fe) {
+                                printLog("Data Folder Scanning Error: ");
+                                printLog(fe.what());
+                            }
+                        }
+
+                        info->useScripts = false;
+                        modSettings.GetBool("", "TxtScripts", &info->useScripts);
+                        if (info->useScripts && info->active)
+                            forceUseScripts = true;
+                    }
+                    modCount++;
+                }
+            }
+        } catch (ghc::filesystem::filesystem_error fe) {
+            printLog("Mods Folder Scanning Error: ");
+            printLog(fe.what());
+        }
+    }
+#endif
+}
+void saveMods()
+{
+#if RETRO_PLATFORM != RETRO_3DS
+    char modBuf[0x100];
+    sprintf(modBuf, "%smods/", modsPath);
+    ghc::filesystem::path modPath(modBuf);
+
+    if (ghc::filesystem::exists(modPath) && ghc::filesystem::is_directory(modPath)) {
+        for (int m = 0; m < modCount; ++m) {
+            ModInfo *info                 = &modList[m];
+            std::string modDir            = modPath.c_str();
+            const std::string mod_inifile = modDir + info->folder + "/mod.ini";
+
+            FileIO *f = fOpen(mod_inifile.c_str(), "w");
+            if (f) {
+                fClose(f);
+                IniParser modSettings;
+
+                modSettings.SetString("", "Name", (char *)info->name.c_str());
+                modSettings.SetString("", "Description", (char *)info->desc.c_str());
+                modSettings.SetString("", "Author", (char *)info->author.c_str());
+                modSettings.SetString("", "Version", (char *)info->version.c_str());
+                if (info->useScripts)
+                    modSettings.SetBool("", "TxtScripts", info->useScripts);
+                modSettings.SetBool("", "Active", info->active);
+
+                modSettings.Write(mod_inifile.c_str());
+            }
+        }
+    }
+#endif
 }

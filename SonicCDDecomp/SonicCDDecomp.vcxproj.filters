@@ -22,6 +22,12 @@
     <Filter Include="Header Files\vdf_parser">
       <UniqueIdentifier>{508c825f-9a6b-4ced-8588-bfa55ba16df8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\upng">
+      <UniqueIdentifier>{6eb1eb47-c31e-4b79-8118-5316846f70d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\upng">
+      <UniqueIdentifier>{9dc0b047-86a1-4812-9751-019df51c575a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -99,6 +105,9 @@
     <ClInclude Include="..\dependencies\windows\ValveFileVDF\vdf_parser.hpp">
       <Filter>Header Files\vdf_parser</Filter>
     </ClInclude>
+    <ClInclude Include="..\dependencies\all\upng\upng.h">
+      <Filter>Header Files\upng</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -169,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="Scene3D.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\all\upng\upng.cpp">
+      <Filter>Source Files\upng</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
