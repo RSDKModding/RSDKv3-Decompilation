@@ -6425,7 +6425,7 @@ void DrawBitmapText(void *menu, int XPos, int YPos, int scale, int spacing, int 
             ushort c             = tMenu->textData[tMenu->entryStart[rowStart] + i];
             FontCharacter *fChar = &fontCharacterList[c];
 #if RETRO_SOFTWARE_RENDER
-            DrawSpriteScaled(FLIP_NONE, X >> 9, Y >> 9, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height, fChar->srcX,
+            DrawSpriteScaled(FLIP_NO, X >> 9, Y >> 9, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height, fChar->srcX,
                              fChar->srcY, textMenuSurfaceNo);
 #endif
 #if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
