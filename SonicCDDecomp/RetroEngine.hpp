@@ -100,7 +100,7 @@ typedef unsigned int uint;
 #elif RETRO_PLATFORM == RETRO_3DS
 #define RETRO_USING_SDL2       (0)
 #define RETRO_USING_SDL1       (0)
-#define RETRO_USING_C2D        (1)
+#define RETRO_USING_C2D        (0)   // Citro2D build currently broken, do not enable
 #define RETRO_USING_SDL1_AUDIO (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL2       (0)

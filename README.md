@@ -70,6 +70,11 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
 NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
 
+## 3DS:
+* Ensure you have devkitARM installed; refer to the [devkitPro wiki](https://devkitpro.org/wiki/Getting_Started) for more information on getting the package installer set up.
+* Make sure you have all dependencies installed (run `sudo dkp-pacman -S 3ds-sdl 3ds-dev 3ds-libvorbisidec 3ds-libtheora 3ds-opusfile`)
+* Go into the repo and run `make -f Makefile.3ds`. For a CIA build, run `make -f Makefile.3ds cia`.
+
 ## Other platforms:
 Currently the only "officially" supported platforms are the ones listed above, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
 If you've cloned this repo and ported it to a platform not on the list or made some changes you'd like to see added to this repo, submit a pull request and it'll most likely be added

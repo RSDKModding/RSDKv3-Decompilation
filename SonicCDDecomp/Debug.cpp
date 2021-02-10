@@ -48,7 +48,7 @@ void initDevMenu()
     gameMenu[0].selection2       = 9;
     gameMenu[1].visibleRowCount  = 0;
     gameMenu[1].visibleRowOffset = 0;
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     Engine.highResMode = false;
     render3DEnabled    = false;
     UpdateHardwareTextures();
@@ -80,7 +80,7 @@ void initErrorMessage()
     gameMenu[1].visibleRowOffset = 0;
     stageMode                    = DEVMENU_SCRIPTERROR;
     touchTimer                   = 0;
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     Engine.highResMode = false;
     render3DEnabled    = false;
     UpdateHardwareTextures();

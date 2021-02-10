@@ -143,7 +143,7 @@ void ProcessStage(void)
             ResetBackgroundSettings();
             LoadStageFiles();
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
             texBufferMode = 0;
             for (int i = 0; i < LAYER_COUNT; i++) {
                 if (stageLayouts[i].type == LAYER_3DSKY)

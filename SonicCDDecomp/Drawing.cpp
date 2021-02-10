@@ -104,14 +104,15 @@ int InitRenderDevice()
     memset(Engine.frameBuffer2x, 0, (SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2) * sizeof(ushort));
 #endif
 
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL2 || RETRO_USING_SDL1
     SDL_Init(SDL_INIT_EVERYTHING);
 
+#if RETRO_USING_SDL2
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
     SDL_SetHint(SDL_HINT_RENDER_VSYNC, Engine.vsync ? "1" : "0");
     SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
     SDL_SetHint(SDL_HINT_WINRT_HANDLE_BACK_BUTTON, "1");
-
+#endif
     byte flags = 0;
 #if RETRO_USING_OPENGL
     flags |= SDL_WINDOW_OPENGL;
@@ -134,8 +135,9 @@ int InitRenderDevice()
 
     SDL_RenderSetLogicalSize(Engine.renderer, SCREEN_XSIZE, SCREEN_YSIZE);
     SDL_SetRenderDrawBlendMode(Engine.renderer, SDL_BLENDMODE_BLEND);
+#endif
 
-#if RETRO_SOFTWARE_RENDER
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
     Engine.screenBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE, SCREEN_YSIZE);
 
     if (!Engine.screenBuffer) {
@@ -152,6 +154,7 @@ int InitRenderDevice()
     }
 #endif
 
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
     if (Engine.startFullScreen) {
         SDL_RestoreWindow(Engine.window);
         SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -173,6 +176,7 @@ int InitRenderDevice()
     else {
         printf("error: %s", SDL_GetError());
     }
+#endif
 
 #if RETRO_PLATFORM == RETRO_iOS
     SDL_RestoreWindow(Engine.window);
@@ -180,17 +184,17 @@ int InitRenderDevice()
     Engine.isFullScreen = true;
 #endif
     
-#elif RETRO_USING_C2D
+#if RETRO_PLATFORM == RETRO_3DS
     gfxInitDefault();
-    DebugConsoleInit();
+    DebugConsoleInit(); 
+#if RETRO_USING_C2D
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
     Engine.topScreen = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
-#elif RETRO_PLATFORM == RETRO_3DS && !RETRO_USING_C2D
-    gfxInitDefault();
-    DebugConsoleInit(); 
+#else
     gfxSetScreenFormat(GFX_TOP, GSP_RGB565_OES);
+#endif
 #endif
 
 #if RETRO_USING_SDL1
@@ -407,6 +411,7 @@ void FlipScreen()
     // pillarboxes in fullscreen from displaying garbage data.
     SDL_RenderClear(Engine.renderer);
 #elif RETRO_USING_C2D
+    // TODO: this code doesn't really belong here, move
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(Engine.topScreen, C2D_Color32f(0.1f, 0.1f, 0.1f, 1.0f));
     C2D_SceneBegin(Engine.topScreen);
@@ -584,7 +589,7 @@ void FlipScreen()
 
 #endif // !RETRO_RENDER_TYPE == RETRO_SW_RENDER
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
 
     glLoadIdentity();
@@ -667,7 +672,7 @@ void FlipScreen()
 #endif
 }
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
 void FlipScreenHRes()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
@@ -783,7 +788,7 @@ void ClearScreen(byte index)
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     gfxPolyList[gfxVertexSize].x        = 0.0f;
     gfxPolyList[gfxVertexSize].y        = 0.0f;
     gfxPolyList[gfxVertexSize].colour.r = activePalette32[index].r;
@@ -880,7 +885,7 @@ void CopyFrameOverlay2x()
 }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
 
 void UpdateHardwareTextures()
 {
@@ -1350,7 +1355,7 @@ void DrawObjectList(int Layer)
 void DrawStageGFX()
 {
     waterDrawPos = waterLevel - yScrollOffset;
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     gfxVertexSize = 0;
     gfxIndexSize  = 0;
 
@@ -2039,7 +2044,7 @@ void DrawHLineScrollLayer(int layerID)
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     TileLayer *layer      = &stageLayouts[activeTileLayers[layerID]];
     byte *lineScrollPtr   = NULL;
     int chunkPosX         = 0;
@@ -2870,7 +2875,7 @@ void DrawHLineScrollLayer(int layerID)
 }
 void DrawVLineScrollLayer(int layerID)
 {
-#if RETRO_SOFTWARE_RENDER
+#if RETRO_SOFTWARE_RENDER && !RETRO_USING_C2D
     TileLayer *layer   = &stageLayouts[activeTileLayers[layerID]];
     int layerwidth     = layer->width;
     int layerheight    = layer->height;
@@ -3428,7 +3433,7 @@ void Draw3DFloorLayer(int layerID)
 #if RETRO_USING_C2D
 
 #endif
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     TileLayer *layer = &stageLayouts[activeTileLayers[layerID]];
     int tileOffset, tileX, tileY, tileSinBlock, tileCosBlock;
     int sinValue512, cosValue512;
@@ -4089,7 +4094,7 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     if (gfxVertexSize < VERTEX_LIMIT) {
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
         gfxPolyList[gfxVertexSize].y        = YPos << 4;
@@ -4367,7 +4372,7 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
 #if RETRO_USING_C2D
     _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, 0, 1.0f, 1.0f, 0.0f);
     spriteIndex++;
-#elif RETRO_HARDWARE_RENDER
+#elif RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
@@ -4542,7 +4547,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
 #if RETRO_USING_C2D
     _3ds_prepSprite(XPos, YPos, width, height, sprX, sprY, sheetID, direction, 1.0f, 1.0f, 0.0f);
     spriteIndex++;
-#elif RETRO_HARDWARE_RENDER
+#elif RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
         switch (direction) {
@@ -4831,7 +4836,7 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
     _3ds_prepSprite(trueXPos, trueYPos, width, height, sprX, sprY, sheetID, 0,
 		    finalScaleX, finalScaleY, 0.0f); 
     spriteIndex++;
-#elif RETRO_HARDWARE_RENDER
+#elif RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     if (gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
         scaleX <<= 2;
         scaleY <<= 2;
@@ -4893,7 +4898,7 @@ void DrawScaledChar(int direction, int XPos, int YPos, int pivotX, int pivotY, i
     //Not avaliable in SW Render mode
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (gfxVertexSize < VERTEX_LIMIT && XPos > -8192 && XPos < 13951 && YPos > -1024 && YPos < 4864) {
         XPos -= pivotX * scaleX >> 5;
@@ -5129,7 +5134,7 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 		    width, height, sprX, sprY, sheetID, direction,
 		    1.0f, 1.0f, radians); 
     spriteIndex++;
-#elif RETRO_HARDWARE_RENDER
+#elif RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     XPos <<= 4;
     YPos <<= 4;
@@ -5400,7 +5405,7 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     XPos <<= 4;
     YPos <<= 4;
@@ -5559,7 +5564,7 @@ void DrawBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int 
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
@@ -5679,7 +5684,7 @@ void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX,
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
@@ -5793,7 +5798,7 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
@@ -5900,7 +5905,7 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
@@ -6182,7 +6187,7 @@ void DrawFace(void *v, uint colour)
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     if (gfxVertexSize < VERTEX_LIMIT) {
         gfxPolyList[gfxVertexSize].x        = verts[0].x << 4;
         gfxPolyList[gfxVertexSize].y        = verts[0].y << 4;
@@ -6357,7 +6362,7 @@ void DrawTexturedFace(void *v, byte sheetID)
     }
 #endif
 
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
     GFXSurface *surface = &gfxSurface[sheetID];
     if (gfxVertexSize < VERTEX_LIMIT) {
         gfxPolyList[gfxVertexSize].x        = verts[0].x << 4;
@@ -6423,7 +6428,7 @@ void DrawBitmapText(void *menu, int XPos, int YPos, int scale, int spacing, int 
             DrawSpriteScaled(FLIP_NONE, X >> 9, Y >> 9, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height, fChar->srcX,
                              fChar->srcY, textMenuSurfaceNo);
 #endif
-#if RETRO_HARDWARE_RENDER
+#if RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
             DrawScaledChar(FLIP_NONE, X >> 5, Y >> 5, -fChar->pivotX, -fChar->pivotY, scale, scale, fChar->width, fChar->height,
                                           fChar->srcX,
                              fChar->srcY, textMenuSurfaceNo);

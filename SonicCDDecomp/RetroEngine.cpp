@@ -423,7 +423,7 @@ void RetroEngine::Run()
 		}
 #if RETRO_SOFTWARE_RENDER
                 FlipScreen();
-#elif RETRO_HARDWARE_RENDER
+#elif RETRO_HARDWARE_RENDER && !RETRO_USING_C2D
                 highResMode ? FlipScreenHRes() : FlipScreen();
 #endif
 
