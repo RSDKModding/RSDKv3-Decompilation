@@ -3,12 +3,16 @@ ifeq ($(STATIC),1)
   CXXFLAGS_ALL += -static
 endif
 
-CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -Idependencies/all/theoraplay $(CXXFLAGS)
+CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) $(CXXFLAGS) \
+   -Idependencies/all/filesystem/include \
+   -Idependencies/all/theoraplay \
+   -Idependencies/all/upng
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
 
 SOURCES = \
   dependencies/all/theoraplay/theoraplay.c \
+  dependencies/all/upng/upng.cpp \
   SonicCDDecomp/Animation.cpp \
   SonicCDDecomp/Audio.cpp \
   SonicCDDecomp/Collision.cpp \
