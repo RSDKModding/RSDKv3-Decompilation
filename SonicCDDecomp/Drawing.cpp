@@ -85,6 +85,8 @@ int InitRenderDevice()
     SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
     SDL_SetHint(SDL_HINT_WINRT_HANDLE_BACK_BUTTON, "1");
 
+    SDL_ShowCursor(SDL_FALSE);
+
     byte flags = 0;
 #if RETRO_USING_OPENGL
     flags |= SDL_WINDOW_OPENGL;
