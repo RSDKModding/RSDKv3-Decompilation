@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C962191825898A9300B47AB3"
-               BuildableName = "Sonic CD.app"
-               BlueprintName = "Sonic CD"
-               ReferencedContainer = "container:Sonic CD.xcodeproj">
+               BuildableName = "RSDKv3.app"
+               BlueprintName = "RSDKv3"
+               ReferencedContainer = "container:RSDKv3.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C962191825898A9300B47AB3"
-            BuildableName = "Sonic CD.app"
-            BlueprintName = "Sonic CD"
-            ReferencedContainer = "container:Sonic CD.xcodeproj">
+            BuildableName = "RSDKv3.app"
+            BlueprintName = "RSDKv3"
+            ReferencedContainer = "container:RSDKv3.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -68,9 +68,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C962191825898A9300B47AB3"
-            BuildableName = "Sonic CD.app"
-            BlueprintName = "Sonic CD"
-            ReferencedContainer = "container:Sonic CD.xcodeproj">
+            BuildableName = "RSDKv3.app"
+            BlueprintName = "RSDKv3"
+            ReferencedContainer = "container:RSDKv3.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

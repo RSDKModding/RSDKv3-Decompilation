@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SonicCDDecomp", "SonicCDDecomp\SonicCDDecomp.vcxproj", "{BD4A4266-8ED9-491E-B4CC-3F63F0D39C1B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RSDKv3", "RSDKv3\RSDKv3.vcxproj", "{BD4A4266-8ED9-491E-B4CC-3F63F0D39C1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

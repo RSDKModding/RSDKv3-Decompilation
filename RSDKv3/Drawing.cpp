@@ -5686,7 +5686,7 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
     if (alpha > 0xFF)
         alpha = 0xFF;
 
-    short *subBlendTable   = &blendLookupTable[BLENDTABLE_XSIZE * alpha];
+    short *subBlendTable   = &subtractLookupTable[BLENDTABLE_XSIZE * alpha];
     GFXSurface *surface    = &gfxSurface[sheetID];
     int pitch              = SCREEN_XSIZE - width;
     int gfxPitch           = surface->width - width;

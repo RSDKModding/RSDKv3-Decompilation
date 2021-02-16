@@ -36,7 +36,7 @@ jobs:
           vcpkg integrate install
       - name: Build Sonic CD
         run: |
-          msbuild SonicCDDecomp.sln /p:Configuration=Release /p:Platform=x86 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions.props"
+          msbuild RSDKv3.sln /p:Configuration=Release /p:Platform=x86 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions.props"
       - name: Move artifacts
         run: |
           mkdir artifacts
@@ -76,7 +76,7 @@ jobs:
           vcpkg integrate install
       - name: Build Sonic CD
         run: |
-          msbuild SonicCDDecomp.sln /p:Configuration=Release /p:Platform=x64 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_x64.props"
+          msbuild RSDKv3.sln /p:Configuration=Release /p:Platform=x64 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_x64.props"
       - name: Move artifacts
         run: |
           mkdir artifacts
@@ -86,7 +86,97 @@ jobs:
         uses: actions/upload-artifact@v1.0.0  
         with:
           name: SonicCD-Windows-x64 
+          path: artifacts     
+  windows_HW:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+      - name: Download libogg, libvorbis, and libtheora for easier includes
+        run : |
+          Invoke-WebRequest -Uri "https://downloads.xiph.org/releases/ogg/libogg-1.3.4.zip" -OutFile "libogg.zip"
+          Expand-Archive -Path libogg.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/libogg-1.3.4 libogg
+          Invoke-WebRequest -Uri "https://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.zip" -OutFile "libvorbis.zip"
+          Expand-Archive -Path libvorbis.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/libvorbis-1.3.7 libvorbis
+          Invoke-WebRequest -Uri "https://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
+          Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/libtheora-1.1.1 libtheora
+      - name: Download GLEW
+        run: |
+          Invoke-WebRequest -Uri "https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.zip/download" -OutFile "GLEW.zip"
+          Expand-Archive -Path GLEW.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/glew-2.1.0-win32 glew
+      - name: Download SDL2
+        run: |
+          Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
+          Expand-Archive -Path SDL2.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/SDL2-2.0.14 SDL2
+      - name: Run vcpkg
+        run: |
+          vcpkg install libogg:x86-windows-static libvorbis:x86-windows-static libtheora:x86-windows-static
+          vcpkg integrate install
+      - name: Build Sonic CD (HW render)
+        run: |
+          msbuild RSDKv3.sln /p:Configuration=Release_HW /p:Platform=x86 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions.props"
+      - name: Move artifacts
+        run: |
+          mkdir artifacts
+          move ./build/Win32/Release_HW/*.dll ./artifacts 
+          move ./build/Win32/Release_HW/*.exe ./artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1.0.0  
+        with:
+          name: SonicCD-Windows_HW
           path: artifacts      
+  windows-x64_HW:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+      - name: Download libogg, libvorbis, and libtheora for easier includes
+        run : |
+          Invoke-WebRequest -Uri "https://downloads.xiph.org/releases/ogg/libogg-1.3.4.zip" -OutFile "libogg.zip"
+          Expand-Archive -Path libogg.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/libogg-1.3.4 libogg
+          Invoke-WebRequest -Uri "https://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.zip" -OutFile "libvorbis.zip"
+          Expand-Archive -Path libvorbis.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/libvorbis-1.3.7 libvorbis
+          Invoke-WebRequest -Uri "https://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
+          Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/libtheora-1.1.1 libtheora
+      - name: Download GLEW
+        run: |
+          Invoke-WebRequest -Uri "https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.zip/download" -OutFile "GLEW.zip"
+          Expand-Archive -Path GLEW.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/glew-2.1.0-win32 glew
+      - name: Download SDL2
+        run: |
+          Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
+          Expand-Archive -Path SDL2.zip -DestinationPath ./dependencies/windows/
+          Rename-Item ./dependencies/windows/SDL2-2.0.14 SDL2
+      - name: Run vcpkg
+        run: |
+          vcpkg install libogg:x64-windows-static libvorbis:x64-windows-static libtheora:x64-windows-static
+          vcpkg integrate install
+      - name: Build Sonic CD (HW render)
+        run: |
+          msbuild RSDKv3.sln /p:Configuration=Release_HW /p:Platform=x64 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_x64.props"
+      - name: Move artifacts
+        run: |
+          mkdir artifacts
+          move ./build/x64/Release_HW/*.dll ./artifacts 
+          move ./build/x64/Release_HW/*.exe ./artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1.0.0  
+        with:
+          name: SonicCD-Windows-x64_HW
+          path: artifacts   
   
   linux:
     runs-on: ubuntu-20.04

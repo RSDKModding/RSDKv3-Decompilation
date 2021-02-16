@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{BD4A4266-8ED9-491E-B4CC-3F63F0D39C1B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SonicCDDecomp</RootNamespace>
+    <RootNamespace>RSDKv3</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -237,7 +237,7 @@
     <ClInclude Include="Video.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SonicCDDecomp.rc" />
+    <ResourceCompile Include="RSDKv3.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="win.ico" />

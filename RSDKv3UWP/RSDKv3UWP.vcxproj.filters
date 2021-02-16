@@ -2,51 +2,51 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Scene3D.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Script.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Sprite.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\String.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Text.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Userdata.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Video.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Animation.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Audio.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Collision.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Debug.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Drawing.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Ini.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Input.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Math.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Object.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Palette.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Player.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Reader.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\RetroEngine.cpp" />
-    <ClCompile Include="..\SonicCDDecomp\Scene.cpp" />
+    <ClCompile Include="..\RSDKv3\Scene3D.cpp" />
+    <ClCompile Include="..\RSDKv3\Script.cpp" />
+    <ClCompile Include="..\RSDKv3\Sprite.cpp" />
+    <ClCompile Include="..\RSDKv3\String.cpp" />
+    <ClCompile Include="..\RSDKv3\Text.cpp" />
+    <ClCompile Include="..\RSDKv3\Userdata.cpp" />
+    <ClCompile Include="..\RSDKv3\Video.cpp" />
+    <ClCompile Include="..\RSDKv3\Animation.cpp" />
+    <ClCompile Include="..\RSDKv3\Audio.cpp" />
+    <ClCompile Include="..\RSDKv3\Collision.cpp" />
+    <ClCompile Include="..\RSDKv3\Debug.cpp" />
+    <ClCompile Include="..\RSDKv3\Drawing.cpp" />
+    <ClCompile Include="..\RSDKv3\Ini.cpp" />
+    <ClCompile Include="..\RSDKv3\Input.cpp" />
+    <ClCompile Include="..\RSDKv3\Math.cpp" />
+    <ClCompile Include="..\RSDKv3\Object.cpp" />
+    <ClCompile Include="..\RSDKv3\Palette.cpp" />
+    <ClCompile Include="..\RSDKv3\Player.cpp" />
+    <ClCompile Include="..\RSDKv3\Reader.cpp" />
+    <ClCompile Include="..\RSDKv3\RetroEngine.cpp" />
+    <ClCompile Include="..\RSDKv3\Scene.cpp" />
     <ClCompile Include="..\dependencies\all\theoraplay\theoraplay.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\SonicCDDecomp\Scene.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Scene3D.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Script.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Sprite.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\String.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Text.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Userdata.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Video.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Animation.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Audio.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Collision.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Debug.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Drawing.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Ini.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Input.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Math.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Palette.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Player.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\Reader.hpp" />
-    <ClInclude Include="..\SonicCDDecomp\resource.h" />
-    <ClInclude Include="..\SonicCDDecomp\RetroEngine.hpp" />
+    <ClInclude Include="..\RSDKv3\Scene.hpp" />
+    <ClInclude Include="..\RSDKv3\Scene3D.hpp" />
+    <ClInclude Include="..\RSDKv3\Script.hpp" />
+    <ClInclude Include="..\RSDKv3\Sprite.hpp" />
+    <ClInclude Include="..\RSDKv3\String.hpp" />
+    <ClInclude Include="..\RSDKv3\Text.hpp" />
+    <ClInclude Include="..\RSDKv3\Userdata.hpp" />
+    <ClInclude Include="..\RSDKv3\Video.hpp" />
+    <ClInclude Include="..\RSDKv3\Animation.hpp" />
+    <ClInclude Include="..\RSDKv3\Audio.hpp" />
+    <ClInclude Include="..\RSDKv3\Collision.hpp" />
+    <ClInclude Include="..\RSDKv3\Debug.hpp" />
+    <ClInclude Include="..\RSDKv3\Drawing.hpp" />
+    <ClInclude Include="..\RSDKv3\Ini.hpp" />
+    <ClInclude Include="..\RSDKv3\Input.hpp" />
+    <ClInclude Include="..\RSDKv3\Math.hpp" />
+    <ClInclude Include="..\RSDKv3\Palette.hpp" />
+    <ClInclude Include="..\RSDKv3\Player.hpp" />
+    <ClInclude Include="..\RSDKv3\Reader.hpp" />
+    <ClInclude Include="..\RSDKv3\resource.h" />
+    <ClInclude Include="..\RSDKv3\RetroEngine.hpp" />
     <ClInclude Include="WinRTIncludes.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,7 +188,7 @@
   <ItemGroup>
     <None Include="PropertySheet.props" />
     <None Include="packages.config" />
-    <None Include="..\SonicCDDecomp\settings.ini" />
+    <None Include="..\RSDKv3\settings.ini" />
     <None Include="videos\Good_Ending.ogv">
       <Filter>videos</Filter>
     </None>

@@ -82,7 +82,7 @@
 		C959D58625A0404F0001CA1C /* Text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Text.cpp; path = SonicCDDecomp/Text.cpp; sourceTree = SOURCE_ROOT; };
 		C959D58725A0404F0001CA1C /* Video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Video.cpp; path = SonicCDDecomp/Video.cpp; sourceTree = SOURCE_ROOT; };
 		C959D58825A0404F0001CA1C /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Scene.cpp; path = SonicCDDecomp/Scene.cpp; sourceTree = SOURCE_ROOT; };
-		C962191925898A9300B47AB3 /* Sonic CD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sonic CD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C962191925898A9300B47AB3 /* RSDKv3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RSDKv3.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C962193625898B0A00B47AB3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = dependencies/mac/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		C962194125898BCD00B47AB3 /* Text.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Text.hpp; path = SonicCDDecomp/Text.hpp; sourceTree = SOURCE_ROOT; };
 		C962194225898BCD00B47AB3 /* Script.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Script.hpp; path = SonicCDDecomp/Script.hpp; sourceTree = SOURCE_ROOT; };
@@ -136,7 +136,7 @@
 		C962191025898A9300B47AB3 = {
 			isa = PBXGroup;
 			children = (
-				C962191B25898A9300B47AB3 /* Sonic CD */,
+				C962191B25898A9300B47AB3 /* RSDKv3 */,
 				C962191A25898A9300B47AB3 /* Products */,
 				C96219822589B10600B47AB3 /* Frameworks */,
 			);
@@ -145,19 +145,19 @@
 		C962191A25898A9300B47AB3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C962191925898A9300B47AB3 /* Sonic CD.app */,
+				C962191925898A9300B47AB3 /* RSDKv3.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C962191B25898A9300B47AB3 /* Sonic CD */ = {
+		C962191B25898A9300B47AB3 /* RSDKv3 */ = {
 			isa = PBXGroup;
 			children = (
 				C962194025898B6E00B47AB3 /* Header Files */,
 				C962193F25898B6700B47AB3 /* Source Files */,
 				C962193625898B0A00B47AB3 /* Assets.xcassets */,
 			);
-			path = "Sonic CD";
+			path = "RSDKv3";
 			sourceTree = "<group>";
 		};
 		C962193F25898B6700B47AB3 /* Source Files */ = {
@@ -270,9 +270,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C962191825898A9300B47AB3 /* Sonic CD */ = {
+		C962191825898A9300B47AB3 /* RSDKv3 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C962193325898A9400B47AB3 /* Build configuration list for PBXNativeTarget "Sonic CD" */;
+			buildConfigurationList = C962193325898A9400B47AB3 /* Build configuration list for PBXNativeTarget "RSDKv3" */;
 			buildPhases = (
 				C962191525898A9300B47AB3 /* Sources */,
 				C962191625898A9300B47AB3 /* Frameworks */,
@@ -283,9 +283,9 @@
 			);
 			dependencies = (
 			);
-			name = "Sonic CD";
-			productName = "Sonic CD";
-			productReference = C962191925898A9300B47AB3 /* Sonic CD.app */;
+			name = "RSDKv3";
+			productName = "RSDKv3";
+			productReference = C962191925898A9300B47AB3 /* RSDKv3.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -302,7 +302,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C962191425898A9300B47AB3 /* Build configuration list for PBXProject "Sonic CD" */;
+			buildConfigurationList = C962191425898A9300B47AB3 /* Build configuration list for PBXProject "RSDKv3" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -315,7 +315,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C962191825898A9300B47AB3 /* Sonic CD */,
+				C962191825898A9300B47AB3 /* RSDKv3 */,
 			);
 		};
 /* End PBXProject section */
@@ -538,7 +538,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C962191425898A9300B47AB3 /* Build configuration list for PBXProject "Sonic CD" */ = {
+		C962191425898A9300B47AB3 /* Build configuration list for PBXProject "RSDKv3" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C962193125898A9400B47AB3 /* Debug */,
@@ -547,7 +547,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C962193325898A9400B47AB3 /* Build configuration list for PBXNativeTarget "Sonic CD" */ = {
+		C962193325898A9400B47AB3 /* Build configuration list for PBXNativeTarget "RSDKv3" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C962193425898A9400B47AB3 /* Debug */,
