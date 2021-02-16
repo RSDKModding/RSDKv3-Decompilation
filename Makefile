@@ -13,33 +13,33 @@ LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile 
 SOURCES = \
   dependencies/all/theoraplay/theoraplay.c \
   dependencies/all/upng/upng.cpp \
-  SonicCDDecomp/Animation.cpp \
-  SonicCDDecomp/Audio.cpp \
-  SonicCDDecomp/Collision.cpp \
-  SonicCDDecomp/Debug.cpp \
-  SonicCDDecomp/Drawing.cpp \
-  SonicCDDecomp/Ini.cpp \
-  SonicCDDecomp/Input.cpp \
-  SonicCDDecomp/main.cpp \
-  SonicCDDecomp/Math.cpp \
-  SonicCDDecomp/Object.cpp \
-  SonicCDDecomp/Palette.cpp \
-  SonicCDDecomp/Player.cpp \
-  SonicCDDecomp/Reader.cpp \
-  SonicCDDecomp/RetroEngine.cpp \
-  SonicCDDecomp/Scene.cpp \
-  SonicCDDecomp/Scene3D.cpp \
-  SonicCDDecomp/Script.cpp \
-  SonicCDDecomp/Sprite.cpp \
-  SonicCDDecomp/String.cpp \
-  SonicCDDecomp/Text.cpp \
-  SonicCDDecomp/Userdata.cpp \
-  SonicCDDecomp/Video.cpp
+  RSDKv3/Animation.cpp \
+  RSDKv3/Audio.cpp \
+  RSDKv3/Collision.cpp \
+  RSDKv3/Debug.cpp \
+  RSDKv3/Drawing.cpp \
+  RSDKv3/Ini.cpp \
+  RSDKv3/Input.cpp \
+  RSDKv3/main.cpp \
+  RSDKv3/Math.cpp \
+  RSDKv3/Object.cpp \
+  RSDKv3/Palette.cpp \
+  RSDKv3/Player.cpp \
+  RSDKv3/Reader.cpp \
+  RSDKv3/RetroEngine.cpp \
+  RSDKv3/Scene.cpp \
+  RSDKv3/Scene3D.cpp \
+  RSDKv3/Script.cpp \
+  RSDKv3/Sprite.cpp \
+  RSDKv3/String.cpp \
+  RSDKv3/Text.cpp \
+  RSDKv3/Userdata.cpp \
+  RSDKv3/Video.cpp
 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
   CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
-  SOURCES += SonicCDDecomp/fcaseopen.c
+  SOURCES += RSDKv3/fcaseopen.c
 endif
 
 OBJECTS = $(SOURCES:%=objects/%.o)
