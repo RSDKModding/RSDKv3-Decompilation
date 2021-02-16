@@ -209,5 +209,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: SonicCD-Linux
+          name: SonicCD-Linux_HW
           path: bin
