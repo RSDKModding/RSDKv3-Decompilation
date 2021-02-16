@@ -34,6 +34,7 @@ bld/
 bin/
 [Bb]in/
 [Oo]bj/
+objects/
 
 #safety
 *.rsdk
