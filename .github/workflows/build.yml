@@ -36,7 +36,7 @@ jobs:
           vcpkg integrate install
       - name: Build Sonic CD
         run: |
-          msbuild RSDKv3.sln /p:Configuration=Release /p:Platform=x86 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions.props"
+          msbuild RSDKv3.sln /p:Configuration=Release_SW /p:Platform=x86 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions.props"
       - name: Move artifacts
         run: |
           mkdir artifacts
@@ -76,7 +76,7 @@ jobs:
           vcpkg integrate install
       - name: Build Sonic CD
         run: |
-          msbuild RSDKv3.sln /p:Configuration=Release /p:Platform=x64 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_x64.props"
+          msbuild RSDKv3.sln /p:Configuration=Release_SW /p:Platform=x64 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_x64.props"
       - name: Move artifacts
         run: |
           mkdir artifacts
@@ -107,9 +107,9 @@ jobs:
           Rename-Item ./dependencies/windows/libtheora-1.1.1 libtheora
       - name: Download GLEW
         run: |
-          Invoke-WebRequest -Uri "https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.zip/download" -OutFile "GLEW.zip"
+          Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
           Expand-Archive -Path GLEW.zip -DestinationPath ./dependencies/windows/
-          Rename-Item ./dependencies/windows/glew-2.1.0-win32 glew
+          Rename-Item ./dependencies/windows/glew-2.2.0 glew
       - name: Download SDL2
         run: |
           Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
@@ -152,9 +152,9 @@ jobs:
           Rename-Item ./dependencies/windows/libtheora-1.1.1 libtheora
       - name: Download GLEW
         run: |
-          Invoke-WebRequest -Uri "https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.zip/download" -OutFile "GLEW.zip"
+          Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
           Expand-Archive -Path GLEW.zip -DestinationPath ./dependencies/windows/
-          Rename-Item ./dependencies/windows/glew-2.1.0-win32 glew
+          Rename-Item ./dependencies/windows/glew-2.2.0 glew
       - name: Download SDL2
         run: |
           Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
