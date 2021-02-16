@@ -1,6 +1,5 @@
-# Sonic-CD-11-Decompilation
-A Full Decompilation of Sonic CD 2011, Based on the PC remake with improvements & tweaks from the mobile remakes
-
+# Retro Engine (RSDK) v3 Decompilation
+A Full Decompilation of RSDKv3 & Sonic CD 2011, Based on the PC remake with improvements & tweaks from the mobile remakes
 
 # **SUPPORT THE OFFICIAL RELEASE OF SONIC CD**
 + Without assets from the official release this decompilation will not run.
@@ -29,9 +28,6 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * The `F12` pause, `F11` step over & fast forward debug features from Sonic Mania have all be ported and are enabled if `devMenu` is enabled in the config
 * If `devMenu` is enabled in the config, pressing `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time
 * If `useSteamDir` is set in the config, and the user is on Windows, the game will try to load savedata from Steam's `userdata` directory (where the Steam version saves to)
-
-# TODOs:
-* create a `cmakelists.txt` file for windows compiling so builds can be added automatically via git actions
 
 # How to build:
 ## Windows:
