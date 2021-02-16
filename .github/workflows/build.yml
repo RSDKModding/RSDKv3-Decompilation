@@ -121,7 +121,7 @@ jobs:
           vcpkg integrate install
       - name: Build Sonic CD (HW render)
         run: |
-          msbuild RSDKv3.sln /p:Configuration=Release_HW /p:Platform=x86 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions.props"
+          msbuild RSDKv3.sln /p:Configuration=Release_HW /p:Platform=x86 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_HW.props"
       - name: Move artifacts
         run: |
           mkdir artifacts
@@ -166,7 +166,7 @@ jobs:
           vcpkg integrate install
       - name: Build Sonic CD (HW render)
         run: |
-          msbuild RSDKv3.sln /p:Configuration=Release_HW /p:Platform=x64 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_x64.props"
+          msbuild RSDKv3.sln /p:Configuration=Release_HW /p:Platform=x64 /p:ForceImportBeforeCppTargets="$env:GITHUB_WORKSPACE/props/winactions_x64_HW.props"
       - name: Move artifacts
         run: |
           mkdir artifacts
