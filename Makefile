@@ -42,6 +42,11 @@ ifeq ($(FORCE_CASE_INSENSITIVE),1)
   SOURCES += SonicCDDecomp/fcaseopen.c
 endif
 
+ifeq ($(USE_HW_REN),1)
+  CXXFLAGS_ALL += -DUSE_HW_REN
+  LIBS_ALL += -lGL -lGLEW
+endif
+
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
