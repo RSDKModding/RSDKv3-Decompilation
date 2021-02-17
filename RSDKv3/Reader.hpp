@@ -3,7 +3,7 @@
 
 #ifdef FORCE_CASE_INSENSITIVE
 
-#include "fcaseopen.h"
+#include <fcaseopen.h>
 #define FileIO                                          FILE
 #define fOpen(path, mode)                               fcaseopen(path, mode)
 #define fRead(buffer, elementSize, elementCount, file)  fread(buffer, elementSize, elementCount, file)

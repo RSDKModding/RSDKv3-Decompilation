@@ -38,7 +38,7 @@ SOURCES = \
 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
-  CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
+  CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE -Idependencies/linux/fcaseopen
   SOURCES += dependencies/linux/fcaseopen/fcaseopen.c
 endif
 
