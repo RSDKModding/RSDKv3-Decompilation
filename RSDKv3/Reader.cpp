@@ -576,7 +576,7 @@ bool LoadFile2(const char *filePath, FileInfo *fileInfo)
         fileInfo->vFileSize = (int)fTell(fileInfo->cFileHandle);
         fileInfo->fileSize  = fileInfo->vFileSize;
         fSeek(fileInfo->cFileHandle, 0, SEEK_SET);
-        //readPos                     = 0;
+        readPos                     = 0;
         fileInfo->readPos           = readPos;
         fileInfo->virtualFileOffset = 0;
         fileInfo->eStringNo         = 0;
