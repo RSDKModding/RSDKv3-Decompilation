@@ -190,6 +190,8 @@ enum RetroEngineCallbacks {
     CALLBACK_FULL_VERSION_ONLY       = 14,
     CALLBACK_STAFF_CREDITS           = 15,
     CALLBACK_16                      = 16,
+    CALLBACK_RESTARTLEVEL            = 17,
+    CALLBACK_RESTARTLEVELCHECKPOINT  = 18,
     CALLBACK_AGEGATE                 = 100,
 };
 
