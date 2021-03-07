@@ -49,6 +49,7 @@ bool pauseEnabled     = true;
 bool timeEnabled      = true;
 bool debugMode        = false;
 int frameCounter        = 0;
+int checkpoint        = false;
 int stageMilliseconds = 0;
 int stageSeconds      = 0;
 int stageMinutes      = 0;
@@ -203,6 +204,11 @@ void ProcessStage(void)
             if (pauseEnabled && keyPress.start) {
                 stageMode = STAGEMODE_PAUSED;
                 PauseSound();
+            }
+            
+            if(checkpoint) 	{
+            	checkpoint = false;
+            	frameCounter = stageMilliseconds * Engine.refreshRate / 100;
             }
 
             if (timeEnabled) {
