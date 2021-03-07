@@ -635,11 +635,11 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_16: //, PC = ??? (only when online), Mobile = NONE
             printLog("Callback: Unknown (%d)", callbackID);
             break;
-        case CALLBACK_RESTARTLEVEL: //, Addon Restart MS Value to 0
+        case CALLBACK_RESTARTLEVEL: //Addon Restart MS Value to 0
 	        frameCounter=0;
             printLog("Callback: Addon Restart MS to 0 (%d)", callbackID);
             break;
-        case CALLBACK_RESTARTLEVELCHECKPOINT: //, Addon Load good checkpoint MS Value
+        case CALLBACK_RESTARTLEVELCHECKPOINT: //Addon Load good checkpoint MS Value
             printLog("Callback: Addon Load good checkpoint MS Value (%d)", callbackID);
             checkpoint=true;
             break;
