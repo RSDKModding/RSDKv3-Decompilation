@@ -13,4 +13,5 @@ You may copy, modify, contribute, and distribute, for public or private use, **a
 - This license must be in all modified copies of source code, and all forks must follow this license.
 
 Original RSDK author: Christian "Taxman" Whitehead
+
 Decompilation authors: Rubberduckycooly and RMGRich
