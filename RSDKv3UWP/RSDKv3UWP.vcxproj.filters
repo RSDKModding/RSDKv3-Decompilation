@@ -181,26 +181,11 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{e48dc53e-40b1-40cb-970a-f89935452892}</UniqueIdentifier>
     </Filter>
-    <Filter Include="videos">
-      <UniqueIdentifier>{d579bbcb-9d29-4557-864e-431eb1902fc6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="PropertySheet.props" />
     <None Include="packages.config" />
     <None Include="..\RSDKv3\settings.ini" />
-    <None Include="videos\Good_Ending.ogv">
-      <Filter>videos</Filter>
-    </None>
-    <None Include="videos\Bad_Ending.ogv">
-      <Filter>videos</Filter>
-    </None>
-    <None Include="videos\Opening.ogv">
-      <Filter>videos</Filter>
-    </None>
-    <None Include="videos\Pencil_Test.ogv">
-      <Filter>videos</Filter>
-    </None>
     <None Include="Data.rsdk" />
   </ItemGroup>
 </Project>

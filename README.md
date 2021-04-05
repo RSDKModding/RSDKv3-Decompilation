@@ -35,7 +35,8 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * or grab a prebuilt executable from the releases section
 
 ## Windows UWP (Phone, Xbox, etc.):
-* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, copy your `Data.rsdk` and `videos` folder into `SonicCDDecompUWP`, then build and deploy via the UWP Visual Studio solution
+* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, then build and deploy via the UWP Visual Studio solution.
+* After install copy your `Data.rsdk` and `videos` folder into the apps localstate folder
 
 ## Windows via MSYS2 (64-bit Only):
 
