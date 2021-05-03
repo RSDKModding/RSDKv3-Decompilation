@@ -36,7 +36,21 @@ static void videoClose(THEORAPLAY_Io *io)
 void PlayVideoFile(char *filePath)
 {
     char filepath[0x100];
+#if RETRO_PLATFORM == RETRO_UWP
+    static char resourcePath[256] = { 0 };
+
+    if (strlen(resourcePath) == 0) {
+        auto folder = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
+        auto path   = to_string(folder.Path());
+
+        std::copy(path.begin(), path.end(), resourcePath);
+    }
+
+    strcpy(filepath, resourcePath);
+    strcat(filepath, "\\videos\\");
+#else
     StrCopy(filepath, BASE_PATH "videos/");
+#endif
 
     int len = StrLength(filePath);
 
