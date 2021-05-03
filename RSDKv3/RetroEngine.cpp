@@ -220,10 +220,12 @@ bool processEvents()
                             Engine.gameSpeed = Engine.fastForwardSpeed;
                         break;
                     case SDLK_F11:
+                    case SDLK_INSERT:
                         if (Engine.masterPaused)
                             Engine.frameStep = true;
                         break;
                     case SDLK_F12:
+                    case SDLK_PAUSE:
                         if (Engine.devMenu)
                             Engine.masterPaused ^= 1;
                         break;

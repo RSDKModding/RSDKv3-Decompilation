@@ -988,6 +988,8 @@ void ProcessPathGrip(Player *player)
     int absSpeed = abs(player->speed);
     int checkDist = absSpeed >> 18;
     absSpeed &= 0x3FFFF;
+    byte cMode = player->collisionMode;
+
     while (checkDist > -1) {
         if (checkDist >= 1) {
             cosValue256 = cosVal256[player->angle] << 10;
@@ -1240,7 +1242,7 @@ void ProcessPathGrip(Player *player)
             checkDist = -2;
     }
 
-    switch (player->collisionMode) {
+    switch (cMode) {
         case CMODE_FLOOR: {
             if (sensors[0].collided || sensors[1].collided || sensors[2].collided) {
                 player->angle               = sensors[0].angle;
