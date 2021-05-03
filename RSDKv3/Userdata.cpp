@@ -71,8 +71,8 @@ bool forceUseScripts = false;
 void InitUserdata()
 {
     // userdata files are loaded from this directory
-    sprintf(gamePath, BASE_PATH);
-    sprintf(modsPath, BASE_PATH);
+    sprintf(gamePath, "%s", BASE_PATH);
+    sprintf(modsPath, "%s", BASE_PATH);
 
     char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
@@ -744,17 +744,19 @@ void saveMods()
             FileIO *f = fOpen(mod_inifile.c_str(), "w");
             if (f) {
                 fClose(f);
-                IniParser modSettings;
+                IniParser *modSettings = new IniParser;
 
-                modSettings.SetString("", "Name", (char *)info->name.c_str());
-                modSettings.SetString("", "Description", (char *)info->desc.c_str());
-                modSettings.SetString("", "Author", (char *)info->author.c_str());
-                modSettings.SetString("", "Version", (char *)info->version.c_str());
+                modSettings->SetString("", "Name", (char *)info->name.c_str());
+                modSettings->SetString("", "Description", (char *)info->desc.c_str());
+                modSettings->SetString("", "Author", (char *)info->author.c_str());
+                modSettings->SetString("", "Version", (char *)info->version.c_str());
                 if (info->useScripts)
-                    modSettings.SetBool("", "TxtScripts", info->useScripts);
-                modSettings.SetBool("", "Active", info->active);
+                    modSettings->SetBool("", "TxtScripts", info->useScripts);
+                modSettings->SetBool("", "Active", info->active);
 
-                modSettings.Write(mod_inifile.c_str());
+                modSettings->Write(mod_inifile.c_str());
+
+                delete modSettings;
             }
         }
     }
