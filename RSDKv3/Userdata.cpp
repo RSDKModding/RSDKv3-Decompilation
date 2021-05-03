@@ -611,7 +611,7 @@ void SetLeaderboard(int leaderboardID, int result)
 }
 
 #include <string>
-#include <ghc/filesystem.hpp>
+#include <filesystem>
 
 void initMods()
 {
@@ -620,21 +620,21 @@ void initMods()
 
     char modBuf[0x100];
     sprintf(modBuf, "%smods/", modsPath);
-    ghc::filesystem::path modPath(modBuf);
+    std::filesystem::path modPath(modBuf);
 
-    if (ghc::filesystem::exists(modPath) && ghc::filesystem::is_directory(modPath)) {
+    if (std::filesystem::exists(modPath) && std::filesystem::is_directory(modPath)) {
         try {
-            auto rdi = ghc::filesystem::directory_iterator(modPath);
+            auto rdi = std::filesystem::directory_iterator(modPath);
             for (auto de : rdi) {
                 if (de.is_directory()) {
-                    ghc::filesystem::path modDirPath = de.path();
+                    std::filesystem::path modDirPath = de.path();
 
                     ModInfo *info = &modList[modCount];
 
                     char modName[0x100];
                     info->active = false;
 
-                    std::string modDir            = modDirPath.c_str();
+                    std::string modDir            = modDirPath.string().c_str();
                     const std::string mod_inifile = modDir + "/mod.ini";
 
                     FileIO *f = fOpen(mod_inifile.c_str(), "r");
@@ -646,7 +646,7 @@ void initMods()
                         info->desc    = "";
                         info->author  = "Unknown Author";
                         info->version = "1.0.0";
-                        info->folder  = modDirPath.filename();
+                        info->folder  = modDirPath.filename().string();
 
                         char infoBuf[0x100];
                         // Name
@@ -674,15 +674,15 @@ void initMods()
                         modSettings.GetBool("", "Active", &info->active);
 
                         // Check for Data replacements
-                        ghc::filesystem::path dataPath(modDir + "/Data");
+                        std::filesystem::path dataPath(modDir + "/Data");
 
-                        if (ghc::filesystem::exists(dataPath) && ghc::filesystem::is_directory(dataPath)) {
+                        if (std::filesystem::exists(dataPath) && std::filesystem::is_directory(dataPath)) {
                             try {
-                                auto data_rdi = ghc::filesystem::recursive_directory_iterator(dataPath);
+                                auto data_rdi = std::filesystem::recursive_directory_iterator(dataPath);
                                 for (auto data_de : data_rdi) {
                                     if (data_de.is_regular_file()) {
                                         char modBuf[0x100];
-                                        StrCopy(modBuf, data_de.path().c_str());
+                                        StrCopy(modBuf, data_de.path().string().c_str());
                                         char folderTest[4][0x10] = {
                                             "Data/",
                                             "Data\\",
@@ -709,7 +709,7 @@ void initMods()
                                         }
                                     }
                                 }
-                            } catch (ghc::filesystem::filesystem_error fe) {
+                            } catch (std::filesystem::filesystem_error fe) {
                                 printLog("Data Folder Scanning Error: ");
                                 printLog(fe.what());
                             }
@@ -723,7 +723,7 @@ void initMods()
                     modCount++;
                 }
             }
-        } catch (ghc::filesystem::filesystem_error fe) {
+        } catch (std::filesystem::filesystem_error fe) {
             printLog("Mods Folder Scanning Error: ");
             printLog(fe.what());
         }
@@ -733,12 +733,12 @@ void saveMods()
 {
     char modBuf[0x100];
     sprintf(modBuf, "%smods/", modsPath);
-    ghc::filesystem::path modPath(modBuf);
+    std::filesystem::path modPath(modBuf);
 
-    if (ghc::filesystem::exists(modPath) && ghc::filesystem::is_directory(modPath)) {
+    if (std::filesystem::exists(modPath) && std::filesystem::is_directory(modPath)) {
         for (int m = 0; m < modCount; ++m) {
             ModInfo *info                 = &modList[m];
-            std::string modDir            = modPath.c_str();
+            std::string modDir            = modPath.string().c_str();
             const std::string mod_inifile = modDir + info->folder + "/mod.ini";
 
             FileIO *f = fOpen(mod_inifile.c_str(), "w");

@@ -368,7 +368,7 @@ void LoadConfigListText(TextMenu *menu, int listNo)
 
         // Categories
         for (int c = 1; c <= 4; ++c) {
-            int stageCnt = 0;
+            byte stageCnt = 0;
             FileRead(&stageCnt, 1);
             for (int s = 0; s < stageCnt; ++s) {
                 //Stage Folder
