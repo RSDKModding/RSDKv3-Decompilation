@@ -4,6 +4,16 @@
 // Disables POSIX use c++ name blah blah stuff
 #pragma warning(disable : 4996)
 
+// Setting this to true removes (almost) ALL changes from the original code, the trade off is that a playable game cannot be built, it is advised to
+// be set to true only for preservation purposes
+#define RETRO_USE_ORIGINAL_CODE (0)
+#define RETRO_USE_MOD_LOADER    (0)
+
+#if !RETRO_USE_ORIGINAL_CODE
+#undef RETRO_USE_MOD_LOADER
+#define RETRO_USE_MOD_LOADER (1)
+#endif //  !RETRO_USE_ORIGINAL_CODE
+
 // ================
 // STANDARD LIBS
 // ================
@@ -317,7 +327,7 @@ public:
 
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
-    const char *gameVersion = "1.1.0";
+    const char *gameVersion = "1.1.2";
     const char *gamePlatform;
 
 #if RETRO_SOFTWARE_RENDER

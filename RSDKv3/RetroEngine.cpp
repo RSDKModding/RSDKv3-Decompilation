@@ -63,6 +63,7 @@ bool processEvents()
                 if (SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE)) <= 0) { // Touch always takes priority over mouse
 #endif
                     SDL_GetMouseState(&touchX[0], &touchY[0]);
+
                     touchX[0] /= Engine.windowScale;
                     touchY[0] /= Engine.windowScale;
                     touches = 1;

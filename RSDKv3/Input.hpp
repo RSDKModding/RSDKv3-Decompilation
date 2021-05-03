@@ -54,14 +54,19 @@ extern int touchY[8];
 extern int touchID[8];
 extern int touches;
 
+#if !RETRO_USE_ORIGINAL_CODE
 extern InputButton inputDevice[INPUT_MAX];
 extern int inputType;
 
-extern int LSTICK_DEADZONE;
-extern int RSTICK_DEADZONE;
-extern int LTRIGGER_DEADZONE;
-extern int RTRIGGER_DEADZONE;
+extern float LSTICK_DEADZONE;
+extern float RSTICK_DEADZONE;
+extern float LTRIGGER_DEADZONE;
+extern float RTRIGGER_DEADZONE;
 
+extern int mouseHideTimer;
+#endif
+
+#if !RETRO_USE_ORIGINAL_CODE
 #if RETRO_USING_SDL2
 // Easier this way
 enum ExtraSDLButtons {
@@ -89,6 +94,7 @@ extern SDL_Joystick *controller;
 #endif
 
 void ProcessInput();
+#endif
 
 void CheckKeyPress(InputData *input, byte Flags);
 void CheckKeyDown(InputData *input, byte Flags);
