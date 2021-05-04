@@ -174,6 +174,7 @@ void processStageSelect()
                     SetupTextMenu(&gameMenu[0], 0);
                     AddTextMenuEntry(&gameMenu[0], "MOD LIST");
                     SetupTextMenu(&gameMenu[1], 0);
+                    initMods();
 
                     char buffer[0x100];
                     for (int m = 0; m < modCount; ++m) {
