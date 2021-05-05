@@ -729,7 +729,7 @@ void initMods()
 
                                             std::transform(path.begin(), path.end(), path.begin(), ::tolower);
                                             std::string modPath(modBuf);
-                                            info->fileMap.insert(std::pair<std::string, std::string>(path, modBuf));
+                                            info->fileMap.insert(std::pair<std::string, std::string>(pathLower, modBuf));
                                         }
                                     }
                                 }
