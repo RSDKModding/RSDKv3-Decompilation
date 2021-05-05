@@ -1,5 +1,6 @@
 #include "RetroEngine.hpp"
 #include <string>
+#include <algorithm>
 
 char rsdkName[0x400];
 
@@ -85,6 +86,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     char filePathBuf[0x100];
     StrCopy(filePathBuf, filePath);
 
+
     if (Engine.forceFolder)
         Engine.usingDataFile = Engine.usingDataFileStore;
     Engine.forceFolder = false;
@@ -93,9 +95,13 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
 
     fileInfo->isMod = false;
     isModdedFile    = false;
+    // Fixes ".ani" ".Ani" bug and any other case differences
+    std::string pathLower(filePathBuf);
+    std::transform(pathLower.begin(), pathLower.end(), pathLower.begin(), ::tolower);
+
     for (int m = 0; m < modCount; ++m) {
         if (modList[m].active) {
-            std::map<std::string, std::string>::const_iterator iter = modList[m].fileMap.find(filePathBuf);
+            std::map<std::string, std::string>::const_iterator iter = modList[m].fileMap.find(pathLower);
             if (iter != modList[m].fileMap.cend()) {
                 StrCopy(filePathBuf, iter->second.c_str());
                 Engine.forceFolder   = true;
@@ -524,9 +530,13 @@ bool LoadFile2(const char *filePath, FileInfo *fileInfo)
 
     fileInfo->isMod = false;
     isModdedFile    = false;
+    //Fixes ".ani" ".Ani" bug and any other case differences
+    std::string pathLower(filePathBuf);
+    std::transform(pathLower.begin(), pathLower.end(), pathLower.begin(), ::tolower);
+
     for (int m = 0; m < modCount; ++m) {
         if (modList[m].active) {
-            std::map<std::string, std::string>::const_iterator iter = modList[m].fileMap.find(filePathBuf);
+            std::map<std::string, std::string>::const_iterator iter = modList[m].fileMap.find(pathLower);
             if (iter != modList[m].fileMap.cend()) {
                 StrCopy(filePathBuf, iter->second.c_str());
                 Engine.forceFolder   = true;
