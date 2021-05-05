@@ -227,6 +227,7 @@ void ProcessInput()
 #if RETRO_USING_SDL2
     int length           = 0;
     const byte *keyState = SDL_GetKeyboardState(&length);
+    bool anyPress        = false;
 
     if (inputType == 0) {
         for (int i = 0; i < INPUT_ANY; i++) {
@@ -275,6 +276,13 @@ void ProcessInput()
     else if (inputType == 1)
         inputDevice[INPUT_ANY].setReleased();
 
+    if (inputDevice[INPUT_ANY].press || inputDevice[INPUT_ANY].hold || touches > 0) {
+        Engine.dimTimer = 0;
+    }
+    else if (Engine.dimTimer < Engine.dimLimit) {
+        ++Engine.dimTimer;
+    }
+
 #ifdef RETRO_USING_MOUSE
     if (SDL_GetNumTouchFingers(SDL_GetTouchDevice(RETRO_TOUCH_DEVICE)) <= 0) { // Touch always takes priority over mouse
 #endif                                                                         //! RETRO_USING_SDL2
@@ -290,7 +298,8 @@ void ProcessInput()
         else {
             if (mouseHideTimer >= 120)
                 SDL_ShowCursor(true);
-            mouseHideTimer = 0;
+            mouseHideTimer  = 0;
+            Engine.dimTimer = 0;
         }
 
         lastMouseX = mx;

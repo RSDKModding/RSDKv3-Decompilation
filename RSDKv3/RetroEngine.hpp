@@ -303,6 +303,7 @@ public:
 
     bool useSteamDir = true;
 
+#if !RETRO_USE_ORIGINAL_CODE
     // Ported from RSDKv5
     bool devMenu         = false;
     int startList        = 0;
@@ -311,9 +312,14 @@ public:
     int fastForwardSpeed = 8;
     bool masterPaused    = false;
     bool frameStep       = false;
+    int dimTimer         = 0;
+    int dimLimit         = 0;
+    float dimPercent     = 1.0;
+    float dimMax         = 1.0;
 
     bool showPaletteOverlay = false;
     bool useHQModes         = true;
+#endif
 
     void Init();
     void Run();

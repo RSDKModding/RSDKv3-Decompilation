@@ -285,6 +285,21 @@ void FlipScreen()
     if (Engine.gameMode == ENGINE_EXITGAME)
         return;
 
+#if !RETRO_USE_ORIGINAL_CODE
+    if (Engine.dimTimer < Engine.dimLimit) {
+        if (Engine.dimPercent < 1.0) {
+            Engine.dimPercent += 0.05;
+            if (Engine.dimPercent > 1.0)
+                Engine.dimPercent = 1.0;
+        }
+    }
+    else if (Engine.dimPercent > 0.25 && Engine.dimLimit >= 0) {
+        Engine.dimPercent *= 0.9;
+    }
+
+    float dimAmount = Engine.dimMax * Engine.dimPercent;
+#endif
+
 #if RETRO_SOFTWARE_RENDER
 
 #if RETRO_USING_SDL2
@@ -428,6 +443,10 @@ void FlipScreen()
         SDL_RenderClear(Engine.renderer);
         // copy texture to screen with lerp
         SDL_RenderCopy(Engine.renderer, texTarget, NULL, &destScreenPos_scaled);
+        //Apply dimming
+        SDL_SetRenderDrawColor(Engine.renderer, 0, 0, 0, 0xFF - (dimAmount * 0xFF));
+        if (dimAmount < 1.0)
+            SDL_RenderFillRect(Engine.renderer, NULL);
         // finally present it
         SDL_RenderPresent(Engine.renderer);
         // reset everything just in case
@@ -437,6 +456,10 @@ void FlipScreen()
         SDL_DestroyTexture(texTarget);
     }
     else {
+        // Apply dimming
+        SDL_SetRenderDrawColor(Engine.renderer, 0, 0, 0, 0xFF - (dimAmount * 0xFF));
+        if (dimAmount < 1.0)
+            SDL_RenderFillRect(Engine.renderer, NULL);
         // no change here
         SDL_RenderPresent(Engine.renderer);
     }
