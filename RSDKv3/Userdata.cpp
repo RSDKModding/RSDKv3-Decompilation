@@ -721,6 +721,12 @@ void initMods()
 
                                             printLog(modBuf);
                                             std::string path(buffer);
+                                            char pathLower[0x100];
+                                            memset(pathLower, 0, sizeof(char) * 0x100);
+                                            for (int c = 0; c < path.size(); ++c) {
+                                                pathLower[c] = tolower(path.c_str()[c]);
+                                            }
+
                                             std::transform(path.begin(), path.end(), path.begin(), ::tolower);
                                             std::string modPath(modBuf);
                                             info->fileMap.insert(std::pair<std::string, std::string>(path, modBuf));
