@@ -518,6 +518,19 @@ void processStageSelect()
             }
 
             if (keyPress.B) {
+                //Reload entire engine
+                Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+
+                ReleaseGlobalSfx();
+                LoadGlobalSfx();
+
+                forceUseScripts = false;
+                for (int m = 0; m < modCount; ++m) {
+                    if (modList[m].useScripts && modList[m].active)
+                        forceUseScripts = true;
+                }
+                saveMods();
+
                 stageMode = DEVMENU_MAIN;
                 SetupTextMenu(&gameMenu[0], 0);
                 AddTextMenuEntry(&gameMenu[0], "RETRO ENGINE DEV MENU");
@@ -545,19 +558,6 @@ void processStageSelect()
                 gameMenu[0].selection2       = 9;
                 gameMenu[1].visibleRowCount  = 0;
                 gameMenu[1].visibleRowOffset = 0;
-
-                //Reload entire engine
-                Engine.LoadGameConfig("Data/Game/GameConfig.bin");
-
-                ReleaseGlobalSfx();
-                LoadGlobalSfx();
-
-                forceUseScripts = false;
-                for (int m = 0; m < modCount; ++m) {
-                    if (modList[m].useScripts && modList[m].active)
-                        forceUseScripts = true;
-                }
-                saveMods();
             }
 
             DrawTextMenu(&gameMenu[0], SCREEN_CENTERX - 4, 40);
