@@ -126,8 +126,26 @@ bool processEvents()
                 switch (Engine.sdlEvents.key.keysym.sym) {
                     default: break;
                     case SDLK_ESCAPE:
-                        if (Engine.devMenu)
+                        if (Engine.devMenu) {
+                            // hacky patch because people can escape
+                            if (Engine.gameMode == ENGINE_DEVMENU && stageMode == DEVMENU_MODMENU) {
+                                // Reload entire engine
+                                Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+
+                                ReleaseStageSfx();
+                                ReleaseGlobalSfx();
+                                LoadGlobalSfx();
+
+                                forceUseScripts = false;
+                                for (int m = 0; m < modCount; ++m) {
+                                    if (modList[m].useScripts && modList[m].active)
+                                        forceUseScripts = true;
+                                }
+                                saveMods();
+                            }
+
                             Engine.gameMode = ENGINE_INITDEVMENU;
+                        }
                         break;
                     case SDLK_F4:
                         Engine.isFullScreen ^= 1;
