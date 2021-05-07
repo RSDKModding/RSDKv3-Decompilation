@@ -90,6 +90,9 @@ typedef unsigned int uint;
 #define RETRO_USING_TOUCH
 #define DEFAULT_SCREEN_XSIZE 424
 #define DEFAULT_FULLSCREEN   false
+
+// set this to 1 (integer scale) for other platforms that don't support bilinear and don't have an even screen size
+#define RETRO_DEFAULTSCALINGMODE 2
 #endif
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
@@ -356,8 +359,7 @@ public:
     bool startFullScreen  = false; // if should start as fullscreen
     bool borderless       = false;
     bool vsync            = false;
-    bool enhancedScaling  = true; // enable enhanced scaling
-    bool bilinearVideo  = true; // enable bilinear on videos
+    int scalingMode       = RETRO_DEFAULTSCALINGMODE;
     int windowScale       = 2;
     int refreshRate       = 60; // user-picked screen update rate
     int screenRefreshRate = 60; // hardware screen update rate

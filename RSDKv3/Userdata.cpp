@@ -103,8 +103,7 @@ void InitUserdata()
         ini.SetBool("Window", "FullScreen", Engine.startFullScreen = DEFAULT_FULLSCREEN);
         ini.SetBool("Window", "Borderless", Engine.borderless = false);
         ini.SetBool("Window", "VSync", Engine.vsync = false);
-        ini.SetBool("Window", "EnhancedScaling", Engine.enhancedScaling = false);
-        ini.SetBool("Window", "BilinearVideoFilter", Engine.bilinearVideo = false);
+        ini.SetInteger("Window", "ScalingMode", Engine.scalingMode = RETRO_DEFAULTSCALINGMODE);
         ini.SetInteger("Window", "WindowScale", Engine.windowScale = 2);
         ini.SetInteger("Window", "ScreenWidth", SCREEN_XSIZE = DEFAULT_SCREEN_XSIZE);
         ini.SetInteger("Window", "RefreshRate", Engine.refreshRate = 60);
@@ -196,10 +195,8 @@ void InitUserdata()
             Engine.borderless = false;
         if (!ini.GetBool("Window", "VSync", &Engine.vsync))
             Engine.vsync = false;
-        if (!ini.GetBool("Window", "EnhancedScaling", &Engine.enhancedScaling))
-            Engine.enhancedScaling = false;
-        if (!ini.GetBool("Window", "BilinearVideoFilter", &Engine.bilinearVideo))
-            Engine.bilinearVideo = false;
+        if (!ini.GetInteger("Window", "ScalingMode", &Engine.scalingMode))
+            Engine.scalingMode = RETRO_DEFAULTSCALINGMODE;
         if (!ini.GetInteger("Window", "WindowScale", &Engine.windowScale))
             Engine.windowScale = 2;
         if (!ini.GetInteger("Window", "ScreenWidth", &SCREEN_XSIZE))
@@ -452,10 +449,11 @@ void writeSettings() {
     ini.SetBool("Window", "Borderless", Engine.borderless);
     ini.SetComment("Window", "VSComment", "Determines if VSync will be active or not");
     ini.SetBool("Window", "VSync", Engine.vsync);
-    ini.SetComment("Window", "ESComment", "Determines if Enhanced Scaling will be active or not (on everything). Only affects non-multiple resolutions.");
-    ini.SetBool("Window", "EnhancedScaling", Engine.enhancedScaling);
-    ini.SetComment("Window", "BVComment", "Determines if Enhanced Scaling will be active or not (videos only, game will use above setting). Only affects non-multiple resolutions.");
-    ini.SetBool("Window", "BilinearVideoFilter", Engine.bilinearVideo);
+    ini.SetComment("Window", "SMComment",
+                   "Determines what scaling is used. 0 is nearest neighbour, 1 is integer scale, 2 is sharp bilinear, and 3 is regular bilinear.");
+    ini.SetComment("Window", "SMWarning",
+                   "Note: Not all scaling options work correctly on certain platforms, as they don't support bilinear filtering.");
+    ini.SetInteger("Window", "ScalingMode", Engine.scalingMode);
     ini.SetComment("Window", "WSComment", "How big the window will be");
     ini.SetInteger("Window", "WindowScale", Engine.windowScale);
     ini.SetComment("Window", "SWComment", "How wide the base screen will be in pixels");
