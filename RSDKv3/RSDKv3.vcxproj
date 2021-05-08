@@ -421,7 +421,8 @@ copy /Y "$(SolutionDir)dependencies\windows\glew\bin\Release\$(Platform)\glew32.
     <ResourceCompile Include="RSDKv3.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="win.ico" />
+    <Image Include="..\dependencies\windows\icon\RSDKv3 Decomp Icon.ico" />
+    <Image Include="RSDKv3 Decomp Icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

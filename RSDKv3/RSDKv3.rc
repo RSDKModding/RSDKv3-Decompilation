@@ -61,8 +61,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0
- PRODUCTVERSION 1,0,0
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -80,9 +80,8 @@ BEGIN
             VALUE "CompanyName", "RSDKv3/Sonic CD (2011) By Christian 'The Taxman' Whitehead, Decompilation by Rubberduckycooly"
             VALUE "FileDescription", "RSDKv3"
             VALUE "FileVersion", "1.0.0"
-            VALUE "InternalName", "SonicCD.exe"
-            VALUE "LegalCopyright", ""
-            VALUE "OriginalFilename", "SonicCD.exe"
+            VALUE "InternalName", "RSDKv3.exe"
+            VALUE "OriginalFilename", "RSDKv3.exe"
             VALUE "ProductName", "RSDKv3"
             VALUE "ProductVersion", "1.0.0"
         END
@@ -93,6 +92,7 @@ BEGIN
     END
 END
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -100,7 +100,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-//IDI_ICON1               ICON                    "win.ico"
+IDI_ICON1               ICON                    "RSDKv3 Decomp Icon.ico"
 
 #endif    // English (Australia) resources
 /////////////////////////////////////////////////////////////////////////////

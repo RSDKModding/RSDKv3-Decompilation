@@ -177,7 +177,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="win.ico">
+    <Image Include="RSDKv3 Decomp Icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\dependencies\windows\icon\RSDKv3 Decomp Icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
