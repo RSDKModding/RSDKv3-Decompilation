@@ -78,11 +78,13 @@ inline void SetGlobalVariableByName(const char *name, int value)
 inline bool ReadSaveRAMData()
 {
     char buffer[0x200];
-#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
     else
         sprintf(buffer, "%sSdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+    sprintf(buffer, "%s/SData.bin", gamePath);
 #elif RETRO_PLATFORM == RETRO_iOS
         sprintf(buffer, "%s/SData.bin", getDocumentsPath());
 #else
@@ -105,11 +107,13 @@ inline bool ReadSaveRAMData()
 inline bool WriteSaveRAMData()
 {
     char buffer[0x200];
-#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
     else
         sprintf(buffer, "%sSdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+    sprintf(buffer, "%s/SData.bin", gamePath);
 #elif RETRO_PLATFORM == RETRO_iOS
     sprintf(buffer, "%s/SData.bin", getDocumentsPath());
 #else

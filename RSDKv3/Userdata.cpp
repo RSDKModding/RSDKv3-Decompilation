@@ -61,6 +61,11 @@ int saveRAM[SAVEDATA_MAX];
 Achievement achievements[ACHIEVEMENT_MAX];
 LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 
+#if RETRO_PLATFORM == RETRO_OSX
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif
+
 int controlMode = -1;
 bool disableTouchControls = false;
 
@@ -73,13 +78,22 @@ void InitUserdata()
     // userdata files are loaded from this directory
     sprintf(gamePath, "%s", BASE_PATH);
     sprintf(modsPath, "%s", BASE_PATH);
+    
+#if RETRO_PLATFORM == RETRO_OSX
+    sprintf(gamePath, "%s/RSDKv3", getResourcesPath());
+    sprintf(modsPath, "%s/RSDKv3/", getResourcesPath());
+    
+    mkdir(gamePath, 0777);
+#endif
 
     char buffer[0x200];
-#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/settings.ini", getResourcesPath());
     else
         sprintf(buffer, "%ssettings.ini", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+    sprintf(buffer, "%s/settings.ini", gamePath);
 #elif RETRO_PLATFORM == RETRO_iOS
     sprintf(buffer, "%s/settings.ini", getDocumentsPath());
 #else
@@ -95,6 +109,8 @@ void InitUserdata()
         ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
         ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir = true);
         ini.SetBool("Dev", "UseHQModes", Engine.useHQModes = true);
+        sprintf(Engine.dataFile, "%s", "Data.rsdk");
+        ini.SetString("Dev", "DataFile", Engine.dataFile);
 
         ini.SetInteger("Game", "Language", Engine.language = RETRO_EN);
         ini.SetInteger("Game", "OriginalControls", controlMode = -1);
@@ -302,11 +318,13 @@ void InitUserdata()
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
     // Support for extra controller types SDL doesn't recognise
-#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/controllerdb.txt", getResourcesPath());
     else
         sprintf(buffer, "%scontrollerdb.txt", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+    sprintf(buffer, "%s/controllerdb.txt", gamePath);
 #else
     sprintf(buffer, BASE_PATH "controllerdb.txt");
 #endif
@@ -322,11 +340,13 @@ void InitUserdata()
     }
 #endif
 
-#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
         sprintf(buffer, "%sUdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+    sprintf(buffer, "%s/UData.bin", gamePath);
 #elif RETRO_PLATFORM == RETRO_iOS
     sprintf(buffer, "%s/UData.bin", getDocumentsPath());
 #else
@@ -511,11 +531,13 @@ void writeSettings() {
 void ReadUserdata()
 {
     char buffer[0x200];
-#if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
         sprintf(buffer, "%sUdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+    sprintf(buffer, "%s/UData.bin", gamePath);
 #else
     sprintf(buffer, "%sUdata.bin", gamePath);
 #endif
@@ -548,6 +570,8 @@ void WriteUserdata()
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
         sprintf(buffer, "%sUdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+    sprintf(buffer, "%s/UData.bin", gamePath);
 #else
     sprintf(buffer, "%sUdata.bin", gamePath);
 #endif
@@ -653,7 +677,6 @@ void initMods()
 
                     ModInfo *info = &modList[modCount];
 
-                    char modName[0x100];
                     info->fileMap.clear();
                     info->name    = "";
                     info->desc    = "";
@@ -668,7 +691,7 @@ void initMods()
                     FileIO *f = fOpen(mod_inifile.c_str(), "r");
                     if (f) {
                         fClose(f);
-                        IniParser modSettings(mod_inifile.c_str());
+                        IniParser modSettings(mod_inifile.c_str(), false);
 
                         info->name    = "Unnamed Mod";
                         info->desc    = "";
@@ -730,7 +753,6 @@ void initMods()
                                                 buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
                                             }
 
-                                            printLog(modBuf);
                                             std::string path(buffer);
                                             char pathLower[0x100];
                                             memset(pathLower, 0, sizeof(char) * 0x100);
@@ -745,6 +767,53 @@ void initMods()
                                 }
                             } catch (std::filesystem::filesystem_error fe) {
                                 printLog("Data Folder Scanning Error: ");
+                                printLog(fe.what());
+                            }
+                        }
+                        
+                        // Check for Videos/ replacements
+                        std::filesystem::path vidPath(modDir + "/videos");
+
+                        if (std::filesystem::exists(vidPath) && std::filesystem::is_directory(vidPath)) {
+                            try {
+                                auto data_rdi = std::filesystem::recursive_directory_iterator(vidPath);
+                                for (auto data_de : data_rdi) {
+                                    if (data_de.is_regular_file()) {
+                                        char modBuf[0x100];
+                                        StrCopy(modBuf, data_de.path().string().c_str());
+                                        char folderTest[4][0x10] = {
+                                            "Videos/",
+                                            "Videos\\",
+                                            "videos/",
+                                            "videos\\",
+                                        };
+                                        int tokenPos = -1;
+                                        for (int i = 0; i < 4; ++i) {
+                                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
+                                            if (tokenPos >= 0)
+                                                break;
+                                        }
+
+                                        if (tokenPos >= 0) {
+                                            char buffer[0x80];
+                                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
+                                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
+                                            }
+
+                                            std::string path(buffer);
+                                            char pathLower[0x100];
+                                            memset(pathLower, 0, sizeof(char) * 0x100);
+                                            for (int c = 0; c < path.size(); ++c) {
+                                                pathLower[c] = tolower(path.c_str()[c]);
+                                            }
+
+                                            std::string modPath(modBuf);
+                                            info->fileMap.insert(std::pair<std::string, std::string>(pathLower, modBuf));
+                                        }
+                                    }
+                                }
+                            } catch (std::filesystem::filesystem_error fe) {
+                                printLog("Video Folder Scanning Error: ");
                                 printLog(fe.what());
                             }
                         }
@@ -789,7 +858,7 @@ void saveMods()
                     modSettings->SetBool("", "TxtScripts", info->useScripts);
                 modSettings->SetBool("", "Active", info->active);
 
-                modSettings->Write(mod_inifile.c_str());
+                modSettings->Write(mod_inifile.c_str(), false);
 
                 delete modSettings;
             }
