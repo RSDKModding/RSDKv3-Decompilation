@@ -151,6 +151,11 @@ void InitUserdata()
         ini.SetInteger("Controller 1", "B", inputDevice[INPUT_BUTTONB].contMappings = SDL_CONTROLLER_BUTTON_B);
         ini.SetInteger("Controller 1", "C", inputDevice[INPUT_BUTTONC].contMappings = SDL_CONTROLLER_BUTTON_X);
         ini.SetInteger("Controller 1", "Start", inputDevice[INPUT_START].contMappings = SDL_CONTROLLER_BUTTON_START);
+
+        ini.SetFloat("Controller 1", "LStickDeadzone", LSTICK_DEADZONE = 0.3);
+        ini.SetFloat("Controller 1", "RStickDeadzone", RSTICK_DEADZONE = 0.3);
+        ini.SetFloat("Controller 1", "LTriggerDeadzone", LTRIGGER_DEADZONE = 0.3);
+        ini.SetFloat("Controller 1", "RTriggerDeadzone", RTRIGGER_DEADZONE = 0.3);
 #endif
 
 #if RETRO_USING_SDL1
@@ -173,6 +178,11 @@ void InitUserdata()
         ini.SetInteger("Controller 1", "B", inputDevice[INPUT_BUTTONB].contMappings = 6);
         ini.SetInteger("Controller 1", "C", inputDevice[INPUT_BUTTONC].contMappings = 7);
         ini.SetInteger("Controller 1", "Start", inputDevice[INPUT_START].contMappings = 8);
+
+        ini.SetFloat("Controller 1", "LStickDeadzone", LSTICK_DEADZONE = 0.3);
+        ini.SetFloat("Controller 1", "RStickDeadzone", RSTICK_DEADZONE = 0.3);
+        ini.SetFloat("Controller 1", "LTriggerDeadzone", LTRIGGER_DEADZONE = 0.3);
+        ini.SetFloat("Controller 1", "RTriggerDeadzone", RTRIGGER_DEADZONE = 0.3);
 #endif
 
         ini.Write(BASE_PATH"settings.ini");
@@ -279,6 +289,15 @@ void InitUserdata()
             inputDevice[6].contMappings = SDL_CONTROLLER_BUTTON_X;
         if (!ini.GetInteger("Controller 1", "Start", &inputDevice[INPUT_START].contMappings))
             inputDevice[7].contMappings = SDL_CONTROLLER_BUTTON_START;
+
+        if (!ini.GetFloat("Controller 1", "LStickDeadzone", &LSTICK_DEADZONE))
+            LSTICK_DEADZONE = 0.3;
+        if (!ini.GetFloat("Controller 1", "RStickDeadzone", &RSTICK_DEADZONE))
+            RSTICK_DEADZONE = 0.3;
+        if (!ini.GetFloat("Controller 1", "LTriggerDeadzone", &LTRIGGER_DEADZONE))
+            LTRIGGER_DEADZONE = 0.3;
+        if (!ini.GetFloat("Controller 1", "RTriggerDeadzone", &RTRIGGER_DEADZONE))
+            RTRIGGER_DEADZONE = 0.3;
 #endif
 
 #if RETRO_USING_SDL1
@@ -315,6 +334,15 @@ void InitUserdata()
             inputDevice[6].contMappings = 7;
         if (!ini.GetInteger("Controller 1", "Start", &inputDevice[INPUT_START].contMappings))
             inputDevice[7].contMappings = 8;
+
+        if (!ini.GetFloat("Controller 1", "LStickDeadzone", &LSTICK_DEADZONE))
+            LSTICK_DEADZONE = 0.3;
+        if (!ini.GetFloat("Controller 1", "RStickDeadzone", &RSTICK_DEADZONE))
+            RSTICK_DEADZONE = 0.3;
+        if (!ini.GetFloat("Controller 1", "LTriggerDeadzone", &LTRIGGER_DEADZONE))
+            LTRIGGER_DEADZONE = 0.3;
+        if (!ini.GetFloat("Controller 1", "RTriggerDeadzone", &RTRIGGER_DEADZONE))
+            RTRIGGER_DEADZONE = 0.3;
 #endif
     }
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
@@ -526,6 +554,12 @@ void writeSettings() {
     ini.SetInteger("Controller 1", "B", inputDevice[INPUT_BUTTONB].contMappings);
     ini.SetInteger("Controller 1", "C", inputDevice[INPUT_BUTTONC].contMappings);
     ini.SetInteger("Controller 1", "Start", inputDevice[INPUT_START].contMappings);
+
+    ini.SetComment("Controller 1", "DeadZoneComment", "Deadzones, 0.0-1.0");
+    ini.SetFloat("Controller 1", "LStickDeadzone", LSTICK_DEADZONE);
+    ini.SetFloat("Controller 1", "RStickDeadzone", RSTICK_DEADZONE);
+    ini.SetFloat("Controller 1", "LTriggerDeadzone", LTRIGGER_DEADZONE);
+    ini.SetFloat("Controller 1", "RTriggerDeadzone", RTRIGGER_DEADZONE);
 
     ini.Write(BASE_PATH"settings.ini");
 }
