@@ -338,7 +338,11 @@ void LoadStageFiles(void)
                 SetObjectTypeName(strBuffer, i + scriptID);
             }
 
+#if RETRO_USE_MOD_LOADER
             if (Engine.usingBytecode && !forceUseScripts) {
+#else
+            if (Engine.usingBytecode) {
+#endif
                 GetFileInfo(&infoStore);
                 CloseFile();
                 LoadBytecode(4, scriptID);
@@ -377,7 +381,11 @@ void LoadStageFiles(void)
                 strBuffer[fileBuffer2] = 0;
                 SetObjectTypeName(strBuffer, scriptID + i);
             }
+#if RETRO_USE_MOD_LOADER
             if (Engine.usingBytecode && !forceUseScripts) {
+#else
+            if (Engine.usingBytecode) {
+#endif
                 for (byte i = 0; i < stageObjectCount; ++i) {
                     FileRead(&fileBuffer2, 1);
                     FileRead(strBuffer, fileBuffer2);

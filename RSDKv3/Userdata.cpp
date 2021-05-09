@@ -69,9 +69,11 @@ LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 int controlMode = -1;
 bool disableTouchControls = false;
 
+#if RETRO_USE_MOD_LOADER
 ModInfo modList[MOD_MAX];
 int modCount = 0;
 bool forceUseScripts = false;
+#endif
 
 void InitUserdata()
 {

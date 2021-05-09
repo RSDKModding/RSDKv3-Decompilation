@@ -127,6 +127,7 @@ bool processEvents()
                     default: break;
                     case SDLK_ESCAPE:
                         if (Engine.devMenu) {
+#if RETRO_USE_MOD_LOADER
                             // hacky patch because people can escape
                             if (Engine.gameMode == ENGINE_DEVMENU && stageMode == DEVMENU_MODMENU) {
                                 // Reload entire engine
@@ -143,6 +144,7 @@ bool processEvents()
                                 }
                                 saveMods();
                             }
+#endif
 
                             Engine.gameMode = ENGINE_INITDEVMENU;
                         }
@@ -279,7 +281,9 @@ void RetroEngine::Init()
     CalculateTrigAngles();
     GenerateBlendLookupTable();
     InitUserdata();
+#if RETRO_USE_MOD_LOADER
     initMods();
+#endif
     char dest[0x200];
 #if RETRO_PLATFORM == RETRO_UWP
     static char resourcePath[256] = { 0 };
@@ -412,7 +416,9 @@ void RetroEngine::Run()
     StopVideoPlayback();
     ReleaseRenderDevice();
     writeSettings();
+#if RETRO_USE_MOD_LOADER
     saveMods();
+#endif
 
 #if RETRO_USING_SDL2
     SDL_Quit();

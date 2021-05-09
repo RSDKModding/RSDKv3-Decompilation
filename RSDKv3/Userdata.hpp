@@ -28,6 +28,7 @@ struct LeaderboardEntry {
     int status;
 };
 
+#if RETRO_USE_MOD_LOADER
 struct ModInfo {
     std::string name;
     std::string desc;
@@ -38,6 +39,7 @@ struct ModInfo {
     bool useScripts;
     bool active;
 };
+#endif
 
 extern int globalVariablesCount;
 extern int globalVariables[GLOBALVAR_COUNT];
@@ -52,9 +54,11 @@ extern LeaderboardEntry leaderboard[LEADERBOARD_MAX];
 extern int controlMode;
 extern bool disableTouchControls;
 
+#if RETRO_USE_MOD_LOADER
 extern ModInfo modList[MOD_MAX];
 extern int modCount;
 extern bool forceUseScripts;
+#endif
 
 inline int GetGlobalVariableByName(const char *name)
 {
@@ -144,7 +148,9 @@ void SetLeaderboard(int leaderboardID, int result);
 inline void LoadAchievementsMenu() { ReadUserdata(); }
 inline void LoadLeaderboardsMenu() { ReadUserdata(); }
 
+#if RETRO_USE_MOD_LOADER
 void initMods();
 void saveMods();
+#endif
 
 #endif //!USERDATA_H

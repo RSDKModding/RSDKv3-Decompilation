@@ -102,13 +102,13 @@ inline void RotatePalette(byte startIndex, byte endIndex, bool right)
 {
     if (right) {
         ushort startClr         = activePalette[endIndex];
-        PaletteEntry startClr32 = activePalette32[startIndex];
+        PaletteEntry startClr32 = activePalette32[endIndex];
         for (int i = endIndex; i > startIndex; --i) {
             activePalette[i]   = activePalette[i - 1];
             activePalette32[i] = activePalette32[i - 1];
         }
         activePalette[startIndex] = startClr;
-        activePalette32[endIndex] = startClr32;
+        activePalette32[startIndex] = startClr32;
     }
     else {
         ushort startClr         = activePalette[startIndex];

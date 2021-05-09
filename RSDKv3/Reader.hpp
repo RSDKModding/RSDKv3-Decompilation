@@ -46,7 +46,9 @@ struct FileInfo {
     byte eStringNo;
     byte eNybbleSwap;
     FileIO *cFileHandle;
+#if RETRO_USE_MOD_LOADER
     byte isMod;
+#endif
 };
 
 extern char rsdkName[0x400];
@@ -65,7 +67,9 @@ extern byte eStringNo;
 extern byte eNybbleSwap;
 extern char encryptionStringA[21];
 extern char encryptionStringB[13];
+#if RETRO_USE_MOD_LOADER
 extern byte isModdedFile;
+#endif
 
 extern FileIO *cFileHandle;
 
@@ -123,7 +127,9 @@ inline void GetFileInfo(FileInfo *fileInfo)
     fileInfo->eStringPosB       = eStringPosB;
     fileInfo->eStringNo         = eStringNo;
     fileInfo->eNybbleSwap       = eNybbleSwap;
+#if RETRO_USE_MOD_LOADER
     fileInfo->isMod             = isModdedFile;
+#endif
 }
 void SetFileInfo(FileInfo *fileInfo);
 size_t GetFilePosition();
