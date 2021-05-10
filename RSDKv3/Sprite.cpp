@@ -480,9 +480,9 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         videoHeight += fileBuffer << 8;
 
         videoFilePos   = (int)GetFilePosition();
-        videoPlaying   = true;
-        surface->height       = videoWidth;
-        surface->width        = videoHeight;
+        videoPlaying          = true;
+        surface->width        = videoWidth;
+        surface->height       = videoHeight;
         surface->dataPosition = gfxDataPosition;
         gfxDataPosition += surface->width * surface->height;
 
