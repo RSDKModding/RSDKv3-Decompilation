@@ -147,6 +147,7 @@ void UpdateVideoFrame()
         if (videoFrameCount > currentVideoFrame) {
             GFXSurface *surface = &gfxSurface[videoData];
             byte fileBuffer      = 0;
+            byte fileBuffer2      = 0;
             FileRead(&fileBuffer, 1);
             videoFilePos += fileBuffer;
             FileRead(&fileBuffer, 1);
@@ -168,10 +169,10 @@ void UpdateVideoFrame()
             FileRead(&fileBuffer, 1);
             while (fileBuffer != ',') FileRead(&fileBuffer, 1); // gif image start identifier
 
-            FileRead(&fileBuffer, 2); // IMAGE LEFT
-            FileRead(&fileBuffer, 2); // IMAGE TOP
-            FileRead(&fileBuffer, 2); // IMAGE WIDTH
-            FileRead(&fileBuffer, 2); // IMAGE HEIGHT
+            FileRead(&fileBuffer2, 2); // IMAGE LEFT
+            FileRead(&fileBuffer2, 2); // IMAGE TOP
+            FileRead(&fileBuffer2, 2); // IMAGE WIDTH
+            FileRead(&fileBuffer2, 2); // IMAGE HEIGHT
             FileRead(&fileBuffer, 1); // PaletteType
             bool interlaced = (fileBuffer & 0x40) >> 6;
             if (fileBuffer >> 7 == 1) {

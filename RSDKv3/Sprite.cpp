@@ -491,7 +491,6 @@ int LoadRSVFile(const char *filePath, byte sheetID)
             printLog("WARNING: Exceeded max gfx size!");
         }
 
-        CloseFile();
         return true;
     }
     return false;
