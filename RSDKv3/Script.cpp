@@ -2911,8 +2911,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                                 scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6];
                             }
                             else {
-                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                 character += scriptEng.operands[0];
+                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                 DrawSprite(scriptEng.operands[1] + spriteFrame->pivotX, scriptEng.operands[2] + spriteFrame->pivotY,
                                            spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, scriptInfo->spriteSheetID);
                                 scriptEng.operands[1] += spriteFrame->width + scriptEng.operands[6];
@@ -2935,8 +2935,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                                     scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6];
                                 }
                                 else {
-                                    spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                     character += scriptEng.operands[0];
+                                    spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                     DrawSprite(scriptEng.operands[1] + spriteFrame->pivotX, scriptEng.operands[2] + spriteFrame->pivotY,
                                                spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY,
                                                scriptInfo->spriteSheetID);
@@ -2963,8 +2963,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                                 scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6];
                             }
                             else {
-                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                 character += scriptEng.operands[0];
+                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                 DrawSprite(scriptEng.operands[1] + spriteFrame->pivotX, scriptEng.operands[2] + spriteFrame->pivotY,
                                            spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, scriptInfo->spriteSheetID);
                                 scriptEng.operands[1] += spriteFrame->width + scriptEng.operands[6];
@@ -2986,8 +2986,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                                 scriptEng.operands[1] = scriptEng.operands[1] + scriptEng.operands[5] + scriptEng.operands[6];
                             }
                             else {
-                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                 character += scriptEng.operands[0];
+                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
                                 DrawSprite(scriptEng.operands[1] + spriteFrame->pivotX, scriptEng.operands[2] + spriteFrame->pivotY,
                                            spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, scriptInfo->spriteSheetID);
                                 scriptEng.operands[1] += spriteFrame->width + scriptEng.operands[6];

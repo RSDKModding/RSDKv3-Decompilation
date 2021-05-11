@@ -701,8 +701,8 @@ void ProcessAirCollision(Player *player)
     collisionBottom = playerHitbox->bottom[0];
 
     
-    byte movingDown    = 0;
-    byte movingUp  = 1;
+    byte movingDown  = 0;
+    byte movingUp    = 1;
     byte movingLeft  = 0;
     byte movingRight = 0;
 
