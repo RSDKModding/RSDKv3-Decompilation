@@ -1,4 +1,4 @@
-name: Build Sonic CD for multiple platforms
+name: Build Project for Windows (x64) and Linux (64-bits)
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
       - name: Move artifacts
         run: |
           mkdir artifacts
-          move ./bin/*.exe ./artifacts 
+          mv ./bin/*.exe ./artifacts 
       - name: Upload artifacts
         uses: actions/upload-artifact@v1.0.0  
         with:
@@ -53,7 +53,7 @@ jobs:
       - name: Move artifacts
         run: |
           mkdir artifacts
-          move ./bin/* ./artifacts 
+          mv ./bin/* ./artifacts 
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0  
         with:
