@@ -11,7 +11,7 @@
 # Authors
 * Rubberduckycooly and RMGRich as original authors of the project ( https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation )
 * Jack0b0 for modifications of the forked source code
-* 
+
 # Additional Tweaks
 * There is now a settings.ini file that the game uses to load all settings, similar to Sonic Mania
 * Dev menu can now be accessed from anywhere by pressing `ESC` if enabled in the config
