@@ -1,4 +1,4 @@
-name: Build Project for Windows (32-bits and 64-bits/x64) and Linux (64-bits)
+name: Build Project for Windows (64-bits) and Linux (64-bits)
 
 on:
   push:
@@ -6,33 +6,6 @@ on:
       - master
 
 jobs:
-  msys2-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          msystem: MINGW32
-          install: >-
-            pkg-config
-            make
-            git
-            mingw-w64-i686-toolchain
-            mingw-w64-i686-SDL2
-            mingw-w64-i686-libogg
-            mingw-w64-i686-libvorbis
-            mingw-w64-i686-libtheora
-      - shell: msys2 {0}
-        name: Compile the project
-        run : |
-          make CXX=i686-w64-mingw32-g++ CXXFLAGS=-static
-      - name: Prepare the archive file
-        uses: actions/upload-artifact@v1.0.0  
-        with:
-          name: msys2-windows-x64
-          path: bin
   msys2-windows-x64:
     runs-on: windows-latest
     steps:
