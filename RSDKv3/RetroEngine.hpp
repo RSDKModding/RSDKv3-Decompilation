@@ -336,7 +336,7 @@ public:
 
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
-    const char *gameVersion = "1.1.2";
+    const char *gameVersion  = "RDC/RMG 1.1.2 + Jack0b0 Patches v.2021.05.24";
     const char *gamePlatform;
 
 #if RETRO_SOFTWARE_RENDER
