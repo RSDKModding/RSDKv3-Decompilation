@@ -40,10 +40,6 @@
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
 * Then run `make CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
 
-## Mac:
-* Clone the repo, then follow the instructions in the [depencencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the Xcode project
-* or grab a prebuilt executable from the releases section
-
 ## Linux:
 * To setup your build enviroment and library dependecies run the following commands:
 * Ubuntu (Mint, Pop!_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev`
@@ -51,9 +47,6 @@
 * Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
 * Then run `make CXXFLAGS=-O2 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
-
-## iOS:
-* Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
 
 # Special Thanks of Rubberduckycooly
 * [Xeeynamo](https://github.com/Xeeynamo): For creating the RSDK Animation editor & an early version of the script unpacker, both of which got me into RSDK modding
