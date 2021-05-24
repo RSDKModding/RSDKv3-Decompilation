@@ -9,7 +9,7 @@
   * [Android (Via Amazon)](https://www.amazon.com/Sega-of-America-Sonic-CD/dp/B008K9UZY4/ref=sr_1_2?dchild=1&keywords=Sonic+CD&qid=1607930514&sr=8-2)
 
 # Authors
-* Rubberduckycooly and RMGRich as original authors of the project ( https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation )
+* Rubberduckycooly and RMGRich as original authors of the project ( https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation )
 
 # Additional Tweaks
 * There is now a settings.ini file that the game uses to load all settings, similar to Sonic Mania
