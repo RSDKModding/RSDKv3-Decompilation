@@ -17,4 +17,4 @@ You may copy, modify, contribute, and distribute, for public or private use, **a
 Original RSDK author: Christian "Taxman" Whitehead
 
 Decompilation authors: Rubberduckycooly and RMGRich
-* https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation
+* https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation
