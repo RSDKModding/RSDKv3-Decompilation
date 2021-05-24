@@ -72,10 +72,6 @@ jobs:
       - name: Compile the project
         run: |
           make
-      - name: Move artifacts
-        run: |
-          mkdir artifacts
-          cp -dR ./bin/* ./artifacts
       - name: Prepare the archive file
         uses: actions/upload-artifact@v1.0.0  
         with:
