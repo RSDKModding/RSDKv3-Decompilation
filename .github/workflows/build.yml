@@ -28,15 +28,11 @@ jobs:
         name: Compile the project
         run : |
           make CXX=i686-w64-mingw32-g++ CXXFLAGS=-static
-      - name: Move artifacts
-        run: |
-          mkdir artifacts
-          mv ./bin/* ./artifacts 
-      - name: Upload artifacts
+      - name: Prepare the archive file
         uses: actions/upload-artifact@v1.0.0  
         with:
           name: msys2-windows-x64
-          path: artifacts
+          path: bin
   msys2-windows-x64:
     runs-on: windows-latest
     steps:
@@ -59,15 +55,11 @@ jobs:
         name: Compile the project
         run : |
           make CXX=x86_64-w64-mingw32-g++ CXXFLAGS=-static
-      - name: Move artifacts
-        run: |
-          mkdir artifacts
-          mv ./bin/* ./artifacts 
-      - name: Upload artifacts
+      - name: Prepare the archive file
         uses: actions/upload-artifact@v1.0.0  
         with:
           name: msys2-windows-x64
-          path: artifacts
+          path: bin
   linux:
     runs-on: ubuntu-20.04
     steps:
@@ -84,8 +76,8 @@ jobs:
         run: |
           mkdir artifacts
           cp -dR ./bin/* ./artifacts
-      - name: Upload artifact
+      - name: Prepare the archive file
         uses: actions/upload-artifact@v1.0.0  
         with:
           name: linux
-          path: artifacts
+          path: bin
