@@ -11,17 +11,7 @@
 # Authors
 * Rubberduckycooly and RMGRich as original authors of the project ( https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation )
 * Jack0b0 for modifications of the forked source code
-
-# Advantages over the PC version of Sonic CD
-* Sharp, pixel-perfect display
-* Controls are completely remappable via the settings.ini file
-* The window allows windows shortcuts to be used
-* Complete support for using mobile/updated scripts, allowing for features the official PC version never got to be played on PC
-* Native Windows x64 version, as well as an x86 version
-
-# Advantages over the Mobile versions of Sonic CD
-* The rendering backend is based off the PC version, so palettes are fully supported (tidal tempest water in particular)
-
+* 
 # Additional Tweaks
 * There is now a settings.ini file that the game uses to load all settings, similar to Sonic Mania
 * Dev menu can now be accessed from anywhere by pressing `ESC` if enabled in the config
