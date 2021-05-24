@@ -10,11 +10,14 @@ Original authors of RSDK and authors of the decompilation are not held responsib
 You may copy, modify, contribute, and distribute, for public or private use, **as long as the following are followed:**
 - You may not use the decompilation for commercial (any sort of profit) use.
 - You must clearly specify that the decompilation and original code are not yours: the developers of both must be credited.
-- You must not distribute official or modified official assets used to run the game.
-- You must not distribute official or modified official scripts files used to run the game.
+- You may not distribute assets used to run the game not directly provided by the repository (other than unique, modded assets). (Note(1))
 - This license must be in all modified copies of source code, and all forks must follow this license.
 
 Original RSDK author: Christian "Taxman" Whitehead
 
 Decompilation authors: Rubberduckycooly and RMGRich
 * https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation
+
+Note(1) : Advices :
+- You must not distribute official or modified official assets used to run the game.
+- You must not distribute official or modified official scripts files used to run the game.
