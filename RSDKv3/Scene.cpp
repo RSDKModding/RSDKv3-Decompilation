@@ -308,8 +308,10 @@ void LoadStageFiles(void)
     byte fileBuffer2 = 0;
     int scriptID    = 1;
     char strBuffer[0x100];
-
-    if (!CheckCurrentStageFolder(stageListPosition)) {
+    
+    //For modders, when you try to reload the same Special Stage level, Sonic CD hangs because of imcomplete data initialisation of the level.
+    //So to avoid this, we will check if we are on the SPECIAL STAGE category (activeStageList=3) : if yes, we will do a complete data initialisation.
+    if (!CheckCurrentStageFolder(stageListPosition) || activeStageList==3 ) {
         printLog("Loading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
         ReleaseStageSfx();
         LoadPalette("MasterPalette.act", 0, 0, 0, 256);
