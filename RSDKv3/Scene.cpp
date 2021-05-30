@@ -135,7 +135,6 @@ void ProcessStage(void)
             }
             pauseEnabled      = false;
             timeEnabled       = false;
-            frameCounter      = 0;
             stageMilliseconds = 0;
             stageSeconds      = 0;
             stageMinutes      = 0;
