@@ -39,7 +39,6 @@ bool hq3DFloorEnabled = false;
 ushort texBuffer[TEXBUFFER_SIZE];
 byte texBufferMode = 0;
 
-int orthWidth     = 0;
 int viewWidth     = 0;
 int viewHeight    = 0;
 float viewAspect  = 0;
@@ -55,7 +54,14 @@ GLuint gfxTextureID[TEXTURE_LIMIT];
 GLuint framebufferId = 0;
 GLuint fbTextureId   = 0;
 
-short screenVerts[] = { 0, 0, 6400, 0, 0, SCREEN_YSIZE << 4, 6400, 0, 0, SCREEN_YSIZE << 4, 6400, SCREEN_YSIZE << 4 };
+// clang-format off
+float screenVerts[] = { 0,                   0, 
+                        (float)SCREEN_XSIZE, 0, 
+                        0,                   SCREEN_YSIZE, 
+                        (float)SCREEN_XSIZE, 0,
+                        0,                   SCREEN_YSIZE, 
+                        (float)SCREEN_XSIZE, SCREEN_YSIZE };
+// clang-format on
 float fbTexVerts[]  = {
     -TEXTURE_SIZE, TEXTURE_SIZE, 0, TEXTURE_SIZE, -TEXTURE_SIZE, 0, 0, TEXTURE_SIZE, -TEXTURE_SIZE, 0, 0, 0,
 };
@@ -228,8 +234,7 @@ int InitRenderDevice()
     // glew Setup
     GLenum err = glewInit();
     if (err != GLEW_OK) {
-        printLog("glew init error:");
-        printLog((const char *)glewGetErrorString(err));
+        printLog("glew init error: %s", (const char *)glewGetErrorString(err));
         return false;
     }
 
@@ -281,7 +286,7 @@ int InitRenderDevice()
     framebufferId = 0;
     fbTextureId   = 0;
 
-    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, Engine.windowScale);
+    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
 #endif
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;
@@ -531,7 +536,7 @@ void FlipScreen()
 
     glLoadIdentity();
 
-    glOrtho(0, orthWidth, SCREEN_YSIZE << 4, 0.0, 0.0f, 100.0f);
+    glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, 0.0f, 100.0f);
     if (texPaletteNum >= TEXTURE_LIMIT) {
         glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum % TEXTURE_LIMIT]);
     }
@@ -601,7 +606,7 @@ void FlipScreen()
     glViewport(virtualX, virtualY, virtualWidth, virtualHeight);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, fbTextureId);
-    glVertexPointer(2, GL_SHORT, 0, &screenVerts);
+    glVertexPointer(2, GL_FLOAT, 0, &screenVerts);
     glTexCoordPointer(2, GL_FLOAT, 0, &fbTexVerts);
     glColorPointer(4, GL_FLOAT, 0, &pureLight);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -616,7 +621,7 @@ void FlipScreenHRes()
 
     glLoadIdentity();
 
-    glOrtho(0, orthWidth, SCREEN_YSIZE << 4, 0.0, 0.0f, 100.0f);
+    glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, 0.0f, 100.0f);
     glViewport(0, 0, bufferWidth, bufferHeight);
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glDisable(GL_BLEND);
@@ -648,7 +653,7 @@ void FlipScreenHRes()
     glViewport(virtualX, virtualY, virtualWidth, virtualHeight);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, fbTextureId);
-    glVertexPointer(2, GL_SHORT, 0, &screenVerts);
+    glVertexPointer(2, GL_FLOAT, 0, &screenVerts);
     glTexCoordPointer(2, GL_FLOAT, 0, &fbTexVerts);
     glColorPointer(4, GL_FLOAT, 0, &pureLight);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -835,19 +840,11 @@ void UpdateHardwareTextures()
     }
     SetActivePalette(0, 0, SCREEN_YSIZE);
 }
-void SetScreenDimensions(int width, int height, int scale)
+void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
 {
-    viewWidth = touchWidth = width * scale;
-    viewHeight = touchHeight = height * scale;
 
-    //float widthBuf = (float)viewWidth / (float)viewHeight;
-    //widthBuf *= (float)SCREEN_YSIZE;
-    bufferWidth = width;
-    //bufferWidth += 8;
-    //bufferWidth = bufferWidth >> 4 << 4;
-
-    width *= scale;
-    height *= scale;
+    bufferWidth  = width;
+    bufferHeight = height;
 
     viewAspect = 0.75f;
     if (viewHeight >= SCREEN_YSIZE * 2)
@@ -855,15 +852,9 @@ void SetScreenDimensions(int width, int height, int scale)
     else
         hq3DFloorEnabled = false;
 
-    SetScreenSize(bufferWidth, bufferWidth);
-    if (viewHeight >= SCREEN_YSIZE * 2) {
-        bufferWidth *= 2;
-        bufferHeight = SCREEN_YSIZE * 2;
-    }
-    else {
-        bufferHeight = SCREEN_YSIZE;
-    }
-    orthWidth = SCREEN_XSIZE * 16;
+    SetScreenSize(width, width);
+    bufferWidth = viewWidth = touchWidth = winWidth;
+    bufferHeight = viewHeight = touchHeight = winHeight;
 
     if (framebufferId > 0) {
         glDeleteFramebuffers(1, &framebufferId);
@@ -884,8 +875,10 @@ void SetScreenDimensions(int width, int height, int scale)
     glBindTexture(GL_TEXTURE_2D, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbTextureId, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    int newWidth  = width * 8;
-    int newHeight = (height * 8) + 4;
+    // int newWidth  = width * 8;
+    // int newHeight = (height * 8) + 4;
+    int newWidth  = width << 4;
+    int newHeight = height << 4;
 
     screenVerts[2]  = newWidth;
     screenVerts[6]  = newWidth;
@@ -893,7 +886,7 @@ void SetScreenDimensions(int width, int height, int scale)
     screenVerts[5]  = newHeight;
     screenVerts[9]  = newHeight;
     screenVerts[11] = newHeight;
-    ScaleViewport(width, height);
+    ScaleViewport(winWidth, winHeight);
 }
 
 void ScaleViewport(int width, int height)

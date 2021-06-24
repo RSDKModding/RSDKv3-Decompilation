@@ -105,7 +105,6 @@ extern bool hq3DFloorEnabled;
 extern ushort texBuffer[TEXBUFFER_SIZE];
 extern byte texBufferMode;
 
-extern int orthWidth;
 extern int viewWidth;
 extern int viewHeight;
 extern float viewAspect;
@@ -156,7 +155,7 @@ inline bool CheckSurfaceSize(int size)
 }
 
 void UpdateHardwareTextures();
-void SetScreenDimensions(int width, int height, int scale);
+void SetScreenDimensions(int width, int height, int winWidth, int winHeight);
 void ScaleViewport(int width, int height);
 void CalcPerspective(float fov, float aspectRatio, float nearPlane, float farPlane);
 

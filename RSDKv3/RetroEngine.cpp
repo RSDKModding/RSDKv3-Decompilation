@@ -157,10 +157,17 @@ bool processEvents()
                                                                     SDL_SWSURFACE | SDL_FULLSCREEN);
                             SDL_ShowCursor(SDL_FALSE);
 #endif
-
 #if RETRO_USING_SDL2
                             SDL_RestoreWindow(Engine.window);
                             SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+#endif
+#if RETRO_HARDWARE_RENDER
+                            int w = SCREEN_XSIZE * Engine.windowScale;
+                            int h = SCREEN_YSIZE * Engine.windowScale;
+#if RETRO_USING_SDL2
+                            SDL_GetWindowSize(Engine.window, &w, &h);
+#endif
+                            SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, w, h);
 #endif
                         }
                         else {
@@ -170,6 +177,9 @@ bool processEvents()
                             SDL_ShowCursor(SDL_TRUE);
 #endif
 
+#if RETRO_HARDWARE_RENDER
+                            SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+#endif
 #if RETRO_USING_SDL2
                             SDL_SetWindowFullscreen(Engine.window, 0);
                             SDL_SetWindowSize(Engine.window, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);

@@ -37,7 +37,7 @@ extern int paletteMode;
 extern int texPaletteNum;
 #endif
 
-#define RGB888_TO_RGB5551(r, g, b) (2 * ((b) >> 3) | ((g) >> 3 << 6) | ((r) >> 3 << 11) | 0) // used in mobile vers
+#define RGB888_TO_RGB5551(r, g, b) ((((b) >> 3) << 1) | ((g) >> 3 << 6) | ((r) >> 3 << 11) | 0) // used in mobile vers
 #define RGB888_TO_RGB565(r, g, b)  ((b) >> 3) | (((g) >> 2) << 5) | (((r) >> 3) << 11)       // used in pc vers
 
 #if RETRO_SOFTWARE_RENDER
