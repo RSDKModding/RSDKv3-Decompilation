@@ -167,7 +167,23 @@ bool processEvents()
 #if RETRO_USING_SDL2
                             SDL_GetWindowSize(Engine.window, &w, &h);
 #endif
+                            float virtualAspect = (float)SCREEN_XSIZE / SCREEN_YSIZE;
+                            float realAspect    = (float)w / h;
+
+                            int vx = 0, vy = 0, vw = w, vh = h;
+                            if (virtualAspect > realAspect) {
+                                vh = SCREEN_YSIZE * ((float)w / SCREEN_XSIZE);
+                                vy = (h - vh) >> 1;
+                            }
+                            else {
+                                vw = SCREEN_XSIZE * ((float)h / SCREEN_YSIZE);
+                                vx = (w - vw) >> 1;
+                            }
                             SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, w, h);
+                            virtualX      = vx;
+                            virtualY      = vy;
+                            virtualWidth  = vw;
+                            virtualHeight = vh;
 #endif
                         }
                         else {
