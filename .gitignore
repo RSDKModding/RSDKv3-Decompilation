@@ -62,7 +62,12 @@ bin/
 [Dd]ependencies/mac/libvorbis/
 [Dd]ependencies/mac/SDL2.framework/
 ![Dd]ependencies/mac/[Ii]nfo.plist
-[Dd]ependencies/ios/*
+[Dd]ependencies/ios/Ogg.Framework/
+[Dd]ependencies/ios/Theora.framework/
+[Dd]ependencies/ios/Vorbis.framework/
+[Dd]ependencies/ios/SDL2.framework/
+[Dd]ependencies/ios/libSDLMain.a
+![Dd]ependencies/ios/[Ii]nfo.plist
 
 SonicCDDecompUWP/Generated Files
 SonicCDDecompUWP/BundleArtifacts
