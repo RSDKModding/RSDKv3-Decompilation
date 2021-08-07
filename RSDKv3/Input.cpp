@@ -397,8 +397,15 @@ void CheckKeyPress(InputData *input, byte flags)
         input->C = inputDevice[INPUT_BUTTONC].press;
     if (flags & 0x80)
         input->start = inputDevice[INPUT_START].press;
-    if (flags & 0x80)
+    if (flags & 0x80) {
         anyPress = inputDevice[INPUT_ANY].press;
+        if (!anyPress) {
+            for (int t = 0; t < touches; ++t) {
+                if (touchDown[t])
+                    anyPress = true;
+            }
+        }
+    }
 }
 
 void CheckKeyDown(InputData *input, byte flags)

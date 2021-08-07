@@ -82,7 +82,7 @@ void PlayVideoFile(char *filePath)
         }
 
         sprintf(filepath, "%s/%s", resourcePath, pathBuffer);
-#elif RETRO_PLATFORM == RETRO_OSX
+#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
         sprintf(filepath, "%s/%s", gamePath, pathBuffer);
 #else
         sprintf(filepath, "%s%s", BASE_PATH, pathBuffer);

@@ -57,6 +57,7 @@ bin/
 #dependencies
 [Dd]ependencies/win-uwp/**
 [Dd]ependencies/windows/*
+[Dd]ependencies/android/*
 [Dd]ependencies/mac/libogg/
 [Dd]ependencies/mac/libtheora/
 [Dd]ependencies/mac/libvorbis/
@@ -68,6 +69,14 @@ bin/
 [Dd]ependencies/ios/SDL2.framework/
 [Dd]ependencies/ios/libSDLMain.a
 ![Dd]ependencies/ios/[Ii]nfo.plist
+[Dd]ependencies/all/*
+![Dd]ependencies/all/dependencies.txt
+![Dd]ependencies/windows/dependencies.txt
+![Dd]ependencies/ios/dependencies.txt
+![Dd]ependencies/mac/dependencies.txt
+![Dd]ependencies/windows-uwp/dependencies.txt
+![Dd]ependencies/android/dependencies.txt
+![Dd]ependencies/android/libogg/include/ogg/config_types.h
 
 SonicCDDecompUWP/Generated Files
 SonicCDDecompUWP/BundleArtifacts
@@ -263,3 +272,9 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 Ignored/
+
+# Android specific
+.gradle/
+.idea/
+android/key/
+android/local.properties

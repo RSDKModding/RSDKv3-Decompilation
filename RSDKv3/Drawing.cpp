@@ -85,12 +85,6 @@ int InitRenderDevice()
 
     sprintf(gameTitle, "%s%s", Engine.gameWindowText, Engine.usingDataFile ? "" : " (Using Data Folder)");
 
-#if RETRO_SOFTWARE_RENDER
-    Engine.frameBuffer   = new ushort[SCREEN_XSIZE * SCREEN_YSIZE];
-    Engine.frameBuffer2x = new ushort[(SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2)];
-    memset(Engine.frameBuffer, 0, (SCREEN_XSIZE * SCREEN_YSIZE) * sizeof(ushort));
-    memset(Engine.frameBuffer2x, 0, (SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2) * sizeof(ushort));
-#endif
 
 #if RETRO_USING_SDL2
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -104,6 +98,24 @@ int InitRenderDevice()
 #if RETRO_USING_OPENGL
     flags |= SDL_WINDOW_OPENGL;
 #endif
+#if RETRO_GAMEPLATFORM == RETRO_STANDARD
+    flags |= SDL_WINDOW_HIDDEN;
+#else
+    Engine.startFullScreen = true;
+
+    SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode(0, &dm);
+    
+    bool landscape = dm.h < dm.w;
+    int h = landscape ? dm.w : dm.h;
+    int w = landscape ? dm.h : dm.w;
+
+    SCREEN_XSIZE = ((float)SCREEN_YSIZE * h / w);
+    if (SCREEN_XSIZE % 1) ++SCREEN_XSIZE;
+#endif
+
+    SCREEN_CENTERX = SCREEN_XSIZE / 2;
+
     Engine.window   = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE * Engine.windowScale,
                                      SCREEN_YSIZE * Engine.windowScale, SDL_WINDOW_ALLOW_HIGHDPI | flags);
     Engine.renderer = SDL_CreateRenderer(Engine.window, -1, SDL_RENDERER_ACCELERATED);
@@ -161,12 +173,6 @@ int InitRenderDevice()
     else {
         printf("error: %s", SDL_GetError());
     }
-
-#if RETRO_PLATFORM == RETRO_iOS
-    SDL_RestoreWindow(Engine.window);
-    SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    Engine.isFullScreen = true;
-#endif
 
 #endif
 
@@ -287,6 +293,13 @@ int InitRenderDevice()
     fbTextureId   = 0;
 
     SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+#endif
+
+#if RETRO_SOFTWARE_RENDER
+    Engine.frameBuffer   = new ushort[SCREEN_XSIZE * SCREEN_YSIZE];
+    Engine.frameBuffer2x = new ushort[(SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2)];
+    memset(Engine.frameBuffer, 0, (SCREEN_XSIZE * SCREEN_YSIZE) * sizeof(ushort));
+    memset(Engine.frameBuffer2x, 0, (SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2) * sizeof(ushort));
 #endif
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;
@@ -478,7 +491,7 @@ void FlipScreen()
         // reset everything just in case
         SDL_RenderSetLogicalSize(Engine.renderer, SCREEN_XSIZE, SCREEN_YSIZE);
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-        // putting some FLEX TAPE® on that memory leak
+        // putting some FLEX TAPEï¿½ on that memory leak
         SDL_DestroyTexture(texTarget);
     }
     else {
@@ -489,6 +502,7 @@ void FlipScreen()
         // no change here
         SDL_RenderPresent(Engine.renderer);
     }
+    SDL_ShowWindow(Engine.window);
 #endif
 
 #if RETRO_USING_SDL1
@@ -611,6 +625,9 @@ void FlipScreen()
     glColorPointer(4, GL_FLOAT, 0, &pureLight);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glViewport(0, 0, bufferWidth, bufferHeight);
+#if RETRO_USING_SDL2    
+    SDL_ShowWindow(Engine.window); //we're still using sdl2 right ?
+#endif
 #endif
 }
 
@@ -658,6 +675,9 @@ void FlipScreenHRes()
     glColorPointer(4, GL_FLOAT, 0, &pureLight);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glViewport(0, 0, bufferWidth, bufferHeight);
+#if RETRO_USING_SDL2    
+    SDL_ShowWindow(Engine.window);
+#endif
 }
 #endif
 

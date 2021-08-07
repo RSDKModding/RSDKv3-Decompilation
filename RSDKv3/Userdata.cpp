@@ -86,6 +86,24 @@ void InitUserdata()
     sprintf(modsPath, "%s/RSDKv3/", getResourcesPath());
     
     mkdir(gamePath, 0777);
+#elif RETRO_PLATFORM == RETRO_ANDROID
+    {
+        char buffer[0x200];
+
+        JNIEnv *env      = (JNIEnv *)SDL_AndroidGetJNIEnv();
+        jobject activity = (jobject)SDL_AndroidGetActivity();
+        jclass cls(env->GetObjectClass(activity));
+        jmethodID method = env->GetMethodID(cls, "getBasePath", "()Ljava/lang/String;");
+        auto ret         = env->CallObjectMethod(activity, method);
+
+        strcpy(buffer, env->GetStringUTFChars((jstring)ret, NULL));
+
+        sprintf(gamePath, "%s", buffer);
+        sprintf(modsPath, "%s", buffer);
+
+        env->DeleteLocalRef(activity);
+        env->DeleteLocalRef(cls);
+    }
 #endif
 
     char buffer[0x200];
@@ -94,7 +112,7 @@ void InitUserdata()
         sprintf(buffer, "%s/settings.ini", getResourcesPath());
     else
         sprintf(buffer, "%ssettings.ini", gamePath);
-#elif RETRO_PLATFORM == RETRO_OSX
+#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
     sprintf(buffer, "%s/settings.ini", gamePath);
 #elif RETRO_PLATFORM == RETRO_iOS
     sprintf(buffer, "%s/settings.ini", getDocumentsPath());
@@ -185,11 +203,11 @@ void InitUserdata()
         ini.SetFloat("Controller 1", "RTriggerDeadzone", RTRIGGER_DEADZONE = 0.3);
 #endif
 
-        ini.Write(BASE_PATH"settings.ini");
+        ini.Write(buffer);
     }
     else {
         fClose(file);
-        ini = IniParser(BASE_PATH"settings.ini");
+        ini = IniParser(buffer);
 
         if (!ini.GetBool("Dev", "DevMenu", &Engine.devMenu))
             Engine.devMenu = false;
@@ -353,7 +371,7 @@ void InitUserdata()
         sprintf(buffer, "%s/controllerdb.txt", getResourcesPath());
     else
         sprintf(buffer, "%scontrollerdb.txt", gamePath);
-#elif RETRO_PLATFORM == RETRO_OSX
+#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
     sprintf(buffer, "%s/controllerdb.txt", gamePath);
 #else
     sprintf(buffer, BASE_PATH "controllerdb.txt");
@@ -375,7 +393,7 @@ void InitUserdata()
         sprintf(buffer, "%s/Udata.bin", getResourcesPath());
     else
         sprintf(buffer, "%sUdata.bin", gamePath);
-#elif RETRO_PLATFORM == RETRO_OSX
+#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
     sprintf(buffer, "%s/UData.bin", gamePath);
 #elif RETRO_PLATFORM == RETRO_iOS
     sprintf(buffer, "%s/UData.bin", getDocumentsPath());
@@ -685,6 +703,12 @@ void SetLeaderboard(int leaderboardID, int result)
 #include <string>
 #include <filesystem>
 
+#if RETRO_PLATFORM == RETRO_ANDROID
+namespace fs = std::__fs::filesystem;
+#else
+namespace fs = std::filesystem;
+#endif
+
 void initMods()
 {
     for (int i = 0; i < modCount; ++i) {
@@ -702,14 +726,14 @@ void initMods()
 
     char modBuf[0x100];
     sprintf(modBuf, "%smods/", modsPath);
-    std::filesystem::path modPath(modBuf);
+    fs::path modPath(modBuf);
 
-    if (std::filesystem::exists(modPath) && std::filesystem::is_directory(modPath)) {
+    if (fs::exists(modPath) && fs::is_directory(modPath)) {
         try {
-            auto rdi = std::filesystem::directory_iterator(modPath);
+            auto rdi = fs::directory_iterator(modPath);
             for (auto de : rdi) {
                 if (de.is_directory()) {
-                    std::filesystem::path modDirPath = de.path();
+                    fs::path modDirPath = de.path();
 
                     ModInfo *info = &modList[modCount];
 
@@ -761,11 +785,11 @@ void initMods()
                         modSettings.GetBool("", "Active", &info->active);
 
                         // Check for Data replacements
-                        std::filesystem::path dataPath(modDir + "/Data");
+                        fs::path dataPath(modDir + "/Data");
 
-                        if (std::filesystem::exists(dataPath) && std::filesystem::is_directory(dataPath)) {
+                        if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
                             try {
-                                auto data_rdi = std::filesystem::recursive_directory_iterator(dataPath);
+                                auto data_rdi = fs::recursive_directory_iterator(dataPath);
                                 for (auto data_de : data_rdi) {
                                     if (data_de.is_regular_file()) {
                                         char modBuf[0x100];
@@ -801,18 +825,18 @@ void initMods()
                                         }
                                     }
                                 }
-                            } catch (std::filesystem::filesystem_error fe) {
+                            } catch (fs::filesystem_error fe) {
                                 printLog("Data Folder Scanning Error: ");
                                 printLog(fe.what());
                             }
                         }
                         
                         // Check for Videos/ replacements
-                        std::filesystem::path vidPath(modDir + "/videos");
+                        fs::path vidPath(modDir + "/videos");
 
-                        if (std::filesystem::exists(vidPath) && std::filesystem::is_directory(vidPath)) {
+                        if (fs::exists(vidPath) && fs::is_directory(vidPath)) {
                             try {
-                                auto data_rdi = std::filesystem::recursive_directory_iterator(vidPath);
+                                auto data_rdi = fs::recursive_directory_iterator(vidPath);
                                 for (auto data_de : data_rdi) {
                                     if (data_de.is_regular_file()) {
                                         char modBuf[0x100];
@@ -848,7 +872,7 @@ void initMods()
                                         }
                                     }
                                 }
-                            } catch (std::filesystem::filesystem_error fe) {
+                            } catch (fs::filesystem_error fe) {
                                 printLog("Video Folder Scanning Error: ");
                                 printLog(fe.what());
                             }
@@ -863,7 +887,7 @@ void initMods()
                     }
                 }
             }
-        } catch (std::filesystem::filesystem_error fe) {
+        } catch (fs::filesystem_error fe) {
             printLog("Mods Folder Scanning Error: ");
             printLog(fe.what());
         }
@@ -873,9 +897,9 @@ void saveMods()
 {
     char modBuf[0x100];
     sprintf(modBuf, "%smods/", modsPath);
-    std::filesystem::path modPath(modBuf);
+    fs::path modPath(modBuf);
 
-    if (std::filesystem::exists(modPath) && std::filesystem::is_directory(modPath)) {
+    if (fs::exists(modPath) && fs::is_directory(modPath)) {
         for (int m = 0; m < modCount; ++m) {
             ModInfo *info                 = &modList[m];
             std::string modDir            = modPath.string().c_str();

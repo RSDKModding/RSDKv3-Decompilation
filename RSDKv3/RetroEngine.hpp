@@ -70,6 +70,8 @@ typedef unsigned int uint;
 #else
 #error "Unknown Apple platform"
 #endif
+#elif defined __ANDROID__
+#define RETRO_PLATFORM   (RETRO_ANDROID)
 #elif defined __vita__
 #define RETRO_PLATFORM (RETRO_VITA)
 #else
@@ -96,7 +98,7 @@ typedef unsigned int uint;
 #endif
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
-    || RETRO_PLATFORM == RETRO_UWP
+    || RETRO_PLATFORM == RETRO_UWP || RETRO_PLATFORM == RETRO_ANDROID
 #define RETRO_USING_SDL1 (0)
 #define RETRO_USING_SDL2 (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
@@ -215,7 +217,7 @@ enum RetroBytecodeFormat {
 #define SCREEN_YSIZE   (240)
 #define SCREEN_CENTERY (SCREEN_YSIZE / 2)
 
-#if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_UWP || RETRO_PLATFORM == RETRO_ANDROID
 #if RETRO_USING_SDL2
 #include <SDL.h>
 #elif RETRO_USING_SDL1
@@ -243,6 +245,10 @@ enum RetroBytecodeFormat {
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
+#endif
+
+#if RETRO_PLATFORM == RETRO_ANDROID
+#include <jni.h>
 #endif
 
 extern bool usingCWD;
