@@ -61,6 +61,14 @@ Even if your platform isn't supported by the official releases, you **must** buy
 ## iOS:
 * Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
 
+## Android:
+* Clone the repo, then follow the instructions in the [depencencies readme for Android](./dependencies/android/dependencies.txt).
+* Ensure the symbolic links in `android/app/jni` are correct. If not, fix them with the following on Windows:
+  * `mklink /D src ..\..\..`
+  * `mklink /D SDL ..\..\..\dependencies\android\SDL`
+* Open `android/` in Android Studio, install the NDK and everything else that it asks for, and build.
+
+
 ## PS Vita:
 * Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
 NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
