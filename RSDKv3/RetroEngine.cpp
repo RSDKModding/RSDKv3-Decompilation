@@ -40,34 +40,34 @@ bool processEvents()
                         Engine.isFullScreen = true;
                         break;
                     }
-                    case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
+                    case SDL_WINDOWEVENT_CLOSE: {
+                        if (Engine.window) {
+                            SDL_DestroyWindow(Engine.window);
+                            Engine.window = NULL;
+                        }
+                        Engine.gameMode = ENGINE_EXITGAME;
+                        return false;
+                    }
+                    case SDL_WINDOWEVENT_FOCUS_LOST: Engine.message = MESSAGE_LOSTFOCUS; break;
                 }
                 break;
             case SDL_CONTROLLERDEVICEADDED: controllerInit(Engine.sdlEvents.cdevice.which); break;
             case SDL_CONTROLLERDEVICEREMOVED: controllerClose(Engine.sdlEvents.cdevice.which); break;
-            case SDL_WINDOWEVENT_CLOSE:
-                if (Engine.window) {
-                    SDL_DestroyWindow(Engine.window);
-                    Engine.window = NULL;
-                }
-                Engine.gameMode = ENGINE_EXITGAME;
-                return false;
-            case SDL_APP_WILLENTERBACKGROUND: /*Engine.Callback(CALLBACK_ENTERBG);*/ break;
-            case SDL_APP_WILLENTERFOREGROUND: /*Engine.Callback(CALLBACK_ENTERFG);*/ break;
-            case SDL_APP_TERMINATING: Engine.gameMode = ENGINE_EXITGAME; break;
+            case SDL_APP_WILLENTERBACKGROUND: Engine.message = MESSAGE_LOSTFOCUS; break;
+            case SDL_APP_TERMINATING: Engine.gameMode = ENGINE_EXITGAME; return false;
+
 #endif
 
 #ifdef RETRO_USING_MOUSE
             case SDL_MOUSEMOTION:
 #if RETRO_USING_SDL2
-                if (touches <= 0) { // Touch always takes priority over mouse
-#endif
+                if (touches <= 1) { // Touch always takes priority over mouse
                     SDL_GetMouseState(&touchX[0], &touchY[0]);
 
-                    touchX[0] /= Engine.windowScale;
-                    touchY[0] /= Engine.windowScale;
-                    touches = 1;
-#if RETRO_USING_SDL2
+                    int width = 0, height = 0;
+                    SDL_GetWindowSize(Engine.window, &width, &height);
+                    touchX[0] = (touchX[0] / (float)width) * SCREEN_XSIZE;
+                    touchY[0] = (touchY[0] / (float)height) * SCREEN_YSIZE;
                 }
 #endif
                 break;
@@ -85,12 +85,12 @@ bool processEvents()
                 break;
             case SDL_MOUSEBUTTONUP:
 #if RETRO_USING_SDL2
-                if (touches <= 0) { // Touch always takes priority over mouse
+                if (touches <= 1) { // Touch always takes priority over mouse
 #endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 0; break;
                     }
-                    touches = 1;
+                    touches = 0;
 #if RETRO_USING_SDL2
                 }
 #endif
@@ -105,9 +105,8 @@ bool processEvents()
                     SDL_Finger *finger = SDL_GetTouchFinger(Engine.sdlEvents.tfinger.touchId, i);
                     if (finger) {
                         touchDown[i] = true;
-                        touchX[i]    = (finger->x * SCREEN_XSIZE * Engine.windowScale) / Engine.windowScale;
-
-                        touchY[i] = (finger->y * SCREEN_YSIZE * Engine.windowScale) / Engine.windowScale;
+                        touchX[i]    = finger->x * SCREEN_XSIZE;
+                        touchY[i]    = finger->y * SCREEN_YSIZE;
                     }
                 }
                 break;
@@ -117,9 +116,8 @@ bool processEvents()
                     SDL_Finger *finger = SDL_GetTouchFinger(Engine.sdlEvents.tfinger.touchId, i);
                     if (finger) {
                         touchDown[i] = true;
-                        touchX[i]    = (finger->x * SCREEN_XSIZE * Engine.windowScale) / Engine.windowScale;
-
-                        touchY[i] = (finger->y * SCREEN_YSIZE * Engine.windowScale) / Engine.windowScale;
+                        touchX[i]    = finger->x * SCREEN_XSIZE;
+                        touchY[i]    = finger->y * SCREEN_YSIZE;
                     }
                 }
                 break;
@@ -425,21 +423,20 @@ void RetroEngine::Run()
                         break;
                     default: break;
                 }
-
-#if RETRO_SOFTWARE_RENDER
-                FlipScreen();
-#elif RETRO_HARDWARE_RENDER
-                highResMode ? FlipScreenHRes() : FlipScreen();
-#endif
-
-#if RETRO_USING_OPENGL && RETRO_USING_SDL2 && RETRO_HARDWARE_RENDER
-                if (s == gameSpeed -1)
-                    SDL_GL_SwapWindow(Engine.window);
-#endif
-                frameStep = false;
             }
         }
 
+#if RETRO_SOFTWARE_RENDER
+        FlipScreen();
+#elif RETRO_HARDWARE_RENDER
+        highResMode ? FlipScreenHRes() : FlipScreen();
+#endif
+
+#if RETRO_USING_OPENGL && RETRO_USING_SDL2 && RETRO_HARDWARE_RENDER
+        SDL_GL_SwapWindow(Engine.window);
+#endif
+        frameStep      = false;
+        Engine.message = MESSAGE_NONE;
     }
 
     ReleaseAudioDevice();
@@ -450,7 +447,7 @@ void RetroEngine::Run()
     saveMods();
 #endif
 
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
     SDL_Quit();
 #endif
 }

@@ -178,6 +178,13 @@ enum RetroStates {
     ENGINE_VIDEOWAIT       = 9,
 };
 
+enum RetroEngineMessages {
+    MESSAGE_NONE      = 0,
+    MESSAGE_LOSTFOCUS = 2,
+    MESSAGE_MESSAGE_3 = 3,
+    MESSAGE_MESSAGE_4 = 4,
+};
+
 enum RetroEngineCallbacks {
     CALLBACK_DISPLAYLOGOS            = 0,
     CALLBACK_PRESS_START             = 1,
