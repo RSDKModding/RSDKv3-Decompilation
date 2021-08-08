@@ -60,7 +60,7 @@ bool processEvents()
 #ifdef RETRO_USING_MOUSE
             case SDL_MOUSEMOTION:
 #if RETRO_USING_SDL2
-                if (SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId) <= 0) { // Touch always takes priority over mouse
+                if (touches <= 0) { // Touch always takes priority over mouse
 #endif
                     SDL_GetMouseState(&touchX[0], &touchY[0]);
 
@@ -73,7 +73,7 @@ bool processEvents()
                 break;
             case SDL_MOUSEBUTTONDOWN:
 #if RETRO_USING_SDL2
-                if (SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId) <= 0) { // Touch always takes priority over mouse
+                if (touches <= 0) { // Touch always takes priority over mouse
 #endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 1; break;
@@ -85,7 +85,7 @@ bool processEvents()
                 break;
             case SDL_MOUSEBUTTONUP:
 #if RETRO_USING_SDL2
-                if (SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId) <= 0) { // Touch always takes priority over mouse
+                if (touches <= 0) { // Touch always takes priority over mouse
 #endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 0; break;
