@@ -40,14 +40,7 @@ bool processEvents()
                         Engine.isFullScreen = true;
                         break;
                     }
-                    case SDL_WINDOWEVENT_CLOSE: {
-                        if (Engine.window) {
-                            SDL_DestroyWindow(Engine.window);
-                            Engine.window = NULL;
-                        }
-                        Engine.gameMode = ENGINE_EXITGAME;
-                        return false;
-                    }
+                    case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
                     case SDL_WINDOWEVENT_FOCUS_LOST: Engine.message = MESSAGE_LOSTFOCUS; break;
                 }
                 break;
