@@ -163,15 +163,6 @@ typedef unsigned int uint;
 
 #endif
 
-// this macro defines the touch device read by the game (UWP requires DIRECT)
-#if defined(RETRO_UWP) && defined(SDL_TOUCH_DEVICE_DIRECT)
-#define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_DIRECT
-#elif defined(SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE)
-#define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE
-#else
-#define RETRO_TOUCH_DEVICE 0
-#endif
-
 enum RetroLanguages { RETRO_EN = 0, RETRO_FR = 1, RETRO_IT = 2, RETRO_DE = 3, RETRO_ES = 4, RETRO_JP = 5 };
 
 enum RetroStates {
