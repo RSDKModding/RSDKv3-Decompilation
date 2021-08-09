@@ -347,19 +347,29 @@ void RetroEngine::Init()
 
 void RetroEngine::Run()
 {
-    uint frameStart, frameEnd = SDL_GetTicks();
+    const Uint64 frequency = SDL_GetPerformanceFrequency();
+    Uint64 frameStart = SDL_GetPerformanceCounter(), frameEnd = SDL_GetPerformanceCounter();
     float frameDelta = 0.0f;
 
     while (running) {
-        frameStart = SDL_GetTicks();
-        frameDelta = frameStart - frameEnd;
-
-        if (frameDelta < 1000.0f / (float)refreshRate)
-            SDL_Delay(1000.0f / (float)refreshRate - frameDelta);
-
-        frameEnd = SDL_GetTicks();
-
         running = processEvents();
+
+#if !RETRO_USE_ORIGINAL_CODE
+        frameStart = SDL_GetPerformanceCounter();
+        frameDelta = frameStart - frameEnd;
+        if (frameDelta < frequency / (float)refreshRate) {
+            continue;
+        }
+        frameEnd = SDL_GetPerformanceCounter();
+
+        refreshRatio = (float)targetRefreshRate / (frequency / frameDelta);
+
+        frameInter += refreshRatio;
+        if (frameInter >= 1.0f) {
+            logicUpCnt = (int)floorf(frameInter); // get logic update count
+            frameInter -= logicUpCnt;             // shave off the whole
+        }
+#endif
 
         for (int s = 0; s < gameSpeed; ++s) {
             ProcessInput();
@@ -430,6 +440,7 @@ void RetroEngine::Run()
 #endif
         frameStep      = false;
         Engine.message = MESSAGE_NONE;
+        logicUpCnt     = 0;
     }
 
     ReleaseAudioDevice();

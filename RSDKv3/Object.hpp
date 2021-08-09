@@ -42,6 +42,10 @@ enum ObjectPriority {
 extern int objectLoop;
 extern int curObjectType;
 extern Entity objectEntityList[ENTITY_COUNT];
+#if !RETRO_USE_ORIGINAL_CODE
+extern Entity objectEntityList_LAST[ENTITY_COUNT];
+extern Entity objectEntityList_NEXT[ENTITY_COUNT];
+#endif
 
 extern char typeNames[OBJECT_COUNT][0x40];
 
