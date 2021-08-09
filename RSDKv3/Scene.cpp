@@ -220,32 +220,7 @@ void ProcessStage(void)
             }
 
             // Update
-            for (int i = 0; i < Engine.logicUpCnt; ++i) {
-                memcpy(objectEntityList_LAST, objectEntityList_NEXT, sizeof(Entity) * ENTITY_COUNT);
-                memcpy(objectEntityList, objectEntityList_NEXT, sizeof(Entity) * ENTITY_COUNT);
-                ProcessObjects();
-
-                Engine.drawLock = true;
-                DrawObjectList(0);
-                DrawObjectList(1);
-                DrawObjectList(2);
-                DrawObjectList(3);
-                DrawObjectList(4);
-                DrawObjectList(5);
-                DrawObjectList(6);
-                Engine.drawLock = false;
-                memcpy(objectEntityList_NEXT, objectEntityList, sizeof(Entity) * ENTITY_COUNT);
-            }
-
-            for (objectLoop = 0; objectLoop < ENTITY_COUNT; ++objectLoop) {
-                Entity *entity      = &objectEntityList[objectLoop];
-                Entity *entity_LAST = &objectEntityList_LAST[objectLoop];
-                Entity *entity_NEXT = &objectEntityList_NEXT[objectLoop];
-                if (entity_LAST->type == entity_NEXT->type) {
-                    entity->XPos = entity_LAST->XPos + ((entity_NEXT->XPos - entity_LAST->XPos) * Engine.frameInter);
-                    entity->YPos = entity_LAST->YPos + ((entity_NEXT->YPos - entity_LAST->YPos) * Engine.frameInter);
-                }
-            }
+            ProcessObjects();
 
             if (cameraTarget > -1) {
                 if (cameraEnabled == 1) {
@@ -281,38 +256,7 @@ void ProcessStage(void)
             CheckKeyPress(&keyPress, 0xFF);
 
             // Update
-            for (int i = 0; i < Engine.logicUpCnt; ++i) {
-                memcpy(objectEntityList_LAST, objectEntityList_NEXT, sizeof(Entity) * ENTITY_COUNT);
-                memcpy(objectEntityList, objectEntityList_NEXT, sizeof(Entity) * ENTITY_COUNT);
-                ProcessPausedObjects();
-
-                Engine.drawLock = true;
-#if RETRO_HARDWARE_RENDER
-                gfxIndexSize        = 0;
-                gfxVertexSize       = 0;
-                gfxIndexSizeOpaque  = 0;
-                gfxVertexSizeOpaque = 0;
-#endif
-                DrawObjectList(0);
-                DrawObjectList(1);
-                DrawObjectList(2);
-                DrawObjectList(3);
-                DrawObjectList(4);
-                DrawObjectList(5);
-                DrawObjectList(6);
-                Engine.drawLock = false;
-                memcpy(objectEntityList_NEXT, objectEntityList, sizeof(Entity) * ENTITY_COUNT);
-            }
-
-            for (objectLoop = 0; objectLoop < ENTITY_COUNT; ++objectLoop) {
-                Entity *entity      = &objectEntityList[objectLoop];
-                Entity *entity_LAST = &objectEntityList_LAST[objectLoop];
-                Entity *entity_NEXT = &objectEntityList_NEXT[objectLoop];
-                if (entity_LAST->type == entity_NEXT->type) {
-                    entity->XPos = entity_LAST->XPos + ((entity_NEXT->XPos - entity_LAST->XPos) * Engine.frameInter);
-                    entity->YPos = entity_LAST->YPos + ((entity_NEXT->YPos - entity_LAST->YPos) * Engine.frameInter);
-                }
-            }
+            ProcessPausedObjects();
 
 #if RETRO_HARDWARE_RENDER
             gfxIndexSize        = 0;
