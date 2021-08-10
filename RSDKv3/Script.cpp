@@ -292,140 +292,140 @@ const char variableNames[][0x20] = {
 };
 
 const FunctionInfo functions[] = { FunctionInfo("End", 0),
-                                   FunctionInfo("Equal", 2),
-                                   FunctionInfo("Add", 2),
-                                   FunctionInfo("Sub", 2),
-                                   FunctionInfo("Inc", 1),
-                                   FunctionInfo("Dec", 1),
-                                   FunctionInfo("Mul", 2),
-                                   FunctionInfo("Div", 2),
-                                   FunctionInfo("ShR", 2),
-                                   FunctionInfo("ShL", 2),
-                                   FunctionInfo("And", 2),
-                                   FunctionInfo("Or", 2),
-                                   FunctionInfo("Xor", 2),
-                                   FunctionInfo("Mod", 2),
-                                   FunctionInfo("FlipSign", 1),
-                                   FunctionInfo("CheckEqual", 2),
-                                   FunctionInfo("CheckGreater", 2),
-                                   FunctionInfo("CheckLower", 2),
-                                   FunctionInfo("CheckNotEqual", 2),
-                                   FunctionInfo("IfEqual", 3),
-                                   FunctionInfo("IfGreater", 3),
-                                   FunctionInfo("IfGreaterOrEqual", 3),
-                                   FunctionInfo("IfLower", 3),
-                                   FunctionInfo("IfLowerOrEqual", 3),
-                                   FunctionInfo("IfNotEqual", 3),
-                                   FunctionInfo("else", 0),
-                                   FunctionInfo("endif", 0),
-                                   FunctionInfo("WEqual", 3),
-                                   FunctionInfo("WGreater", 3),
-                                   FunctionInfo("WGreaterOrEqual", 3),
-                                   FunctionInfo("WLower", 3),
-                                   FunctionInfo("WLowerOrEqual", 3),
-                                   FunctionInfo("WNotEqual", 3),
-                                   FunctionInfo("loop", 0),
-                                   FunctionInfo("switch", 2),
-                                   FunctionInfo("break", 0),
-                                   FunctionInfo("endswitch", 0),
-                                   FunctionInfo("Rand", 2),
-                                   FunctionInfo("Sin", 2),
-                                   FunctionInfo("Cos", 2),
-                                   FunctionInfo("Sin256", 2),
-                                   FunctionInfo("Cos256", 2),
-                                   FunctionInfo("SinChange", 5),
-                                   FunctionInfo("CosChange", 5),
-                                   FunctionInfo("ATan2", 3),
-                                   FunctionInfo("Interpolate", 4),
-                                   FunctionInfo("InterpolateXY", 7),
-                                   FunctionInfo("LoadSpriteSheet", 1),
-                                   FunctionInfo("RemoveSpriteSheet", 1),
-                                   FunctionInfo("DrawSprite", 1),
-                                   FunctionInfo("DrawSpriteXY", 3),
-                                   FunctionInfo("DrawSpriteScreenXY", 3),
-                                   FunctionInfo("DrawTintRect", 4),
-                                   FunctionInfo("DrawNumbers", 7),
-                                   FunctionInfo("DrawActName", 7),
-                                   FunctionInfo("DrawMenu", 3),
-                                   FunctionInfo("SpriteFrame", 6),
-                                   FunctionInfo("EditFrame", 7),
-                                   FunctionInfo("LoadPalette", 5),
-                                   FunctionInfo("RotatePalette", 3),
-                                   FunctionInfo("SetScreenFade", 4),
-                                   FunctionInfo("SetActivePalette", 3),
-                                   FunctionInfo("SetPaletteFade", 7),
-                                   FunctionInfo("CopyPalette", 2),
-                                   FunctionInfo("ClearScreen", 1),
-                                   FunctionInfo("DrawSpriteFX", 4),
-                                   FunctionInfo("DrawSpriteScreenFX", 4),
-                                   FunctionInfo("LoadAnimation", 1),
-                                   FunctionInfo("SetupMenu", 4),
-                                   FunctionInfo("AddMenuEntry", 3),
-                                   FunctionInfo("EditMenuEntry", 4),
-                                   FunctionInfo("LoadStage", 0),
-                                   FunctionInfo("DrawRect", 8),
-                                   FunctionInfo("ResetObjectEntity", 5),
-                                   FunctionInfo("PlayerObjectCollision", 5),
-                                   FunctionInfo("CreateTempObject", 4),
-                                   FunctionInfo("BindPlayerToObject", 2),
-                                   FunctionInfo("PlayerTileCollision", 0),
-                                   FunctionInfo("ProcessPlayerControl", 0),
-                                   FunctionInfo("ProcessAnimation", 0),
-                                   FunctionInfo("DrawObjectAnimation", 0),
-                                   FunctionInfo("DrawPlayerAnimation", 0),
-                                   FunctionInfo("SetMusicTrack", 3),
-                                   FunctionInfo("PlayMusic", 1),
-                                   FunctionInfo("StopMusic", 0),
-                                   FunctionInfo("PlaySfx", 2),
-                                   FunctionInfo("StopSfx", 1),
-                                   FunctionInfo("SetSfxAttributes", 3),
-                                   FunctionInfo("ObjectTileCollision", 4),
-                                   FunctionInfo("ObjectTileGrip", 4),
-                                   FunctionInfo("LoadVideo", 1),
-                                   FunctionInfo("NextVideoFrame", 0),
-                                   FunctionInfo("PlayStageSfx", 2),
-                                   FunctionInfo("StopStageSfx", 1),
-                                   FunctionInfo("Not", 1),
-                                   FunctionInfo("Draw3DScene", 0),
-                                   FunctionInfo("SetIdentityMatrix", 1),
-                                   FunctionInfo("MatrixMultiply", 2),
-                                   FunctionInfo("MatrixTranslateXYZ", 4),
-                                   FunctionInfo("MatrixScaleXYZ", 4),
-                                   FunctionInfo("MatrixRotateX", 2),
-                                   FunctionInfo("MatrixRotateY", 2),
-                                   FunctionInfo("MatrixRotateZ", 2),
-                                   FunctionInfo("MatrixRotateXYZ", 4),
-                                   FunctionInfo("TransformVertices", 3),
-                                   FunctionInfo("CallFunction", 1),
-                                   FunctionInfo("EndFunction", 0),
-                                   FunctionInfo("SetLayerDeformation", 6),
-                                   FunctionInfo("CheckTouchRect", 4),
-                                   FunctionInfo("GetTileLayerEntry", 4),
-                                   FunctionInfo("SetTileLayerEntry", 4),
-                                   FunctionInfo("GetBit", 3),
-                                   FunctionInfo("SetBit", 3),
-                                   FunctionInfo("PauseMusic", 0),
-                                   FunctionInfo("ResumeMusic", 0),
-                                   FunctionInfo("ClearDrawList", 1),
-                                   FunctionInfo("AddDrawListEntityRef", 2),
-                                   FunctionInfo("GetDrawListEntityRef", 3),
-                                   FunctionInfo("SetDrawListEntityRef", 3),
-                                   FunctionInfo("Get16x16TileInfo", 4),
-                                   FunctionInfo("Copy16x16Tile", 2),
-                                   FunctionInfo("Set16x16TileInfo", 4),
-                                   FunctionInfo("GetAnimationByName", 2),
-                                   FunctionInfo("ReadSaveRAM", 0),
-                                   FunctionInfo("WriteSaveRAM", 0),
-                                   FunctionInfo("LoadTextFont", 1),
-                                   FunctionInfo("LoadTextFile", 3),
-                                   FunctionInfo("DrawText", 7),
-                                   FunctionInfo("GetTextInfo", 5),
-                                   FunctionInfo("GetVersionNumber", 2),
-                                   FunctionInfo("SetAchievement", 2),
-                                   FunctionInfo("SetLeaderboard", 2),
-                                   FunctionInfo("LoadOnlineMenu", 1),
-                                   FunctionInfo("EngineCallback", 1),
-                                   FunctionInfo("HapticEffect", 4) };
+                             FunctionInfo("Equal", 2),
+                             FunctionInfo("Add", 2),
+                             FunctionInfo("Sub", 2),
+                             FunctionInfo("Inc", 1),
+                             FunctionInfo("Dec", 1),
+                             FunctionInfo("Mul", 2),
+                             FunctionInfo("Div", 2),
+                             FunctionInfo("ShR", 2),
+                             FunctionInfo("ShL", 2),
+                             FunctionInfo("And", 2),
+                             FunctionInfo("Or", 2),
+                             FunctionInfo("Xor", 2),
+                             FunctionInfo("Mod", 2),
+                             FunctionInfo("FlipSign", 1),
+                             FunctionInfo("CheckEqual", 2),
+                             FunctionInfo("CheckGreater", 2),
+                             FunctionInfo("CheckLower", 2),
+                             FunctionInfo("CheckNotEqual", 2),
+                             FunctionInfo("IfEqual", 3),
+                             FunctionInfo("IfGreater", 3),
+                             FunctionInfo("IfGreaterOrEqual", 3),
+                             FunctionInfo("IfLower", 3),
+                             FunctionInfo("IfLowerOrEqual", 3),
+                             FunctionInfo("IfNotEqual", 3),
+                             FunctionInfo("else", 0),
+                             FunctionInfo("endif", 0),
+                             FunctionInfo("WEqual", 3),
+                             FunctionInfo("WGreater", 3),
+                             FunctionInfo("WGreaterOrEqual", 3),
+                             FunctionInfo("WLower", 3),
+                             FunctionInfo("WLowerOrEqual", 3),
+                             FunctionInfo("WNotEqual", 3),
+                             FunctionInfo("loop", 0),
+                             FunctionInfo("switch", 2),
+                             FunctionInfo("break", 0),
+                             FunctionInfo("endswitch", 0),
+                             FunctionInfo("Rand", 2),
+                             FunctionInfo("Sin", 2),
+                             FunctionInfo("Cos", 2),
+                             FunctionInfo("Sin256", 2),
+                             FunctionInfo("Cos256", 2),
+                             FunctionInfo("SinChange", 5),
+                             FunctionInfo("CosChange", 5),
+                             FunctionInfo("ATan2", 3),
+                             FunctionInfo("Interpolate", 4),
+                             FunctionInfo("InterpolateXY", 7),
+                             FunctionInfo("LoadSpriteSheet", 1),
+                             FunctionInfo("RemoveSpriteSheet", 1),
+                             FunctionInfo("DrawSprite", 1),
+                             FunctionInfo("DrawSpriteXY", 3),
+                             FunctionInfo("DrawSpriteScreenXY", 3),
+                             FunctionInfo("DrawTintRect", 4),
+                             FunctionInfo("DrawNumbers", 7),
+                             FunctionInfo("DrawActName", 7),
+                             FunctionInfo("DrawMenu", 3),
+                             FunctionInfo("SpriteFrame", 6),
+                             FunctionInfo("EditFrame", 7),
+                             FunctionInfo("LoadPalette", 5),
+                             FunctionInfo("RotatePalette", 3),
+                             FunctionInfo("SetScreenFade", 4),
+                             FunctionInfo("SetActivePalette", 3),
+                             FunctionInfo("SetPaletteFade", 7),
+                             FunctionInfo("CopyPalette", 2),
+                             FunctionInfo("ClearScreen", 1),
+                             FunctionInfo("DrawSpriteFX", 4),
+                             FunctionInfo("DrawSpriteScreenFX", 4),
+                             FunctionInfo("LoadAnimation", 1),
+                             FunctionInfo("SetupMenu", 4),
+                             FunctionInfo("AddMenuEntry", 3),
+                             FunctionInfo("EditMenuEntry", 4),
+                             FunctionInfo("LoadStage", 0),
+                             FunctionInfo("DrawRect", 8),
+                             FunctionInfo("ResetObjectEntity", 5),
+                             FunctionInfo("PlayerObjectCollision", 5),
+                             FunctionInfo("CreateTempObject", 4),
+                             FunctionInfo("BindPlayerToObject", 2),
+                             FunctionInfo("PlayerTileCollision", 0),
+                             FunctionInfo("ProcessPlayerControl", 0),
+                             FunctionInfo("ProcessAnimation", 0),
+                             FunctionInfo("DrawObjectAnimation", 0),
+                             FunctionInfo("DrawPlayerAnimation", 0),
+                             FunctionInfo("SetMusicTrack", 3),
+                             FunctionInfo("PlayMusic", 1),
+                             FunctionInfo("StopMusic", 0),
+                             FunctionInfo("PlaySfx", 2),
+                             FunctionInfo("StopSfx", 1),
+                             FunctionInfo("SetSfxAttributes", 3),
+                             FunctionInfo("ObjectTileCollision", 4),
+                             FunctionInfo("ObjectTileGrip", 4),
+                             FunctionInfo("LoadVideo", 1),
+                             FunctionInfo("NextVideoFrame", 0),
+                             FunctionInfo("PlayStageSfx", 2),
+                             FunctionInfo("StopStageSfx", 1),
+                             FunctionInfo("Not", 1),
+                             FunctionInfo("Draw3DScene", 0),
+                             FunctionInfo("SetIdentityMatrix", 1),
+                             FunctionInfo("MatrixMultiply", 2),
+                             FunctionInfo("MatrixTranslateXYZ", 4),
+                             FunctionInfo("MatrixScaleXYZ", 4),
+                             FunctionInfo("MatrixRotateX", 2),
+                             FunctionInfo("MatrixRotateY", 2),
+                             FunctionInfo("MatrixRotateZ", 2),
+                             FunctionInfo("MatrixRotateXYZ", 4),
+                             FunctionInfo("TransformVertices", 3),
+                             FunctionInfo("CallFunction", 1),
+                             FunctionInfo("EndFunction", 0),
+                             FunctionInfo("SetLayerDeformation", 6),
+                             FunctionInfo("CheckTouchRect", 4),
+                             FunctionInfo("GetTileLayerEntry", 4),
+                             FunctionInfo("SetTileLayerEntry", 4),
+                             FunctionInfo("GetBit", 3),
+                             FunctionInfo("SetBit", 3),
+                             FunctionInfo("PauseMusic", 0),
+                             FunctionInfo("ResumeMusic", 0),
+                             FunctionInfo("ClearDrawList", 1),
+                             FunctionInfo("AddDrawListEntityRef", 2),
+                             FunctionInfo("GetDrawListEntityRef", 3),
+                             FunctionInfo("SetDrawListEntityRef", 3),
+                             FunctionInfo("Get16x16TileInfo", 4),
+                             FunctionInfo("Copy16x16Tile", 2),
+                             FunctionInfo("Set16x16TileInfo", 4),
+                             FunctionInfo("GetAnimationByName", 2),
+                             FunctionInfo("ReadSaveRAM", 0),
+                             FunctionInfo("WriteSaveRAM", 0),
+                             FunctionInfo("LoadTextFont", 1),
+                             FunctionInfo("LoadTextFile", 3),
+                             FunctionInfo("DrawText", 7),
+                             FunctionInfo("GetTextInfo", 5),
+                             FunctionInfo("GetVersionNumber", 2),
+                             FunctionInfo("SetAchievement", 2),
+                             FunctionInfo("SetLeaderboard", 2),
+                             FunctionInfo("LoadOnlineMenu", 1),
+                             FunctionInfo("EngineCallback", 1),
+                             FunctionInfo("HapticEffect", 4) };
 
 AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
                             AliasInfo("false", "0"),
@@ -460,20 +460,16 @@ AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
                             AliasInfo("RETRO_ANDROID", "5"),
                             AliasInfo("RETRO_WP7", "6") };
 
-const char scriptEvaluationTokens[][0x4] = { "=",  "+=", "-=", "++", "--", "*=", "/=", ">>=", "<<=", "&=",
-                                             "|=", "^=", "%=", "==", ">",  ">=", "<",  "<=",  "!=" };
+
+const char scriptEvaluationTokens[][0x4] = {
+    "=", "+=", "-=", "++", "--", "*=", "/=", ">>=", "<<=", "&=", "|=", "^=", "%=", "==", ">", ">=", "<", "<=", "!="
+};
 
 int scriptFunctionCount = 0;
 char scriptFunctionNames[FUNCTION_COUNT][0x20];
 
 enum ScriptReadModes { READMODE_NORMAL = 0, READMODE_STRING = 1, READMODE_COMMENTLINE = 2, READMODE_ENDLINE = 3, READMODE_EOF = 4 };
-enum ScriptParseModes {
-    PARSEMODE_SCOPELESS    = 0,
-    PARSEMODE_PLATFORMSKIP = 1,
-    PARSEMODE_FUNCTION     = 2,
-    PARSEMODE_SWITCHREAD   = 3,
-    PARSEMODE_ERROR        = 0xFF
-};
+enum ScriptParseModes { PARSEMODE_SCOPELESS = 0, PARSEMODE_PLATFORMSKIP = 1, PARSEMODE_FUNCTION = 2, PARSEMODE_SWITCHREAD = 3, PARSEMODE_ERROR = 0xFF };
 
 enum ScriptVarTypes { SCRIPTVAR_VAR = 1, SCRIPTVAR_INTCONST = 2, SCRIPTVAR_STRCONST = 3 };
 enum ScriptVarArrTypes { VARARR_NONE = 0, VARARR_ARRAY = 1, VARARR_ENTNOPLUS1 = 2, VARARR_ENTNOMINUS1 = 3 };
@@ -871,9 +867,9 @@ void CheckAliasText(char *text)
             }
         }
         else if (text[textPos] == ':') {
-            aliases[aliasCount].value[aliasStrPos] = 0;
-            aliasStrPos                            = 0;
-            aliasMatch                             = 1;
+            aliases[aliasCount].value[aliasStrPos]        = 0;
+            aliasStrPos                             = 0;
+            aliasMatch                              = 1;
         }
         else {
             aliases[aliasCount].value[aliasStrPos++] = text[textPos];
@@ -920,11 +916,11 @@ void ConvertIfWhileStatement(char *text)
     int strPos     = 0;
     int destStrPos = 0;
     if (FindStringToken(text, "if", 1)) {
-        if (!FindStringToken(text, "while", 1)) { // if no "if" but there is "while"
+        if (!FindStringToken(text, "while", 1)) { //if no "if" but there is "while"
             for (int i = 0; i < 6; ++i) {
                 destStrPos = FindStringToken(text, scriptEvaluationTokens[i + FUNC_MOD], 1);
                 if (destStrPos > -1) {
-                    strPos    = destStrPos;
+                    strPos = destStrPos;
                     compareOp = i;
                 }
             }
@@ -952,7 +948,7 @@ void ConvertIfWhileStatement(char *text)
         for (int i = 0; i < 6; ++i) {
             destStrPos = FindStringToken(text, scriptEvaluationTokens[i + FUNC_MOD], 1);
             if (destStrPos > -1) {
-                strPos    = destStrPos;
+                strPos = destStrPos;
                 compareOp = i;
             }
         }
@@ -1044,7 +1040,7 @@ void ConvertFunctionText(char *text)
             jumpTableData[jPos + 3] = scriptDataPos - scriptDataOffset;
             if (jumpTableData[jPos + 2] == -1) {
                 jumpTableData[jPos + 2] = (scriptDataPos - scriptDataOffset) - 1;
-                int caseCnt             = abs(jumpTableData[jPos + 1] - jumpTableData[jPos]) + 1;
+                int caseCnt                = abs(jumpTableData[jPos + 1] - jumpTableData[jPos]) + 1;
 
                 int jOffset = jPos + 4;
                 for (int c = 0; c < caseCnt; ++c) {
@@ -1219,7 +1215,7 @@ void CheckCaseNumber(char *text)
     int destStrPos = 0;
     char caseChar  = text[4];
     if (text[4]) {
-        int textPos = 5;
+        int textPos    = 5;
         do {
             if (caseChar != ':')
                 dest[destStrPos++] = caseChar;
@@ -1273,7 +1269,7 @@ bool ReadSwitchCase(char *text)
         }
     }
     else {
-        int textPos       = 4;
+        int textPos      = 4;
         int caseStringPos = 0;
         while (text[textPos]) {
             if (text[textPos] != ':')
@@ -1310,7 +1306,7 @@ void AppendIntegerToString(char *text, int value)
     while (v != 0) {
         v /= 10;
         cnt++;
-    }
+    } 
 
     v = 0;
     for (int i = cnt - 1; i >= 0; --i) {
@@ -1319,7 +1315,7 @@ void AppendIntegerToString(char *text, int value)
 
         int strValue = v + '0';
         if (strValue < '0' || strValue > '9') {
-            // what
+            //what
         }
         text[textPos++] = strValue;
     }
@@ -1561,7 +1557,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                             char funcName[0x20];
                             for (textPos = 9; scriptText[textPos]; ++textPos) funcName[textPos - 9] = scriptText[textPos];
                             funcName[textPos - 9] = 0;
-                            int funcID            = -1;
+                            int funcID             = -1;
                             for (int f = 0; f < scriptFunctionCount; ++f) {
                                 if (StrComp(funcName, scriptFunctionNames[f]))
                                     funcID = f;
@@ -1576,7 +1572,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         char funcName[0x20];
                         for (textPos = 8; scriptText[textPos]; ++textPos) funcName[textPos - 8] = scriptText[textPos];
                         funcName[textPos - 8] = 0;
-                        int funcID            = -1;
+                        int funcID             = -1;
                         for (int f = 0; f < scriptFunctionCount; ++f) {
                             if (StrComp(funcName, scriptFunctionNames[f]))
                                 funcID = f;
@@ -1598,10 +1594,10 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         else {
                             StrCopy(scriptFunctionNames[funcID], funcName);
                             functionScriptList[funcID].scriptCodePtr = scriptDataPos;
-                            functionScriptList[funcID].jumpTablePtr  = jumpTableDataPos;
-                            scriptDataOffset                         = scriptDataPos;
-                            jumpTableDataOffset                      = jumpTableDataPos;
-                            parseMode                                = PARSEMODE_FUNCTION;
+                            functionScriptList[funcID].jumpTablePtr               = jumpTableDataPos;
+                            scriptDataOffset                                      = scriptDataPos;
+                            jumpTableDataOffset                                   = jumpTableDataPos;
+                            parseMode                                             = PARSEMODE_FUNCTION;
                         }
                     }
                     break;
@@ -1621,9 +1617,8 @@ void ParseScriptFile(char *scriptName, int scriptID)
                             scriptData[scriptDataPos++] = FUNC_ENDFUNCTION;
                             parseMode                   = PARSEMODE_SCOPELESS;
                         }
-                        else if (FindStringToken(scriptText, "#platform:", 1)) { // layed out like ass, but this means "if we did not find
-                                                                                 // "#platform:"
-                            if (FindStringToken(scriptText, "#endplatform", 1) == -1) { // if we did NOT find "#endplatform"
+                        else if (FindStringToken(scriptText, "#platform:", 1)) { //layed out like ass, but this means "if we did not find "#platform:"
+                            if (FindStringToken(scriptText, "#endplatform", 1) == -1) { //if we did NOT find "#endplatform"
                                 ConvertIfWhileStatement(scriptText);
                                 if (ConvertSwitchStatement(scriptText)) {
                                     parseMode    = PARSEMODE_SWITCHREAD;
@@ -1647,7 +1642,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
 #if RETRO_USE_HAPTICS
                                  && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1)
 #endif
-                        { // if NONE of these checks succeeded, then we skip everything until "end platform"
+                        { //if NONE of these checks succeeded, then we skip everything until "end platform"
                             parseMode = PARSEMODE_PLATFORMSKIP;
                         }
                     }
@@ -1698,7 +1693,7 @@ void LoadBytecode(int stageListID, int scriptID)
         StrCopy(scriptPath, "Data/Scripts/ByteCode/GS000.bin");
         int pos = StrLength(scriptPath) - 9;
         if (stageListID < STAGELIST_MAX) {
-            char listIDs[4]     = { 'P', 'R', 'B', 'S' };
+            char listIDs[4]     = { 'P', 'R', 'B', 'S'};
             scriptPath[pos]     = listIDs[stageListID];
             scriptPath[pos + 2] = stageListPosition / 100 + '0';
             scriptPath[pos + 3] = stageListPosition % 100 / 10 + '0';
@@ -1709,7 +1704,7 @@ void LoadBytecode(int stageListID, int scriptID)
     FileInfo info;
     if (LoadFile(scriptPath, &info)) {
         byte fileBuffer = 0;
-        int *scrData    = &scriptData[scriptCodePos];
+        int *scrData   = &scriptData[scriptCodePos];
         FileRead(&fileBuffer, 1);
         int scriptDataCount = fileBuffer;
         FileRead(&fileBuffer, 1);
@@ -1914,9 +1909,9 @@ void ClearScriptData()
     memset(jumpTableData, 0, JUMPTABLE_COUNT * sizeof(int));
 
     scriptFrameCount = 0;
-
-    scriptCodePos     = 0;
-    jumpTablePos      = 0;
+    
+    scriptCodePos = 0;
+    jumpTablePos  = 0;
     jumpTableStackPos = 0;
     functionStackPos  = 0;
 
@@ -1928,7 +1923,7 @@ void ClearScriptData()
     scriptFunctionCount = 0;
 
     aliasCount = COMMONALIAS_COUNT;
-    lineID     = 0;
+    lineID = 0;
 
     ClearGraphicsData();
     ClearAnimationData();
@@ -1965,11 +1960,11 @@ void ClearScriptData()
 
 void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
 {
-    bool running      = true;
-    int scriptDataPtr = scriptCodePtr;
-    // int jumpTableDataPtr = jumpTablePtr;
-    jumpTableStackPos = 0;
-    functionStackPos  = 0;
+    bool running         = true;
+    int scriptDataPtr    = scriptCodePtr;
+    //int jumpTableDataPtr = jumpTablePtr;
+    jumpTableStackPos    = 0;
+    functionStackPos     = 0;
     while (running) {
         int opcode           = scriptData[scriptDataPtr++];
         int opcodeSize       = functions[opcode].opcodeSize;
@@ -3638,13 +3633,13 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 drawListEntries[scriptEng.operands[0]].listSize = 0;
                 break;
             case FUNC_ADDDRAWLISTENTITYREF: {
-                opcodeSize                                                                                           = 0;
+                opcodeSize                                              = 0;
                 drawListEntries[scriptEng.operands[0]].entityRefs[drawListEntries[scriptEng.operands[0]].listSize++] = scriptEng.operands[1];
                 break;
             }
             case FUNC_GETDRAWLISTENTITYREF: scriptEng.operands[0] = drawListEntries[scriptEng.operands[1]].entityRefs[scriptEng.operands[2]]; break;
             case FUNC_SETDRAWLISTENTITYREF:
-                opcodeSize                                                               = 0;
+                opcodeSize                                      = 0;
                 drawListEntries[scriptEng.operands[1]].entityRefs[scriptEng.operands[2]] = scriptEng.operands[0];
                 break;
             case FUNC_GET16X16TILEINFO: {

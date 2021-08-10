@@ -105,6 +105,7 @@ void InitFirstStage()
 
 void ProcessStage(void)
 {
+    int updateMax = 0; 
     switch (stageMode) {
         case STAGEMODE_LOAD: // Startup
             fadeMode = 0;
@@ -185,8 +186,6 @@ void ProcessStage(void)
             gfxVertexSizeOpaque = 0;
 #endif
 
-            memcpy(objectEntityList_LAST, objectEntityList, sizeof(Entity) * ENTITY_COUNT);
-            memcpy(objectEntityList_NEXT, objectEntityList, sizeof(Entity) * ENTITY_COUNT);
             break;
         case STAGEMODE_NORMAL:
             drawStageGFXHQ = false;
@@ -219,8 +218,18 @@ void ProcessStage(void)
                 stageMilliseconds = 100 * frameCounter / Engine.refreshRate;
             }
 
+            updateMax = 1;
+            /*updateMax = Engine.renderFrameIndex;
+            if (Engine.refreshRate >= Engine.targetRefreshRate) {
+                updateMax = 0;
+                if (Engine.frameCount % Engine.skipFrameIndex < Engine.renderFrameIndex)
+                    updateMax = 1;
+            }*/
+
             // Update
-            ProcessObjects();
+            for (int i = 0; i < updateMax; ++i) {
+                ProcessObjects();
+            }
 
             if (cameraTarget > -1) {
                 if (cameraEnabled == 1) {
@@ -239,7 +248,6 @@ void ProcessStage(void)
             }
 
             DrawStageGFX();
-            memcpy(objectEntityList, objectEntityList_NEXT, sizeof(Entity) * ENTITY_COUNT);
             break;
         case STAGEMODE_PAUSED:
             drawStageGFXHQ = false;
@@ -254,9 +262,19 @@ void ProcessStage(void)
             lastYSize = -1;
             CheckKeyDown(&keyDown, 0xFF);
             CheckKeyPress(&keyPress, 0xFF);
+            
+            updateMax = 1;
+            /*updateMax = Engine.renderFrameIndex;
+            if (Engine.refreshRate >= Engine.targetRefreshRate) {
+                updateMax = 0;
+                if (Engine.frameCount % Engine.skipFrameIndex < Engine.renderFrameIndex)
+                    updateMax = 1;
+            }*/
 
             // Update
-            ProcessPausedObjects();
+            for (int i = 0; i < updateMax; ++i) {
+                ProcessPausedObjects();
+            }
 
 #if RETRO_HARDWARE_RENDER
             gfxIndexSize        = 0;
@@ -276,7 +294,6 @@ void ProcessStage(void)
                 stageMode = STAGEMODE_NORMAL;
                 ResumeSound();
             }
-            memcpy(objectEntityList, objectEntityList_NEXT, sizeof(Entity) * ENTITY_COUNT);
             break;
     }
     Engine.frameCount++;
