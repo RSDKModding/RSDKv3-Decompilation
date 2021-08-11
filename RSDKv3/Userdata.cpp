@@ -70,8 +70,7 @@ int controlMode = -1;
 bool disableTouchControls = false;
 
 #if RETRO_USE_MOD_LOADER
-ModInfo modList[MOD_MAX];
-int modCount = 0;
+std::vector<ModInfo> modList;
 bool forceUseScripts = false;
 #endif
 
@@ -711,17 +710,7 @@ namespace fs = std::filesystem;
 
 void initMods()
 {
-    for (int i = 0; i < modCount; ++i) {
-        modList[i].fileMap.clear();
-        modList[i].name    = "";
-        modList[i].desc    = "";
-        modList[i].author  = "";
-        modList[i].version = "";
-        modList[i].folder  = "";
-        modList[i].active  = false;
-    }
-
-    modCount        = 0;
+    modList.clear();
     forceUseScripts = false;
 
     char modBuf[0x100];
@@ -729,161 +718,44 @@ void initMods()
     fs::path modPath(modBuf);
 
     if (fs::exists(modPath) && fs::is_directory(modPath)) {
+        std::string mod_config = modPath.string() + "/modconfig.ini";
+        FileIO *configFile     = fOpen(mod_config.c_str(), "r");
+        if (configFile) {
+            fClose(configFile);
+            IniParser modConfig(mod_config.c_str(), false);
+
+            for (int m = 0; m < modConfig.items.size(); ++m) {
+                bool active = false;
+                ModInfo info;
+                modConfig.GetBool("mods", modConfig.items[m].key, &active);
+                if (loadMod(&info, modPath.string(), modConfig.items[m].key, active))
+                    modList.push_back(info);
+            }
+        }
+
         try {
             auto rdi = fs::directory_iterator(modPath);
             for (auto de : rdi) {
                 if (de.is_directory()) {
                     fs::path modDirPath = de.path();
 
-                    ModInfo *info = &modList[modCount];
-
-                    info->fileMap.clear();
-                    info->name    = "";
-                    info->desc    = "";
-                    info->author  = "";
-                    info->version = "";
-                    info->folder  = "";
-                    info->active  = false;
+                    ModInfo info;
 
                     std::string modDir            = modDirPath.string().c_str();
                     const std::string mod_inifile = modDir + "/mod.ini";
+                    std::string folder            = modDirPath.filename().string();
 
-                    FileIO *f = fOpen(mod_inifile.c_str(), "r");
-                    if (f) {
-                        fClose(f);
-                        IniParser modSettings(mod_inifile.c_str(), false);
-
-                        info->name    = "Unnamed Mod";
-                        info->desc    = "";
-                        info->author  = "Unknown Author";
-                        info->version = "1.0.0";
-                        info->folder  = modDirPath.filename().string();
-
-                        char infoBuf[0x100];
-                        // Name
-                        StrCopy(infoBuf, "");
-                        modSettings.GetString("", "Name", infoBuf);
-                        if (!StrComp(infoBuf, ""))
-                            info->name = infoBuf;
-                        // Desc
-                        StrCopy(infoBuf, "");
-                        modSettings.GetString("", "Description", infoBuf);
-                        if (!StrComp(infoBuf, ""))
-                            info->desc = infoBuf;
-                        // Author
-                        StrCopy(infoBuf, "");
-                        modSettings.GetString("", "Author", infoBuf);
-                        if (!StrComp(infoBuf, ""))
-                            info->author = infoBuf;
-                        // Version
-                        StrCopy(infoBuf, "");
-                        modSettings.GetString("", "Version", infoBuf);
-                        if (!StrComp(infoBuf, ""))
-                            info->version = infoBuf;
-
-                        info->active = false;
-                        modSettings.GetBool("", "Active", &info->active);
-
-                        // Check for Data replacements
-                        fs::path dataPath(modDir + "/Data");
-
-                        if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
-                            try {
-                                auto data_rdi = fs::recursive_directory_iterator(dataPath);
-                                for (auto data_de : data_rdi) {
-                                    if (data_de.is_regular_file()) {
-                                        char modBuf[0x100];
-                                        StrCopy(modBuf, data_de.path().string().c_str());
-                                        char folderTest[4][0x10] = {
-                                            "Data/",
-                                            "Data\\",
-                                            "data/",
-                                            "data\\",
-                                        };
-                                        int tokenPos = -1;
-                                        for (int i = 0; i < 4; ++i) {
-                                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
-                                            if (tokenPos >= 0)
-                                                break;
-                                        }
-
-                                        if (tokenPos >= 0) {
-                                            char buffer[0x80];
-                                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
-                                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
-                                            }
-
-                                            std::string path(buffer);
-                                            char pathLower[0x100];
-                                            memset(pathLower, 0, sizeof(char) * 0x100);
-                                            for (int c = 0; c < path.size(); ++c) {
-                                                pathLower[c] = tolower(path.c_str()[c]);
-                                            }
-
-                                            std::string modPath(modBuf);
-                                            info->fileMap.insert(std::pair<std::string, std::string>(pathLower, modBuf));
-                                        }
-                                    }
-                                }
-                            } catch (fs::filesystem_error fe) {
-                                printLog("Data Folder Scanning Error: ");
-                                printLog(fe.what());
-                            }
+                    bool flag = true;
+                    for (int m = 0; m < modList.size(); ++m) {
+                        if (modList[m].folder == folder) {
+                            flag = false;
+                            break;
                         }
-                        
-                        // Check for Videos/ replacements
-                        fs::path vidPath(modDir + "/videos");
+                    }
 
-                        if (fs::exists(vidPath) && fs::is_directory(vidPath)) {
-                            try {
-                                auto data_rdi = fs::recursive_directory_iterator(vidPath);
-                                for (auto data_de : data_rdi) {
-                                    if (data_de.is_regular_file()) {
-                                        char modBuf[0x100];
-                                        StrCopy(modBuf, data_de.path().string().c_str());
-                                        char folderTest[4][0x10] = {
-                                            "Videos/",
-                                            "Videos\\",
-                                            "videos/",
-                                            "videos\\",
-                                        };
-                                        int tokenPos = -1;
-                                        for (int i = 0; i < 4; ++i) {
-                                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
-                                            if (tokenPos >= 0)
-                                                break;
-                                        }
-
-                                        if (tokenPos >= 0) {
-                                            char buffer[0x80];
-                                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
-                                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
-                                            }
-
-                                            std::string path(buffer);
-                                            char pathLower[0x100];
-                                            memset(pathLower, 0, sizeof(char) * 0x100);
-                                            for (int c = 0; c < path.size(); ++c) {
-                                                pathLower[c] = tolower(path.c_str()[c]);
-                                            }
-
-                                            std::string modPath(modBuf);
-                                            info->fileMap.insert(std::pair<std::string, std::string>(pathLower, modBuf));
-                                        }
-                                    }
-                                }
-                            } catch (fs::filesystem_error fe) {
-                                printLog("Video Folder Scanning Error: ");
-                                printLog(fe.what());
-                            }
-                        }
-
-                        info->useScripts = false;
-                        modSettings.GetBool("", "TxtScripts", &info->useScripts);
-                        if (info->useScripts && info->active)
-                            forceUseScripts = true;
-
-                        modCount++;
+                    if (flag) {
+                        if (loadMod(&info, modPath.string(), modDirPath.filename().string(), false))
+                            modList.push_back(info);
                     }
                 }
             }
@@ -893,6 +765,209 @@ void initMods()
         }
     }
 }
+
+bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool active)
+{
+    if (!info)
+        return false;
+
+    info->fileMap.clear();
+    info->name    = "";
+    info->desc    = "";
+    info->author  = "";
+    info->version = "";
+    info->folder  = "";
+    info->active  = false;
+
+    const std::string modDir = modsPath + "/" + folder;
+
+    FileIO *f = fOpen((modDir + "/mod.ini").c_str(), "r");
+    if (f) {
+        fClose(f);
+        IniParser modSettings((modDir + "/mod.ini").c_str(), false);
+
+        info->name    = "Unnamed Mod";
+        info->desc    = "";
+        info->author  = "Unknown Author";
+        info->version = "1.0.0";
+        info->folder  = folder;
+
+        char infoBuf[0x100];
+        // Name
+        StrCopy(infoBuf, "");
+        modSettings.GetString("", "Name", infoBuf);
+        if (!StrComp(infoBuf, ""))
+            info->name = infoBuf;
+        // Desc
+        StrCopy(infoBuf, "");
+        modSettings.GetString("", "Description", infoBuf);
+        if (!StrComp(infoBuf, ""))
+            info->desc = infoBuf;
+        // Author
+        StrCopy(infoBuf, "");
+        modSettings.GetString("", "Author", infoBuf);
+        if (!StrComp(infoBuf, ""))
+            info->author = infoBuf;
+        // Version
+        StrCopy(infoBuf, "");
+        modSettings.GetString("", "Version", infoBuf);
+        if (!StrComp(infoBuf, ""))
+            info->version = infoBuf;
+
+        info->active = active;
+
+        // Check for Data/ replacements
+        fs::path dataPath(modDir + "/Data");
+
+        if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
+            try {
+                auto data_rdi = fs::recursive_directory_iterator(dataPath);
+                for (auto data_de : data_rdi) {
+                    if (data_de.is_regular_file()) {
+                        char modBuf[0x100];
+                        StrCopy(modBuf, data_de.path().string().c_str());
+                        char folderTest[4][0x10] = {
+                            "Data/",
+                            "Data\\",
+                            "data/",
+                            "data\\",
+                        };
+                        int tokenPos = -1;
+                        for (int i = 0; i < 4; ++i) {
+                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
+                            if (tokenPos >= 0)
+                                break;
+                        }
+
+                        if (tokenPos >= 0) {
+                            char buffer[0x80];
+                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
+                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
+                            }
+
+                            // printLog(modBuf);
+                            std::string path(buffer);
+                            std::string modPath(modBuf);
+                            char pathLower[0x100];
+                            memset(pathLower, 0, sizeof(char) * 0x100);
+                            for (int c = 0; c < path.size(); ++c) {
+                                pathLower[c] = tolower(path.c_str()[c]);
+                            }
+
+                            info->fileMap.insert(std::pair<std::string, std::string>(pathLower, modBuf));
+                        }
+                    }
+                }
+            } catch (fs::filesystem_error fe) {
+                printLog("Data Folder Scanning Error: ");
+                printLog(fe.what());
+            }
+        }
+
+        // Check for Scripts/ replacements
+        fs::path scriptPath(modDir + "/Scripts");
+
+        if (fs::exists(scriptPath) && fs::is_directory(scriptPath)) {
+            try {
+                auto data_rdi = fs::recursive_directory_iterator(scriptPath);
+                for (auto data_de : data_rdi) {
+                    if (data_de.is_regular_file()) {
+                        char modBuf[0x100];
+                        StrCopy(modBuf, data_de.path().string().c_str());
+                        char folderTest[4][0x10] = {
+                            "Scripts/",
+                            "Scripts\\",
+                            "scripts/",
+                            "scripts\\",
+                        };
+                        int tokenPos = -1;
+                        for (int i = 0; i < 4; ++i) {
+                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
+                            if (tokenPos >= 0)
+                                break;
+                        }
+
+                        if (tokenPos >= 0) {
+                            char buffer[0x80];
+                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
+                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
+                            }
+
+                            // printLog(modBuf);
+                            std::string path(buffer);
+                            std::string modPath(modBuf);
+                            char pathLower[0x100];
+                            memset(pathLower, 0, sizeof(char) * 0x100);
+                            for (int c = 0; c < path.size(); ++c) {
+                                pathLower[c] = tolower(path.c_str()[c]);
+                            }
+
+                            info->fileMap.insert(std::pair<std::string, std::string>(pathLower, modBuf));
+                        }
+                    }
+                }
+            } catch (fs::filesystem_error fe) {
+                printLog("Script Folder Scanning Error: ");
+                printLog(fe.what());
+            }
+        }
+
+        // Check for Bytecode/ replacements
+        fs::path bytecodePath(modDir + "/Videos");
+
+        if (fs::exists(bytecodePath) && fs::is_directory(bytecodePath)) {
+            try {
+                auto data_rdi = fs::recursive_directory_iterator(bytecodePath);
+                for (auto data_de : data_rdi) {
+                    if (data_de.is_regular_file()) {
+                        char modBuf[0x100];
+                        StrCopy(modBuf, data_de.path().string().c_str());
+                        char folderTest[4][0x10] = {
+                            "Videos/",
+                            "Videos\\",
+                            "videos/",
+                            "videos\\",
+                        };
+                        int tokenPos = -1;
+                        for (int i = 0; i < 4; ++i) {
+                            tokenPos = FindStringToken(modBuf, folderTest[i], 1);
+                            if (tokenPos >= 0)
+                                break;
+                        }
+
+                        if (tokenPos >= 0) {
+                            char buffer[0x80];
+                            for (int i = StrLength(modBuf); i >= tokenPos; --i) {
+                                buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
+                            }
+
+                            // printLog(modBuf);
+                            std::string path(buffer);
+                            std::string modPath(modBuf);
+                            char pathLower[0x100];
+                            memset(pathLower, 0, sizeof(char) * 0x100);
+                            for (int c = 0; c < path.size(); ++c) {
+                                pathLower[c] = tolower(path.c_str()[c]);
+                            }
+
+                            info->fileMap.insert(std::pair<std::string, std::string>(pathLower, modBuf));
+                        }
+                    }
+                }
+            } catch (fs::filesystem_error fe) {
+                printLog("Videos Folder Scanning Error: ");
+                printLog(fe.what());
+            }
+        }
+
+        info->useScripts = false;
+        modSettings.GetBool("", "TxtScripts", &info->useScripts);
+        if (info->useScripts && info->active)
+            forceUseScripts = true;
+        return true;
+    }
+    return false;
+}
 void saveMods()
 {
     char modBuf[0x100];
@@ -900,29 +975,16 @@ void saveMods()
     fs::path modPath(modBuf);
 
     if (fs::exists(modPath) && fs::is_directory(modPath)) {
-        for (int m = 0; m < modCount; ++m) {
-            ModInfo *info                 = &modList[m];
-            std::string modDir            = modPath.string().c_str();
-            const std::string mod_inifile = modDir + info->folder + "/mod.ini";
+        std::string mod_config = modPath.string() + "/modconfig.ini";
+        IniParser modConfig;
 
-            FileIO *f = fOpen(mod_inifile.c_str(), "w");
-            if (f) {
-                fClose(f);
-                IniParser *modSettings = new IniParser;
+        for (int m = 0; m < modList.size(); ++m) {
+            ModInfo *info = &modList[m];
 
-                modSettings->SetString("", "Name", (char *)info->name.c_str());
-                modSettings->SetString("", "Description", (char *)info->desc.c_str());
-                modSettings->SetString("", "Author", (char *)info->author.c_str());
-                modSettings->SetString("", "Version", (char *)info->version.c_str());
-                if (info->useScripts)
-                    modSettings->SetBool("", "TxtScripts", info->useScripts);
-                modSettings->SetBool("", "Active", info->active);
-
-                modSettings->Write(mod_inifile.c_str(), false);
-
-                delete modSettings;
-            }
+            modConfig.SetBool("mods", info->folder.c_str(), info->active);
         }
+
+        modConfig.Write(mod_config.c_str(), false);
     }
 }
 #endif

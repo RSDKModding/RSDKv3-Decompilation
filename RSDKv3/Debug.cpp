@@ -185,7 +185,7 @@ void processStageSelect()
                     initMods();
 
                     char buffer[0x100];
-                    for (int m = 0; m < modCount; ++m) {
+                    for (int m = 0; m < modList.size(); ++m) {
                         StrCopy(buffer, modList[m].name.c_str());
                         StrAdd(buffer, ": ");
                         StrAdd(buffer, modList[m].active ? "  Active" : "Inactive");
@@ -534,12 +534,19 @@ void processStageSelect()
             if (keyPress.B) {
                 //Reload entire engine
                 Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
+                if (Engine.window) {
+                    char gameTitle[0x40];
+                    sprintf(gameTitle, "%s%s", Engine.gameWindowText, Engine.usingDataFile ? "" : " (Using Data Folder)");
+                    SDL_SetWindowTitle(Engine.window, gameTitle);
+                }
+#endif
 
                 ReleaseGlobalSfx();
                 LoadGlobalSfx();
 
                 forceUseScripts = false;
-                for (int m = 0; m < modCount; ++m) {
+                for (int m = 0; m < modList.size(); ++m) {
                     if (modList[m].useScripts && modList[m].active)
                         forceUseScripts = true;
                 }

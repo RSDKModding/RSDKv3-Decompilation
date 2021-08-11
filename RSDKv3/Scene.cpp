@@ -105,7 +105,6 @@ void InitFirstStage()
 
 void ProcessStage(void)
 {
-    int updateMax = 0; 
     switch (stageMode) {
         case STAGEMODE_LOAD: // Startup
             fadeMode = 0;
@@ -218,18 +217,8 @@ void ProcessStage(void)
                 stageMilliseconds = 100 * frameCounter / Engine.refreshRate;
             }
 
-            updateMax = 1;
-            /*updateMax = Engine.renderFrameIndex;
-            if (Engine.refreshRate >= Engine.targetRefreshRate) {
-                updateMax = 0;
-                if (Engine.frameCount % Engine.skipFrameIndex < Engine.renderFrameIndex)
-                    updateMax = 1;
-            }*/
-
             // Update
-            for (int i = 0; i < updateMax; ++i) {
-                ProcessObjects();
-            }
+            ProcessObjects();
 
             if (cameraTarget > -1) {
                 if (cameraEnabled == 1) {
@@ -262,19 +251,9 @@ void ProcessStage(void)
             lastYSize = -1;
             CheckKeyDown(&keyDown, 0xFF);
             CheckKeyPress(&keyPress, 0xFF);
-            
-            updateMax = 1;
-            /*updateMax = Engine.renderFrameIndex;
-            if (Engine.refreshRate >= Engine.targetRefreshRate) {
-                updateMax = 0;
-                if (Engine.frameCount % Engine.skipFrameIndex < Engine.renderFrameIndex)
-                    updateMax = 1;
-            }*/
 
             // Update
-            for (int i = 0; i < updateMax; ++i) {
-                ProcessPausedObjects();
-            }
+            ProcessPausedObjects();
 
 #if RETRO_HARDWARE_RENDER
             gfxIndexSize        = 0;
@@ -339,7 +318,22 @@ void LoadStageFiles(void)
             }
 
 #if RETRO_USE_MOD_LOADER
-            if (Engine.usingBytecode && !forceUseScripts) {
+            char scriptPath[0x40];
+            if (Engine.bytecodeMode == BYTECODE_MOBILE)
+                StrCopy(scriptPath, "Bytecode/GlobalCode.bin");
+            else
+                StrCopy(scriptPath, "Data/Scripts/ByteCode/GS000.bin");
+
+            bool bytecodeExists = false;
+            FileInfo bytecodeInfo;
+            GetFileInfo(&infoStore);
+            if (LoadFile(scriptPath, &info)) {
+                bytecodeExists = true;
+                CloseFile();
+            }
+            SetFileInfo(&infoStore);
+
+            if (bytecodeExists && !forceUseScripts) {
 #else
             if (Engine.usingBytecode) {
 #endif
@@ -382,7 +376,42 @@ void LoadStageFiles(void)
                 SetObjectTypeName(strBuffer, scriptID + i);
             }
 #if RETRO_USE_MOD_LOADER
-            if (Engine.usingBytecode && !forceUseScripts) {
+            char scriptPath[0x40];
+            if (Engine.bytecodeMode == BYTECODE_MOBILE) {
+                switch (activeStageList) {
+                    case STAGELIST_PRESENTATION:
+                    case STAGELIST_REGULAR:
+                    case STAGELIST_BONUS:
+                    case STAGELIST_SPECIAL:
+                        StrCopy(scriptPath, "Data/Scripts/ByteCode/");
+                        StrAdd(scriptPath, stageList[activeStageList][stageListPosition].folder);
+                        StrAdd(scriptPath, ".bin");
+                        break;
+                    case 4: StrCopy(scriptPath, "Data/Scripts/ByteCode/GlobalCode.bin"); break;
+                    default: break;
+                }
+            }
+            else {
+                StrCopy(scriptPath, "Data/Scripts/ByteCode/GS000.bin");
+                int pos = StrLength(scriptPath) - 9;
+                if (activeStageList < STAGELIST_MAX) {
+                    char listIDs[4]     = { 'P', 'R', 'B', 'S' };
+                    scriptPath[pos]     = listIDs[activeStageList];
+                    scriptPath[pos + 2] = stageListPosition / 100 + '0';
+                    scriptPath[pos + 3] = stageListPosition % 100 / 10 + '0';
+                    scriptPath[pos + 4] = stageListPosition % 10 + '0';
+                }
+            }
+            bool bytecodeExists = false;
+            FileInfo bytecodeInfo;
+            GetFileInfo(&infoStore);
+            if (LoadFile(scriptPath, &info)) {
+                bytecodeExists = true;
+                CloseFile();
+            }
+            SetFileInfo(&infoStore);
+
+            if (bytecodeExists && !forceUseScripts) {
 #else
             if (Engine.usingBytecode) {
 #endif

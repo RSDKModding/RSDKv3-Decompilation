@@ -55,8 +55,7 @@ extern int controlMode;
 extern bool disableTouchControls;
 
 #if RETRO_USE_MOD_LOADER
-extern ModInfo modList[MOD_MAX];
-extern int modCount;
+extern std::vector<ModInfo> modList;
 extern bool forceUseScripts;
 #endif
 
@@ -150,6 +149,7 @@ inline void LoadLeaderboardsMenu() { ReadUserdata(); }
 
 #if RETRO_USE_MOD_LOADER
 void initMods();
+bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool active);
 void saveMods();
 #endif
 
