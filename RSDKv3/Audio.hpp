@@ -141,6 +141,7 @@ inline void freeMusInfo()
 }
 #endif
 
+void LoadMusic(void *userdata);
 void SetMusicTrack(char *filePath, byte trackID, bool loop, uint loopPoint);
 bool PlayMusic(int track);
 inline void StopMusic()
