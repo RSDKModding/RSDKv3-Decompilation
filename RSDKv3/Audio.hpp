@@ -92,7 +92,6 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
 void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan);
 
-
 inline void freeMusInfo()
 {
     if (musInfo.loaded) {

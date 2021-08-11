@@ -176,7 +176,7 @@ void LoadGlobalSfx()
 size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
     MusicPlaybackInfo *info = (MusicPlaybackInfo *)ptr;
-    return FileRead2(&info->fileInfo, mem, (int)(size * nmemb));
+    return FileRead2(&info->fileInfo, mem, (int)(size * nmemb), true);
 }
 int seekVorbis(void *ptr, ogg_int64_t offset, int whence)
 {
