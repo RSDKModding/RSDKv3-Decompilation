@@ -854,6 +854,8 @@ size_t FileRead2(FileInfo *info, void *dest, int size, bool fromBuffer)
     memset(data, 0, size);
 
     if (fromBuffer) {
+        if (info->readPos + size >= info->vFileSize)
+            size = info->vFileSize - info->readPos;
         memcpy(dest, &info->fileBuffer[info->readPos], size);
         info->readPos += size;
         info->bufferPosition = 0;
