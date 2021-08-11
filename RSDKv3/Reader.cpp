@@ -665,7 +665,6 @@ bool LoadFile2(const char *filePath, FileInfo *fileInfo)
         fClose(fileInfo->cFileHandle);
     }
     fileInfo->bufferPosition = 0;
-    //fileInfo->readSize       = 0;
 
     printLog("Loaded File '%s'", filePathBuf);
 
@@ -928,5 +927,4 @@ size_t FileRead2(FileInfo *info, void *dest, int size, bool fromBuffer)
 }
 
 size_t GetFilePosition2(FileInfo* info) { return info->readPos; }
-
 void SetFilePosition2(FileInfo *info, int newPos) { info->readPos = newPos; }
