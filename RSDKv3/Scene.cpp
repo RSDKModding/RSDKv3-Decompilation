@@ -216,6 +216,9 @@ void ProcessStage(void)
                 }
                 stageMilliseconds = 100 * frameCounter / Engine.refreshRate;
             }
+			else {
+				frameCounter = Engine.refreshRate * stageMilliseconds / 100;
+			}
 
             // Update
             ProcessObjects();
