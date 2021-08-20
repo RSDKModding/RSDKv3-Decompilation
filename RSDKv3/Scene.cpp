@@ -323,7 +323,7 @@ void LoadStageFiles(void)
 #if RETRO_USE_MOD_LOADER
             char scriptPath[0x40];
             if (Engine.bytecodeMode == BYTECODE_MOBILE)
-                StrCopy(scriptPath, "Bytecode/GlobalCode.bin");
+                StrCopy(scriptPath, "Data/Scripts/ByteCode/GlobalCode.bin");
             else
                 StrCopy(scriptPath, "Data/Scripts/ByteCode/GS000.bin");
 
