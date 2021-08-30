@@ -54,6 +54,8 @@ extern int touchY[8];
 extern int touchID[8];
 extern int touches;
 
+extern int hapticCallbackNum;
+
 #if !RETRO_USE_ORIGINAL_CODE
 extern InputButton inputDevice[INPUT_MAX];
 extern int inputType;
@@ -100,5 +102,8 @@ void CheckKeyPress(InputData *input, byte Flags);
 void CheckKeyDown(InputData *input, byte Flags);
 
 void QueueHapticEffect(int hapticID);
+void PlayHaptics(int left, int right, int power);
+void PlayHapticsID(int hapticID);
+void StopHaptics(int hapticID);
 
 #endif // !INPUT_H

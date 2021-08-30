@@ -202,7 +202,7 @@ enum RetroEngineCallbacks {
     CALLBACK_PAUSE_REQUESTED         = 13,
     CALLBACK_FULL_VERSION_ONLY       = 14,
     CALLBACK_STAFF_CREDITS           = 15,
-    CALLBACK_16                      = 16,
+    CALLBACK_MOREGAMES                      = 16,
     CALLBACK_AGEGATE                 = 100,
 };
 

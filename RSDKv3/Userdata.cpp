@@ -59,7 +59,7 @@ char gamePath[0x100];
 char modsPath[0x100];
 int saveRAM[SAVEDATA_MAX];
 Achievement achievements[ACHIEVEMENT_MAX];
-LeaderboardEntry leaderboard[LEADERBOARD_MAX];
+LeaderboardEntry leaderboards[LEADERBOARD_MAX];
 
 #if RETRO_PLATFORM == RETRO_OSX
 #include <sys/stat.h>
@@ -364,63 +364,6 @@ void InitUserdata()
     }
     SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
-    // Support for extra controller types SDL doesn't recognise
-#if RETRO_PLATFORM == RETRO_UWP
-    if (!usingCWD)
-        sprintf(buffer, "%s/controllerdb.txt", getResourcesPath());
-    else
-        sprintf(buffer, "%scontrollerdb.txt", gamePath);
-#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
-    sprintf(buffer, "%s/controllerdb.txt", gamePath);
-#else
-    sprintf(buffer, BASE_PATH "controllerdb.txt");
-#endif
-
-#if RETRO_USING_SDL2
-    file = fOpen(buffer, "rb");
-    if (file) {
-        fClose(file);
-
-        int nummaps = SDL_GameControllerAddMappingsFromFile(buffer);
-        if (nummaps >= 0)
-            printLog("loaded %d controller mappings from '%s'\n", buffer, nummaps);
-    }
-#endif
-
-#if RETRO_PLATFORM == RETRO_UWP
-    if (!usingCWD)
-        sprintf(buffer, "%s/Udata.bin", getResourcesPath());
-    else
-        sprintf(buffer, "%sUdata.bin", gamePath);
-#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
-    sprintf(buffer, "%s/UData.bin", gamePath);
-#elif RETRO_PLATFORM == RETRO_iOS
-    sprintf(buffer, "%s/UData.bin", getDocumentsPath());
-#else
-    sprintf(buffer, "%sUdata.bin", gamePath);
-#endif
-    file = fOpen(buffer, "rb");
-    if (file) {
-        fClose(file);
-        ReadUserdata();
-    }
-    else {
-        WriteUserdata();
-    }
-
-    StrCopy(achievements[0].name, "88 Miles Per Hour");
-    StrCopy(achievements[1].name, "Just One Hug is Enough");
-    StrCopy(achievements[2].name, "Paradise Found");
-    StrCopy(achievements[3].name, "Take the High Road");
-    StrCopy(achievements[4].name, "King of the Rings");
-    StrCopy(achievements[5].name, "Statue Saviour");
-    StrCopy(achievements[6].name, "Heavy Metal");
-    StrCopy(achievements[7].name, "All Stages Clear");
-    StrCopy(achievements[8].name, "Treasure Hunter");
-    StrCopy(achievements[9].name, "Dr Eggman Got Served");
-    StrCopy(achievements[10].name, "Just In Time");
-    StrCopy(achievements[11].name, "Saviour of the Planet");
-
     // Loaded here so it can be disabled
 #if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
     if (Engine.useSteamDir) {
@@ -480,6 +423,63 @@ void InitUserdata()
 #endif
     }
 #endif
+
+    // Support for extra controller types SDL doesn't recognise
+#if RETRO_PLATFORM == RETRO_UWP
+    if (!usingCWD)
+        sprintf(buffer, "%s/controllerdb.txt", getResourcesPath());
+    else
+        sprintf(buffer, "%scontrollerdb.txt", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
+    sprintf(buffer, "%s/controllerdb.txt", gamePath);
+#else
+    sprintf(buffer, BASE_PATH "controllerdb.txt");
+#endif
+
+#if RETRO_USING_SDL2
+    file = fOpen(buffer, "rb");
+    if (file) {
+        fClose(file);
+
+        int nummaps = SDL_GameControllerAddMappingsFromFile(buffer);
+        if (nummaps >= 0)
+            printLog("loaded %d controller mappings from '%s'\n", buffer, nummaps);
+    }
+#endif
+
+#if RETRO_PLATFORM == RETRO_UWP
+    if (!usingCWD)
+        sprintf(buffer, "%s/Udata.bin", getResourcesPath());
+    else
+        sprintf(buffer, "%sUdata.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
+    sprintf(buffer, "%s/UData.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_iOS
+    sprintf(buffer, "%s/UData.bin", getDocumentsPath());
+#else
+    sprintf(buffer, "%sUdata.bin", gamePath);
+#endif
+    file = fOpen(buffer, "rb");
+    if (file) {
+        fClose(file);
+        ReadUserdata();
+    }
+    else {
+        WriteUserdata();
+    }
+
+    StrCopy(achievements[0].name, "88 Miles Per Hour");
+    StrCopy(achievements[1].name, "Just One Hug is Enough");
+    StrCopy(achievements[2].name, "Paradise Found");
+    StrCopy(achievements[3].name, "Take the High Road");
+    StrCopy(achievements[4].name, "King of the Rings");
+    StrCopy(achievements[5].name, "Statue Saviour");
+    StrCopy(achievements[6].name, "Heavy Metal");
+    StrCopy(achievements[7].name, "All Stages Clear");
+    StrCopy(achievements[8].name, "Treasure Hunter");
+    StrCopy(achievements[9].name, "Dr Eggman Got Served");
+    StrCopy(achievements[10].name, "Just In Time");
+    StrCopy(achievements[11].name, "Saviour of the Planet");
 }
 
 void writeSettings() {
@@ -605,7 +605,9 @@ void ReadUserdata()
     }
     for (int l = 0; l < LEADERBOARD_MAX; ++l) {
         fRead(&buf, 4, 1, userFile);
-        leaderboard[l].status = buf;
+        leaderboards[l].score = buf;
+        if (!leaderboards[l].score)
+            leaderboards[l].score = 0x7FFFFFF;
     }
 
     fClose(userFile);
@@ -633,7 +635,7 @@ void WriteUserdata()
         return;
 
     for (int a = 0; a < ACHIEVEMENT_MAX; ++a) fWrite(&achievements[a].status, 4, 1, userFile);
-    for (int l = 0; l < LEADERBOARD_MAX; ++l) fWrite(&leaderboard[l].status, 4, 1, userFile);
+    for (int l = 0; l < LEADERBOARD_MAX; ++l) fWrite(&leaderboards[l].score, 4, 1, userFile);
 
     fClose(userFile);
 
@@ -667,33 +669,14 @@ void SetAchievement(int achievementID, int achievementDone)
 void SetLeaderboard(int leaderboardID, int result)
 {
     if (!Engine.trialMode && !debugMode) {
-        printLog("Set leaderboard (%d) value to %d", leaderboard, result);
-        switch (leaderboardID) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-            case 15:
-            case 16:
-            case 17:
-            case 18:
-            case 19:
-            case 20:
-            case 21:
-                leaderboard[leaderboardID].status = result;
-                WriteUserdata();
-                return;
+        if (result < leaderboards[leaderboardID].score) {
+            printLog("Set leaderboard (%d) value to %d", leaderboardID, result);
+            leaderboards[leaderboardID].score = result;
+            WriteUserdata();
+        }
+        else {
+            printLog("Attempted to set leaderboard (%d) value to %d... but score was already %d!", leaderboardID, result,
+                     leaderboards[leaderboardID].score);
         }
     }
 }
