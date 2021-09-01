@@ -399,8 +399,10 @@ public:
     int windowYSize; // height of window/screen in the previous frame
 
 #if RETRO_USING_SDL2
-    SDL_Window *window          = nullptr;
-    SDL_Renderer *renderer      = nullptr;
+    SDL_Window *window = nullptr;
+#if !RETRO_USING_OPENGL
+    SDL_Renderer *renderer = nullptr;
+#endif
 #if RETRO_SOFTWARE_RENDER
     SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;

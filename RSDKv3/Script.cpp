@@ -4373,7 +4373,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_ENGINETRIALMODE: break;
                     case VAR_KEYPRESSANYSTART: break;
 #if RETRO_USE_HAPTICS
-                    case VAR_ENGINEHAPTICSENABLED: break;
+                    case VAR_ENGINEHAPTICSENABLED: Engine.hapticsEnabled = scriptEng.operands[i]; break;
 #endif
                 }
             }

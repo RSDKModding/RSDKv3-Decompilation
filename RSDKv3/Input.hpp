@@ -43,6 +43,11 @@ struct InputButton {
     inline bool down() { return (press || hold); }
 };
 
+enum DefaultHapticIDs {
+    HAPTIC_NONE = -2,
+    HAPTIC_STOP = -1,
+};
+
 extern InputData keyPress;
 extern InputData keyDown;
 
@@ -54,7 +59,7 @@ extern int touchY[8];
 extern int touchID[8];
 extern int touches;
 
-extern int hapticCallbackNum;
+extern int hapticEffectNum;
 
 #if !RETRO_USE_ORIGINAL_CODE
 extern InputButton inputDevice[INPUT_MAX];
@@ -101,6 +106,12 @@ void ProcessInput();
 void CheckKeyPress(InputData *input, byte Flags);
 void CheckKeyDown(InputData *input, byte Flags);
 
+inline int GetHapticEffectNum()
+{
+    int num         = hapticEffectNum;
+    hapticEffectNum = HAPTIC_NONE;
+    return num;
+}
 void QueueHapticEffect(int hapticID);
 void PlayHaptics(int left, int right, int power);
 void PlayHapticsID(int hapticID);

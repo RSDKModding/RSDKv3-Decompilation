@@ -14,7 +14,7 @@ int touchY[8];
 int touchID[8];
 int touches = 0;
 
-int hapticCallbackNum = -1;
+int hapticEffectNum = -2;
 
 enum AndroidHapticIDs {
     HAPTIC_ALERT1                         = 63,
@@ -560,17 +560,11 @@ void CheckKeyDown(InputData *input, byte flags)
 void QueueHapticEffect(int hapticID)
 {
     if (Engine.hapticsEnabled) {
-        //Haptic ID seems to be the ID for "Universal Haptic Layer"'s haptic effect library
-        hapticCallbackNum = hapticID;
+        // Haptic ID seems to be the ID for "Universal Haptic Layer"'s haptic effect library
+        hapticEffectNum = hapticID;
     }
 }
 
-void PlayHaptics(int left, int right, int power) {
-    
-}
-void PlayHapticsID(int hapticID) {
-
-}
-void StopHaptics(int hapticID) {
-
-}
+void PlayHaptics(int left, int right, int power) {}
+void PlayHapticsID(int hapticID) {}
+void StopHaptics(int hapticID) {}

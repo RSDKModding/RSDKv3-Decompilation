@@ -108,7 +108,9 @@ int InitRenderDevice()
 
     Engine.window   = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE * Engine.windowScale,
                                      SCREEN_YSIZE * Engine.windowScale, SDL_WINDOW_ALLOW_HIGHDPI | flags);
+#if !RETRO_USING_OPENGL
     Engine.renderer = SDL_CreateRenderer(Engine.window, -1, SDL_RENDERER_ACCELERATED);
+#endif
 
     if (!Engine.window) {
         printLog("ERROR: failed to create window!");
@@ -116,6 +118,7 @@ int InitRenderDevice()
         return 0;
     }
 
+#if !RETRO_USING_OPENGL
     if (!Engine.renderer) {
         printLog("ERROR: failed to create renderer!");
         Engine.gameMode = ENGINE_EXITGAME;
@@ -124,6 +127,7 @@ int InitRenderDevice()
 
     SDL_RenderSetLogicalSize(Engine.renderer, SCREEN_XSIZE, SCREEN_YSIZE);
     SDL_SetRenderDrawBlendMode(Engine.renderer, SDL_BLENDMODE_BLEND);
+#endif
 
 #if RETRO_SOFTWARE_RENDER
     Engine.screenBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE, SCREEN_YSIZE);
@@ -806,7 +810,9 @@ void ReleaseRenderDevice()
 #endif
 
 #if RETRO_USING_SDL2
+#if !RETRO_USING_OPENGL
     SDL_DestroyRenderer(Engine.renderer);
+#endif
     SDL_DestroyWindow(Engine.window);
 #endif
 }

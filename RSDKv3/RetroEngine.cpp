@@ -438,11 +438,11 @@ void RetroEngine::Run()
         frameStep      = false;
         Engine.message = MESSAGE_NONE;
 
-        
-        if (hapticCallbackNum > -1) {
-            //playHaptics(hapticCallbackNum);
+        int hapticID = GetHapticEffectNum();
+        if (hapticID >= 0) {
+            //playHaptics(hapticID);
         }
-        else if (hapticCallbackNum == -2) {
+        else if (hapticID == HAPTIC_STOP) {
             //stopHaptics();
         } 
     }
@@ -466,6 +466,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
     byte fileBuffer  = 0;
     byte fileBuffer2 = 0;
     char data[0x40];
+    StrCopy(gameWindowText, "Retro-Engine"); //this is the default window name
 
     if (LoadFile(filePath, &info)) {
         FileRead(&fileBuffer, 1);
