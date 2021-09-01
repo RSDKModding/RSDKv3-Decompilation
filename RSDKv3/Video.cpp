@@ -99,12 +99,16 @@ void PlayVideoFile(char *filePath)
         callbacks.read     = videoRead;
         callbacks.close    = videoClose;
         callbacks.userdata = (void *)file;
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL2 && !RETRO_USING_OPENGL
         videoDecoder = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_IYUV, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
 #endif
 
         //TODO: does SDL1.2 support YUV?
-#if RETRO_USING_SDL1
+#if RETRO_USING_SDL1 && !RETRO_USING_OPENGL
+        videoDecoder = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
+#endif
+
+#if RETRO_USING_OPENGL
         videoDecoder = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
 #endif
 
@@ -197,13 +201,13 @@ void UpdateVideoFrame()
 int ProcessVideo()
 {
     if (videoPlaying) {
-        CheckKeyPress(&keyPress, 0x10);
+        CheckKeyPress(&keyPress, 0xFF);
 
         if (videoSkipped && fadeMode < 0xFF) {
             fadeMode += 8;
         }
 
-        if (keyPress.A) {
+        if (anyPress || touches > 0) {
             if (!videoSkipped)
                 fadeMode = 0;
 
@@ -266,6 +270,14 @@ int ProcessVideo()
 #endif
 #endif
 
+#if RETRO_USING_OPENGL
+#if RETRO_HARDWARE_RENDER
+                glBindTexture(GL_TEXTURE_2D, videoBuffer);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, videoVidData->width, videoVidData->height, GL_RGBA, GL_UNSIGNED_BYTE, videoVidData->pixels);
+                glBindTexture(GL_TEXTURE_2D, 0);
+#endif
+#endif
+
                 THEORAPLAY_freeVideo(videoVidData);
                 videoVidData = NULL;
             }
@@ -317,6 +329,25 @@ void SetupVideoBuffer(int width, int height)
     if (!Engine.videoBuffer)
         printLog("Failed to create video buffer!");
 #endif
+
+#if RETRO_HARDWARE_RENDER
+#if RETRO_USING_OPENGL
+    if (videoBuffer > 0) {
+        glDeleteTextures(1, &videoBuffer);
+        videoBuffer = 0;
+    }
+    glGenTextures(1, &videoBuffer);
+    glBindTexture(GL_TEXTURE_2D, videoBuffer);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+#endif
+#endif
 }
 
 void CloseVideoBuffer()
@@ -331,5 +362,14 @@ void CloseVideoBuffer()
 #endif
         Engine.videoBuffer = nullptr;
     }
+#endif
+
+#if RETRO_HARDWARE_RENDER
+#if RETRO_USING_OPENGL
+    if (videoBuffer > 0) {
+        glDeleteTextures(1, &videoBuffer);
+        videoBuffer = 0;
+    }
+#endif
 #endif
 }

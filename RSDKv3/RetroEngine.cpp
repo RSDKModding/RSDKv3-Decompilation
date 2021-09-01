@@ -41,12 +41,18 @@ bool processEvents()
                         break;
                     }
                     case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
-                    case SDL_WINDOWEVENT_FOCUS_LOST: Engine.message = MESSAGE_LOSTFOCUS; break;
+                    case SDL_WINDOWEVENT_FOCUS_LOST:
+                        if (!disableFocusPause)
+                            Engine.message = MESSAGE_LOSTFOCUS;
+                        break;
                 }
                 break;
             case SDL_CONTROLLERDEVICEADDED: controllerInit(Engine.sdlEvents.cdevice.which); break;
             case SDL_CONTROLLERDEVICEREMOVED: controllerClose(Engine.sdlEvents.cdevice.which); break;
-            case SDL_APP_WILLENTERBACKGROUND: Engine.message = MESSAGE_LOSTFOCUS; break;
+            case SDL_APP_WILLENTERBACKGROUND:
+                if (!disableFocusPause)
+                    Engine.message = MESSAGE_LOSTFOCUS;
+                break;
             case SDL_APP_TERMINATING: Engine.gameMode = ENGINE_EXITGAME; return false;
 
 #endif
@@ -182,10 +188,6 @@ bool processEvents()
                                 vx = (w - vw) >> 1;
                             }
                             SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, w, h);
-                            virtualX      = vx;
-                            virtualY      = vy;
-                            virtualWidth  = vw;
-                            virtualHeight = vh;
 #endif
                         }
                         else {
@@ -428,11 +430,7 @@ void RetroEngine::Run()
             }
         }
 
-#if RETRO_SOFTWARE_RENDER
         FlipScreen();
-#elif RETRO_HARDWARE_RENDER
-        highResMode ? FlipScreenHRes() : FlipScreen();
-#endif
 
 #if RETRO_USING_OPENGL && RETRO_USING_SDL2 && RETRO_HARDWARE_RENDER
         SDL_GL_SwapWindow(Engine.window);

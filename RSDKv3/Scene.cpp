@@ -159,15 +159,15 @@ void ProcessStage(void)
 
             if (texBufferMode) {
                 for (int i = 0; i < TILEUV_SIZE; i += 4) {
-                    tileUVArray[i + 0] = (i >> 2) % 28 * 18 + 1;
-                    tileUVArray[i + 1] = (i >> 2) / 28 * 18 + 1;
+                    tileUVArray[i + 0] = ((i >> 2) % 28) * 18 + 1;
+                    tileUVArray[i + 1] = ((i >> 2) / 28) * 18 + 1;
                     tileUVArray[i + 2] = tileUVArray[i + 0] + 16;
                     tileUVArray[i + 3] = tileUVArray[i + 1] + 16;
                 }
-                tileUVArray[TILEUV_SIZE - 4] = 487.0f;
-                tileUVArray[TILEUV_SIZE - 3] = 487.0f;
-                tileUVArray[TILEUV_SIZE - 2] = 503.0f;
-                tileUVArray[TILEUV_SIZE - 1] = 503.0f;
+                tileUVArray[TILEUV_SIZE - 4] = 487;
+                tileUVArray[TILEUV_SIZE - 3] = 487;
+                tileUVArray[TILEUV_SIZE - 2] = 503;
+                tileUVArray[TILEUV_SIZE - 1] = 503;
             }
             else {
                 for (int i = 0; i < TILEUV_SIZE; i += 4) {

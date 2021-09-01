@@ -53,6 +53,8 @@ extern LeaderboardEntry leaderboards[LEADERBOARD_MAX];
 
 extern int controlMode;
 extern bool disableTouchControls;
+extern bool disableFocusPause;
+extern bool disableFocusPause_Config;
 
 #if RETRO_USE_MOD_LOADER
 extern std::vector<ModInfo> modList;

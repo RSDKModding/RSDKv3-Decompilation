@@ -94,7 +94,7 @@ extern DrawVertex3D polyList3D[VERTEX3D_LIMIT];
 
 extern ushort vertexSize3D;
 extern ushort indexSize3D;
-extern float tileUVArray[TILEUV_SIZE];
+extern ushort tileUVArray[TILEUV_SIZE];
 extern float floor3DXPos;
 extern float floor3DYPos;
 extern float floor3DZPos;
@@ -114,19 +114,27 @@ extern int virtualX;
 extern int virtualY;
 extern int virtualWidth;
 extern int virtualHeight;
+extern float viewAngle;
+extern float viewAnglePos;
 
 #if RETRO_USING_OPENGL
 extern GLuint gfxTextureID[TEXTURE_LIMIT];
-extern GLuint framebufferId;
-extern GLuint fbTextureId;
+extern GLuint framebuffer240;
+extern GLuint renderbuffer240;
+extern GLuint videoBuffer;
 #endif
-
+extern DrawVertex screenRect[4];
 #endif
 
 int InitRenderDevice();
 void FlipScreen();
 #if RETRO_HARDWARE_RENDER
+void FlipScreenFB();
+void FlipScreenNoFB();
 void FlipScreenHRes();
+void RenderFromTexture();
+
+void FlipScreenVideo();
 #endif
 void ReleaseRenderDevice();
 

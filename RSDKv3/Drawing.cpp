@@ -28,7 +28,7 @@ DrawVertex3D polyList3D[VERTEX3D_LIMIT];
 
 ushort vertexSize3D = 0;
 ushort indexSize3D  = 0;
-float tileUVArray[TILEUV_SIZE];
+ushort tileUVArray[TILEUV_SIZE];
 float floor3DXPos     = 0.0f;
 float floor3DYPos     = 0.0f;
 float floor3DZPos     = 0.0f;
@@ -39,35 +39,25 @@ bool hq3DFloorEnabled = false;
 ushort texBuffer[TEXBUFFER_SIZE];
 byte texBufferMode = 0;
 
-int viewWidth     = 0;
-int viewHeight    = 0;
-float viewAspect  = 0;
-int bufferWidth   = 0;
-int bufferHeight  = 0;
-int virtualX      = 0;
-int virtualY      = 0;
-int virtualWidth  = 0;
-int virtualHeight = 0;
+int viewWidth      = 0;
+int viewHeight     = 0;
+float viewAspect   = 0;
+int bufferWidth    = 0;
+int bufferHeight   = 0;
+int virtualX       = 0;
+int virtualY       = 0;
+int virtualWidth   = 0;
+int virtualHeight  = 0;
+float viewAngle    = 0;
+float viewAnglePos = 0;
 
 #if RETRO_USING_OPENGL
 GLuint gfxTextureID[TEXTURE_LIMIT];
-GLuint framebufferId = 0;
-GLuint fbTextureId   = 0;
-
-// clang-format off
-float screenVerts[] = { 0,                   0, 
-                        (float)SCREEN_XSIZE, 0, 
-                        0,                   SCREEN_YSIZE, 
-                        (float)SCREEN_XSIZE, 0,
-                        0,                   SCREEN_YSIZE, 
-                        (float)SCREEN_XSIZE, SCREEN_YSIZE };
-// clang-format on
-float fbTexVerts[]  = {
-    -TEXTURE_SIZE, TEXTURE_SIZE, 0, TEXTURE_SIZE, -TEXTURE_SIZE, 0, 0, TEXTURE_SIZE, -TEXTURE_SIZE, 0, 0, 0,
-};
-float pureLight[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-
+GLuint framebuffer240  = 0;
+GLuint renderbuffer240 = 0;
+GLuint videoBuffer = 0;
 #endif
+DrawVertex screenRect[4];
 #endif
 
 #if !RETRO_USE_ORIGINAL_CODE
@@ -99,7 +89,7 @@ int InitRenderDevice()
     flags |= SDL_WINDOW_OPENGL;
 #endif
 #if RETRO_GAMEPLATFORM == RETRO_STANDARD
-    flags |= SDL_WINDOW_HIDDEN;
+    //flags |= SDL_WINDOW_HIDDEN;
 #else
     Engine.startFullScreen = true;
 
@@ -228,46 +218,50 @@ int InitRenderDevice()
 #endif
 
 #if RETRO_USING_OPENGL
-    // Init GL
-    Engine.m_glContext = SDL_GL_CreateContext(Engine.window);
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#if RETRO_PLATFORM != RETRO_ANDROID
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#else
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#endif
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+    SDL_GL_SetSwapInterval(0);
 
+
+    // Init GL
+    Engine.glContext = SDL_GL_CreateContext(Engine.window);
+
+#if RETRO_PLATFORM != RETRO_ANDROID
     // glew Setup
     GLenum err = glewInit();
     if (err != GLEW_OK) {
-        printLog("glew init error: %s", (const char *)glewGetErrorString(err));
+        printLog("glew init error:");
+        printLog((const char *)glewGetErrorString(err));
         return false;
     }
-
-    glViewport(0, 0, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    glOrtho(-2.0, 2.0, -2.0, 2.0, -20.0, 20.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glShadeModel(GL_SMOOTH);
-
+#endif
     Engine.highResMode = false;
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glDisable(GL_LIGHTING);
     glDisable(GL_DITHER);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
-    glMatrixMode(GL_MODELVIEW);
 
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     SetupPolygonLists();
+
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+
+    // Allows for texture locations in pixels instead of from 0.0 to 1.0, saves us having to do this every time we set UVs
+    glScalef(1.0 / TEXTURE_SIZE, 1.0 / TEXTURE_SIZE, 1.0f);
+    glMatrixMode(GL_PROJECTION);
 
     for (int i = 0; i < TEXTURE_LIMIT; i++) {
         glGenTextures(1, &gfxTextureID[i]);
@@ -278,21 +272,39 @@ int InitRenderDevice()
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-    // Allows for texture locations in pixels instead of from 0.0 to 1.0, saves us having to do this every time we set UVs
-    glScalef(1.0 / TEXTURE_SIZE, 1.0 / TEXTURE_SIZE, 1.0f);
-    glMatrixMode(GL_PROJECTION);
 
+    glGenFramebuffers(1, &framebuffer240);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer240);
+    glGenTextures(1, &renderbuffer240);
+    glBindTexture(GL_TEXTURE_2D, renderbuffer240);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderbuffer240, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    UpdateHardwareTextures();
+
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    framebufferId = 0;
-    fbTextureId   = 0;
-
     SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+
+#if RETRO_USING_SDL2 && RETRO_PLATFORM == RETRO_ANDROID
+    SDL_DisplayMode mode;
+    SDL_GetDesktopDisplayMode(0, &mode);
+    int vw = mode.w;
+    int vh = mode.h;
+    if (mode.h > mode.w) {
+        vw = mode.h;
+        vh = mode.w;
+    }
+    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, vw, vh);
+#endif
 #endif
 
 #if RETRO_SOFTWARE_RENDER
@@ -325,6 +337,7 @@ void FlipScreen()
     }
 
     float dimAmount = Engine.dimMax * Engine.dimPercent;
+
 #endif
 
 #if RETRO_SOFTWARE_RENDER
@@ -502,7 +515,6 @@ void FlipScreen()
         // no change here
         SDL_RenderPresent(Engine.renderer);
     }
-    SDL_ShowWindow(Engine.window);
 #endif
 
 #if RETRO_USING_SDL1
@@ -546,17 +558,91 @@ void FlipScreen()
 #endif // !RETRO_RENDER_TYPE == RETRO_SW_RENDER
 
 #if RETRO_HARDWARE_RENDER
-    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+    if (dimAmount < 1.0)
+        DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, 0, 0, 0, 0xFF - (dimAmount * 0xFF));
 
+    if (Engine.gameMode == ENGINE_VIDEOWAIT)
+        FlipScreenVideo();
+    else
+        Engine.highResMode ? FlipScreenHRes() : Engine.useFBTexture ? FlipScreenFB() : FlipScreenNoFB();
+#endif
+}
+
+#if RETRO_HARDWARE_RENDER
+void FlipScreenFB()
+{
     glLoadIdentity();
+    glRotatef(-90.0, 0.0, 0.0, 1.0);
+    glOrtho(0, SCREEN_XSIZE << 4, 0.0, SCREEN_YSIZE << 4, -1.0, 1.0);
+    glViewport(0, 0, SCREEN_YSIZE, SCREEN_XSIZE);
 
-    glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, 0.0f, 100.0f);
-    if (texPaletteNum >= TEXTURE_LIMIT) {
-        glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum % TEXTURE_LIMIT]);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer240);
+    glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
+    glEnableClientState(GL_COLOR_ARRAY);
+
+    if (render3DEnabled) {
+        float floor3DTop    = 2.0;
+        float floor3DBottom = SCREEN_YSIZE + 4;
+
+        // Non Blended rendering
+        glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
+        glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].u);
+        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
+        glDrawElements(GL_TRIANGLES, gfxIndexSizeOpaque, GL_UNSIGNED_SHORT, gfxPolyListIndex);
+        glEnable(GL_BLEND);
+
+        // Init 3D Plane    
+        glViewport(floor3DTop, 0, floor3DBottom, SCREEN_XSIZE);
+        glPushMatrix();
+        glLoadIdentity();
+        CalcPerspective(1.8326f, viewAspect, 0.1f, 2000.0f);
+        glRotatef(-90.0, 0.0, 0.0, 1.0);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glScalef(1.0f, 1.0f, -1.0f);
+        glRotatef(floor3DAngle + 180.0f, 0, 1.0f, 0);
+        glTranslatef(floor3DXPos, floor3DYPos, floor3DZPos);
+
+        glVertexPointer(3, GL_FLOAT, sizeof(DrawVertex3D), &polyList3D[0].x);
+        glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex3D), &polyList3D[0].u);
+        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex3D), &polyList3D[0].colour);
+        glDrawElements(GL_TRIANGLES, indexSize3D, GL_UNSIGNED_SHORT, gfxPolyListIndex);
+        glLoadIdentity();
+
+        // Return for blended rendering
+        glMatrixMode(GL_PROJECTION);
+        glViewport(0, 0, SCREEN_YSIZE, SCREEN_XSIZE);
+        glPopMatrix();
     }
     else {
-        glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
+        glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
+        glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].u);
+        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
+        glDrawElements(GL_TRIANGLES, gfxIndexSizeOpaque, GL_UNSIGNED_SHORT, gfxPolyListIndex);
+
+        glEnable(GL_BLEND);
     }
+
+    int blendedGfxCount = gfxIndexSize - gfxIndexSizeOpaque;
+
+    glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
+    glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].u);
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
+    glDrawElements(GL_TRIANGLES, blendedGfxCount, GL_UNSIGNED_SHORT, &gfxPolyListIndex[gfxIndexSizeOpaque]);
+    glDisableClientState(GL_COLOR_ARRAY);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    RenderFromTexture();
+}
+
+void FlipScreenNoFB()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+    glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, -1.0, 1.0);
+    glViewport(0, 0, viewWidth, viewHeight);
+    glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glEnableClientState(GL_COLOR_ARRAY);
 
     if (render3DEnabled) {
@@ -571,7 +657,7 @@ void FlipScreen()
         glViewport(0, 0, viewWidth, viewHeight);
         glPushMatrix();
         glLoadIdentity();
-        CalcPerspective(1.8326f, viewAspect, 0.1f, 1000.0f);
+        CalcPerspective(1.8326f, viewAspect, 0.1f, 2000.0f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
@@ -588,12 +674,6 @@ void FlipScreen()
         // Return for blended rendering
         glViewport(0, 0, bufferWidth, bufferHeight);
         glPopMatrix();
-
-        int numBlendedGfx = (int)(gfxIndexSize - gfxIndexSizeOpaque);
-        glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
-        glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].u);
-        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
-        glDrawElements(GL_TRIANGLES, numBlendedGfx, GL_UNSIGNED_SHORT, &gfxPolyListIndex[gfxIndexSizeOpaque]);
     }
     else {
         glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
@@ -601,49 +681,39 @@ void FlipScreen()
         glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
         glDrawElements(GL_TRIANGLES, gfxIndexSizeOpaque, GL_UNSIGNED_SHORT, gfxPolyListIndex);
 
-        int blendedGfxCount = gfxIndexSize - gfxIndexSizeOpaque;
-
         glEnable(GL_BLEND);
-        glEnable(GL_TEXTURE_2D);
-        glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
-        glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].u);
-        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
-        glDrawElements(GL_TRIANGLES, blendedGfxCount, GL_UNSIGNED_SHORT, &gfxPolyListIndex[gfxIndexSizeOpaque]);
     }
+
+    int blendedGfxCount = gfxIndexSize - gfxIndexSizeOpaque;
+
+    glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
+    glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].u);
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
+    glDrawElements(GL_TRIANGLES, blendedGfxCount, GL_UNSIGNED_SHORT, &gfxPolyListIndex[gfxIndexSizeOpaque]);
     glDisableClientState(GL_COLOR_ARRAY);
-
-    // Render the framebuffer now
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glViewport(virtualX, virtualY, virtualWidth, virtualHeight);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, fbTextureId);
-    glVertexPointer(2, GL_FLOAT, 0, &screenVerts);
-    glTexCoordPointer(2, GL_FLOAT, 0, &fbTexVerts);
-    glColorPointer(4, GL_FLOAT, 0, &pureLight);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glViewport(0, 0, bufferWidth, bufferHeight);
-#if RETRO_USING_SDL2    
-    SDL_ShowWindow(Engine.window); //we're still using sdl2 right ?
-#endif
-#endif
 }
 
-#if RETRO_HARDWARE_RENDER
 void FlipScreenHRes()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+    if (viewAngle >= 180.0) {
+        if (viewAnglePos < 180.0) {
+            viewAnglePos += 7.5;
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }
+    else if (viewAnglePos > 0.0) {
+        viewAnglePos -= 7.5;
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
 
     glLoadIdentity();
 
-    glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, 0.0f, 100.0f);
+    glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, -1.0, 1.0);
     glViewport(0, 0, bufferWidth, bufferHeight);
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glDisable(GL_BLEND);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
 
     glEnableClientState(GL_COLOR_ARRAY);
 
@@ -660,24 +730,54 @@ void FlipScreenHRes()
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
     glDrawElements(GL_TRIANGLES, blendedGfxCount, GL_UNSIGNED_SHORT, &gfxPolyListIndex[gfxIndexSizeOpaque]);
 
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glDisableClientState(GL_COLOR_ARRAY);
+}
 
-    // Render the framebuffer now
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+void RenderFromTexture()
+{
+    glBindTexture(GL_TEXTURE_2D, renderbuffer240);
+    if (viewAngle >= 180.0) {
+        if (viewAnglePos < 180.0) {
+            viewAnglePos += 7.5;
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }
+    else if (viewAnglePos > 0.0) {
+        viewAnglePos -= 7.5;
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+    glLoadIdentity();
+    glViewport(0, 0, viewWidth, viewHeight);
+    glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &screenRect[0].x);
+    glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &screenRect[0].u);
+    glDisable(GL_BLEND);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, &gfxPolyListIndex);
+}
 
-    glViewport(virtualX, virtualY, virtualWidth, virtualHeight);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, fbTextureId);
-    glVertexPointer(2, GL_FLOAT, 0, &screenVerts);
-    glTexCoordPointer(2, GL_FLOAT, 0, &fbTexVerts);
-    glColorPointer(4, GL_FLOAT, 0, &pureLight);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glViewport(0, 0, bufferWidth, bufferHeight);
-#if RETRO_USING_SDL2    
-    SDL_ShowWindow(Engine.window);
-#endif
+void FlipScreenVideo()
+{
+    glLoadIdentity();
+    glRotatef(90.0, 0.0, 0.0, 1.0);
+    glBindTexture(GL_TEXTURE_2D, videoBuffer);
+    if (viewAngle >= 180.0) {
+        if (viewAnglePos < 180.0) {
+            viewAnglePos += 7.5;
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }
+    else if (viewAnglePos > 0.0) {
+        viewAnglePos -= 7.5;
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+    glViewport(0, 0, viewWidth, viewHeight);
+    glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &screenRect[0].x);
+    glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &screenRect[0].u);
+    glDisable(GL_BLEND);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, &gfxPolyListIndex);
+
+    glLoadIdentity();
 }
 #endif
 
@@ -697,8 +797,12 @@ void ReleaseRenderDevice()
 #endif
 
 #if RETRO_USING_OPENGL
-    if (Engine.m_glContext)
-        SDL_GL_DeleteContext(Engine.m_glContext);
+    for (int i = 0; i < TEXTURE_LIMIT; i++) glDeleteTextures(1, &gfxTextureID[i]);
+
+#if RETRO_USING_SDL2
+    if (Engine.glContext)
+        SDL_GL_DeleteContext(Engine.glContext);
+#endif
 #endif
 
 #if RETRO_USING_SDL2
@@ -862,9 +966,10 @@ void UpdateHardwareTextures()
 }
 void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
 {
-
     bufferWidth  = width;
     bufferHeight = height;
+    bufferWidth = viewWidth = touchWidth = winWidth;
+    bufferHeight = viewHeight = touchHeight = winHeight;
 
     viewAspect = 0.75f;
     if (viewHeight >= SCREEN_YSIZE * 2)
@@ -873,39 +978,50 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
         hq3DFloorEnabled = false;
 
     SetScreenSize(width, width);
-    bufferWidth = viewWidth = touchWidth = winWidth;
-    bufferHeight = viewHeight = touchHeight = winHeight;
 
-    if (framebufferId > 0) {
-        glDeleteFramebuffers(1, &framebufferId);
-    }
-    if (fbTextureId > 0) {
-        glDeleteTextures(1, &fbTextureId);
-    }
+    if (framebuffer240 > 0) 
+        glDeleteFramebuffers(1, &framebuffer240);
+
+    if (renderbuffer240 > 0) 
+        glDeleteTextures(1, &renderbuffer240);
 
     // Setup framebuffer texture
-    glGenFramebuffers(1, &framebufferId);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
-    glGenTextures(1, &fbTextureId);
-    glBindTexture(GL_TEXTURE_2D, fbTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, viewWidth, viewHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbTextureId, 0);
+    glGenFramebuffers(1, &framebuffer240);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer240);
+    glGenTextures(1, &renderbuffer240);
+    glBindTexture(GL_TEXTURE_2D, renderbuffer240);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderbuffer240, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     // int newWidth  = width * 8;
     // int newHeight = (height * 8) + 4;
     int newWidth  = width << 4;
     int newHeight = height << 4;
 
-    screenVerts[2]  = newWidth;
-    screenVerts[6]  = newWidth;
-    screenVerts[10] = newWidth;
-    screenVerts[5]  = newHeight;
-    screenVerts[9]  = newHeight;
-    screenVerts[11] = newHeight;
+    screenRect[0].v = SCREEN_XSIZE * 2;
+    screenRect[2].v = SCREEN_XSIZE * 2;
+    screenRect[0].x = -1;
+    screenRect[0].y = 1;
+    screenRect[0].u = 0;
+    screenRect[1].x = 1;
+    screenRect[1].y = 1;
+    screenRect[1].u = 0;
+    screenRect[1].v = 0;
+    screenRect[2].x = -1;
+    screenRect[2].y = -1;
+    screenRect[2].u = 958;
+    screenRect[3].x = 1;
+    screenRect[3].y = -1;
+    screenRect[3].u = 958;
+    screenRect[3].v = 0;
+
     ScaleViewport(winWidth, winHeight);
 }
 
@@ -4031,28 +4147,28 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
         gfxPolyList[gfxVertexSize].colour.g = G;
         gfxPolyList[gfxVertexSize].colour.b = B;
         gfxPolyList[gfxVertexSize].colour.a = A;
-        gfxPolyList[gfxVertexSize].u        = 0.0f;
-        gfxPolyList[gfxVertexSize].v        = 0.0f;
+        gfxPolyList[gfxVertexSize].u        = 0;
+        gfxPolyList[gfxVertexSize].v        = 0;
         gfxVertexSize++;
 
-        gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+        gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
         gfxPolyList[gfxVertexSize].y        = YPos << 4;
         gfxPolyList[gfxVertexSize].colour.r = R;
         gfxPolyList[gfxVertexSize].colour.g = G;
         gfxPolyList[gfxVertexSize].colour.b = B;
         gfxPolyList[gfxVertexSize].colour.a = A;
-        gfxPolyList[gfxVertexSize].u        = 0.01f;
+        gfxPolyList[gfxVertexSize].u        = 0;
         gfxPolyList[gfxVertexSize].v        = gfxPolyList[gfxVertexSize - 1].v;
         gfxVertexSize++;
 
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
-        gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+        gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
         gfxPolyList[gfxVertexSize].colour.r = R;
         gfxPolyList[gfxVertexSize].colour.g = G;
         gfxPolyList[gfxVertexSize].colour.b = B;
         gfxPolyList[gfxVertexSize].colour.a = A;
-        gfxPolyList[gfxVertexSize].u        = 0.0f;
-        gfxPolyList[gfxVertexSize].v        = 0.01f;
+        gfxPolyList[gfxVertexSize].u        = 0;
+        gfxPolyList[gfxVertexSize].v        = 0;
         gfxVertexSize++;
 
         gfxPolyList[gfxVertexSize].x        = gfxPolyList[gfxVertexSize - 2].x;
@@ -4061,8 +4177,8 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
         gfxPolyList[gfxVertexSize].colour.g = G;
         gfxPolyList[gfxVertexSize].colour.b = B;
         gfxPolyList[gfxVertexSize].colour.a = A;
-        gfxPolyList[gfxVertexSize].u        = 0.01f;
-        gfxPolyList[gfxVertexSize].v        = 0.01f;
+        gfxPolyList[gfxVertexSize].u        = 0;
+        gfxPolyList[gfxVertexSize].v        = 0;
         gfxVertexSize++;
         gfxIndexSize += 6;
     }
@@ -4309,7 +4425,7 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
         gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
         gfxVertexSize++;
 
-        gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+        gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
         gfxPolyList[gfxVertexSize].y        = YPos << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -4320,7 +4436,7 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
         gfxVertexSize++;
 
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
-        gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+        gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
         gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -4483,7 +4599,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
                 gfxVertexSize++;
 
-                gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+                gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
                 gfxPolyList[gfxVertexSize].y        = YPos << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -4494,7 +4610,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxVertexSize++;
 
                 gfxPolyList[gfxVertexSize].x        = XPos << 4;
-                gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+                gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -4524,7 +4640,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
                 gfxVertexSize++;
 
-                gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+                gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
                 gfxPolyList[gfxVertexSize].y        = YPos << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -4535,7 +4651,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxVertexSize++;
 
                 gfxPolyList[gfxVertexSize].x        = XPos << 4;
-                gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+                gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -4565,7 +4681,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY + height);
                 gfxVertexSize++;
 
-                gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+                gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
                 gfxPolyList[gfxVertexSize].y        = YPos << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -4576,7 +4692,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxVertexSize++;
 
                 gfxPolyList[gfxVertexSize].x        = XPos << 4;
-                gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+                gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -4606,7 +4722,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY + height);
                 gfxVertexSize++;
 
-                gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+                gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
                 gfxPolyList[gfxVertexSize].y        = YPos << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -4617,7 +4733,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
                 gfxVertexSize++;
 
                 gfxPolyList[gfxVertexSize].x        = XPos << 4;
-                gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+                gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -4766,7 +4882,7 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
             gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
             gfxVertexSize++;
 
-            gfxPolyList[gfxVertexSize].x        = XPos + scaleX << 4;
+            gfxPolyList[gfxVertexSize].x        = (XPos + scaleX) << 4;
             gfxPolyList[gfxVertexSize].y        = YPos << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
             gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -4777,7 +4893,7 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
             gfxVertexSize++;
 
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
-            gfxPolyList[gfxVertexSize].y        = YPos + scaleY << 4;
+            gfxPolyList[gfxVertexSize].y        = (YPos + scaleY) << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
             gfxPolyList[gfxVertexSize].colour.g = 0xFF;
             gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -4815,7 +4931,7 @@ void DrawScaledChar(int direction, int XPos, int YPos, int pivotX, int pivotY, i
         scaleX = width * scaleX >> 5;
         YPos -= pivotY * scaleY >> 5;
         scaleY = height * scaleY >> 5;
-        if (gfxSurface[sheetID].texStartX > -1 && gfxVertexSize < 4096) {
+        if (gfxSurface[sheetID].texStartX > -1) {
             gfxPolyList[gfxVertexSize].x = XPos;
             gfxPolyList[gfxVertexSize].y = YPos;
             gfxPolyList[gfxVertexSize].colour.r    = 0xFF;
@@ -4836,24 +4952,24 @@ void DrawScaledChar(int direction, int XPos, int YPos, int pivotX, int pivotY, i
             gfxPolyList[gfxVertexSize].v           = gfxPolyList[gfxVertexSize - 1].v;
             gfxVertexSize++;
 
-            gfxPolyList[gfxVertexSize].x = XPos;
-            gfxPolyList[gfxVertexSize].y = YPos + scaleY;
-            gfxPolyList[gfxVertexSize].colour.r    = 0xFF;
-            gfxPolyList[gfxVertexSize].colour.g    = 0xFF;
-            gfxPolyList[gfxVertexSize].colour.b    = 0xFF;
-            gfxPolyList[gfxVertexSize].colour.a    = 0xFF;
-            gfxPolyList[gfxVertexSize].u = gfxPolyList[gfxVertexSize - 2].u;
-            gfxPolyList[gfxVertexSize].v           = gfxSurface[sheetID].texStartY + sprY + height;
+            gfxPolyList[gfxVertexSize].x        = XPos;
+            gfxPolyList[gfxVertexSize].y        = YPos + scaleY;
+            gfxPolyList[gfxVertexSize].colour.r = 0xFF;
+            gfxPolyList[gfxVertexSize].colour.g = 0xFF;
+            gfxPolyList[gfxVertexSize].colour.b = 0xFF;
+            gfxPolyList[gfxVertexSize].colour.a = 0xFF;
+            gfxPolyList[gfxVertexSize].u        = gfxPolyList[gfxVertexSize - 2].u;
+            gfxPolyList[gfxVertexSize].v        = gfxSurface[sheetID].texStartY + sprY + height;
             gfxVertexSize++;
 
-            gfxPolyList[gfxVertexSize].x = gfxPolyList[gfxVertexSize - 2].x;
-            gfxPolyList[gfxVertexSize].y = gfxPolyList[gfxVertexSize - 1].y;
-            gfxPolyList[gfxVertexSize].colour.r    = 0xFF;
-            gfxPolyList[gfxVertexSize].colour.g    = 0xFF;
-            gfxPolyList[gfxVertexSize].colour.b    = 0xFF;
-            gfxPolyList[gfxVertexSize].colour.a    = 0xFF;
-            gfxPolyList[gfxVertexSize].u = gfxPolyList[gfxVertexSize - 2].u;
-            gfxPolyList[gfxVertexSize].v = gfxPolyList[gfxVertexSize - 1].v;
+            gfxPolyList[gfxVertexSize].x        = gfxPolyList[gfxVertexSize - 2].x;
+            gfxPolyList[gfxVertexSize].y        = gfxPolyList[gfxVertexSize - 1].y;
+            gfxPolyList[gfxVertexSize].colour.r = 0xFF;
+            gfxPolyList[gfxVertexSize].colour.g = 0xFF;
+            gfxPolyList[gfxVertexSize].colour.b = 0xFF;
+            gfxPolyList[gfxVertexSize].colour.a = 0xFF;
+            gfxPolyList[gfxVertexSize].u        = gfxPolyList[gfxVertexSize - 2].u;
+            gfxPolyList[gfxVertexSize].v        = gfxPolyList[gfxVertexSize - 1].v;
             gfxVertexSize++;
 
             gfxIndexSize += 6;
@@ -5452,7 +5568,7 @@ void DrawBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int 
         gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
         gfxVertexSize++;
 
-        gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+        gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
         gfxPolyList[gfxVertexSize].y        = YPos << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -5463,7 +5579,7 @@ void DrawBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int 
         gfxVertexSize++;
 
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
-        gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+        gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
         gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5572,7 +5688,7 @@ void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX,
         gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
         gfxVertexSize++;
 
-        gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+        gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
         gfxPolyList[gfxVertexSize].y        = YPos << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -5583,7 +5699,7 @@ void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX,
         gfxVertexSize++;
 
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
-        gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+        gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
         gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5686,7 +5802,7 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
         gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
         gfxVertexSize++;
 
-        gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+        gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
         gfxPolyList[gfxVertexSize].y        = YPos << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -5697,7 +5813,7 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
         gfxVertexSize++;
 
         gfxPolyList[gfxVertexSize].x        = XPos << 4;
-        gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+        gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
         gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5793,7 +5909,7 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
         gfxPolyList[gfxVertexSize].v        = (surface->texStartY + sprY);
         gfxVertexSize++;
 
-        gfxPolyList[gfxVertexSize].x        = XPos + width << 4;
+        gfxPolyList[gfxVertexSize].x        = (XPos + width) << 4;
         gfxPolyList[gfxVertexSize].y        = YPos << 4;
         gfxPolyList[gfxVertexSize].colour.r = 0xFF;
         gfxPolyList[gfxVertexSize].colour.g = 0xFF;
@@ -6071,43 +6187,45 @@ void DrawFace(void *v, uint colour)
         gfxPolyList[gfxVertexSize].colour.b = (byte)((uint)colour & 0xFF);
         colour                              = (colour & 0x7F000000) >> 23;
 
-        if (colour > 0xFD) {
+        if (colour == 0xFE) 
             gfxPolyList[gfxVertexSize].colour.a = 0xFF;
-        }
-        else {
+        else 
             gfxPolyList[gfxVertexSize].colour.a = colour;
-        }
 
-        gfxPolyList[gfxVertexSize].u = 0.01f;
-        gfxPolyList[gfxVertexSize].v = 0.01f;
+        gfxPolyList[gfxVertexSize].u = 2;
+        gfxPolyList[gfxVertexSize].v = 2;
         gfxVertexSize++;
+
         gfxPolyList[gfxVertexSize].x        = verts[1].x << 4;
         gfxPolyList[gfxVertexSize].y        = verts[1].y << 4;
         gfxPolyList[gfxVertexSize].colour.r = gfxPolyList[gfxVertexSize - 1].colour.r;
         gfxPolyList[gfxVertexSize].colour.g = gfxPolyList[gfxVertexSize - 1].colour.g;
         gfxPolyList[gfxVertexSize].colour.b = gfxPolyList[gfxVertexSize - 1].colour.b;
         gfxPolyList[gfxVertexSize].colour.a = gfxPolyList[gfxVertexSize - 1].colour.a;
-        gfxPolyList[gfxVertexSize].u        = 0.01f;
-        gfxPolyList[gfxVertexSize].v        = 0.01f;
+        gfxPolyList[gfxVertexSize].u        = 2;
+        gfxPolyList[gfxVertexSize].v        = 2;
         gfxVertexSize++;
+
         gfxPolyList[gfxVertexSize].x        = verts[2].x << 4;
         gfxPolyList[gfxVertexSize].y        = verts[2].y << 4;
         gfxPolyList[gfxVertexSize].colour.r = gfxPolyList[gfxVertexSize - 1].colour.r;
         gfxPolyList[gfxVertexSize].colour.g = gfxPolyList[gfxVertexSize - 1].colour.g;
         gfxPolyList[gfxVertexSize].colour.b = gfxPolyList[gfxVertexSize - 1].colour.b;
         gfxPolyList[gfxVertexSize].colour.a = gfxPolyList[gfxVertexSize - 1].colour.a;
-        gfxPolyList[gfxVertexSize].u        = 0.01f;
-        gfxPolyList[gfxVertexSize].v        = 0.01f;
+        gfxPolyList[gfxVertexSize].u        = 2;
+        gfxPolyList[gfxVertexSize].v        = 2;
         gfxVertexSize++;
+
         gfxPolyList[gfxVertexSize].x        = verts[3].x << 4;
         gfxPolyList[gfxVertexSize].y        = verts[3].y << 4;
         gfxPolyList[gfxVertexSize].colour.r = gfxPolyList[gfxVertexSize - 1].colour.r;
         gfxPolyList[gfxVertexSize].colour.g = gfxPolyList[gfxVertexSize - 1].colour.g;
         gfxPolyList[gfxVertexSize].colour.b = gfxPolyList[gfxVertexSize - 1].colour.b;
         gfxPolyList[gfxVertexSize].colour.a = gfxPolyList[gfxVertexSize - 1].colour.a;
-        gfxPolyList[gfxVertexSize].u        = 0.01f;
-        gfxPolyList[gfxVertexSize].v        = 0.01f;
+        gfxPolyList[gfxVertexSize].u        = 2;
+        gfxPolyList[gfxVertexSize].v        = 2;
         gfxVertexSize++;
+
         gfxIndexSize += 6;
     }
 #endif

@@ -68,6 +68,8 @@ LeaderboardEntry leaderboards[LEADERBOARD_MAX];
 
 int controlMode = -1;
 bool disableTouchControls = false;
+bool disableFocusPause    = false;
+bool disableFocusPause_Config    = false;
 
 #if RETRO_USE_MOD_LOADER
 std::vector<ModInfo> modList;
@@ -134,6 +136,8 @@ void InitUserdata()
         ini.SetInteger("Game", "Language", Engine.language = RETRO_EN);
         ini.SetInteger("Game", "OriginalControls", controlMode = -1);
         ini.SetBool("Game", "DisableTouchControls", disableTouchControls = false);
+        ini.SetBool("Game", "DisableFocusPause", disableFocusPause = false);
+        disableFocusPause_Config = disableFocusPause;
 
         ini.SetBool("Window", "FullScreen", Engine.startFullScreen = DEFAULT_FULLSCREEN);
         ini.SetBool("Window", "Borderless", Engine.borderless = false);
@@ -233,6 +237,9 @@ void InitUserdata()
             controlMode = -1;
         if (!ini.GetBool("Game", "DisableTouchControls", &disableTouchControls))
             disableTouchControls = false;
+        if (!ini.GetBool("Game", "DisableFocusPause", &disableFocusPause))
+            disableFocusPause = false;
+        disableFocusPause_Config = disableFocusPause;
 
         if (!ini.GetBool("Window", "FullScreen", &Engine.startFullScreen))
             Engine.startFullScreen = DEFAULT_FULLSCREEN;
@@ -509,6 +516,8 @@ void writeSettings() {
     ini.SetInteger("Game", "OriginalControls", controlMode);
     ini.SetComment("Game", "DTCtrlComment", "Determines if the game should hide the touch controls UI");
     ini.SetBool("Game", "DisableTouchControls", disableTouchControls);
+    ini.SetComment("Game", "DFPMenuComment", "if set to true, disables the game pausing when focus is lost");
+    ini.SetBool("Game", "DisableFocusPause", disableFocusPause_Config);
 
     ini.SetComment("Window", "FSComment", "Determines if the window will be fullscreen or not");
     ini.SetBool("Window", "FullScreen", Engine.startFullScreen);

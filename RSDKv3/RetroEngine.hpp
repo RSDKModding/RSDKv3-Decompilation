@@ -138,11 +138,32 @@ typedef unsigned int uint;
 #define RETRO_HARDWARE_RENDER (RETRO_RENDERTYPE == RETRO_HW_RENDER)
 
 #if RETRO_USING_OPENGL
+#if RETRO_PLATFORM == RETRO_ANDROID
+#define GL_GLEXT_PROTOTYPES
+
+#include <GLES/gl.h>
+#include <GLES/glext.h>
+
+#undef glGenFramebuffers
+#undef glBindFramebuffers
+#undef glFramebufferTexture2D
+
+#undef GL_FRAMEBUFFER
+#undef GL_COLOR_ATTACHMENT0
+#undef GL_FRAMEBUFFER_BINDING
+
+#define glGenFramebuffers      glGenFramebuffersOES
+#define glBindFramebuffer      glBindFramebufferOES
+#define glFramebufferTexture2D glFramebufferTexture2DOES
+#define glDeleteFramebuffers   glDeleteFramebuffersOES
+#define glOrtho                glOrthof
+
+#define GL_FRAMEBUFFER         GL_FRAMEBUFFER_OES
+#define GL_COLOR_ATTACHMENT0   GL_COLOR_ATTACHMENT0_OES
+#define GL_FRAMEBUFFER_BINDING GL_FRAMEBUFFER_BINDING_OES
+#else
 #include <GL/glew.h>
 #include <GL/glu.h>
-
-#if RETRO_USING_SDL2
-#include <SDL_opengl.h>
 #endif
 #endif
 
@@ -298,8 +319,9 @@ public:
 
     int gameMode     = 1;
     int language     = RETRO_EN;
-    int message      = 0;
-    bool highResMode = false;
+    int message       = 0;
+    bool highResMode  = false;
+    bool useFBTexture = true;
 
     bool trialMode      = false;
     bool onlineActive   = true;
@@ -340,7 +362,7 @@ public:
 
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
-    const char *gameVersion = "1.1.2";
+    const char *gameVersion = "1.3.0";
     const char *gamePlatform;
 
 #if RETRO_SOFTWARE_RENDER
@@ -388,7 +410,7 @@ public:
     SDL_Event sdlEvents;
 
 #if RETRO_USING_OPENGL
-    SDL_GLContext m_glContext; // OpenGL context
+    SDL_GLContext glContext; // OpenGL context
 #endif
 
 #endif

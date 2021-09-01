@@ -231,10 +231,17 @@ inline void Init3DFloorBuffer(int layerID)
 
 inline void Copy16x16Tile(ushort dest, ushort src)
 {
+#if RETRO_SOFTWARE_RENDER
     byte *destPtr = &tilesetGFXData[TILELAYER_CHUNK_W * dest];
     byte *srcPtr  = &tilesetGFXData[TILELAYER_CHUNK_W * src];
     int cnt       = TILE_DATASIZE;
     while (cnt--) *destPtr++ = *srcPtr++;
+#elif RETRO_HARDWARE_RENDER
+    tileUVArray[4 * dest]     = tileUVArray[4 * src];
+    tileUVArray[4 * dest + 1] = tileUVArray[4 * src + 1];
+    tileUVArray[4 * dest + 2] = tileUVArray[4 * src + 2];
+    tileUVArray[4 * dest + 3] = tileUVArray[4 * src + 3];
+#endif
 }
 
 void SetLayerDeformation(int selectedDef, int waveLength, int waveType, int deformType, int YPos, int waveSize);
