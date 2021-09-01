@@ -25,7 +25,7 @@ struct Achievement {
 };
 
 struct LeaderboardEntry {
-    int status;
+    int score;
 };
 
 #if RETRO_USE_MOD_LOADER
@@ -49,7 +49,7 @@ extern char gamePath[0x100];
 extern char modsPath[0x100];
 extern int saveRAM[SAVEDATA_MAX];
 extern Achievement achievements[ACHIEVEMENT_MAX];
-extern LeaderboardEntry leaderboard[LEADERBOARD_MAX];
+extern LeaderboardEntry leaderboards[LEADERBOARD_MAX];
 
 extern int controlMode;
 extern bool disableTouchControls;

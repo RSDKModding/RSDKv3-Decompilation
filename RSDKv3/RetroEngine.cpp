@@ -439,6 +439,14 @@ void RetroEngine::Run()
 #endif
         frameStep      = false;
         Engine.message = MESSAGE_NONE;
+
+        
+        if (hapticCallbackNum > -1) {
+            //playHaptics(hapticCallbackNum);
+        }
+        else if (hapticCallbackNum == -2) {
+            //stopHaptics();
+        } 
     }
 
     ReleaseAudioDevice();
@@ -649,9 +657,33 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
             printLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
             break;
-        case CALLBACK_TRIAL_ENDED: printLog("Callback: PC = ???, Mobile = Trial Ended Screen"); break; // PC = ???, Mobile = Trial Ended Screen
+        case CALLBACK_TRIAL_ENDED:
+            if (bytecodeMode == BYTECODE_PC) {
+                printLog("Callback: ???");
+            }
+            else {
+                if (Engine.trialMode) {
+                    printLog("Callback: Trial Ended Screen Requested");
+                }
+                else {
+                    // Go to this URL http://www.sega.com
+                    printLog("Callback: Sega Website Requested");
+                }
+            }
+            break;                       // PC = ???, Mobile = Trial Ended Screen
         case CALLBACK_SETTINGS_SELECTED: // PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)
-            printLog("Callback: PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)");
+            if (bytecodeMode == BYTECODE_PC) {
+                printLog("Callback: Settings Requested");
+            }
+            else {
+                if (Engine.trialMode) {
+                    printLog("Callback: Full Game Only Requested");
+                }
+                else {
+                    // Go to this URL http://www.sega.com/legal/terms_mobile.php
+                    printLog("Callback: Terms Requested");
+                }
+            }
             break;
         case CALLBACK_PAUSE_REQUESTED: // PC/Mobile = Pause Requested (Mobile uses in-game menu, PC does as well if devMenu is active)
             // I know this is kinda lazy and a copout, buuuuuuut the in-game menu is so much better than the janky PC one
@@ -676,7 +708,7 @@ void RetroEngine::Callback(int callbackID)
             printLog("Callback: Pause Menu Requested");
             break;
         case CALLBACK_FULL_VERSION_ONLY: printLog("Callback: Full Version Only Notify"); break; // PC = ???, Mobile = Full Game Only Screen
-        case CALLBACK_STAFF_CREDITS:                                                            // PC = Staff Credits, Mobile = NONE
+        case CALLBACK_STAFF_CREDITS:                                                            // PC = Staff Credits, Mobile = Privacy
             if (bytecodeMode == BYTECODE_PC) {
                 for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
                     if (StrComp("CREDITS", stageList[STAGELIST_PRESENTATION][s].name)) {
@@ -685,11 +717,15 @@ void RetroEngine::Callback(int callbackID)
                         stageMode         = STAGEMODE_LOAD;
                     }
                 }
+                printLog("Callback: Staff Credits Requested");
             }
-            printLog("Callback: Staff Credits Requested");
+            else {
+                //Go to this URL http://www.sega.com/legal/privacy_mobile.php
+                printLog("Callback: Privacy Requested");
+            }
             break;
-        case CALLBACK_16: //, PC = ??? (only when online), Mobile = NONE
-            printLog("Callback: Unknown (%d)", callbackID);
+        case CALLBACK_MOREGAMES: //, PC = ??? (only when online), Mobile = Show More Games
+            printLog("Callback: Show More Games");
             break;
         case CALLBACK_AGEGATE:
             // Newer versions of the game wont continue without this

@@ -3766,8 +3766,11 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
 #if RETRO_USE_HAPTICS
             case FUNC_HAPTICEFFECT:
                 opcodeSize = 0;
-                // params: scriptEng.Operands[0],scriptEng.Operands[1],scriptEng.Operands[2],scriptEng.Operands[3]
-                QueueHapticEffect(scriptEng.operands[0]);
+                // params: scriptEng.operands[0], scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]
+                if (scriptEng.operands[0] != -1)
+                    QueueHapticEffect(scriptEng.operands[0]);
+                else
+                    PlayHaptics(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]);
                 break;
 #endif
         }

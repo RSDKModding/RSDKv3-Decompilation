@@ -1,5 +1,6 @@
 #include "RetroEngine.hpp"
 #include <math.h>
+#include <time.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
@@ -18,6 +19,8 @@ byte atanVal256[0x100 * 0x100];
 
 void CalculateTrigAngles()
 {
+    srand(time(NULL));
+
     for (int i = 0; i < 0x200; ++i) {
         float Val     = sin(((float)i / 256.0) * M_PI);
         sinM[i] = (Val * 4096.0);
