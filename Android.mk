@@ -77,7 +77,9 @@ LOCAL_MODULE := main
 
 SDL_PATH := ../SDL
 
-LOCAL_CFLAGS   := -fexceptions
+LOCAL_CFLAGS   := -fexceptions \
+	-DUSE_HW_REN
+#(un)comment the above line to toggle HW rendering
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/$(SDL_PATH)/include \
@@ -94,8 +96,8 @@ WILDCARD_SETUP := \
 
 LOCAL_SRC_FILES := $(subst jni/src/, , $(WILDCARD_SETUP))
 
-LOCAL_SHARED_LIBRARIES := SDL2 libogg libvorbis libtheora
+LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -llog -lEGL
 
-LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -llog
+LOCAL_SHARED_LIBRARIES := SDL2 libogg libvorbis libtheora
 
 include $(BUILD_SHARED_LIBRARY)
