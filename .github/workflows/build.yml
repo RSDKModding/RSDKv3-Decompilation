@@ -29,7 +29,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
           Expand-Archive -Path tinyxml2.zip -DestinationPath ./dependencies/all/
-          Rename-Item ./dependencies/all/tinyxml2
+          Rename-Item ./dependencies/all/tinyxml2-master tinyxml2
       - name: Download GLEW
         run: |
           Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
@@ -79,7 +79,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
           Expand-Archive -Path tinyxml2.zip -DestinationPath ./dependencies/all/
-          Rename-Item ./dependencies/all/tinyxml2
+          Rename-Item ./dependencies/all/tinyxml2-master tinyxml2
       - name: Download GLEW
         run: |
           Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
@@ -117,7 +117,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
           Expand-Archive -Path tinyxml2.zip -DestinationPath ./dependencies/all/
-          Rename-Item ./dependencies/all/tinyxml2
+          Rename-Item ./dependencies/all/tinyxml2-master tinyxml2
       - name: Install dependencies
         run: |
           sudo apt-get update
