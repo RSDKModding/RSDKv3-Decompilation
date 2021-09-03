@@ -10,10 +10,6 @@
 
 #define SAVEDATA_MAX (0x2000)
 
-#include <string>
-#include <map>
-#include <unordered_map>
-
 enum OnlineMenuTypes {
     ONLINEMENU_ACHIEVEMENTS = 0,
     ONLINEMENU_LEADERBOARDS = 1,
@@ -28,25 +24,11 @@ struct LeaderboardEntry {
     int score;
 };
 
-#if RETRO_USE_MOD_LOADER
-struct ModInfo {
-    std::string name;
-    std::string desc;
-    std::string author;
-    std::string version;
-    std::map<std::string, std::string> fileMap;
-    std::string folder;
-    bool useScripts;
-    bool active;
-};
-#endif
-
 extern int globalVariablesCount;
 extern int globalVariables[GLOBALVAR_COUNT];
 extern char globalVariableNames[GLOBALVAR_COUNT][0x20];
 
 extern char gamePath[0x100];
-extern char modsPath[0x100];
 extern int saveRAM[SAVEDATA_MAX];
 extern Achievement achievements[ACHIEVEMENT_MAX];
 extern LeaderboardEntry leaderboards[LEADERBOARD_MAX];
@@ -57,7 +39,6 @@ extern bool disableFocusPause;
 extern bool disableFocusPause_Config;
 
 #if RETRO_USE_MOD_LOADER
-extern std::vector<ModInfo> modList;
 extern bool forceUseScripts;
 #endif
 
@@ -103,7 +84,7 @@ inline bool ReadSaveRAMData()
     FileIO *saveFile = fOpen(buffer, "rb");
     if (!saveFile)
         return false;
-    fRead(saveRAM, 4u, SAVEDATA_MAX, saveFile);
+    fRead(saveRAM, 4, SAVEDATA_MAX, saveFile);
 
     fClose(saveFile);
     return true;
@@ -133,7 +114,7 @@ inline bool WriteSaveRAMData()
     saveRAM[33] = bgmVolume;
     saveRAM[34] = sfxVolume;
 
-    fWrite(saveRAM, 4u, SAVEDATA_MAX, saveFile);
+    fWrite(saveRAM, 4, SAVEDATA_MAX, saveFile);
     fClose(saveFile);
     return true;
 }
@@ -148,11 +129,5 @@ void SetAchievement(int achievementID, int achievementDone);
 void SetLeaderboard(int leaderboardID, int result);
 inline void LoadAchievementsMenu() { ReadUserdata(); }
 inline void LoadLeaderboardsMenu() { ReadUserdata(); }
-
-#if RETRO_USE_MOD_LOADER
-void initMods();
-bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool active);
-void saveMods();
-#endif
 
 #endif //!USERDATA_H

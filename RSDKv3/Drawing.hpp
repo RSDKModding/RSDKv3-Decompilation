@@ -1,16 +1,15 @@
 #ifndef DRAWING_H
 #define DRAWING_H
 
-#define SPRITESHEETS_MAX (16)
-#define SURFACE_MAX      (24)
-#define GFXDATA_MAX      (0x400000)
+#define SURFACE_MAX (24)
+#define GFXDATA_MAX (0x800 * 0x800)
 
 #define BLENDTABLE_YSIZE (0x100)
 #define BLENDTABLE_XSIZE (0x20)
 #define BLENDTABLE_SIZE  (BLENDTABLE_XSIZE * BLENDTABLE_YSIZE)
 #define TINTTABLE_SIZE   (0x1000)
 
-#define DRAWLAYER_COUNT (0x7)
+#define DRAWLAYER_COUNT (7)
 
 enum FlipFlags { FLIP_NONE, FLIP_X, FLIP_Y, FLIP_XY };
 enum InkFlags { INK_NONE, INK_BLEND, INK_ALPHA, INK_ADD, INK_SUB };
@@ -25,13 +24,13 @@ struct GFXSurface {
     char fileName[0x40];
     int height;
     int width;
-#if RETRO_SOFTWARE_RENDER
+//#if RETRO_SOFTWARE_RENDER
     int widthShifted;
-#endif
-#if RETRO_HARDWARE_RENDER
+//#endif
+//#if RETRO_HARDWARE_RENDER
     int texStartX;
     int texStartY;
-#endif
+//#endif
     int dataPosition;
 };
 
@@ -54,15 +53,14 @@ extern int gfxDataPosition;
 extern GFXSurface gfxSurface[SURFACE_MAX];
 extern byte graphicData[GFXDATA_MAX];
 
-#if RETRO_HARDWARE_RENDER
-#define INDEX_LIMIT      (0xC000)
-#define VERTEX_LIMIT     (0x2000)
-#define VERTEX3D_LIMIT   (0x1904)
-#define TEXBUFFER_SIZE   (0x100000)
-#define TILEUV_SIZE      (0x1000)
-#define TEXTURE_LIMIT    (6)
-#define TEXTURE_DATASIZE (1024 * 1024 * 2)
-#define TEXTURE_SIZE     (1024)
+#define VERTEX_LIMIT        (0x2000)
+#define INDEX_LIMIT         (VERTEX_LIMIT * 6)
+#define VERTEX3D_LIMIT      (0x1904)
+#define TILEUV_SIZE         (0x1000)
+#define HW_TEXTURE_LIMIT    (6)
+#define HW_TEXTURE_SIZE     (0x400)
+#define HW_TEXTURE_DATASIZE (HW_TEXTURE_SIZE * HW_TEXTURE_SIZE * 2)
+#define HW_TEXBUFFER_SIZE   (HW_TEXTURE_SIZE * HW_TEXTURE_SIZE)
 
 struct DrawVertex {
     short x;
@@ -102,7 +100,7 @@ extern float floor3DAngle;
 extern bool render3DEnabled;
 extern bool hq3DFloorEnabled;
 
-extern ushort texBuffer[TEXBUFFER_SIZE];
+extern ushort texBuffer[HW_TEXBUFFER_SIZE];
 extern byte texBufferMode;
 
 extern int viewWidth;
@@ -118,24 +116,25 @@ extern float viewAngle;
 extern float viewAnglePos;
 
 #if RETRO_USING_OPENGL
-extern GLuint gfxTextureID[TEXTURE_LIMIT];
+extern GLuint gfxTextureID[HW_TEXTURE_LIMIT];
 extern GLuint framebuffer240;
 extern GLuint renderbuffer240;
+extern GLuint retroBuffer;
 extern GLuint videoBuffer;
 #endif
 extern DrawVertex screenRect[4];
-#endif
+extern DrawVertex retroScreenRect[4];
 
 int InitRenderDevice();
 void FlipScreen();
-#if RETRO_HARDWARE_RENDER
 void FlipScreenFB();
 void FlipScreenNoFB();
 void FlipScreenHRes();
 void RenderFromTexture();
+void RenderFromRetroBuffer();
 
 void FlipScreenVideo();
-#endif
+
 void ReleaseRenderDevice();
 
 void GenerateBlendLookupTable();
@@ -148,11 +147,9 @@ inline void ClearGraphicsData()
 void ClearScreen(byte index);
 
 void SetScreenSize(int width, int height);
-#if RETRO_SOFTWARE_RENDER
 void CopyFrameOverlay2x();
-#endif
+void TransferRetroBuffer();
 
-#if RETRO_HARDWARE_RENDER
 inline bool CheckSurfaceSize(int size)
 {
     for (int cnt = 2; cnt < 2048; cnt <<= 1) {
@@ -171,8 +168,6 @@ void SetupPolygonLists();
 void UpdateTextureBufferWithTiles();
 void UpdateTextureBufferWithSortedSprites();
 void UpdateTextureBufferWithSprites();
-
-#endif
 
 // Layer Drawing
 void DrawObjectList(int layer);

@@ -50,11 +50,11 @@ void initDevMenu()
     gameMenu[0].selection2       = 9;
     gameMenu[1].visibleRowCount  = 0;
     gameMenu[1].visibleRowOffset = 0;
-#if RETRO_HARDWARE_RENDER
-    Engine.highResMode = false;
-    render3DEnabled    = false;
-    UpdateHardwareTextures();
-#endif
+    if (renderType == RENDER_HW) {
+        Engine.highResMode = false;
+        render3DEnabled    = false;
+        UpdateHardwareTextures();
+    }
 }
 void initErrorMessage()
 {
@@ -82,11 +82,11 @@ void initErrorMessage()
     gameMenu[1].visibleRowOffset = 0;
     stageMode                    = DEVMENU_SCRIPTERROR;
     touchTimer                   = 0;
-#if RETRO_HARDWARE_RENDER
-    Engine.highResMode = false;
-    render3DEnabled    = false;
-    UpdateHardwareTextures();
-#endif
+    if (renderType == RENDER_HW) {
+        Engine.highResMode = false;
+        render3DEnabled    = false;
+        UpdateHardwareTextures();
+    }
 }
 void processStageSelect()
 {
@@ -532,25 +532,7 @@ void processStageSelect()
             }
 
             if (keyPress.B) {
-                //Reload entire engine
-                Engine.LoadGameConfig("Data/Game/GameConfig.bin");
-#if RETRO_USING_SDL1 || RETRO_USING_SDL2
-                if (Engine.window) {
-                    char gameTitle[0x40];
-                    sprintf(gameTitle, "%s%s", Engine.gameWindowText, Engine.usingDataFile ? "" : " (Using Data Folder)");
-                    SDL_SetWindowTitle(Engine.window, gameTitle);
-                }
-#endif
-
-                ReleaseGlobalSfx();
-                LoadGlobalSfx();
-
-                forceUseScripts = false;
-                for (int m = 0; m < modList.size(); ++m) {
-                    if (modList[m].useScripts && modList[m].active)
-                        forceUseScripts = true;
-                }
-                saveMods();
+                RefreshEngine();
 
                 stageMode = DEVMENU_MAIN;
                 SetupTextMenu(&gameMenu[0], 0);
@@ -589,8 +571,8 @@ void processStageSelect()
         default: break;
     }
 
-#if RETRO_HARDWARE_RENDER
-    gfxIndexSizeOpaque  = gfxIndexSize;
-    gfxVertexSizeOpaque = gfxVertexSize;
-#endif
+    if (renderType == RENDER_HW) {
+        gfxIndexSizeOpaque  = gfxIndexSize;
+        gfxVertexSizeOpaque = gfxVertexSize;
+    }
 }

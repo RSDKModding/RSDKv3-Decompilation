@@ -295,14 +295,14 @@ int LoadBMPFile(const char *filePath, byte sheetID)
         }
         gfxDataPosition += surface->height * surface->width;
 
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w               = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
@@ -369,14 +369,14 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         }
 
         surface->dataPosition = gfxDataPosition;
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w                 = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         gfxDataPosition += surface->width * surface->height;
         if (gfxDataPosition < GFXDATA_MAX) {
@@ -433,14 +433,14 @@ int LoadGFXFile(const char *filePath, byte sheetID)
         }
 
         gfxDataPosition += surface->height * surface->width;
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w               = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
@@ -520,14 +520,14 @@ int LoadPVRFile(const char *filePath, byte sheetID)
         surface->dataPosition = gfxDataPosition;
         gfxDataPosition += surface->width * surface->height;
 
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w               = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         return false; // yeah I have no clue how to handle this, cd lite has this be loaded every frame on framebuffer update and does it that way
 

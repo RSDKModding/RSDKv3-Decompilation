@@ -143,48 +143,47 @@ void ProcessStage(void)
             ResetBackgroundSettings();
             LoadStageFiles();
 
-#if RETRO_HARDWARE_RENDER
-            texBufferMode = 0;
-            for (int i = 0; i < LAYER_COUNT; i++) {
-                if (stageLayouts[i].type == LAYER_3DSKY)
-                    texBufferMode = 1;
-            }
-            for (int i = 0; i < hParallax.entryCount; i++) {
-                if (hParallax.deform[i]) 
-                    texBufferMode = 1;
-            }
-
-            if (tilesetGFXData[0x32002] > 0)
+            if (renderType == RENDER_HW) {
                 texBufferMode = 0;
-
-            if (texBufferMode) {
-                for (int i = 0; i < TILEUV_SIZE; i += 4) {
-                    tileUVArray[i + 0] = ((i >> 2) % 28) * 18 + 1;
-                    tileUVArray[i + 1] = ((i >> 2) / 28) * 18 + 1;
-                    tileUVArray[i + 2] = tileUVArray[i + 0] + 16;
-                    tileUVArray[i + 3] = tileUVArray[i + 1] + 16;
+                for (int i = 0; i < LAYER_COUNT; i++) {
+                    if (stageLayouts[i].type == LAYER_3DSKY)
+                        texBufferMode = 1;
                 }
-                tileUVArray[TILEUV_SIZE - 4] = 487;
-                tileUVArray[TILEUV_SIZE - 3] = 487;
-                tileUVArray[TILEUV_SIZE - 2] = 503;
-                tileUVArray[TILEUV_SIZE - 1] = 503;
-            }
-            else {
-                for (int i = 0; i < TILEUV_SIZE; i += 4) {
-                    tileUVArray[i + 0] = (i >> 2 & 31) * 16;
-                    tileUVArray[i + 1] = (i >> 2 >> 5) * 16;
-                    tileUVArray[i + 2] = tileUVArray[i + 0] + 16;
-                    tileUVArray[i + 3] = tileUVArray[i + 1] + 16;
+                for (int i = 0; i < hParallax.entryCount; i++) {
+                    if (hParallax.deform[i])
+                        texBufferMode = 1;
                 }
+
+                if (tilesetGFXData[0x32002] > 0)
+                    texBufferMode = 0;
+
+                if (texBufferMode) {
+                    for (int i = 0; i < TILEUV_SIZE; i += 4) {
+                        tileUVArray[i + 0] = ((i >> 2) % 28) * 18 + 1;
+                        tileUVArray[i + 1] = ((i >> 2) / 28) * 18 + 1;
+                        tileUVArray[i + 2] = tileUVArray[i + 0] + 16;
+                        tileUVArray[i + 3] = tileUVArray[i + 1] + 16;
+                    }
+                    tileUVArray[TILEUV_SIZE - 4] = 487;
+                    tileUVArray[TILEUV_SIZE - 3] = 487;
+                    tileUVArray[TILEUV_SIZE - 2] = 503;
+                    tileUVArray[TILEUV_SIZE - 1] = 503;
+                }
+                else {
+                    for (int i = 0; i < TILEUV_SIZE; i += 4) {
+                        tileUVArray[i + 0] = (i >> 2 & 31) * 16;
+                        tileUVArray[i + 1] = (i >> 2 >> 5) * 16;
+                        tileUVArray[i + 2] = tileUVArray[i + 0] + 16;
+                        tileUVArray[i + 3] = tileUVArray[i + 1] + 16;
+                    }
+                }
+
+                UpdateHardwareTextures();
+                gfxIndexSize        = 0;
+                gfxVertexSize       = 0;
+                gfxIndexSizeOpaque  = 0;
+                gfxVertexSizeOpaque = 0;
             }
-
-            UpdateHardwareTextures();
-            gfxIndexSize        = 0;
-            gfxVertexSize       = 0;
-            gfxIndexSizeOpaque  = 0;
-            gfxVertexSizeOpaque = 0;
-#endif
-
             break;
         case STAGEMODE_NORMAL:
             drawStageGFXHQ = false;
@@ -258,12 +257,12 @@ void ProcessStage(void)
             // Update
             ProcessPausedObjects();
 
-#if RETRO_HARDWARE_RENDER
-            gfxIndexSize        = 0;
-            gfxVertexSize       = 0;
-            gfxIndexSizeOpaque  = 0;
-            gfxVertexSizeOpaque = 0;
-#endif
+            if (renderType == RENDER_HW) {
+                gfxIndexSize        = 0;
+                gfxVertexSize       = 0;
+                gfxIndexSizeOpaque  = 0;
+                gfxVertexSizeOpaque = 0;
+            }
 
             DrawObjectList(0);
             DrawObjectList(1);
@@ -296,7 +295,7 @@ void LoadStageFiles(void)
         ReleaseStageSfx();
         LoadPalette("MasterPalette.act", 0, 0, 0, 256);
         ClearScriptData();
-        for (int i = SPRITESHEETS_MAX; i > 0; i--) RemoveGraphicsFile((char *)"", i - 1);
+        for (int i = SURFACE_MAX; i > 0; i--) RemoveGraphicsFile((char *)"", i - 1);
 
         bool loadGlobals = false;
         if (LoadStageFile("StageConfig.bin", stageListPosition, &info)) {
@@ -735,13 +734,12 @@ void LoadStageChunks()
             tiles128x128.direction[i] = (byte)(entry[0] >> 2);
             entry[0] -= 4 * (entry[0] >> 2);
 
-            tiles128x128.tileIndex[i]  = entry[1] + (entry[0] << 8);
-#if RETRO_SOFTWARE_RENDER
-            tiles128x128.gfxDataPos[i] = tiles128x128.tileIndex[i] << 8;
-#endif
-#if RETRO_HARDWARE_RENDER
-            tiles128x128.gfxDataPos[i] = tiles128x128.tileIndex[i] << 2;
-#endif
+            tiles128x128.tileIndex[i] = entry[1] + (entry[0] << 8);
+
+            if (renderType == RENDER_SW)
+                tiles128x128.gfxDataPos[i] = tiles128x128.tileIndex[i] << 8;
+            else if (renderType == RENDER_HW)
+                tiles128x128.gfxDataPos[i] = tiles128x128.tileIndex[i] << 2;
 
             tiles128x128.collisionFlags[0][i] = entry[2] >> 4;
             tiles128x128.collisionFlags[1][i] = entry[2] - ((entry[2] >> 4) << 4);
@@ -1067,13 +1065,9 @@ void SetLayerDeformation(int selectedDef, int waveLength, int waveWidth, int wav
         default: break;
     }
 
-#if RETRO_SOFTWARE_RENDER
     int shift = 9;
-#endif
-
-#if RETRO_HARDWARE_RENDER
-    int shift = 5;
-#endif
+    if (renderType == RENDER_HW)
+        shift = 5;
 
     int id = 0;
     if (waveType == 1) {
@@ -1087,10 +1081,8 @@ void SetLayerDeformation(int selectedDef, int waveLength, int waveWidth, int wav
         for (int i = 0; i < 0x200 * 0x100; i += 0x200) {
             int val       = waveWidth * sinVal512[i / waveLength & 0x1FF] >> shift;
             deformPtr[id] = val;
-#if RETRO_SOFTWARE_RENDER
-            if (deformPtr[id] >= waveWidth)
+            if (deformPtr[id] >= waveWidth && renderType == RENDER_SW)
                 deformPtr[id] = waveWidth - 1;
-#endif
             ++id;
         }
     }

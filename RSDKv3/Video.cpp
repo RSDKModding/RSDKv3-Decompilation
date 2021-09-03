@@ -253,30 +253,21 @@ int ProcessVideo()
                     // video lagging uh oh
                 }
 
+#if RETRO_USING_OPENGL
+                glBindTexture(GL_TEXTURE_2D, videoBuffer);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, videoVidData->width, videoVidData->height, GL_RGBA, GL_UNSIGNED_BYTE, videoVidData->pixels);
+                glBindTexture(GL_TEXTURE_2D, 0);
+#elif RETRO_USING_SDL2
                 int half_w     = videoVidData->width / 2;
                 const Uint8 *y = (const Uint8 *)videoVidData->pixels;
                 const Uint8 *u = y + (videoVidData->width * videoVidData->height);
                 const Uint8 *v = u + (half_w * (videoVidData->height / 2));
 
-#if RETRO_USING_SDL2
-#if RETRO_SOFTWARE_RENDER
                 SDL_UpdateYUVTexture(Engine.videoBuffer, NULL, y, videoVidData->width, u, half_w, v, half_w);
-#endif
-#endif
-#if RETRO_USING_SDL1
-#if RETRO_SOFTWARE_RENDER
-                uint *videoFrameBuffer = (uint *)Engine.videoBuffer->pixels;
-                memcpy(videoFrameBuffer, videoVidData->pixels, videoVidData->width * videoVidData->height * sizeof(uint));
-#endif
+#elif RETRO_USING_SDL1
+                memcpy(Engine.videoBuffer->pixels, videoVidData->pixels, videoVidData->width * videoVidData->height * sizeof(uint));
 #endif
 
-#if RETRO_USING_OPENGL
-#if RETRO_HARDWARE_RENDER
-                glBindTexture(GL_TEXTURE_2D, videoBuffer);
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, videoVidData->width, videoVidData->height, GL_RGBA, GL_UNSIGNED_BYTE, videoVidData->pixels);
-                glBindTexture(GL_TEXTURE_2D, 0);
-#endif
-#endif
 
                 THEORAPLAY_freeVideo(videoVidData);
                 videoVidData = NULL;
@@ -318,19 +309,6 @@ void StopVideoPlayback()
 
 void SetupVideoBuffer(int width, int height)
 {
-#if RETRO_SOFTWARE_RENDER
-#if RETRO_USING_SDL1
-    Engine.videoBuffer = SDL_CreateRGBSurface(0, width, height, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-#endif
-#if RETRO_USING_SDL2
-    Engine.videoBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, width, height);
-#endif
-
-    if (!Engine.videoBuffer)
-        printLog("Failed to create video buffer!");
-#endif
-
-#if RETRO_HARDWARE_RENDER
 #if RETRO_USING_OPENGL
     if (videoBuffer > 0) {
         glDeleteTextures(1, &videoBuffer);
@@ -346,30 +324,33 @@ void SetupVideoBuffer(int width, int height)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glBindTexture(GL_TEXTURE_2D, 0);
-#endif
+#elif RETRO_USING_SDL1
+    Engine.videoBuffer = SDL_CreateRGBSurface(0, width, height, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+
+    if (!Engine.videoBuffer)
+        printLog("Failed to create video buffer!");
+#elif RETRO_USING_SDL2
+    Engine.videoBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, width, height);
+
+    if (!Engine.videoBuffer)
+        printLog("Failed to create video buffer!");
 #endif
 }
 
 void CloseVideoBuffer()
 {
-#if RETRO_SOFTWARE_RENDER
     if (videoPlaying) {
-#if RETRO_USING_SDL1
-        SDL_FreeSurface(Engine.videoBuffer);
-#endif
-#if RETRO_USING_SDL2
-        SDL_DestroyTexture(Engine.videoBuffer);
-#endif
-        Engine.videoBuffer = nullptr;
-    }
-#endif
-
-#if RETRO_HARDWARE_RENDER
 #if RETRO_USING_OPENGL
-    if (videoBuffer > 0) {
-        glDeleteTextures(1, &videoBuffer);
-        videoBuffer = 0;
+        if (videoBuffer > 0) {
+            glDeleteTextures(1, &videoBuffer);
+            videoBuffer = 0;
+        }
+#elif RETRO_USING_SDL1
+        SDL_FreeSurface(Engine.videoBuffer);
+        Engine.videoBuffer = nullptr;
+#elif RETRO_USING_SDL2
+        SDL_DestroyTexture(Engine.videoBuffer);
+        Engine.videoBuffer = nullptr;
+#endif
     }
-#endif
-#endif
 }

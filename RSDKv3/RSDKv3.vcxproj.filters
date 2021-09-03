@@ -22,6 +22,12 @@
     <Filter Include="Header Files\vdf_parser">
       <UniqueIdentifier>{508c825f-9a6b-4ced-8588-bfa55ba16df8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\tinyxml2">
+      <UniqueIdentifier>{874fbe36-9fda-4467-ab8c-2f260ab0988a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tinyxml2">
+      <UniqueIdentifier>{a8464249-4810-4bf0-b48e-1f89f064f4ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -99,6 +105,12 @@
     <ClInclude Include="..\dependencies\windows\ValveFileVDF\vdf_parser.hpp">
       <Filter>Header Files\vdf_parser</Filter>
     </ClInclude>
+    <ClInclude Include="..\dependencies\all\tinyxml2\tinyxml2.h">
+      <Filter>Header Files\tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="ModAPI.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -168,6 +180,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\all\tinyxml2\tinyxml2.cpp">
+      <Filter>Source Files\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="ModAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

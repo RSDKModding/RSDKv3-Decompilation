@@ -114,28 +114,7 @@ typedef unsigned int uint;
 #define RETRO_GAMEPLATFORM (RETRO_STANDARD)
 #endif
 
-#define RETRO_SW_RENDER  (0)
-#define RETRO_HW_RENDER  (1)
-#define RETRO_RENDERTYPE (RETRO_SW_RENDER)
-
-#ifdef USE_SW_REN
-#undef RETRO_RENDERTYPE
-#define RETRO_RENDERTYPE (RETRO_SW_RENDER)
-#endif
-
-#ifdef USE_HW_REN
-#undef RETRO_RENDERTYPE
-#define RETRO_RENDERTYPE (RETRO_HW_RENDER)
-#endif
-
-#if RETRO_RENDERTYPE == RETRO_SW_RENDER
-#define RETRO_USING_OPENGL (0)
-#elif RETRO_RENDERTYPE == RETRO_HW_RENDER
 #define RETRO_USING_OPENGL (1)
-#endif
-
-#define RETRO_SOFTWARE_RENDER (RETRO_RENDERTYPE == RETRO_SW_RENDER)
-#define RETRO_HARDWARE_RENDER (RETRO_RENDERTYPE == RETRO_HW_RENDER)
 
 #if RETRO_USING_OPENGL
 #if RETRO_PLATFORM == RETRO_ANDROID
@@ -223,8 +202,16 @@ enum RetroEngineCallbacks {
     CALLBACK_PAUSE_REQUESTED         = 13,
     CALLBACK_FULL_VERSION_ONLY       = 14,
     CALLBACK_STAFF_CREDITS           = 15,
-    CALLBACK_MOREGAMES                      = 16,
+    CALLBACK_MOREGAMES               = 16,
     CALLBACK_AGEGATE                 = 100,
+#if RETRO_USE_MOD_LOADER
+    //Mod CBs start at 0x1000
+#endif
+};
+
+enum RetroRenderTypes {
+    RENDER_SW = 0,
+    RENDER_HW = 1,
 };
 
 enum RetroBytecodeFormat {
@@ -272,6 +259,7 @@ enum RetroBytecodeFormat {
 
 extern bool usingCWD;
 extern bool engineDebugMode;
+extern byte renderType;
 
 // Utils
 #include "Ini.hpp"
@@ -294,6 +282,9 @@ extern bool engineDebugMode;
 #include "Video.hpp"
 #include "Userdata.hpp"
 #include "Debug.hpp"
+#if RETRO_USE_MOD_LOADER
+#include "ModAPI.hpp"
+#endif
 
 class RetroEngine
 {
@@ -353,7 +344,14 @@ public:
     void Init();
     void Run();
 
-    bool LoadGameConfig(const char *Filepath);
+    bool LoadGameConfig(const char *filepath);
+#if RETRO_USE_MOD_LOADER
+    void LoadXMLVariables();
+    void LoadXMLObjects();
+    void LoadXMLSoundFX();
+    void LoadXMLPlayers(TextMenu *menu);
+    void LoadXMLStages(TextMenu *menu, int listNo);
+#endif
 
     int callbackMessage = 0;
     int prevMessage     = 0;
@@ -365,20 +363,22 @@ public:
     const char *gameVersion = "1.3.0";
     const char *gamePlatform;
 
-#if RETRO_SOFTWARE_RENDER
-    const char *gameRenderType = "SW_Rendering";
-#elif RETRO_HARDWARE_RENDER
-    const char *gameRenderType = "HW_Rendering";
-#endif
+    const char *gameRenderTypes[2] = { "SW_Rendering", "HW_Rendering" };
 
+    const char *gameRenderType = gameRenderTypes[RENDER_SW];
+
+    // No_Haptics is default for pc but people with controllers exist
 #if RETRO_USE_HAPTICS
-    const char *gameHapticSetting = "Use_Haptics"; // No_Haptics is default for pc but people with controllers exist
+    const char *gameHapticSetting = "Use_Haptics"; 
+#else
+    const char *gameHapticSetting = "No_Haptics";
 #endif
 
-#if RETRO_SOFTWARE_RENDER
     ushort *frameBuffer   = nullptr;
     ushort *frameBuffer2x = nullptr;
-#endif
+
+    uint *texBuffer   = nullptr;
+    uint *texBuffer2x = nullptr;
 
     bool isFullScreen = false;
 
@@ -402,8 +402,6 @@ public:
     SDL_Window *window = nullptr;
 #if !RETRO_USING_OPENGL
     SDL_Renderer *renderer = nullptr;
-#endif
-#if RETRO_SOFTWARE_RENDER
     SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;
     SDL_Texture *videoBuffer    = nullptr;

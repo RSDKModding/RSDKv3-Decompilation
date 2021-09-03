@@ -1112,6 +1112,69 @@ void ConvertFunctionText(char *text)
                     }
                 }
             }
+
+#if RETRO_USE_MOD_LOADER
+            // Eg: TempValue0 = AchievementName[Ring King]
+            if (StrComp(funcName, "AchievementName")) {
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, 0);
+                int a = 0;
+                for (; a < ACHIEVEMENT_MAX; ++a) {
+                    if (StrComp(strBuffer, achievements[a].name)) {
+                        funcName[0] = 0;
+                        AppendIntegerToString(funcName, a);
+                        break;
+                    }
+                }
+
+                if (a == ACHIEVEMENT_MAX) {
+                    char buf[0x40];
+                    sprintf(buf, "WARNING: Unknown AchievementName \"%s\"", strBuffer);
+                    printLog(buf);
+                }
+            }
+
+            // Eg: TempValue0 = PlayerName[SONIC]
+            if (StrComp(funcName, "PlayerName")) {
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, 0);
+                int p = 0;
+                for (; p < PLAYER_MAX; ++p) {
+                    if (StrComp(strBuffer, playerNames[p])) {
+                        funcName[0] = 0;
+                        AppendIntegerToString(funcName, p);
+                        break;
+                    }
+                }
+
+                if (p == PLAYER_MAX) {
+                    char buf[0x40];
+                    sprintf(buf, "WARNING: Unknown PlayerName \"%s\"", strBuffer);
+                    printLog(buf);
+                }
+            }
+
+            // Eg: TempValue0 = StageName[PALMTREE PANIC 1]
+            if (StrComp(funcName, "StageName")) {
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, 0);
+                int s = 0;
+                for (; s < stageListCount[activeStageList]; ++s) {
+                    if (StrComp(strBuffer, stageList[activeStageList][s].name)) {
+                        funcName[0] = 0;
+                        AppendIntegerToString(funcName, s);
+                        break;
+                    }
+                }
+
+                if (s == stageListCount[activeStageList]) {
+                    char buf[0x40];
+                    sprintf(buf, "WARNING: Unknown StageName \"%s\"", strBuffer);
+                    printLog(buf);
+                }
+            }
+#endif
+
             if (ConvertStringToInteger(funcName, &value)) {
                 scriptData[scriptDataPos++] = SCRIPTVAR_INTCONST;
                 scriptData[scriptDataPos++] = value;

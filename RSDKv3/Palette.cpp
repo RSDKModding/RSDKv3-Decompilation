@@ -18,9 +18,9 @@ byte fadeB   = 0;
 
 int paletteMode = 0;
 
-#if RETRO_HARDWARE_RENDER
 int texPaletteNum = 0;
-#endif
+
+uint gfxPalette16to32[0x10000];
 
 void LoadPalette(const char *filePath, int paletteID, int startPaletteIndex, int startIndex, int endIndex)
 {
@@ -69,14 +69,13 @@ void SetLimitedFade(byte paletteID, byte R, byte G, byte B, ushort alpha, int st
 
     uint alpha2 = 0xFF - alpha;
     for (int i = startIndex; i < endIndex; ++i) {
-        activePalette[i]     = PACK_RGB888((byte)((ushort)(R * alpha + alpha2 * activePalette32[i].r) >> 8),
-                                            (byte)((ushort)(G * alpha + alpha2 * activePalette32[i].g) >> 8),
-                                            (byte)((ushort)(B * alpha + alpha2 * activePalette32[i].b) >> 8));
+        PACK_RGB888(activePalette[i], (byte)((ushort)(R * alpha + alpha2 * activePalette32[i].r) >> 8),
+                    (byte)((ushort)(G * alpha + alpha2 * activePalette32[i].g) >> 8),
+                    (byte)((ushort)(B * alpha + alpha2 * activePalette32[i].b) >> 8));
         activePalette32[i].r = (byte)((ushort)(R * alpha + alpha2 * activePalette32[i].r) >> 8);
         activePalette32[i].g = (byte)((ushort)(G * alpha + alpha2 * activePalette32[i].g) >> 8);
         activePalette32[i].b = (byte)((ushort)(B * alpha + alpha2 * activePalette32[i].b) >> 8);
-#if RETRO_HARDWARE_RENDER
-        activePalette[i] |= 1;
-#endif
+        if (renderType == RENDER_HW)
+            activePalette[i] |= 1;
     }
 }
