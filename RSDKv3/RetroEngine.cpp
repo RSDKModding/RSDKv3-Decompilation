@@ -823,15 +823,15 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
             globalVariables[v] += fileBuffer2 << 8;
             FileRead(&fileBuffer2, 1);
             globalVariables[v] += fileBuffer2;
-
-            SetGlobalVariableByName("Engine.DevMenuFlag", false);
-            if (devMenu) {
-                SetGlobalVariableByName("Engine.DevMenuFlag", true);
-            }
-
-            SetGlobalVariableByName("Engine.PlatformId", RETRO_GAMEPLATFORMID);
-            SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
         }
+
+        SetGlobalVariableByName("Options.DevMenuFlag", false);
+        if (devMenu) {
+            SetGlobalVariableByName("Options.DevMenuFlag", true);
+        }
+
+        SetGlobalVariableByName("Engine.PlatformId", RETRO_GAMEPLATFORMID);
+        SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
 
         // Read SFX
         byte sfxCount = 0;

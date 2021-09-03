@@ -77,9 +77,7 @@ LOCAL_MODULE := main
 
 SDL_PATH := ../SDL
 
-LOCAL_CFLAGS   := -fexceptions \
-	-DUSE_HW_REN
-#(un)comment the above line to toggle HW rendering
+LOCAL_CFLAGS   := -fexceptions 
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/$(SDL_PATH)/include \
@@ -88,10 +86,12 @@ LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/$(OGG_DIR)/include \
     $(LOCAL_PATH)/$(THEORA_DIR)/include \
     $(LOCAL_PATH)/dependencies/all/theoraplay \
+    $(LOCAL_PATH)/dependencies/all/tinyxml2 \
 
 
 WILDCARD_SETUP := \
   $(wildcard $(LOCAL_PATH)/dependencies/all/theoraplay/*.c) \
+  $(wildcard $(LOCAL_PATH)/dependencies/all/tinyxml2/*.cpp) \
   $(wildcard $(LOCAL_PATH)/RSDKv3/*.cpp)
 
 LOCAL_SRC_FILES := $(subst jni/src/, , $(WILDCARD_SETUP))
