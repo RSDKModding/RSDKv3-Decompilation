@@ -113,11 +113,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Download tinyxml2
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
-          Expand-Archive -Path tinyxml2.zip -DestinationPath ./dependencies/all/
-          Rename-Item ./dependencies/all/tinyxml2-master tinyxml2
       - name: Install dependencies
         run: |
           sudo apt-get update
