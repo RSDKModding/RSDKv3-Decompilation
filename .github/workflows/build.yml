@@ -25,6 +25,11 @@ jobs:
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
           Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/windows/
           Rename-Item ./dependencies/windows/libtheora-1.1.1 libtheora
+      - name: Download tinyxml2
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
+          Expand-Archive -Path tinyxml2.zip -DestinationPath ./dependencies/all/
+          Rename-Item ./dependencies/windows/tinyxml2
       - name: Download GLEW
         run: |
           Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
@@ -70,6 +75,11 @@ jobs:
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
           Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/windows/
           Rename-Item ./dependencies/windows/libtheora-1.1.1 libtheora
+      - name: Download tinyxml2
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
+          Expand-Archive -Path tinyxml2.zip -DestinationPath ./dependencies/all/
+          Rename-Item ./dependencies/windows/tinyxml2
       - name: Download GLEW
         run: |
           Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
@@ -103,6 +113,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Download tinyxml2
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
+          Expand-Archive -Path tinyxml2.zip -DestinationPath ./dependencies/all/
+          Rename-Item ./dependencies/windows/tinyxml2
       - name: Install dependencies
         run: |
           sudo apt-get update
