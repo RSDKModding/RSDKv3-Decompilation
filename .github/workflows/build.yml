@@ -120,7 +120,7 @@ jobs:
       - name: Build Sonic CD Android
         working-directory: ./android
         run: |
-          ./android/gradlew.bat
+          ./gradlew.bat
       - name: Upload artifact Android
         uses: actions/upload-artifact@v2
         with:
