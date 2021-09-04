@@ -35,6 +35,7 @@ SOURCES = \
   RSDKv3/Userdata.cpp \
   RSDKv3/Video.cpp \
   dependencies/all/tinyxml2/tinyxml2.cpp \
+  dependencies/all/tinyxml2/tinyxml2.h \
 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
@@ -55,10 +56,6 @@ all: bin/soniccd dependencies/all/tinyxml2
 include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
-	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
-
-dependencies/all/tinyxml2: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
