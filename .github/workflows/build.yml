@@ -107,10 +107,24 @@ jobs:
         with:
           name: SonicCD-Windows-x64
           path: artifacts   
-  
   linux:
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout repository Android
+        uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@1
+        with:
+          java-version: 1.8
+      - name: Build Sonic CD Android
+        run: |
+          ./gradlew assembleRelease
+      - name: Upload artifact Android
+        uses: actions/upload-artifact@v2
+        with:
+          name: SonicCD-Android
+          path: artifacts
+          
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install dependencies
