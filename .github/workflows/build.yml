@@ -118,6 +118,9 @@ jobs:
           java-version: 1.8
       - name: Gradlew Wrapper Validation
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+      - name: Gradlew executable
+        run: |
+          chmod +x ./android/gradlew.bat
       - name: Build Sonic CD Android
         run: |
           ./android/gradlew.bat
