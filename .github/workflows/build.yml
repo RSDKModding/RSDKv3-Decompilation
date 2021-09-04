@@ -151,7 +151,7 @@ jobs:
           java-version: 11
       - name: Build Sonic CD Android
         run: |
-          ./gradlew.bat build androidDependencies
+          ./android/gradlew.bat build androidDependencies
       - name: Upload artifact Android
         uses: actions/upload-artifact@v2
         with:
