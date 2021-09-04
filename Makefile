@@ -34,6 +34,7 @@ SOURCES = \
   RSDKv3/Text.cpp \
   RSDKv3/Userdata.cpp \
   RSDKv3/Video.cpp \
+  dependencies/all/tinyxml2/tinyxml2.cpp
 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
