@@ -9,10 +9,6 @@ CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONF
    -Idependencies/all/tinyxml2 
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec tinyxml2) -pthread $(LIBS)
-
-objects/tinyxm12.o: %=dependencies/all/tinyxml2/tinyxml2.cpp
-	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
 SOURCES = \
   dependencies/all/theoraplay/theoraplay.c \
@@ -57,7 +53,9 @@ all: bin/soniccd
 
 include $(wildcard $(DEPENDENCIES))
 
-	
+objects/tinyxm12.o: %=dependencies/all/tinyxml2/tinyxml2.cpp
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c	
 	
 objects/%.o: %
 	mkdir -p $(@D)
