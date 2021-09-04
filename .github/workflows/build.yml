@@ -140,6 +140,10 @@ jobs:
           Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-2.0.16.zip" -OutFile "SDL2.zip"
           Expand-Archive -Path SDL2.zip -DestinationPath ./dependencies/android/
           Rename-Item ./dependencies/android/SDL2-2.0.16 SDL
+      - name: Run vcpkg
+        run: |
+          vcpkg install libogg:arm-android libvorbis:arm-android libtheora:arm-android
+          vcpkg integrate install
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
