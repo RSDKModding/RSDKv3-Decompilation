@@ -118,13 +118,13 @@ jobs:
         run : |
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-1.3.5.zip" -OutFile "libogg.zip"
           Expand-Archive -Path libogg.zip -DestinationPath ./dependencies/android/
-          Rename-Item ./dependencies/windows/libogg-1.3.5 libogg
+          Rename-Item ./dependencies/android/libogg-1.3.5 libogg
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.7.zip" -OutFile "libvorbis.zip"
           Expand-Archive -Path libvorbis.zip -DestinationPath ./dependencies/android/
-          Rename-Item ./dependencies/windows/libvorbis-1.3.7 libvorbis
+          Rename-Item ./dependencies/android/libvorbis-1.3.7 libvorbis
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
           Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/android/
-          Rename-Item ./dependencies/windows/libtheora-1.1.1 libtheora
+          Rename-Item ./dependencies/android/libtheora-1.1.1 libtheora
       - name: Download tinyxml2
         run: |
           Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
@@ -134,12 +134,12 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
           Expand-Archive -Path GLEW.zip -DestinationPath ./dependencies/android/
-          Rename-Item ./dependencies/windows/glew-2.2.0 glew
+          Rename-Item ./dependencies/android/glew-2.2.0 glew
       - name: Download SDL2
         run: |
           Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
           Expand-Archive -Path SDL2.zip -DestinationPath ./dependencies/android/
-          Rename-Item ./dependencies/windows/SDL2-2.0.14 SDL2
+          Rename-Item ./dependencies/android/SDL2-2.0.14 SDL2
       - name: Run vcpkg
         run: |
           vcpkg install libogg:x64-windows-static libvorbis:x64-windows-static libtheora:x64-windows-static
