@@ -125,6 +125,9 @@ jobs:
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
           Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/android/app/jni/src/dependencies/all/
           Rename-Item ./dependencies/android/app/jni/src/dependencies/all/libtheora-1.1.1 libtheora
+          Invoke-WebRequest -Uri "https://github.com/icculus/theoraplay/archive/refs/heads/main.zip" -OutFile "libtheoraplay.zip"
+          Expand-Archive -Path libtheoraplay.zip -DestinationPath ./dependencies/android/app/jni/src/dependencies/all/
+          Rename-Item ./dependencies/android/app/jni/src/dependencies/all/libtheora-1.1.1 theoraplay
       - name: Download tinyxml2
         run: |
           Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
