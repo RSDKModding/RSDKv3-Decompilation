@@ -49,7 +49,7 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
-all: bin/soniccd tinyxml2.o
+all: bin/soniccd tinyxml2.cpp.o
 
 include $(wildcard $(DEPENDENCIES))
 
