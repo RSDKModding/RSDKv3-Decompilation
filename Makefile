@@ -9,8 +9,7 @@ CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONF
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
 	
-SOURCES = \
-  dependencies/all/theoraplay/theoraplay.c \
+SOURCES = dependencies/all/theoraplay/theoraplay.c \
   RSDKv3/Animation.cpp \
   RSDKv3/Audio.cpp \
   RSDKv3/Collision.cpp \
