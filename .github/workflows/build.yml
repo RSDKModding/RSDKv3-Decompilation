@@ -123,7 +123,7 @@ jobs:
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Build Sonic CD Android
         run: |
-          ./android/gradlew
+          ./android
       - name: Upload artifact Android
         uses: actions/upload-artifact@v2
         with:
