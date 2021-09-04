@@ -34,7 +34,6 @@ SOURCES = \
   RSDKv3/Text.cpp \
   RSDKv3/Userdata.cpp \
   RSDKv3/Video.cpp \
-  dependencies/all/tinyxml2/tinyxml2.cpp
 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
@@ -50,7 +49,7 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
-all: bin/soniccd
+all: bin/soniccd dependencies/all/tinyxml2/tinyxml2.cpp
 
 include $(wildcard $(DEPENDENCIES))
 
