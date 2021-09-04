@@ -12,7 +12,6 @@ LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile 
 
 SOURCES = \
   dependencies/all/theoraplay/theoraplay.c \
-  dependencies/all/tinyxml2/tinyxml2.cpp \
   RSDKv3/Animation.cpp \
   RSDKv3/Audio.cpp \
   RSDKv3/Collision.cpp \
@@ -54,7 +53,7 @@ all: bin/soniccd
 include $(wildcard $(DEPENDENCIES))
 
 	
-objects/tinyxm12.o: $(SOURCES)
+objects/tinyxm12.o: dependencies/all/tinyxml2/tinyxml2.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
