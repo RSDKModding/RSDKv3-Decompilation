@@ -40,6 +40,9 @@
 		C96219982589B51E00B47AB3 /* Theora.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C96219962589B51E00B47AB3 /* Theora.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C96219A02589B7AB00B47AB3 /* theoraplay.c in Sources */ = {isa = PBXBuildFile; fileRef = C962199F2589B7AB00B47AB3 /* theoraplay.c */; };
 		C96219A5258C632A00B47AB3 /* cocoaHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = C96219A4258C632A00B47AB3 /* cocoaHelpers.mm */; };
+		C975E72826E32FB700F09AD4 /* ModAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C975E72726E32FB700F09AD4 /* ModAPI.cpp */; };
+		C975E72A26E32FC600F09AD4 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C975E72926E32FC600F09AD4 /* tinyxml2.cpp */; };
+		C975E72C26E3303E00F09AD4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C975E72B26E3303E00F09AD4 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -116,6 +119,11 @@
 		C962199F2589B7AB00B47AB3 /* theoraplay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = theoraplay.c; path = dependencies/all/theoraplay/theoraplay.c; sourceTree = SOURCE_ROOT; };
 		C96219A3258C632200B47AB3 /* cocoaHelpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cocoaHelpers.hpp; path = dependencies/mac/cocoaHelpers.hpp; sourceTree = SOURCE_ROOT; };
 		C96219A4258C632A00B47AB3 /* cocoaHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaHelpers.mm; path = dependencies/mac/cocoaHelpers.mm; sourceTree = SOURCE_ROOT; };
+		C975E72526E32FA300F09AD4 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyxml2.h; path = dependencies/all/tinyxml2/tinyxml2.h; sourceTree = SOURCE_ROOT; };
+		C975E72626E32FAC00F09AD4 /* ModAPI.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ModAPI.hpp; sourceTree = "<group>"; };
+		C975E72726E32FB700F09AD4 /* ModAPI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModAPI.cpp; sourceTree = "<group>"; };
+		C975E72926E32FC600F09AD4 /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxml2.cpp; path = dependencies/all/tinyxml2/tinyxml2.cpp; sourceTree = SOURCE_ROOT; };
+		C975E72B26E3303E00F09AD4 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +134,7 @@
 				C96219912589B50100B47AB3 /* Ogg.framework in Frameworks */,
 				C96219842589B10600B47AB3 /* SDL2.framework in Frameworks */,
 				C96219942589B51000B47AB3 /* Vorbis.framework in Frameworks */,
+				C975E72C26E3303E00F09AD4 /* OpenGL.framework in Frameworks */,
 				C96219972589B51E00B47AB3 /* Theora.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -163,6 +172,7 @@
 		C962193F25898B6700B47AB3 /* Source Files */ = {
 			isa = PBXGroup;
 			children = (
+				C975E72726E32FB700F09AD4 /* ModAPI.cpp */,
 				C92834CF2615E66D00D51CCE /* Animation.cpp */,
 				C92834C62615E66C00D51CCE /* Audio.cpp */,
 				C92834CC2615E66D00D51CCE /* Collision.cpp */,
@@ -194,6 +204,7 @@
 		C962194025898B6E00B47AB3 /* Header Files */ = {
 			isa = PBXGroup;
 			children = (
+				C975E72626E32FAC00F09AD4 /* ModAPI.hpp */,
 				C92834B32615E64C00D51CCE /* Animation.hpp */,
 				C92834AA2615E64C00D51CCE /* Audio.hpp */,
 				C92834BA2615E64D00D51CCE /* Collision.hpp */,
@@ -224,6 +235,7 @@
 		C96219822589B10600B47AB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C975E72B26E3303E00F09AD4 /* OpenGL.framework */,
 				C96219962589B51E00B47AB3 /* Theora.framework */,
 				C96219932589B51000B47AB3 /* Vorbis.framework */,
 				C96219902589B50100B47AB3 /* Ogg.framework */,
@@ -254,6 +266,7 @@
 		C96219A1258C62FF00B47AB3 /* helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C975E72526E32FA300F09AD4 /* tinyxml2.h */,
 				C96219A3258C632200B47AB3 /* cocoaHelpers.hpp */,
 			);
 			name = helpers;
@@ -262,6 +275,7 @@
 		C96219A2258C631100B47AB3 /* helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C975E72926E32FC600F09AD4 /* tinyxml2.cpp */,
 				C96219A4258C632A00B47AB3 /* cocoaHelpers.mm */,
 			);
 			name = helpers;
@@ -342,6 +356,7 @@
 				C92834DA2615E66D00D51CCE /* Object.cpp in Sources */,
 				C92834D92615E66D00D51CCE /* Sprite.cpp in Sources */,
 				C92834D82615E66D00D51CCE /* main.cpp in Sources */,
+				C975E72826E32FB700F09AD4 /* ModAPI.cpp in Sources */,
 				C92834DC2615E66D00D51CCE /* Audio.cpp in Sources */,
 				C92834E12615E66D00D51CCE /* Input.cpp in Sources */,
 				C92834E42615E66D00D51CCE /* Player.cpp in Sources */,
@@ -357,6 +372,7 @@
 				C92834DB2615E66D00D51CCE /* String.cpp in Sources */,
 				C92834DD2615E66D00D51CCE /* Userdata.cpp in Sources */,
 				C92834DE2615E66D00D51CCE /* Reader.cpp in Sources */,
+				C975E72A26E32FC600F09AD4 /* tinyxml2.cpp in Sources */,
 				C92834DF2615E66D00D51CCE /* Text.cpp in Sources */,
 				C92834D52615E66D00D51CCE /* Debug.cpp in Sources */,
 				C92834E32615E66D00D51CCE /* Math.cpp in Sources */,
@@ -497,13 +513,14 @@
 					"$(PROJECT_DIR)/dependencies/mac/libvorbis/macosx",
 					"$(PROJECT_DIR)/dependencies/mac/libtheora/macosx",
 				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/all/tinyxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/dependencies/mac/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = Rubberduckycooly.RSDKv3;
+				MARKETING_VERSION = 1.3.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Decomp.RSDKv3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -527,13 +544,14 @@
 					"$(PROJECT_DIR)/dependencies/mac/libvorbis/macosx",
 					"$(PROJECT_DIR)/dependencies/mac/libtheora/macosx",
 				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/all/tinyxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/dependencies/mac/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = Rubberduckycooly.RSDKv3;
+				MARKETING_VERSION = 1.3.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Decomp.RSDKv3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
