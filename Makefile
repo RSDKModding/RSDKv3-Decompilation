@@ -6,13 +6,13 @@ endif
 CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec tinyxml2) $(CXXFLAGS) \
    -Idependencies/all/filesystem/include \
    -Idependencies/all/theoraplay \
-   -Idependencies/all/tinyxml2
+   -Idependencies/all/tinyxml2 \
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec tinyxml2) -pthread $(LIBS)
 
-SOURCES =
+SOURCES = \
   dependencies/all/theoraplay/theoraplay.c \
-  dependencies/all/tinyxml2/tinyxml2.cpp\
+  dependencies/all/tinyxml2/tinyxml2.cpp \
   RSDKv3/Animation.cpp \
   RSDKv3/Audio.cpp \
   RSDKv3/Collision.cpp \
