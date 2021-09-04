@@ -210,7 +210,7 @@ void InitUserdata()
     }
     else {
         fClose(file);
-        ini = IniParser(buffer);
+        ini = IniParser(buffer, false);
 
         if (!ini.GetBool("Dev", "DevMenu", &Engine.devMenu))
             Engine.devMenu = false;
@@ -596,7 +596,22 @@ void writeSettings() {
     ini.SetFloat("Controller 1", "LTriggerDeadzone", LTRIGGER_DEADZONE);
     ini.SetFloat("Controller 1", "RTriggerDeadzone", RTRIGGER_DEADZONE);
 
-    ini.Write(BASE_PATH"settings.ini");
+    
+    char buffer[0x200];
+#if RETRO_PLATFORM == RETRO_UWP
+    if (!usingCWD)
+        sprintf(buffer, "%s/settings.ini", getResourcesPath());
+    else
+        sprintf(buffer, "%ssettings.ini", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
+    sprintf(buffer, "%s/settings.ini", gamePath);
+#elif RETRO_PLATFORM == RETRO_iOS
+    sprintf(buffer, "%s/settings.ini", getDocumentsPath());
+#else
+    sprintf(buffer, BASE_PATH"settings.ini");
+#endif
+    
+    ini.Write(buffer, false);
 }
 
 void ReadUserdata()
