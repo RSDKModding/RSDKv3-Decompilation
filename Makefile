@@ -56,8 +56,7 @@ objects/tinyxm12.o: $dependencies/all/tinyxml2/tinyxml2.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c	
 	
-objects/%.o: %
-	OBJECTS += dependencies/all/tinyxml2/tinyxml2.cpp
+objects/%.o: %;dependencies/all/tinyxml2/tinyxml2.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
