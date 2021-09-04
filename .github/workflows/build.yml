@@ -121,7 +121,7 @@ jobs:
           chmod +x ./android/gradlew
       - name: Build Sonic CD Android
         run: |
-          ./android/gradlew clean build
+          ./android/gradlew task --stacktrace --debug
       - name: Upload artifact Android
         uses: actions/upload-artifact@v2
         with:
