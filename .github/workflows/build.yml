@@ -116,7 +116,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install libtheora-dev libogg-dev libvorbis-dev libsdl2-dev libglew-dev libtinyxml2
+          sudo apt-get install libtheora-dev libogg-dev libvorbis-dev libsdl2-dev libglew-dev libtinyxml2-dev
       - name: Build Sonic CD
         run: make USE_HW_REN=1
       - name: Upload artifact
