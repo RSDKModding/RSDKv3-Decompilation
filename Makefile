@@ -52,11 +52,11 @@ all: bin/soniccd
 
 include $(wildcard $(DEPENDENCIES))
 
-objects/tinyxm12.o: $dependencies/all/tinyxml2/tinyxml2.cpp
+objects/tinyxm12.o: dependencies/all/tinyxml2/tinyxml2.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c	
 	
-objects/%.o: dependencies/all/tinyxml2/tinyxml2.cpp
+objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
