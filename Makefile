@@ -50,7 +50,7 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
-all: bin/soniccd
+all: bin/soniccd dependencies/all/tinyxml2
 
 include $(wildcard $(DEPENDENCIES))
 
@@ -58,7 +58,7 @@ objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 
-objects/%.d: %
+dependencies/all/tinyxml2: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
