@@ -55,6 +55,7 @@ GLuint gfxTextureID[HW_TEXTURE_LIMIT];
 GLuint framebuffer240  = 0;
 GLuint renderbuffer240 = 0;
 GLuint retroBuffer     = 0;
+GLuint retroBuffer2x     = 0;
 GLuint videoBuffer     = 0;
 #endif
 DrawVertex screenRect[4];
@@ -302,6 +303,14 @@ int InitRenderDevice()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREEN_XSIZE, SCREEN_YSIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+    glGenTextures(1, &retroBuffer2x);
+    glBindTexture(GL_TEXTURE_2D, retroBuffer2x);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     for (int c = 0; c < 0x10000; ++c) {
         int r               = (c & 0b1111100000000000) >> 8;
@@ -812,9 +821,54 @@ void RenderFromTexture()
 
 void RenderFromRetroBuffer()
 {
+    if (drawStageGFXHQ) {
+        glBindTexture(GL_TEXTURE_2D, retroBuffer2x);
+
+        uint *texBufferPtr     = Engine.texBuffer2x;
+        ushort *framebufferPtr = Engine.frameBuffer;
+        for (int y = 0; y < (SCREEN_YSIZE / 2) + 12; ++y) {
+            for (int x = 0; x < SCREEN_XSIZE; ++x) {
+                *texBufferPtr = gfxPalette16to32[*framebufferPtr];
+                texBufferPtr++;
+
+                *texBufferPtr = gfxPalette16to32[*framebufferPtr];
+                texBufferPtr++;
+
+                framebufferPtr++;
+            }
+
+            framebufferPtr -= SCREEN_XSIZE;
+            for (int x = 0; x < SCREEN_XSIZE; ++x) {
+                *texBufferPtr = gfxPalette16to32[*framebufferPtr];
+                texBufferPtr++;
+
+                *texBufferPtr = gfxPalette16to32[*framebufferPtr];
+                texBufferPtr++;
+
+                framebufferPtr++;
+            }
+        }
+
+        framebufferPtr = Engine.frameBuffer2x;
+        for (int y = 0; y < ((SCREEN_YSIZE / 2) - 12) * 2; ++y) {
+            for (int x = 0; x < SCREEN_XSIZE; ++x) {
+                *texBufferPtr = gfxPalette16to32[*framebufferPtr];
+                framebufferPtr++;
+
+                texBufferPtr++;
+                *texBufferPtr = gfxPalette16to32[*framebufferPtr];
+                framebufferPtr++;
+
+                texBufferPtr++;
+            }
+        }
+
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2, GL_RGBA, GL_UNSIGNED_BYTE, Engine.texBuffer2x);
+    }
+
 #if RETRO_USING_OPENGL
     glLoadIdentity();
-    glBindTexture(GL_TEXTURE_2D, retroBuffer);
+    glBindTexture(GL_TEXTURE_2D, drawStageGFXHQ ? retroBuffer2x : retroBuffer);
     if (viewAngle >= 180.0) {
         if (viewAnglePos < 180.0) {
             viewAnglePos += 7.5;
@@ -1065,20 +1119,19 @@ void TransferRetroBuffer()
 {
 #if RETRO_USING_OPENGL
     glBindTexture(GL_TEXTURE_2D, retroBuffer);
-    {
-        ushort *frameBufferPtr = Engine.frameBuffer;
-        uint *texBufferPtr     = Engine.texBuffer;
-        bool flag              = false;
-        for (int y = 0; y < SCREEN_YSIZE; ++y) {
-            for (int x = 0; x < SCREEN_XSIZE; ++x) {
-                texBufferPtr[x] = gfxPalette16to32[frameBufferPtr[x]];
-            }
-            texBufferPtr += SCREEN_XSIZE;
-            frameBufferPtr += SCREEN_XSIZE;
-        }
 
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_XSIZE, SCREEN_YSIZE, GL_RGBA, GL_UNSIGNED_BYTE, Engine.texBuffer);
+    ushort *frameBufferPtr = Engine.frameBuffer;
+    uint *texBufferPtr     = Engine.texBuffer;
+    for (int y = 0; y < SCREEN_YSIZE; ++y) {
+        for (int x = 0; x < SCREEN_XSIZE; ++x) {
+            texBufferPtr[x] = gfxPalette16to32[frameBufferPtr[x]];
+        }
+        texBufferPtr += SCREEN_XSIZE;
+        frameBufferPtr += SCREEN_XSIZE;
     }
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_XSIZE, SCREEN_YSIZE, GL_RGBA, GL_UNSIGNED_BYTE, Engine.texBuffer);
+
     glBindTexture(GL_TEXTURE_2D, 0);
 #endif
 }

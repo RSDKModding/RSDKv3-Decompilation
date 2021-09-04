@@ -120,6 +120,7 @@ extern GLuint gfxTextureID[HW_TEXTURE_LIMIT];
 extern GLuint framebuffer240;
 extern GLuint renderbuffer240;
 extern GLuint retroBuffer;
+extern GLuint retroBuffer2x;
 extern GLuint videoBuffer;
 #endif
 extern DrawVertex screenRect[4];
