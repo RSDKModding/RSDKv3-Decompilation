@@ -107,7 +107,7 @@ jobs:
         with:
           name: SonicCD-Windows-x64
           path: artifacts   
-  linux:
+  android:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository Android
@@ -119,15 +119,19 @@ jobs:
       - name: Gradlew executable
         run: |
           chmod +x ./android/gradlew
+      - name: Gradlew Wrapper Validation
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Build Sonic CD Android
         run: |
-          ./android/gradlew test
+          ./android/gradlew
       - name: Upload artifact Android
         uses: actions/upload-artifact@v2
         with:
           name: SonicCD-Android
           path: artifacts
-          
+  linux:
+    runs-on: ubuntu-20.04
+    steps: 
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install dependencies
