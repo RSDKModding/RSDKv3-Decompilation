@@ -118,6 +118,7 @@ jobs:
           distribution: 'zulu'
           java-version: 11
       - name: Build Sonic CD Android
+        working-directory: ./android
         run: |
           ./android/gradlew.bat
       - name: Upload artifact Android
