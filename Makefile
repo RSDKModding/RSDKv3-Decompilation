@@ -10,7 +10,7 @@ CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONF
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec tinyxml2) -pthread $(LIBS)
 
-objects/tinyxm12.o: dependencies/all/tinyxml2/tinyxml2.cpp
+objects/tinyxm12.o: %=dependencies/all/tinyxml2/tinyxml2.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
