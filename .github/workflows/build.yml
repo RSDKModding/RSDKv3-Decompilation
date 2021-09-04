@@ -108,7 +108,7 @@ jobs:
           name: SonicCD-Windows-x64
           path: artifacts   
   android:
-    runs-on: ubuntu-20.04
+    runs-on: windows-latest
     steps:
       - name: Checkout repository Android
         uses: actions/checkout@v2
