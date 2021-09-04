@@ -53,7 +53,7 @@ all: bin/soniccd tinyxml2.o
 
 include $(wildcard $(DEPENDENCIES))
 
-tinyxml2.o: tinyxml2.cpp
+tinyxml2.cpp.o: tinyxml2.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 -c $< -o $@ 
 
