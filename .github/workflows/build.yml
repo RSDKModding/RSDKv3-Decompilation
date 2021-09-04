@@ -137,9 +137,9 @@ jobs:
           Rename-Item ./dependencies/android/glew-2.2.0 glew
       - name: Download SDL2
         run: |
-          Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
+          Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-2.0.16.zip" -OutFile "SDL2.zip"
           Expand-Archive -Path SDL2.zip -DestinationPath ./dependencies/android/
-          Rename-Item ./dependencies/android/SDL2-2.0.14 SDL2
+          Rename-Item ./dependencies/android/SDL2-2.0.16 SDL2
       - name: Run vcpkg
         run: |
           vcpkg install libogg:x64-windows-static libvorbis:x64-windows-static libtheora:x64-windows-static
