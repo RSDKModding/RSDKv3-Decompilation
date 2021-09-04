@@ -6,7 +6,7 @@ endif
 CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec tinyxml2) $(CXXFLAGS) \
    -Idependencies/all/filesystem/include \
    -Idependencies/all/theoraplay \
-   -Idependencies/all/tinyxml2 \
+   -Idependencies/all/tinyxml2 
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec tinyxml2) -pthread $(LIBS)
 
@@ -34,7 +34,7 @@ SOURCES = \
   RSDKv3/String.cpp \
   RSDKv3/Text.cpp \
   RSDKv3/Userdata.cpp \
-  RSDKv3/Video.cpp \
+  RSDKv3/Video.cpp 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
   CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
