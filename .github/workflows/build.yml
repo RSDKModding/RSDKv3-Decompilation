@@ -116,14 +116,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Gradlew executable
-        run: |
-          chmod +x ./android/gradlew
       - name: Gradlew Wrapper Validation
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Build Sonic CD Android
         run: |
-          ./android
+          ./android/gradlew.bat
       - name: Upload artifact Android
         uses: actions/upload-artifact@v2
         with:
