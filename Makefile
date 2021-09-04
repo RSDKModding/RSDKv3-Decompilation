@@ -34,8 +34,6 @@ SOURCES = \
   RSDKv3/Text.cpp \
   RSDKv3/Userdata.cpp \
   RSDKv3/Video.cpp \
-  dependencies/all/tinyxml2/tinyxml2.cpp dependencies/all/tinyxml2/tinyxml2.h \
-
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
   CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
@@ -50,11 +48,15 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
-all: bin/soniccd dependencies/all/tinyxml2
+all: bin/soniccd
 
 include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
+	
+objects/tinyxm12.o: dependencies/all/tinyxml2/tinyxml2.cpp dependencies/all/tinyxml2/tinyxml2.h
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 	
