@@ -5,7 +5,8 @@ endif
 
 CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) $(CXXFLAGS) \
    -Idependencies/all/filesystem/include \
-   -Idependencies/all/theoraplay 
+   -Idependencies/all/theoraplay
+   -Idependencies/all/tinyxml2
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
 
@@ -56,7 +57,7 @@ include $(wildcard $(DEPENDENCIES))
 objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 -c $< -o $@
-	gcc dependencies/all/tinyxml2/tinyxml2.cpp -c -o main
+	gcc tinyxml2.cpp -c -o main
 
 bin/soniccd: $(OBJECTS)
 	mkdir -p $(@D)
