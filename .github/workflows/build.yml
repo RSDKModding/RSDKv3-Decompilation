@@ -128,9 +128,6 @@ jobs:
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
           Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/android
           Rename-Item ./dependencies/android/libtheora-1.1.1 libtheora
-          Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" -OutFile "libtheora.zip"
-          Expand-Archive -Path libtheora.zip -DestinationPath ./dependencies/android/app/jni/src/dependencies/android/
-          Rename-Item ./dependencies/android/app/jni/src/dependencies/android/libtheora-1.1.1 libtheora
       - name: Download tinyxml2
         run: |
           Invoke-WebRequest -Uri "https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip" -OutFile "tinyxml2.zip"
@@ -146,10 +143,6 @@ jobs:
           Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-2.0.16.zip" -OutFile "SDL2.zip"
           Expand-Archive -Path SDL2.zip -DestinationPath ./dependencies/android/
           Rename-Item ./dependencies/android/SDL2-2.0.16 SDL
-      - name: Run vcpkg
-        run: |
-          vcpkg install libogg:arm-android libvorbis:arm-android libtheora:arm-android
-          vcpkg integrate install
       - name: Move & Copy stuff
         run: |
           Copy-Item -Path ./dependencies/all/theoraplay -Destination ./dependencies/android/app/jni/src/dependencies/android/
