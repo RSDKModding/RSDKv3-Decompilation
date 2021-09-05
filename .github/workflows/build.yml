@@ -174,8 +174,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libtheora-dev libogg-dev libvorbis-dev libsdl2-dev libglew-dev
-          sudo wget --no-check-certificate --content-disposition https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip -p /var/lib/apt/lists/
-          unzip var/lib/apt/lists/tinyxml2-master.zip
+          sudo wget --no-check-certificate --content-disposition https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip -p ~/dependencies/all/
+          unzip ~/dependencies/all/tinyxml2-master.zip
       - name: Build Sonic CD
         run: make USE_HW_REN=1
       - name: Upload artifact
