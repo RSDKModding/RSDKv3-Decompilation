@@ -4,6 +4,10 @@
 #include <winrt/Windows.Storage.h>
 #endif
 
+#if RETRO_PLATFORM == RETRO_ANDROID
+#include <unistd.h>
+#endif
+
 bool usingCWD        = false;
 bool engineDebugMode = false;
 byte renderType      = RENDER_SW;
@@ -285,6 +289,10 @@ bool processEvents()
 
 void RetroEngine::Init()
 {
+#if RETRO_PLATFORM == RETRO_ANDROID
+    sleep(1); // wait to initialize the engine
+#endif
+
     CalculateTrigAngles();
     GenerateBlendLookupTable();
     InitUserdata();
