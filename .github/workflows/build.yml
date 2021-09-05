@@ -149,8 +149,7 @@ jobs:
           Move-Item -Path ./dependencies/all/theoraplay -Destination ./dependencies/android/app/jni/src/dependencies/android/
           Copy-Item -Path ./dependencies/android/app/jni/src/dependencies/android\* -Destination ./dependencies/android
           Get-ChildItem -Path ./dependencies/android/app/jni/src/dependencies/android/libvorbis/include/vorbis
-          Get-ChildItem -Path ./dependencies/android/libvorbis/include
-          Get-ChildItem -Path ./dependencies/android/libvorbis/include/vorbis
+          Get-ChildItem -Path ./dependencies/android
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
