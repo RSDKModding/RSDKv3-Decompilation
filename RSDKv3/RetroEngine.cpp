@@ -104,17 +104,8 @@ bool processEvents()
 #ifdef RETRO_USING_TOUCH
 #if RETRO_USING_SDL2
             case SDL_FINGERMOTION:
-                touches = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId);
-                for (int i = 0; i < touches; i++) {
-                    SDL_Finger *finger = SDL_GetTouchFinger(Engine.sdlEvents.tfinger.touchId, i);
-                    if (finger) {
-                        touchDown[i] = true;
-                        touchX[i]    = finger->x * SCREEN_XSIZE;
-                        touchY[i]    = finger->y * SCREEN_YSIZE;
-                    }
-                }
-                break;
             case SDL_FINGERDOWN:
+            case SDL_FINGERUP:
                 touches = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId);
                 for (int i = 0; i < touches; i++) {
                     SDL_Finger *finger = SDL_GetTouchFinger(Engine.sdlEvents.tfinger.touchId, i);
@@ -125,7 +116,6 @@ bool processEvents()
                     }
                 }
                 break;
-            case SDL_FINGERUP: touches = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId); break;
 #endif
 #endif
             case SDL_KEYDOWN:
