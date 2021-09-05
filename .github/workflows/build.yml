@@ -177,8 +177,7 @@ jobs:
           sudo wget --no-check-certificate --content-disposition https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip -P /dependencies/all/
           sudo unzip /dependencies/all/tinyxml2-master.zip -d /dependencies/all
           sudo mv /dependencies/all/tinyxml2-master /dependencies/all/tinyxml2
-          ls /dependencies/all/
-          ls /dependencies/all/tinyxml2/
+          find -name theoraplay.c
       - name: Build Sonic CD
         run: make USE_HW_REN=1
       - name: Upload artifact
