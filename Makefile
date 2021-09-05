@@ -56,8 +56,7 @@ include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) -std=c++17 -c $< -o $@
-	gcc -Idependencies/all/tinyxml2 tinyxml2.cpp -c -o tinyxml2
+	$(CXX) $(CXXFLAGS_ALL) -std=c++17 -c $^ -o $@
 
 bin/soniccd: $(OBJECTS)
 	mkdir -p $(@D)
