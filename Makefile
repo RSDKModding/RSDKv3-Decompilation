@@ -56,7 +56,7 @@ include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) -std=c++17 -c $^ -o $@
+	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 
 bin/soniccd: $(OBJECTS)
 	mkdir -p $(@D)
