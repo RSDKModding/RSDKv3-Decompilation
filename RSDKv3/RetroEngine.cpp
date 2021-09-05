@@ -62,9 +62,8 @@ bool processEvents()
 
 #endif
 
-#ifdef RETRO_USING_MOUSE
+#ifdef RETRO_USING_MOUSE && RETRO_USING_SDL2
             case SDL_MOUSEMOTION:
-#if RETRO_USING_SDL2
                 if (touches <= 1) { // Touch always takes priority over mouse
                     SDL_GetMouseState(&touchX[0], &touchY[0]);
 
@@ -73,36 +72,26 @@ bool processEvents()
                     touchX[0] = (touchX[0] / (float)width) * SCREEN_XSIZE;
                     touchY[0] = (touchY[0] / (float)height) * SCREEN_YSIZE;
                 }
-#endif
                 break;
             case SDL_MOUSEBUTTONDOWN:
-#if RETRO_USING_SDL2
                 if (touches <= 0) { // Touch always takes priority over mouse
-#endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 1; break;
                     }
                     touches = 1;
-#if RETRO_USING_SDL2
                 }
-#endif
                 break;
             case SDL_MOUSEBUTTONUP:
-#if RETRO_USING_SDL2
                 if (touches <= 1) { // Touch always takes priority over mouse
-#endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 0; break;
                     }
                     touches = 0;
-#if RETRO_USING_SDL2
                 }
-#endif
                 break;
 #endif
 
-#ifdef RETRO_USING_TOUCH
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL2 && defined(RETRO_USING_TOUCH)
             case SDL_FINGERMOTION:
             case SDL_FINGERDOWN:
             case SDL_FINGERUP: {
@@ -119,7 +108,6 @@ bool processEvents()
                 }
                 break;
             }
-#endif
 #endif
             case SDL_KEYDOWN:
                 switch (Engine.sdlEvents.key.keysym.sym) {
@@ -339,8 +327,6 @@ void RetroEngine::Run()
     float frameDelta = 0.0f;
 
     while (running) {
-        running = processEvents();
-
 #if !RETRO_USE_ORIGINAL_CODE
         frameStart = SDL_GetPerformanceCounter();
         frameDelta = frameStart - frameEnd;
@@ -349,6 +335,7 @@ void RetroEngine::Run()
         }
         frameEnd = SDL_GetPerformanceCounter();
 #endif
+        running = processEvents();
 
         for (int s = 0; s < gameSpeed; ++s) {
             ProcessInput();
