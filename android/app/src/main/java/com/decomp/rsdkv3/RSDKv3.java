@@ -2,9 +2,12 @@ package com.decomp.rsdkv3;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.os.Environment;
+
+import java.io.File;
 
 import org.libsdl.app.*;
+
 
 public class RSDKv3 extends SDLActivity {
     @Override
@@ -16,7 +19,10 @@ public class RSDKv3 extends SDLActivity {
 
     public String getBasePath() {
         Context c = getApplicationContext();
-        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET}, 0);
-        return c.getExternalFilesDir(null).getAbsolutePath() + "/";
+        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        String p = Environment.getExternalStorageDirectory().getAbsolutePath() + "/RSDK/v3";
+        //getExternalStorageDirectory is deprecated. I do not care.
+        new File(p).mkdirs();
+        return p + "/";
     }
 }
