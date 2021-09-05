@@ -11,7 +11,7 @@ LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
 
 SOURCES = \
-  dependencies/all/tinyxml2/tinyxml2.cpp \
+  dependencies/all/tinyxml2/tinyxml2.h \
   dependencies/all/theoraplay/theoraplay.c \
   RSDKv3/Animation.cpp \
   RSDKv3/Audio.cpp \
