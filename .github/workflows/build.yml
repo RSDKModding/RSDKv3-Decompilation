@@ -153,7 +153,7 @@ jobs:
           Copy-Item -Path ./dependencies/android/app/jni/src/dependencies/android\* -Destination ./dependencies/
           Copy-Item -Path ./dependencies/android/app/jni/src/dependencies/android/libogg/ -Destination ./dependencies/android/ -recurse
           Get-ChildItem -Path ./dependencies/android/app/jni/src/dependencies/android/libvorbis/include/vorbis
-          Get-ChildItem -Path ./dependencies/android/libogg/include
+          Get-ChildItem -Path ./dependencies/android/libogg/include/ogg
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
