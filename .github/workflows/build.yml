@@ -176,6 +176,7 @@ jobs:
           sudo apt-get install libtheora-dev libogg-dev libvorbis-dev libsdl2-dev libglew-dev
           sudo wget --no-check-certificate --content-disposition https://github.com/leethomason/tinyxml2/archive/refs/heads/master.zip -P /dependencies/all/
           unzip /dependencies/all/tinyxml2-master.zip
+          ls /dependencies/all/
           mv /dependencies/all/tinyxml2-master /dependencies/all/tinyxml2
       - name: Build Sonic CD
         run: make USE_HW_REN=1
