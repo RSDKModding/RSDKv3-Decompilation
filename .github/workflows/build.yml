@@ -159,7 +159,7 @@ jobs:
       - name: Build Sonic CD Android
         working-directory: ./android
         run: |
-          ./gradlew.bat assembleDebug --no-daemon -PABIFILTERS=armeabi-v7a;arm64-v8a
+          ./gradlew.bat assembleDebug --no-daemon -PABIFILTERS="armeabi-v7a;arm64-v8a"
       - name: Upload artifact Android
         uses: actions/upload-artifact@v2
         with:
