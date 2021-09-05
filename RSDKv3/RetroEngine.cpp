@@ -62,9 +62,8 @@ bool processEvents()
 
 #endif
 
-#ifdef RETRO_USING_MOUSE
+#ifdef RETRO_USING_MOUSE && RETRO_USING_SDL2
             case SDL_MOUSEMOTION:
-#if RETRO_USING_SDL2
                 if (touches <= 1) { // Touch always takes priority over mouse
                     SDL_GetMouseState(&touchX[0], &touchY[0]);
 
@@ -73,60 +72,42 @@ bool processEvents()
                     touchX[0] = (touchX[0] / (float)width) * SCREEN_XSIZE;
                     touchY[0] = (touchY[0] / (float)height) * SCREEN_YSIZE;
                 }
-#endif
                 break;
             case SDL_MOUSEBUTTONDOWN:
-#if RETRO_USING_SDL2
                 if (touches <= 0) { // Touch always takes priority over mouse
-#endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 1; break;
                     }
                     touches = 1;
-#if RETRO_USING_SDL2
                 }
-#endif
                 break;
             case SDL_MOUSEBUTTONUP:
-#if RETRO_USING_SDL2
                 if (touches <= 1) { // Touch always takes priority over mouse
-#endif
                     switch (Engine.sdlEvents.button.button) {
                         case SDL_BUTTON_LEFT: touchDown[0] = 0; break;
                     }
                     touches = 0;
-#if RETRO_USING_SDL2
                 }
-#endif
                 break;
 #endif
 
-#ifdef RETRO_USING_TOUCH
-#if RETRO_USING_SDL2
+#if RETRO_USING_SDL2 && defined(RETRO_USING_TOUCH)
             case SDL_FINGERMOTION:
-                touches = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId);
-                for (int i = 0; i < touches; i++) {
-                    SDL_Finger *finger = SDL_GetTouchFinger(Engine.sdlEvents.tfinger.touchId, i);
-                    if (finger) {
-                        touchDown[i] = true;
-                        touchX[i]    = finger->x * SCREEN_XSIZE;
-                        touchY[i]    = finger->y * SCREEN_YSIZE;
-                    }
-                }
-                break;
             case SDL_FINGERDOWN:
-                touches = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId);
-                for (int i = 0; i < touches; i++) {
+            case SDL_FINGERUP: {
+                int count = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId);
+                touches   = 0;
+                for (int i = 0; i < count; i++) {
                     SDL_Finger *finger = SDL_GetTouchFinger(Engine.sdlEvents.tfinger.touchId, i);
                     if (finger) {
-                        touchDown[i] = true;
-                        touchX[i]    = finger->x * SCREEN_XSIZE;
-                        touchY[i]    = finger->y * SCREEN_YSIZE;
+                        touchDown[touches] = true;
+                        touchX[touches]    = finger->x * SCREEN_XSIZE;
+                        touchY[touches]    = finger->y * SCREEN_YSIZE;
+                        touches++;
                     }
                 }
                 break;
-            case SDL_FINGERUP: touches = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId); break;
-#endif
+            }
 #endif
             case SDL_KEYDOWN:
                 switch (Engine.sdlEvents.key.keysym.sym) {
@@ -346,8 +327,6 @@ void RetroEngine::Run()
     float frameDelta = 0.0f;
 
     while (running) {
-        running = processEvents();
-
 #if !RETRO_USE_ORIGINAL_CODE
         frameStart = SDL_GetPerformanceCounter();
         frameDelta = frameStart - frameEnd;
@@ -356,6 +335,7 @@ void RetroEngine::Run()
         }
         frameEnd = SDL_GetPerformanceCounter();
 #endif
+        running = processEvents();
 
         for (int s = 0; s < gameSpeed; ++s) {
             ProcessInput();
