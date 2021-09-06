@@ -3,7 +3,6 @@
 The code in this repository is a decompilation of RSDK (Retro-Engine) version 3 or 4.
 There is original code in this repo, but most of the code is to be functionally the same as the version of RSDK this repo specifies.
 
-
 This code is provided as-is, that is to say, without liability or warranty. 
 Original authors of RSDK and authors of the decompilation are not held responsible for any damages or other claims said.
 
