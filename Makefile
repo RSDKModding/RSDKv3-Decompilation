@@ -45,6 +45,7 @@ endif
 ifeq ($(USE_HW_REN),1)
   CXXFLAGS_ALL += -DUSE_HW_REN
   LIBS_ALL += -lGL -lGLEW
+  SOURCES += dependencies/all/tinyxml2/tinyxml2.h
 endif
 
 OBJECTS = $(SOURCES:%=objects/%.o)
