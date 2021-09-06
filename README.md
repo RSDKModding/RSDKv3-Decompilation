@@ -1,56 +1,65 @@
 ![](header.png?raw=true)
-# **SUPPORT THE OFFICIAL RELEASE OF SONIC 1 & SONIC 2**
-+ Without assets from the official releases this decompilation will not run.
-+ Video tutorial on how to find your legally obtained Data.rsdk file: https://www.youtube.com/watch?v=gzIfRW91IxE
+# **SUPPORT THE OFFICIAL RELEASE OF SONIC CD**
++ Without assets from the official release this decompilation will not run.
 
-+ You can get the official release of sonic 1 & sonic 2 from:
-  * [Sonic 1 (iOS, Via the App Store)](https://apps.apple.com/au/app/sonic-the-hedgehog-classic/id316050001)
-  * [Sonic 2 (iOS, Via the App Store)](https://apps.apple.com/au/app/sonic-the-hedgehog-2-classic/id347415188)
-  * [Sonic 1 (Android, Via Google Play)](https://play.google.com/store/apps/details?id=com.sega.sonic1px&hl=en_AU&gl=US)
-  * [Sonic 2 (Android, Via Google Play)](https://play.google.com/store/apps/details?id=com.sega.sonic2.runner&hl=en_AU&gl=US)
-  * [Sonic 1 (Android, Via Amazon)](https://www.amazon.com.au/Sega-of-America-Sonic-Hedgehog/dp/B00D74DVKM)
-  * [Sonic 2 (Android, Via Amazon)](https://www.amazon.com.au/Sega-of-America-Sonic-Hedgehog/dp/B00HAPRVWS)
++ You can get the official release of Sonic CD from:
+  * [Windows (Via Steam)](https://store.steampowered.com/app/200940/Sonic_CD/)
+  * [IOS (Via the App Store)](https://apps.apple.com/us/app/sonic-cd-classic/id454316134)
+  * [Android (Via Google Play)](https://play.google.com/store/apps/details?id=com.sega.soniccd.classic&hl=en&gl=US)
+  * [Android (Via Amazon)](https://www.amazon.com/Sega-of-America-Sonic-CD/dp/B008K9UZY4/ref=sr_1_2?dchild=1&keywords=Sonic+CD&qid=1607930514&sr=8-2)
 
-Even if your platform isn't supported by the official releases, buy it for the assets (you don't need to run the official release, you just need the game assets)
+Even if your platform isn't supported by the official releases, you **must** buy it for the assets (you dont need to run the official release, you just need the game assets)
 
-If you want to transfer your save from the **Android pre-forever versions,** you can go to `Android/data/com.sega.sonic1 or 2/SGame.bin` and copy it to the `SData.bin` in the EXE folder.
+# Advantages over the PC version of Sonic CD
+* Sharp, pixel-perfect display
+* Controls are completely remappable via the settings.ini file
+* The window allows windows shortcuts to be used
+* Complete support for using mobile/updated scripts, allowing for features the official PC version never got to be played on PC
+* Native Windows x64 version, as well as an x86 version
+
+# Advantages over the Mobile versions of Sonic CD
+* The rendering backend is based off the PC version, so palettes are fully supported (tidal tempest water in particular)
 
 # Additional Tweaks
-* Added a built in script compiler. Similar to CD, but tweaked up to match the new syntax for the scripts used in RSDKv4.
-* There is now a `settings.ini` file that the game uses to load all settings, similar to Sonic Mania.
-* Dev menu can now be accessed from anywhere by pressing the `ESC` key if enabled in the config.
-* The `f12` pause, `f11` step over & fast forward debug features from Sonic Mania have all be ported and are enabled if dev menu is enabled in the config.
-* If `devMenu` is enabled in the config, pressing `f10` will activate a palette overlay that shows the game's 8 internal palettes in real time.
+* There is now a settings.ini file that the game uses to load all settings, similar to Sonic Mania
+* Dev menu can now be accessed from anywhere by pressing `ESC` if enabled in the config
+* The `F12` pause, `F11` step over & fast forward debug features from Sonic Mania have all be ported and are enabled if `devMenu` is enabled in the config
+* If `devMenu` is enabled in the config, pressing `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time
+* If `useSteamDir` is set in the config, and the user is on Windows, the game will try to load savedata from Steam's `userdata` directory (where the Steam version saves to)
 
 # How to build:
 ## Windows:
-* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) to setup dependencies, then build via the visual studio solution
+* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) to setup dependencies, then build via the Visual Studio solution
 * or grab a prebuilt executable from the releases section
+
+## Windows UWP (Phone, Xbox, etc.):
+* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, then build and deploy via the UWP Visual Studio solution.
+* After install copy your `Data.rsdk` and `videos` folder into the apps localstate folder
 
 ## Windows via MSYS2 (64-bit Only):
 
 * Download the newest version of the MSYS2 installer from [here](https://www.msys2.org/) and install it.
 * Run the MINGW64 prompt (from the windows Start Menu/MSYS2 64-bit/MSYS2 MinGW 64-bit), when the program starts enter `pacman -Syuu` in the prompt and hit Enter. Press `Y` when it asks if you want to update packages. If it asks you to close the prompt, do so, then restart it and run the same command again. This updates the packages to their latest versions.
-* Now install the dependencies with the following command: `pacman -S make git mingw-w64-i686-gcc mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis`
-* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation.git`
-* Go into the repo you just cloned with `cd Sonic-1-2-2013-Decompilation`
-* Then run `make CXX=x86_64-w64-mingw32-g++ CXXFLAGS=-static -j4` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+* Now install the dependencies with the following command: `pacman -S pkg-config make git mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libtheora`
+* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
+* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
+* Then run `make CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
 
-## Windows UWP (Phone, Xbox, etc.):
-* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/windows-uwp/dependencies.txt) to setup dependencies, copy your `Data.rsdk` folder into `Sonic1Decomp.UWP` or `Sonic2Decomp.UWP` depending on the game, then build and deploy via `Sonic12Decomp.UWP.sln`
-* You may also need to generate visual assets, to do so, open the Package.appxmanifest file in the designer, under the Visual Assets tab, select an image of your choice and click generate.
+
+## Mac:
+* Clone the repo, then follow the instructions in the [depencencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the Xcode project
+* or grab a prebuilt executable from the releases section
 
 ## Linux:
 * To setup your build enviroment and library dependecies run the following commands:
-* Ubuntu (Mint, Pop!_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libgbm-dev`
-* Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg`
-* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation.git`
-* Go into the repo you just cloned with `cd Sonic-1-2-2013-Decompilation`
-* Run `make -j4` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+* Ubuntu (Mint, Pop!_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev`
+* Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora`
+* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
+* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
+* Then run `make CXXFLAGS=-O2 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
 
-## Mac:
-* Clone the repo, then follow the instructions in the [depencencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the xcode project.
-* A Mac build of v1.0.0 by sappharad can be found [here.](https://github.com/Sappharad/Sonic-1-2-2013-Decompilation/releases/tag/1.0.0mac)
+## iOS:
+* Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
 
 ## Android:
 * Clone the repo, then follow the instructions in the [depencencies readme for Android](./dependencies/android/dependencies.txt).
@@ -58,36 +67,44 @@ If you want to transfer your save from the **Android pre-forever versions,** you
   * `mklink /D src ..\..\..`
   * `mklink /D SDL ..\..\..\dependencies\android\SDL`
 * Open `android/` in Android Studio, install the NDK and everything else that it asks for, and build.
-## Vita
-* For Vita installation, [Xeeynamo's vita branch](https://github.com/xeeynamo/Sonic-1-2-2013-Decompilation) has you covered.
-## Switch:
-* Head on over to [heyjoeway's fork](https://github.com/heyjoeway/Sonic-1-2-2013-Decompilation) and follow the installation instructions in the readme.
 
-## Web:
-* Head on over to [mattConn's fork](https://github.com/mattConn/Sonic-Decompilation-WASM) and follow the installation instructions in the readme.
 
+## PS Vita:
+* Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
+NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
 
 ## Other platforms:
-Currently the only supported platforms are the ones listed above, however the backend uses libogg, libvorbis & SDL2 to power it, so the codebase is very multiplatform.
-if you've cloned this repo and ported it to a platform not on the list or made some changes you'd like to see added to this repo, submit a pull request and it'll most likely be added
+Currently the only "officially" supported platforms are the ones listed above, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
+If you've cloned this repo and ported it to a platform not on the list or made some changes you'd like to see added to this repo, submit a pull request and it'll most likely be added
 
 # FAQ
-### Q: The screen is tearing, how do I fix it?
-A: Try turning on vsync, that worked for me (tested on mac)
+### Q: Why dont some buttons in the menu work?
+A: Buttons like leaderboards & achievements require code to be added to support online functionality & menus (though they are saved anyways), and other buttons like the controls button on PC or privacy button on mobile have no game code and are instead hardcoded through callbacks, and I just didnt feel like going through the effort to decompile all that, since its not really worth it
+
+### Q: Is the titlecard text slightly offset when using a PC datafile?
+A: Its not just you, but unfortunately its an error with the scripts, so if you wanna go into `TitleCards/R[X]\_TitleCard.txt` and fix it, be my guest, alternatively set `screenWidth` to 400, instead of 424 in the settings.ini file to match the PC version's resolution
+
+### Q: Theres a weird spot on the title screen how do I fix it?
+A: Set `screenWidth` to 400, instead of 424 in the settings.ini file to match the PC version's resolution
+
+### Q: The screen is tearing, how do I fix it
+A: Try turning on vsync, that worked for me (on Mac)
 
 ### Q: I found a bug/I have a feature request!
 A: Submit an issue in the issues tab and I'll fix/add (if possible) it as soon as I can
 
-### Q: Will you do a decompilation for Sonic CD (2011)?
-A: I already have! you can find it [here](https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation)!
+### Q: Will you do a decompilation for Sonic 1/Sonic 2?
+A: Yes! I've done a decompilation of RSDKv4 (the engine ver that S1/S2 run on) and it can be found [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation)!
 
 ### Q: Will you do a decompilation for Sonic Mania?
-A: No. Sonic Mania is a ton bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also all _600_+ objects work
+A: No. Mania is tons bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also make all _600_+ objects work
 
 # Special Thanks
-* [RMGRich](https://github.com/MGRich) for helping me fix bugs, tweaking up my sometimes sloppy code and generally being really helpful and fun to work with on this project
+* [Xeeynamo](https://github.com/Xeeynamo): For creating the RSDK Animation editor & an early version of the script unpacker, both of which got me into RSDK modding
+* [Sappharad](https://github.com/Sappharad): For making a decompilation of the Windows Phone 7 version of Sonic CD (found [here](https://github.com/Sappharad/rvm_soniccd)) which gave me the idea & motivation to decompile the PC/IOS/Android versions
+* [SuperSonic16](https://github.com/TheSuperSonic16): for creating & adding some stuff to the Sonic CD mod loader that I asked for
 * The Weigman for creating the header you see up here along with similar assets
-* Everyone in the [Retro Engine Modding Server](https://dc.railgun.works/retroengine) for being supportive of me and for giving me a place to show off these things that I've found
+* Everyone in the [Retro Engine Modding Server](https://dc.railgun.works/retroengine): for being supportive of me and for giving me a place to show off these things that I've found
 
 # Contact:
 Join the [Retro Engine Modding Discord Server](https://dc.railgun.works/retroengine) for any extra questions you may need to know about the decompilation or modding it.
