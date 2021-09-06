@@ -60,7 +60,6 @@ objects/%.o: %
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 
 bin/soniccd: $(OBJECTS)
-	SOURCES -= dependencies/all/tinyxml2/tinyxml2.h
 	OBJECTS -= dependencies/all/tinyxml2/tinyxml2.h.o
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
