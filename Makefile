@@ -8,7 +8,7 @@ CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONF
    -Idependencies/all/theoraplay \
    -Idependencies/all/tinyxml2
 LDFLAGS_ALL += $(LDFLAGS)
-LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
+LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec tinyxml2) -pthread $(LIBS)
 
 SOURCES = \
   dependencies/all/tinyxml2/tinyxml2.cpp \
