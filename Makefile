@@ -3,14 +3,15 @@ ifeq ($(STATIC),1)
   CXXFLAGS_ALL += -static
 endif
 
-CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) $(CXXFLAGS) \
+CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) tinyxml2 vorbisfile vorbis theoradec sdl2) $(CXXFLAGS) \
    -Idependencies/all/filesystem/include \
    -Idependencies/all/theoraplay \
    -Idependencies/all/tinyxml2
 LDFLAGS_ALL += $(LDFLAGS)
-LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
+LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) tinyxml2 vorbisfile vorbis theoradec sdl2) -pthread $(LIBS)
 
 SOURCES = \
+  dependencies/all/tinyxml2/tinyxml2.cpp \
   dependencies/all/theoraplay/theoraplay.c \
   RSDKv3/Animation.cpp \
   RSDKv3/Audio.cpp \
@@ -33,8 +34,7 @@ SOURCES = \
   RSDKv3/String.cpp \
   RSDKv3/Text.cpp \
   RSDKv3/Userdata.cpp \
-  RSDKv3/Video.cpp \
-  dependencies/all/tinyxml2/tinyxml2.cpp
+  RSDKv3/Video.cpp
 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
