@@ -1,89 +1,69 @@
-CXXFLAGS_ALL = $(shell pkg-config --cflags --static sdl2 vorbisfile vorbis glew) $(CXXFLAGS) \
-               -DBASE_PATH='"$(BASE_PATH)"' \
-               -IRSDKv4/ \
-               -IRSDKv4/NativeObjects/ \
-               -Idependencies/all/asio/include/ \
-               -Idependencies/all/stb-image/ \
-               -Idependencies/all/tinyxml2/
-
-LDFLAGS_ALL = $(LDFLAGS)
-LIBS_ALL = $(shell pkg-config --libs --static sdl2 vorbisfile vorbis glew) -pthread $(LIBS)
-
-SOURCES = RSDKv4/Animation.cpp     \
-          RSDKv4/Audio.cpp         \
-          RSDKv4/Collision.cpp     \
-          RSDKv4/Debug.cpp         \
-          RSDKv4/Drawing.cpp       \
-          RSDKv4/Ini.cpp           \
-          RSDKv4/Input.cpp         \
-          RSDKv4/main.cpp          \
-          RSDKv4/Math.cpp          \
-          RSDKv4/Object.cpp        \
-          RSDKv4/Palette.cpp       \
-          RSDKv4/Reader.cpp        \
-          RSDKv4/RetroEngine.cpp   \
-          RSDKv4/Scene.cpp         \
-          RSDKv4/Scene3D.cpp       \
-          RSDKv4/Script.cpp        \
-          RSDKv4/Sprite.cpp        \
-          RSDKv4/String.cpp        \
-          RSDKv4/Text.cpp          \
-          RSDKv4/Userdata.cpp      \
-          RSDKv4/NativeObjects/AboutScreen.cpp \
-          RSDKv4/NativeObjects/AchievementDisplay.cpp \
-          RSDKv4/NativeObjects/AchievementsButton.cpp \
-          RSDKv4/NativeObjects/AchievementsMenu.cpp \
-          RSDKv4/NativeObjects/BackButton.cpp \
-          RSDKv4/NativeObjects/CreditText.cpp \
-          RSDKv4/NativeObjects/CWSplash.cpp \
-          RSDKv4/NativeObjects/DialogPanel.cpp \
-          RSDKv4/NativeObjects/FadeScreen.cpp \
-          RSDKv4/NativeObjects/InstructionsScreen.cpp \
-          RSDKv4/NativeObjects/LeaderboardsButton.cpp \
-          RSDKv4/NativeObjects/MenuBG.cpp \
-          RSDKv4/NativeObjects/MenuControl.cpp \
-          RSDKv4/NativeObjects/ModInfoButton.cpp \
-          RSDKv4/NativeObjects/ModsButton.cpp \
-          RSDKv4/NativeObjects/ModsMenu.cpp \
-          RSDKv4/NativeObjects/MultiplayerButton.cpp \
-          RSDKv4/NativeObjects/OptionsButton.cpp \
-          RSDKv4/NativeObjects/OptionsMenu.cpp \
-          RSDKv4/NativeObjects/PauseMenu.cpp \
-          RSDKv4/NativeObjects/PlayerSelectScreen.cpp \
-          RSDKv4/NativeObjects/PushButton.cpp \
-          RSDKv4/NativeObjects/RecordsScreen.cpp \
-          RSDKv4/NativeObjects/RetroGameLoop.cpp \
-          RSDKv4/NativeObjects/SaveSelect.cpp \
-          RSDKv4/NativeObjects/SegaIDButton.cpp \
-          RSDKv4/NativeObjects/SegaSplash.cpp \
-          RSDKv4/NativeObjects/SettingsScreen.cpp \
-          RSDKv4/NativeObjects/StaffCredits.cpp \
-          RSDKv4/NativeObjects/StartGameButton.cpp \
-          RSDKv4/NativeObjects/SubMenuButton.cpp \
-          RSDKv4/NativeObjects/TextLabel.cpp \
-          RSDKv4/NativeObjects/TimeAttack.cpp \
-          RSDKv4/NativeObjects/TimeAttackButton.cpp \
-          RSDKv4/NativeObjects/TitleScreen.cpp \
-          RSDKv4/NativeObjects/VirtualDPad.cpp \
-          RSDKv4/NativeObjects/VirtualDPadM.cpp \
-          RSDKv4/NativeObjects/ZoneButton.cpp \
-          dependencies/all/tinyxml2/tinyxml2.cpp \
-   
-ifneq ($(FORCE_CASE_INSENSITIVE),)
-	CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
-	SOURCES += RSDKv4/fcaseopen.c
+ifeq ($(STATIC),1)
+  PKG_CONFIG_STATIC_FLAG = --static
+  CXXFLAGS_ALL += -static
 endif
+
+CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) $(CXXFLAGS) \
+   -Idependencies/all/filesystem/include \
+   -Idependencies/all/theoraplay \
+   -Idependencies/all/tinyxml2
+LDFLAGS_ALL += $(LDFLAGS)
+LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) sdl2 vorbisfile vorbis theoradec) -pthread $(LIBS)
+
+SOURCES = \
+  dependencies/all/theoraplay/theoraplay.c \
+  dependencies/all/tinyxml2/tinyxml2.cpp \
+  RSDKv3/Animation.cpp \
+  RSDKv3/Audio.cpp \
+  RSDKv3/Collision.cpp \
+  RSDKv3/Debug.cpp \
+  RSDKv3/Drawing.cpp \
+  RSDKv3/Ini.cpp \
+  RSDKv3/Input.cpp \
+  RSDKv3/main.cpp \
+  RSDKv3/Math.cpp \
+  RSDKv3/Object.cpp \
+  RSDKv3/Palette.cpp \
+  RSDKv3/Player.cpp \
+  RSDKv3/Reader.cpp \
+  RSDKv3/RetroEngine.cpp \
+  RSDKv3/Scene.cpp \
+  RSDKv3/Scene3D.cpp \
+  RSDKv3/Script.cpp \
+  RSDKv3/Sprite.cpp \
+  RSDKv3/String.cpp \
+  RSDKv3/Text.cpp \
+  RSDKv3/Userdata.cpp \
+  RSDKv3/Video.cpp
+
+	  
+ifeq ($(FORCE_CASE_INSENSITIVE),1)
+  CXXFLAGS_ALL += -DFORCE_CASE_INSENSITIVE
+  SOURCES += RSDKv3/fcaseopen.c
+endif
+
+ifeq ($(USE_HW_REN),1)
+  CXXFLAGS_ALL += -DUSE_HW_REN
+  LIBS_ALL += -lGL -lGLEW
+endif
+
+OBJECTS = $(SOURCES:%=objects/%.o)
+DEPENDENCIES = $(SOURCES:%=objects/%.d)
+
+all: bin/soniccd
+
+include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $^ -o $@ -c
+	$(CXX) $(CXXFLAGS_ALL) -std=c++17 -c $^ -o $@
 
-bin/RSDKv4: $(SOURCES:%=objects/%.o)
+bin/soniccd: $(OBJECTS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
-install: bin/RSDKv4
-	install -Dp -m755 bin/RSDKv4 $(prefix)/bin/RSDKv4
+install: bin/soniccd
+	install -Dp -m755 bin/soniccd $(prefix)/bin/soniccd
 
 clean:
-	rm -r -f bin && rm -r -f objects
+	 rm -r -f bin && rm -r -f objects
