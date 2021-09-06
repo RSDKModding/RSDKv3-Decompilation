@@ -49,7 +49,6 @@ endif
 
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
-DEPENDENCIES += dependencies/all/tinyxml2.h
 
 all: bin/soniccd
 
