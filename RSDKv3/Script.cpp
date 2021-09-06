@@ -1114,7 +1114,7 @@ void ConvertFunctionText(char *text)
             }
 
 #if RETRO_USE_MOD_LOADER
-            // Eg: TempValue0 = AchievementName[Ring King]
+            // Eg: TempValue0 = AchievementName[88 Miles Per Hour]
             if (StrComp(funcName, "AchievementName")) {
                 funcName[0] = 0;
                 AppendIntegerToString(funcName, 0);
