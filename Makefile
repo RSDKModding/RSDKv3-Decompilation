@@ -9,7 +9,6 @@ CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONF
    -Idependencies/all/tinyxml2
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) tinyxml2 vorbisfile vorbis theoradec sdl2) -pthread $(LIBS)
-DEPS = $(INC_DIR)/tinyxml2.h
 
 SOURCES = \
   dependencies/all/tinyxml2/tinyxml2.cpp \
@@ -50,6 +49,7 @@ endif
 
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
+DEPENDENCIES += dependencies/all/tinyxml2.h
 
 all: bin/soniccd
 
