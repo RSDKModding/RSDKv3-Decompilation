@@ -64,6 +64,7 @@ bin/soniccd: $(OBJECTS)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
 install: bin/soniccd
+ 	SOURCES -= dependencies/all/tinyxml2/tinyxml2.h
 	install -Dp -m755 bin/soniccd $(prefix)/bin/soniccd
 
 clean:
