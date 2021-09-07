@@ -1703,9 +1703,12 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         else if (FindStringToken(scriptText, Engine.gamePlatform, 1) == -1
                                  && FindStringToken(scriptText, Engine.gameRenderType, 1) == -1
 #if RETRO_USE_HAPTICS
-                                 && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1)
+                                 && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1
 #endif
-                        { //if NONE of these checks succeeded, then we skip everything until "end platform"
+#if RETRO_USE_MOD_LOADER
+                                 && FindStringToken(scriptText, "Use_Mod_Loader", 1) == -1
+#endif
+                        ) { // if NONE of these checks succeeded, then we skip everything until "end platform"
                             parseMode = PARSEMODE_PLATFORMSKIP;
                         }
                     }

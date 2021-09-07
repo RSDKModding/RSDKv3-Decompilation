@@ -62,7 +62,7 @@ bool processEvents()
 
 #endif
 
-#ifdef RETRO_USING_MOUSE && RETRO_USING_SDL2
+#if defined(RETRO_USING_MOUSE) && RETRO_USING_SDL2
             case SDL_MOUSEMOTION:
                 if (touches <= 1) { // Touch always takes priority over mouse
                     SDL_GetMouseState(&touchX[0], &touchY[0]);
