@@ -4430,8 +4430,20 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_ENGINEONLINEACTIVE: break;
                     case VAR_ENGINEFRAMESKIPTIMER: Engine.frameSkipTimer = scriptEng.operands[i]; break;
                     case VAR_ENGINEFRAMESKIPSETTING: Engine.frameSkipSetting = scriptEng.operands[i]; break;
-                    case VAR_ENGINESFXVOLUME: break;
-                    case VAR_ENGINEBGMVOLUME: break;
+                    case VAR_ENGINESFXVOLUME:
+                        sfxVolume = scriptEng.operands[i];
+                        if (sfxVolume < 0)
+                            sfxVolume = 0;
+                        if (sfxVolume > MAX_VOLUME)
+                            sfxVolume = MAX_VOLUME;
+                        break;
+                    case VAR_ENGINEBGMVOLUME:
+                        bgmVolume = scriptEng.operands[i];
+                        if (bgmVolume < 0)
+                            bgmVolume = 0;
+                        if (bgmVolume > MAX_VOLUME)
+                            bgmVolume = MAX_VOLUME;
+                            break;
                     case VAR_ENGINEPLATFORMID: break;
                     case VAR_ENGINETRIALMODE: break;
                     case VAR_KEYPRESSANYSTART: break;
