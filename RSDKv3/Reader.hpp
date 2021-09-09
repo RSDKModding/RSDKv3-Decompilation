@@ -137,20 +137,4 @@ size_t GetFilePosition();
 void SetFilePosition(int newPos);
 bool ReachedEndOfFile();
 
- // For Music Streaming
-bool LoadFile2(const char *filePath, FileInfo *fileInfo);
-bool ParseVirtualFileSystem2(FileInfo *fileInfo);
-size_t FileRead2(FileInfo *info, void *dest, int size, bool fromBuffer);
-inline bool CloseFile2(FileInfo *info)
-{
-    if (info->fileBuffer)
-        free(info->fileBuffer);
-
-    info->cFileHandle = NULL;
-    info->fileBuffer  = NULL;
-    return true;
-}
-size_t GetFilePosition2(FileInfo *info);
-void SetFilePosition2(FileInfo *info, int newPos);
-
 #endif // !READER_H

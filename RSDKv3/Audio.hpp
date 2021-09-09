@@ -16,13 +16,18 @@
 
 #define MAX_VOLUME (100)
 
+#define MUSBUFFER_SIZE   (0x200000)
+#define STREAMFILE_COUNT (2)
+
+#define MIX_BUFFER_SAMPLES (256)
+
 struct TrackInfo {
     char fileName[0x40];
     bool trackLoop;
     uint loopPoint;
 };
 
-struct MusicPlaybackInfo {
+struct StreamInfo {
     OggVorbis_File vorbisFile;
     int vorbBitstream;
 #if RETRO_USING_SDL1
@@ -31,8 +36,7 @@ struct MusicPlaybackInfo {
 #if RETRO_USING_SDL2
     SDL_AudioStream *stream;
 #endif
-    Sint16 *buffer;
-    FileInfo fileInfo;
+    Sint16 buffer[MIX_BUFFER_SAMPLES];
     bool trackLoop;
     uint loopPoint;
     bool loaded;
@@ -51,6 +55,12 @@ struct ChannelInfo {
     int sfxID;
     byte loopSFX;
     sbyte pan;
+};
+
+struct StreamFile {
+    byte buffer[MUSBUFFER_SIZE];
+    int fileSize;
+    int filePos;
 };
 
 enum MusicStatuses {
@@ -78,7 +88,11 @@ extern SFXInfo sfxList[SFX_COUNT];
 
 extern ChannelInfo sfxChannels[CHANNEL_COUNT];
 
-extern MusicPlaybackInfo musInfo;
+extern int currentStreamIndex;
+extern StreamFile streamFile[STREAMFILE_COUNT];
+extern StreamInfo streamInfo[STREAMFILE_COUNT];
+extern StreamFile *streamFilePtr;
+extern StreamInfo *streamInfoPtr;
 
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
 extern SDL_AudioSpec audioDeviceFormat;
@@ -94,50 +108,25 @@ void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sby
 
 inline void freeMusInfo()
 {
-    if (musInfo.loaded) {
-        SDL_LockAudio();
+    SDL_LockAudio();
 
-        if (musInfo.buffer)
-            delete[] musInfo.buffer;
 #if RETRO_USING_SDL2
-        if (musInfo.stream)
-            SDL_FreeAudioStream(musInfo.stream);
+    if (streamInfo[currentStreamIndex].stream)
+        SDL_FreeAudioStream(streamInfo[currentStreamIndex].stream);
 #endif
-        ov_clear(&musInfo.vorbisFile);
-        musInfo.buffer       = nullptr;
+    ov_clear(&streamInfo[currentStreamIndex].vorbisFile);
 #if RETRO_USING_SDL2
-        musInfo.stream = nullptr;
+    streamInfo[currentStreamIndex].stream = nullptr;
 #endif
-        musInfo.trackLoop    = false;
-        musInfo.loopPoint    = 0;
-        musInfo.loaded       = false;
-        musicStatus          = MUSIC_STOPPED;
 
-        SDL_UnlockAudio();
-    }
+    SDL_UnlockAudio();
 }
 #else
 void ProcessMusicStream() {}
 void ProcessAudioPlayback() {}
 void ProcessAudioMixing() {}
 
-inline void freeMusInfo()
-{
-    if (musInfo.loaded) {
-        SDL_LockAudio();
-
-        if (musInfo.buffer)
-            delete[] musInfo.buffer;
-        ov_clear(&musInfo.vorbisFile);
-        musInfo.buffer    = nullptr;
-        musInfo.trackLoop = false;
-        musInfo.loopPoint = 0;
-        musInfo.loaded    = false;
-        musicStatus       = MUSIC_STOPPED;
-
-        SDL_UnlockAudio();
-    }
-}
+inline void freeMusInfo() { ov_clear(&streamInfo[currentStreamIndex].vorbisFile); }
 #endif
 
 void LoadMusic(void *userdata);
@@ -182,7 +171,6 @@ inline void ResumeSound()
     if (musicStatus == MUSIC_PAUSED)
         musicStatus = MUSIC_PLAYING;
 }
-
 
 inline void StopAllSfx()
 {
