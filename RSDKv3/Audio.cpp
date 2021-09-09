@@ -616,12 +616,6 @@ bool PlayMusic(int track)
 
     if (musicTracks[track].fileName[0]) {
         if (musicStatus != MUSIC_LOADING) {
-            LockAudioDevice();
-            StopMusic();
-            currentMusicTrack = -1;
-
-            UnlockAudioDevice();
-            return false;
             currentMusicTrack = track;
             musicStatus       = MUSIC_LOADING;
             SDL_CreateThread((SDL_ThreadFunction)LoadMusic, "LoadMusic", NULL);
