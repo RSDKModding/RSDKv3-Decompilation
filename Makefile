@@ -3,12 +3,11 @@ ifeq ($(STATIC),1)
   CXXFLAGS_ALL += -static
 endif
 
-CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) tinyxml2 vorbisfile vorbis theoradec sdl2) $(CXXFLAGS) \
+CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) vorbisfile vorbis theoradec sdl2) $(CXXFLAGS) \
    -Idependencies/all/filesystem/include \
-   -Idependencies/all/theoraplay \
-   -Idependencies/all/tinyxml2
+   -Idependencies/all/theoraplay
 LDFLAGS_ALL += $(LDFLAGS)
-LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) tinyxml2 vorbisfile vorbis theoradec sdl2) -pthread $(LIBS)
+LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) vorbisfile vorbis theoradec sdl2) -pthread $(LIBS)
 
 SOURCES = \
   dependencies/all/tinyxml2/tinyxml2.cpp \
@@ -20,6 +19,7 @@ SOURCES = \
   RSDKv3/Drawing.cpp \
   RSDKv3/Ini.cpp \
   RSDKv3/Input.cpp \
+  RSDKv3/ModAPI.cpp \
   RSDKv3/main.cpp \
   RSDKv3/Math.cpp \
   RSDKv3/Object.cpp \
@@ -64,6 +64,7 @@ bin/soniccd: $(OBJECTS)
 
 install: bin/soniccd
 	install -Dp -m755 bin/soniccd $(prefix)/bin/soniccd
+	chmod -x $(prefix)/bin/soniccd
 
 clean:
 	 rm -r -f bin && rm -r -f objects
