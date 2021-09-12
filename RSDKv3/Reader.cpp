@@ -170,6 +170,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         cFileHandle = fOpen(rsdkName, "rb");
         fSeek(cFileHandle, 0, SEEK_END);
         fileSize       = (int)fTell(cFileHandle);
+        vFileSize      = fileSize;
         bufferPosition = 0;
         readSize       = 0;
         readPos        = 0;
@@ -184,6 +185,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         }
         fileInfo->readPos           = readPos;
         fileInfo->fileSize          = vFileSize;
+        fileInfo->vFileSize         = vFileSize;
         fileInfo->virtualFileOffset = virtualFileOffset;
         fileInfo->eStringNo         = eStringNo;
         fileInfo->eStringPosB       = eStringPosB;
@@ -205,7 +207,9 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         virtualFileOffset = 0;
         fSeek(cFileHandle, 0, SEEK_END);
         fileInfo->fileSize = (int)fTell(cFileHandle);
-        fileSize           = fileInfo->fileSize;
+        fileInfo->vFileSize = fileInfo->fileSize;
+        fileSize            = fileInfo->fileSize;
+        vFileSize           = fileInfo->fileSize;
         fSeek(cFileHandle, 0, SEEK_SET);
         readPos = 0;
         fileInfo->readPos           = readPos;

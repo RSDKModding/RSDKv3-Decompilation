@@ -540,8 +540,8 @@ void LoadMusic(void *userdata)
 
         StreamFile *musFile = &streamFile[currentStreamIndex];
         musFile->filePos    = 0;
-        musFile->fileSize   = info.fileSize;
-        if (info.fileSize > MUSBUFFER_SIZE)
+        musFile->fileSize   = info.vFileSize;
+        if (info.vFileSize > MUSBUFFER_SIZE)
             musFile->fileSize = MUSBUFFER_SIZE;
 
         FileRead(streamFile[currentStreamIndex].buffer, musFile->fileSize);
@@ -642,13 +642,13 @@ void LoadSfx(char *filePath, byte sfxID)
     StrAdd(fullPath, filePath);
 
     if (LoadFile(fullPath, &info)) {
-        byte *sfx = new byte[info.fileSize];
-        FileRead(sfx, info.fileSize);
+        byte *sfx = new byte[info.vFileSize];
+        FileRead(sfx, info.vFileSize);
         CloseFile();
 
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
         SDL_LockAudio();
-        SDL_RWops *src = SDL_RWFromMem(sfx, info.fileSize);
+        SDL_RWops *src = SDL_RWFromMem(sfx, info.vFileSize);
         if (src == NULL) {
             printLog("Unable to open sfx: %s", info.fileName);
         }
