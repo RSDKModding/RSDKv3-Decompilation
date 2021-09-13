@@ -449,7 +449,8 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
                             sfx->sampleLength = sfxList[sfx->sfxID].length;
                         }
                         else {
-                            StopSfx(sfx->sfxID);
+                            MEM_ZEROP(sfx);
+                            sfx->sfxID = -1;
                             break;
                         }
                     }
