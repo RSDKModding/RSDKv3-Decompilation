@@ -58,7 +58,7 @@ struct ChannelInfo {
 };
 
 struct StreamFile {
-    byte buffer[MUSBUFFER_SIZE];
+    byte *buffer;
     int fileSize;
     int filePos;
 };
@@ -118,6 +118,9 @@ inline void freeMusInfo()
 #if RETRO_USING_SDL2
     streamInfo[currentStreamIndex].stream = nullptr;
 #endif
+    if (streamFile[currentStreamIndex].buffer)
+        free(streamFile[currentStreamIndex].buffer);
+    streamFile[currentStreamIndex].buffer = NULL;
 
     SDL_UnlockAudio();
 }

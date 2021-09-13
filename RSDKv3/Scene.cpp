@@ -140,6 +140,9 @@ void ProcessStage(void)
             stageMinutes      = 0;
             Engine.frameCount = 0;
             stageMode         = STAGEMODE_NORMAL;
+#if RETRO_USE_MOD_LOADER 
+            for (int m = 0; m < modList.size(); ++m) scanModFolder(&modList[m]);
+#endif
             ResetBackgroundSettings();
             LoadStageFiles();
 

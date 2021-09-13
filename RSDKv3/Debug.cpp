@@ -4,6 +4,9 @@ int touchTimer = 0;
 
 void initDevMenu()
 {
+#if RETRO_USE_MOD_LOADER
+    for (int m = 0; m < modList.size(); ++m) scanModFolder(&modList[m]);
+#endif
     drawStageGFXHQ = false;
     xScrollOffset = 0;
     yScrollOffset = 0;

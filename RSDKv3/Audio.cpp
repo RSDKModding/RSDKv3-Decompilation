@@ -543,6 +543,7 @@ void LoadMusic(void *userdata)
         musFile->fileSize   = info.vFileSize;
         if (info.vFileSize > MUSBUFFER_SIZE)
             musFile->fileSize = MUSBUFFER_SIZE;
+        streamFile[currentStreamIndex].buffer = (byte *)malloc(musFile->fileSize);
 
         FileRead(streamFile[currentStreamIndex].buffer, musFile->fileSize);
         CloseFile();
@@ -595,6 +596,9 @@ void LoadMusic(void *userdata)
                 case OV_EFAULT: printLog("Vorbis open error: Internal logic fault; indicates a bug or heap / stack corruption"); break;
             }
         }
+    }
+    else {
+        musicStatus = MUSIC_STOPPED;
     }
     UnlockAudioDevice();
 }

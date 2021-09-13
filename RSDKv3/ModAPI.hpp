@@ -38,6 +38,7 @@ inline void SetActiveMod(int id) { activeMod = id; }
 
 void initMods();
 bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool active);
+void scanModFolder(ModInfo *info);
 void saveMods();
 
 int OpenModMenu();
