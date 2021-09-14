@@ -542,8 +542,6 @@ void LoadMusic(void *userdata)
         StreamFile *musFile = &streamFile[currentStreamIndex];
         musFile->filePos    = 0;
         musFile->fileSize   = info.vFileSize;
-        if (info.vFileSize > MUSBUFFER_SIZE)
-            musFile->fileSize = MUSBUFFER_SIZE;
         streamFile[currentStreamIndex].buffer = (byte *)malloc(musFile->fileSize);
 
         FileRead(streamFile[currentStreamIndex].buffer, musFile->fileSize);
