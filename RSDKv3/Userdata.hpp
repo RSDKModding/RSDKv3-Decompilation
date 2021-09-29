@@ -40,6 +40,7 @@ extern bool disableFocusPause_Config;
 
 #if RETRO_USE_MOD_LOADER
 extern bool forceUseScripts;
+extern bool forceUseScripts_Config;
 #endif
 
 inline int GetGlobalVariableByName(const char *name)

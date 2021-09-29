@@ -346,7 +346,7 @@ void RefreshEngine()
     ReleaseGlobalSfx();
     LoadGlobalSfx();
 
-    forceUseScripts = false;
+    forceUseScripts = forceUseScripts_Config;
     for (int m = 0; m < modList.size(); ++m) {
         if (modList[m].useScripts && modList[m].active)
             forceUseScripts = true;
