@@ -535,7 +535,8 @@ void RetroEngine::LoadXMLObjects()
             bool success = doc->Parse(xmlData) == tinyxml2::XML_SUCCESS;
 
             if (success) {
-                const tinyxml2::XMLElement *objectsElement = firstXMLChildElement(doc, nullptr, "objects");
+                const tinyxml2::XMLElement *gameElement    = firstXMLChildElement(doc, nullptr, "game");
+                const tinyxml2::XMLElement *objectsElement = firstXMLChildElement(doc, gameElement, "objects");
                 if (objectsElement) {
                     const tinyxml2::XMLElement *objElement = firstXMLChildElement(doc, objectsElement, "object");
                     if (objElement) {
@@ -600,7 +601,8 @@ void RetroEngine::LoadXMLSoundFX()
             bool success = doc->Parse(xmlData) == tinyxml2::XML_SUCCESS;
 
             if (success) {
-                const tinyxml2::XMLElement *soundsElement = firstXMLChildElement(doc, nullptr, "sounds");
+                const tinyxml2::XMLElement *gameElement   = firstXMLChildElement(doc, nullptr, "game");
+                const tinyxml2::XMLElement *soundsElement = firstXMLChildElement(doc, gameElement, "sounds");
                 if (soundsElement) {
                     const tinyxml2::XMLElement *sfxElement = firstXMLChildElement(doc, soundsElement, "soundfx");
                     if (sfxElement) {
@@ -630,9 +632,6 @@ void RetroEngine::LoadXMLSoundFX()
 }
 void RetroEngine::LoadXMLPlayers(TextMenu *menu)
 {
-    if (!menu)
-        return;
-
     FileInfo info;
 
     for (int m = 0; m < (int)modList.size(); ++m) {
@@ -650,12 +649,13 @@ void RetroEngine::LoadXMLPlayers(TextMenu *menu)
             bool success = doc->Parse(xmlData) == tinyxml2::XML_SUCCESS;
 
             if (success) {
-                const tinyxml2::XMLElement *objectsElement = firstXMLChildElement(doc, nullptr, "players");
-                if (objectsElement) {
-                    const tinyxml2::XMLElement *objElement = firstXMLChildElement(doc, objectsElement, "player");
-                    if (objElement) {
+                const tinyxml2::XMLElement *gameElement   = firstXMLChildElement(doc, nullptr, "game");
+                const tinyxml2::XMLElement *playerElement = firstXMLChildElement(doc, gameElement, "players");
+                if (playerElement) {
+                    const tinyxml2::XMLElement *plrElement = firstXMLChildElement(doc, playerElement, "player");
+                    if (plrElement) {
                         do {
-                            const tinyxml2::XMLAttribute *nameAttr = findXMLAttribute(objElement, "name");
+                            const tinyxml2::XMLAttribute *nameAttr = findXMLAttribute(plrElement, "name");
                             const char *plrName                    = "unknownPlayer";
                             if (nameAttr)
                                 plrName = getXMLAttributeValueString(nameAttr);
@@ -665,7 +665,7 @@ void RetroEngine::LoadXMLPlayers(TextMenu *menu)
                             else
                                 StrCopy(playerNames[playerCount++], plrName);
 
-                        } while ((objElement = nextXMLSiblingElement(doc, objElement, "player")));
+                        } while ((plrElement = nextXMLSiblingElement(doc, plrElement, "player")));
                     }
                 }
             }
@@ -698,8 +698,9 @@ void RetroEngine::LoadXMLStages(TextMenu *menu, int listNo)
             if (success) {
                 const char *elementNames[] = { "presentationStages", "regularStages", "bonusStages", "specialStages" };
 
+                const tinyxml2::XMLElement *gameElement = firstXMLChildElement(doc, nullptr, "game");
                 for (int l = 0; l < STAGELIST_MAX; ++l) {
-                    const tinyxml2::XMLElement *listElement = firstXMLChildElement(doc, nullptr, elementNames[l]);
+                    const tinyxml2::XMLElement *listElement = firstXMLChildElement(doc, gameElement, elementNames[l]);
                     if (listElement) {
                         const tinyxml2::XMLElement *stgElement = firstXMLChildElement(doc, listElement, "stage");
                         if (stgElement) {

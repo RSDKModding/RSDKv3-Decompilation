@@ -126,11 +126,26 @@ void ProcessStage(void)
             vertexCount = 0;
             faceCount   = 0;
             for (int i = 0; i < PLAYER_COUNT; ++i) {
-                MEM_ZERO(playerList[i]);
-                playerList[i].visible            = 1;
+                playerList[i].XPos               = 0;
+                playerList[i].YPos               = 0;
+                playerList[i].XVelocity          = 0;
+                playerList[i].YVelocity          = 0;
+                playerList[i].angle              = 0;
+                playerList[i].visible            = true;
+                playerList[i].collisionPlane     = 0;
+                playerList[i].collisionMode      = 0;
                 playerList[i].gravity            = 1; // Air
+                playerList[i].speed              = 0;
                 playerList[i].tileCollisions     = true;
                 playerList[i].objectInteractions = true;
+                playerList[i].values[0]          = 0;
+                playerList[i].values[1]          = 0;
+                playerList[i].values[2]          = 0;
+                playerList[i].values[3]          = 0;
+                playerList[i].values[4]          = 0;
+                playerList[i].values[5]          = 0;
+                playerList[i].values[6]          = 0;
+                playerList[i].values[7]          = 0;
             }
             pauseEnabled      = false;
             timeEnabled       = false;

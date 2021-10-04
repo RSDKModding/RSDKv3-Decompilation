@@ -32,7 +32,7 @@ namespace fs = std::filesystem;
 void initMods()
 {
     modList.clear();
-    forceUseScripts   = false;
+    forceUseScripts   = forceUseScripts_Config;
     disableFocusPause = disableFocusPause_Config;
 
     char modBuf[0x100];
