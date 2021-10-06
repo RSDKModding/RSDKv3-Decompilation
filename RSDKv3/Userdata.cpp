@@ -75,6 +75,8 @@ bool forceUseScripts = false;
 bool forceUseScripts_Config = false;
 #endif
 
+bool useSGame = false;
+
 void InitUserdata()
 {
     // userdata files are loaded from this directory

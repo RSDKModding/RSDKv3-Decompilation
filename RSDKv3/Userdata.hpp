@@ -62,9 +62,11 @@ inline void SetGlobalVariableByName(const char *name, int value)
     }
 }
 
+extern bool useSGame;
 inline bool ReadSaveRAMData()
 {
-    char buffer[0x200];
+    useSGame = false;
+    char buffer[0x180];
 #if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
         sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
@@ -83,8 +85,22 @@ inline bool ReadSaveRAMData()
     saveRAM[34] = sfxVolume;
 
     FileIO *saveFile = fOpen(buffer, "rb");
-    if (!saveFile)
-        return false;
+    if (!saveFile) {
+#if RETRO_PLATFORM == RETRO_UWP
+        if (!usingCWD)
+            sprintf(buffer, "%s/sSGame.bin", getResourcesPath());
+        else
+            sprintf(buffer, "%sSGame.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+        sprintf(buffer, "%s/sSGame.bin", gamePath);
+#else
+        sprintf(buffer, "%sSGame.bin", gamePath);
+#endif
+        saveFile = fOpen(buffer, "wb");
+        if (!saveFile)
+            return false;
+        useSGame = true;
+    }
     fRead(saveRAM, 4, SAVEDATA_MAX, saveFile);
 
     fClose(saveFile);
@@ -93,19 +109,31 @@ inline bool ReadSaveRAMData()
 
 inline bool WriteSaveRAMData()
 {
-    char buffer[0x200];
+    char buffer[0x180];
+    if (!useSGame) {
 #if RETRO_PLATFORM == RETRO_UWP
-    if (!usingCWD)
-        sprintf(buffer, "%s/Sdata.bin",getResourcesPath());
-    else
-        sprintf(buffer, "%sSdata.bin", gamePath);
+        if (!usingCWD)
+            sprintf(buffer, "%s/SData.bin", getResourcesPath());
+        else
+            sprintf(buffer, "%sSData.bin", gamePath);
 #elif RETRO_PLATFORM == RETRO_OSX
-    sprintf(buffer, "%s/SData.bin", gamePath);
-#elif RETRO_PLATFORM == RETRO_iOS
-    sprintf(buffer, "%s/SData.bin", getDocumentsPath());
+        sprintf(buffer, "%s/SData.bin", gamePath);
 #else
-    sprintf(buffer, "%sSdata.bin", gamePath);
+        sprintf(buffer, "%sSData.bin", gamePath);
 #endif
+    }
+    else {
+#if RETRO_PLATFORM == RETRO_UWP
+        if (!usingCWD)
+            sprintf(buffer, "%s/sSGame.bin", getResourcesPath());
+        else
+            sprintf(buffer, "%sSGame.bin", gamePath);
+#elif RETRO_PLATFORM == RETRO_OSX
+        sprintf(buffer, "%s/sSGame.bin", gamePath);
+#else
+        sprintf(buffer, "%sSGame.bin", gamePath);
+#endif
+    }
     
     FileIO *saveFile = fOpen(buffer, "wb");
     if (!saveFile)

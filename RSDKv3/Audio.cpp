@@ -631,6 +631,7 @@ bool PlayMusic(int track)
     else {
         StopMusic();
     }
+    return false;
 }
 
 void LoadSfx(char *filePath, byte sfxID)
