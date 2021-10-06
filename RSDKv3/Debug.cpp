@@ -539,7 +539,7 @@ void processStageSelect()
             gameMenu[1].selection2 = gameMenu[1].selection1; // its a bug fix LOL
 
             char buffer[0x100];
-            if (keyPress.A || keyPress.start || keyPress.left || keyPress.right) {
+            if (gameMenu[1].selection1 < modList.size() && (keyPress.A || keyPress.start || keyPress.left || keyPress.right)) {
                 modList[gameMenu[1].selection1].active ^= 1; 
                 StrCopy(buffer, modList[gameMenu[1].selection1].name.c_str());
                 StrAdd(buffer, ": ");
