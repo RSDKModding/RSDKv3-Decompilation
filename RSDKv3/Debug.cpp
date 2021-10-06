@@ -1,6 +1,6 @@
 #include "RetroEngine.hpp"
 
-int touchTimer = 0;
+int touchFlags = 0;
 
 void initDevMenu()
 {
@@ -84,7 +84,6 @@ void initErrorMessage()
     gameMenu[1].visibleRowCount  = 0;
     gameMenu[1].visibleRowOffset = 0;
     stageMode                    = DEVMENU_SCRIPTERROR;
-    touchTimer                   = 0;
     if (renderType == RENDER_HW) {
         Engine.highResMode = false;
         render3DEnabled    = false;
@@ -108,37 +107,47 @@ void processStageSelect()
 //#endif
 
     if (!keyDown.start && !keyDown.up && !keyDown.down) {
-        if (touches > 0) {
-            if (touchDown[0] && !(touchTimer % 8)) {
-                if (touchX[0] < SCREEN_CENTERX) {
-                    if (touchY[0] >= SCREEN_CENTERY) {
-                        if (!keyDown.down)
+        int tFlags = touchFlags;
+        touchFlags = 0;
+
+        for (int t = 0; t < touches; ++t) {
+            if (touchDown[t]) {
+                if (touchX[t] < SCREEN_CENTERX) {
+                    if (touchY[t] >= SCREEN_CENTERY) {
+                        if (!(tFlags & 2))
                             keyPress.down = true;
-                        keyDown.down = true;
+                        else
+                            touchFlags |= 1 << 1;
                     }
                     else {
-                        if (!keyDown.up)
+                        if (!(tFlags & 1))
                             keyPress.up = true;
-                        keyDown.up = true;
+                        else
+                            touchFlags |= 1 << 0;
                     }
                 }
-                else if (touchX[0] > SCREEN_CENTERX) {
-                    if (touchY[0] > SCREEN_CENTERY) {
-                        if (!keyDown.start)
+                else if (touchX[t] > SCREEN_CENTERX) {
+                    if (touchY[t] > SCREEN_CENTERY) {
+                        if (!(tFlags & 4))
                             keyPress.start = true;
-                        keyDown.start = true;
+                        else
+                            touchFlags |= 1 << 2;
                     }
                     else {
-                        if (!keyDown.B)
+                        if (!(tFlags & 8))
                             keyPress.B = true;
-                        keyDown.B = true;
+                        else
+                            touchFlags |= 1 << 3;
                     }
                 }
             }
         }
-    }
 
-    touchTimer++;
+        touchFlags |= (int)keyPress.up << 0;
+        touchFlags |= (int)keyPress.down << 1;
+        touchFlags |= (int)keyPress.start << 2;
+        touchFlags |= (int)keyPress.B << 3;
+    }
 
     switch (stageMode) {
         case DEVMENU_MAIN: // Main Menu
