@@ -8,6 +8,45 @@ int collisionBottom = 0;
 
 CollisionSensor sensors[6];
 
+#if !RETRO_USE_ORIGINAL_CODE
+bool showHitboxes = false;
+
+int debugHitboxCount = 0;
+DebugHitboxInfo debugHitboxList[DEBUG_HITBOX_MAX];
+
+int addDebugHitbox(byte type, Entity *entity, int left, int top, int right, int bottom)
+{
+    int i = 0;
+    for (; i < debugHitboxCount; ++i) {
+        if (debugHitboxList[i].left == left && debugHitboxList[i].top == top && debugHitboxList[i].right == right
+            && debugHitboxList[i].bottom == bottom && debugHitboxList[i].entity == entity
+            && (!entity || (debugHitboxList[i].XPos == entity->XPos && debugHitboxList[i].YPos == entity->YPos))) {
+            return i;
+        }
+    }
+
+    if (i < DEBUG_HITBOX_MAX) {
+        debugHitboxList[i].type      = type;
+        debugHitboxList[i].entity    = entity;
+        debugHitboxList[i].collision = 0;
+        debugHitboxList[i].left      = left;
+        debugHitboxList[i].top       = top;
+        debugHitboxList[i].right     = right;
+        debugHitboxList[i].bottom    = bottom;
+        if (entity) {
+            debugHitboxList[i].XPos = entity->XPos;
+            debugHitboxList[i].YPos = entity->YPos;
+        }
+
+        int id = debugHitboxCount;
+        debugHitboxCount++;
+        return id;
+    }
+
+    return -1;
+}
+#endif
+
 inline Hitbox *getPlayerHitbox(Player *player)
 {
     AnimationFile *animFile = player->animationFile;
@@ -2084,6 +2123,30 @@ void TouchCollision(int left, int top, int right, int bottom)
     collisionRight += playerHitbox->right[0];
     collisionBottom += playerHitbox->bottom[0];
     scriptEng.checkResult = collisionRight > left && collisionLeft < right && collisionBottom > top && collisionTop < bottom;
+
+#if !RETRO_USE_ORIGINAL_CODE
+    if (showHitboxes) {
+        Entity *entity = &objectEntityList[objectLoop];
+        left -= entity->XPos >> 16;
+        top -= entity->YPos >> 16;
+        right -= entity->XPos >> 16;
+        bottom -= entity->YPos >> 16;
+
+        int thisHitboxID  = addDebugHitbox(H_TYPE_TOUCH, entity, left, top, right, bottom);
+        if (thisHitboxID >= 0 && scriptEng.checkResult)
+            debugHitboxList[thisHitboxID].collision |= 1;
+
+        int otherHitboxID =
+            addDebugHitbox(H_TYPE_TOUCH, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+        if (otherHitboxID >= 0) {
+            debugHitboxList[otherHitboxID].XPos = player->XPos;
+            debugHitboxList[otherHitboxID].YPos = player->YPos;
+
+            if (scriptEng.checkResult)
+                debugHitboxList[otherHitboxID].collision |= 1;
+        }
+    }
+#endif
 }
 void BoxCollision(int left, int top, int right, int bottom)
 {
@@ -2312,6 +2375,32 @@ void BoxCollision(int left, int top, int right, int bottom)
             }
         }
     }
+
+#if !RETRO_USE_ORIGINAL_CODE
+    int thisHitboxID  = 0;
+    int otherHitboxID = 0;
+    if (showHitboxes) {
+        Entity *entity = &objectEntityList[objectLoop];
+        left -= entity->XPos;
+        top -= entity->YPos;
+        right -= entity->XPos;
+        bottom -= entity->YPos;
+
+        thisHitboxID = addDebugHitbox(H_TYPE_BOX, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
+        if (thisHitboxID >= 0 && scriptEng.checkResult)
+            debugHitboxList[thisHitboxID].collision |= 1 << (scriptEng.checkResult - 1);
+
+        int otherHitboxID =
+            addDebugHitbox(H_TYPE_BOX, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+        if (otherHitboxID >= 0) {
+            debugHitboxList[otherHitboxID].XPos = player->XPos;
+            debugHitboxList[otherHitboxID].YPos = player->YPos;
+
+            if (scriptEng.checkResult)
+                debugHitboxList[otherHitboxID].collision |= 1 << (4 - scriptEng.checkResult);
+        }
+    }
+#endif
 }
 void BoxCollision2(int left, int top, int right, int bottom)
 {
@@ -2545,6 +2634,32 @@ void BoxCollision2(int left, int top, int right, int bottom)
             }
         }
     }
+
+#if !RETRO_USE_ORIGINAL_CODE
+    int thisHitboxID  = 0;
+    int otherHitboxID = 0;
+    if (showHitboxes) {
+        Entity *entity = &objectEntityList[objectLoop];
+        left -= entity->XPos;
+        top -= entity->YPos;
+        right -= entity->XPos;
+        bottom -= entity->YPos;
+
+        thisHitboxID = addDebugHitbox(H_TYPE_BOX, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
+        if (thisHitboxID >= 0 && scriptEng.checkResult)
+            debugHitboxList[thisHitboxID].collision |= 1 << (scriptEng.checkResult - 1);
+
+        int otherHitboxID =
+            addDebugHitbox(H_TYPE_BOX, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+        if (otherHitboxID >= 0) {
+            debugHitboxList[otherHitboxID].XPos = player->XPos;
+            debugHitboxList[otherHitboxID].YPos = player->YPos;
+
+            if (scriptEng.checkResult)
+                debugHitboxList[otherHitboxID].collision |= 1 << (4 - scriptEng.checkResult);
+        }
+    }
+#endif
 }
 void PlatformCollision(int left, int top, int right, int bottom)
 {
@@ -2572,17 +2687,43 @@ void PlatformCollision(int left, int top, int right, int bottom)
         }
     }
 
-    if (!sensors[0].collided && !sensors[1].collided && !sensors[2].collided)
-        return;
-    if (!player->gravity && (player->collisionMode == CMODE_RWALL || player->collisionMode == CMODE_LWALL)) {
-        player->XVelocity = 0;
-        player->speed     = 0;
+    if (sensors[0].collided || sensors[1].collided || sensors[2].collided) {
+        if (!player->gravity && (player->collisionMode == CMODE_RWALL || player->collisionMode == CMODE_LWALL)) {
+            player->XVelocity = 0;
+            player->speed     = 0;
+        }
+        player->YPos                  = top - (collisionBottom << 16);
+        player->gravity               = 0;
+        player->YVelocity             = 0;
+        player->angle                 = 0;
+        player->boundEntity->rotation = 0;
+        player->controlLock           = 0;
+        scriptEng.checkResult         = true;
     }
-    player->YPos                  = top - (collisionBottom << 16);
-    player->gravity               = 0;
-    player->YVelocity             = 0;
-    player->angle                 = 0;
-    player->boundEntity->rotation  = 0;
-    player->controlLock           = 0;
-    scriptEng.checkResult = true;
+
+#if !RETRO_USE_ORIGINAL_CODE
+    int thisHitboxID  = 0;
+    int otherHitboxID = 0;
+    if (showHitboxes) {
+        Entity *entity = &objectEntityList[objectLoop];
+        left -= entity->XPos;
+        top -= entity->YPos;
+        right -= entity->XPos;
+        bottom -= entity->YPos;
+
+        thisHitboxID = addDebugHitbox(H_TYPE_PLAT, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
+        if (thisHitboxID >= 0 && scriptEng.checkResult)
+            debugHitboxList[thisHitboxID].collision |= 1 << 0;
+
+        int otherHitboxID = addDebugHitbox(H_TYPE_PLAT, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0],
+                                           playerHitbox->bottom[0]);
+        if (otherHitboxID >= 0) {
+            debugHitboxList[otherHitboxID].XPos = player->XPos;
+            debugHitboxList[otherHitboxID].YPos = player->YPos;
+
+            if (scriptEng.checkResult)
+                debugHitboxList[otherHitboxID].collision |= 1 << 3;
+        }
+    }
+#endif
 }

@@ -213,6 +213,10 @@ bool processEvents()
                             Engine.gameMode = ENGINE_MAINGAME;
                         }
                         break;
+                    case SDLK_F9:
+                        if (Engine.devMenu)
+                            showHitboxes ^= 1;
+                        break;
                     case SDLK_F10:
                         if (Engine.devMenu)
                             Engine.showPaletteOverlay ^= 1;
