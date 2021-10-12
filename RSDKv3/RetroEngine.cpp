@@ -614,10 +614,10 @@ void RetroEngine::LoadXMLSoundFX()
                     const tinyxml2::XMLElement *sfxElement = firstXMLChildElement(doc, soundsElement, "soundfx");
                     if (sfxElement) {
                         do {
-                            const tinyxml2::XMLAttribute *valAttr = findXMLAttribute(sfxElement, "path");
+                            const tinyxml2::XMLAttribute *pathAttr = findXMLAttribute(sfxElement, "path");
                             const char *sfxPath                   = "unknownSFX.wav";
-                            if (valAttr)
-                                sfxPath = getXMLAttributeValueString(valAttr);
+                            if (pathAttr)
+                                sfxPath = getXMLAttributeValueString(pathAttr);
 
                             GetFileInfo(&infoStore);
                             LoadSfx((char *)sfxPath, globalSFXCount);
