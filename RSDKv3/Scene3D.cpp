@@ -40,6 +40,7 @@ void setIdentityMatrix(Matrix *matrix)
     matrix->values[2][3] = 0;
     matrix->values[3][0] = 0;
     matrix->values[3][0] = 0;
+    matrix->values[3][1] = 0;
     matrix->values[3][2] = 0;
     matrix->values[3][3] = 0x100;
 }

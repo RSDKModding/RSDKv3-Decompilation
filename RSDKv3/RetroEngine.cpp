@@ -491,7 +491,8 @@ void RetroEngine::LoadXMLVariables()
             bool success = doc->Parse(xmlData) == tinyxml2::XML_SUCCESS;
 
             if (success) {
-                const tinyxml2::XMLElement *variablesElement = firstXMLChildElement(doc, nullptr, "variables");
+                const tinyxml2::XMLElement *gameElement      = firstXMLChildElement(doc, nullptr, "game");
+                const tinyxml2::XMLElement *variablesElement = firstXMLChildElement(doc, gameElement, "variables");
                 if (variablesElement) {
                     const tinyxml2::XMLElement *varElement = firstXMLChildElement(doc, variablesElement, "variable");
                     if (varElement) {
@@ -734,8 +735,8 @@ void RetroEngine::LoadXMLStages(TextMenu *menu, int listNo)
                                     stgHighlighted = getXMLAttributeValueBool(highlightAttr);
 
                                 if (menu) {
-                                    if (listNo == 2 || listNo == 3) {
-                                        if (listNo == ((l + 1) ^ 1)) {
+                                    if (listNo == 3 || listNo == 4) {
+                                        if ((listNo == 4 && l == 2) || (listNo == 3 && l == 3)) {
                                             AddTextMenuEntry(menu, stgName);
                                             menu->entryHighlight[menu->rowCount - 1] = stgHighlighted;
                                         }
