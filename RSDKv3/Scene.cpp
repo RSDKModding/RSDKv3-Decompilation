@@ -82,6 +82,11 @@ byte tilesetGFXData[TILESET_SIZE];
 ushort tile3DFloorBuffer[0x13334];
 bool drawStageGFXHQ = false;
 
+#if RETRO_USE_MOD_LOADER
+bool loadGlobalScripts = false; // stored here so I can use it later
+int globalObjCount     = 0;
+#endif
+
 void InitFirstStage()
 {
     xScrollOffset = 0;
@@ -319,12 +324,15 @@ void LoadStageFiles(void)
         ClearScriptData();
         for (int i = SURFACE_MAX; i > 0; i--) RemoveGraphicsFile((char *)"", i - 1);
 
-        bool loadGlobals = false;
+        loadGlobalScripts = false;
         if (LoadStageFile("StageConfig.bin", stageListPosition, &info)) {
-            FileRead(&loadGlobals, 1);
+            byte buf = 0;
+            FileRead(&buf, 1);
+            loadGlobalScripts = buf;
             CloseFile();
         }
-        if (loadGlobals && LoadFile("Data/Game/GameConfig.bin", &info)) {
+
+        if (loadGlobalScripts && LoadFile("Data/Game/GameConfig.bin", &info)) {
             FileRead(&fileBuffer, 1);
             FileRead(&strBuffer, fileBuffer);
             FileRead(&fileBuffer, 1);
@@ -340,6 +348,12 @@ void LoadStageFiles(void)
                 strBuffer[fileBuffer2] = 0;
                 SetObjectTypeName(strBuffer, i + scriptID);
             }
+
+#if RETRO_USE_MOD_LOADER
+            for (byte i = 0; i < modObjCount && loadGlobalScripts; ++i) {
+                SetObjectTypeName(modTypeNames[i], globalObjectCount + i + 1);
+            }
+#endif
 
 #if RETRO_USE_MOD_LOADER
             char scriptPath[0x40];
@@ -381,6 +395,19 @@ void LoadStageFiles(void)
                 }
             }
             CloseFile();
+
+#if RETRO_USE_MOD_LOADER
+            globalObjCount = globalObjectCount;
+            for (byte i = 0; i < modObjCount && loadGlobalScripts; ++i) {
+                SetObjectTypeName(modTypeNames[i], scriptID);
+
+                GetFileInfo(&infoStore);
+                ParseScriptFile(modScriptPaths[i], scriptID++);
+                SetFileInfo(&infoStore);
+                if (Engine.gameMode == ENGINE_SCRIPTERROR)
+                    return;
+            }
+#endif
         }
 
         if (LoadStageFile("StageConfig.bin", stageListPosition, &info)) {
@@ -610,10 +637,28 @@ void LoadActLayout()
         int ObjectCount = fileBuffer;
         FileRead(&fileBuffer, 1);
         ObjectCount = (ObjectCount << 8) + fileBuffer;
+
+#if !RETRO_USE_ORIGINAL_CODE
+        if (ObjectCount > 0x400)
+            printLog("WARNING: object count %d exceeds the object limit", ObjectCount);
+#endif
+
+#if RETRO_USE_MOD_LOADER
+        int offsetCount = 0;
+        for (int m = 0; m < modObjCount; ++m)
+            if (modScriptFlags[m])
+                ++offsetCount;
+#endif
+
         Entity *object = &objectEntityList[32];
         for (int i = 0; i < ObjectCount; ++i) {
             FileRead(&fileBuffer, 1);
             object->type = fileBuffer;
+
+#if RETRO_USE_MOD_LOADER
+            if (loadGlobalScripts && offsetCount && object->type >= globalObjCount)
+                object->type += offsetCount; // offset it by our mod count
+#endif
 
             FileRead(&fileBuffer, 1);
             object->propertyValue = fileBuffer;
