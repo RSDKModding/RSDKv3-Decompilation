@@ -24,13 +24,9 @@ struct GFXSurface {
     char fileName[0x40];
     int height;
     int width;
-//#if RETRO_SOFTWARE_RENDER
     int widthShifted;
-//#endif
-//#if RETRO_HARDWARE_RENDER
     int texStartX;
     int texStartY;
-//#endif
     int dataPosition;
 };
 
