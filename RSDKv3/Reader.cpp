@@ -147,7 +147,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
             Engine.usingDataFile = false;
             fileInfo->isMod      = true;
             isModdedFile         = true;
-            addPath = false;
+            addPath              = true;
             std::string fStr     = std::string(filePathBuf);
             fStr.erase(fStr.begin(), fStr.begin() + 5); // remove "Data/"
             StrCopy(filePathBuf, fStr.c_str());
