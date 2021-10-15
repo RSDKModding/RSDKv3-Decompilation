@@ -1114,6 +1114,37 @@ void ConvertFunctionText(char *text)
             }
 
 #if RETRO_USE_MOD_LOADER
+            // Eg: TempValue0 = AchievementName[Jump]
+            if (StrComp(funcName, "SfxName")) {
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, 0);
+                int s = 0;
+                for (; s < globalSFXCount; ++s) {
+                    if (StrComp(strBuffer, globalSfxNames[s])) {
+                        funcName[0] = 0;
+                        AppendIntegerToString(funcName, s);
+                        break;
+                    }
+                }
+
+                if (s == globalSFXCount) {
+                    s = 0;
+                    for (; s < stageSFXCount; ++s) {
+                        if (StrComp(strBuffer, stageSfxNames[s])) {
+                            funcName[0] = 0;
+                            AppendIntegerToString(funcName, s);
+                            break;
+                        }
+                    }
+
+                    if (s == stageSFXCount) {
+                        char buf[0x40];
+                        sprintf(buf, "WARNING: Unknown SfxName \"%s\"", strBuffer);
+                        printLog(buf);
+                    }
+                }
+            }
+
             // Eg: TempValue0 = AchievementName[88 Miles Per Hour]
             if (StrComp(funcName, "AchievementName")) {
                 funcName[0] = 0;
@@ -1154,24 +1185,29 @@ void ConvertFunctionText(char *text)
                 }
             }
 
-            // Eg: TempValue0 = StageName[PALMTREE PANIC 1]
+            // Eg: TempValue0 = StageName[R - PALMTREE PANIC 1]
             if (StrComp(funcName, "StageName")) {
                 funcName[0] = 0;
-                AppendIntegerToString(funcName, 0);
-                int s = 0;
-                for (; s < stageListCount[activeStageList]; ++s) {
-                    if (StrComp(strBuffer, stageList[activeStageList][s].name)) {
-                        funcName[0] = 0;
-                        AppendIntegerToString(funcName, s);
-                        break;
+                int s       = -1;
+                if (StrLength(strBuffer) >= 2) {
+                    char list = strBuffer[0];
+                    switch (list) {
+                        case 'P': list = STAGELIST_PRESENTATION; break;
+                        case 'R': list = STAGELIST_REGULAR; break;
+                        case 'S': list = STAGELIST_SPECIAL; break;
+                        case 'B': list = STAGELIST_BONUS; break;
                     }
+                    s = GetSceneID(list, &strBuffer[2]);
                 }
 
-                if (s == stageListCount[activeStageList]) {
+                if (s == -1) {
                     char buf[0x40];
-                    sprintf(buf, "WARNING: Unknown StageName \"%s\"", strBuffer);
+                    sprintf(buf, "WARNING: Unknown StageName \"%s\", on line %d", strBuffer, lineID);
                     printLog(buf);
+                    s = 0;
                 }
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, s);
             }
 #endif
 

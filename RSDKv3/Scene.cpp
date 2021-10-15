@@ -500,6 +500,9 @@ void LoadStageFiles(void)
                 CloseFile();
                 LoadSfx(strBuffer, globalSFXCount + i);
                 SetFileInfo(&infoStore);
+#if RETRO_USE_MOD_LOADER
+                SetSfxName(strBuffer, i, false);
+#endif
             }
             CloseFile();
         }
