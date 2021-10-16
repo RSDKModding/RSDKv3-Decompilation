@@ -18,23 +18,21 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Native Windows x64 version, as well as an x86 version
 
 # Advantages over the Mobile versions of Sonic CD
-* The rendering backend is based off the PC version, so palettes are fully supported (tidal tempest water in particular)
+* The rendering backend is based off the PC version by default, so palettes are fully supported (Tidal Tempest water in particular)
 
 # Additional Tweaks
+* Added a built in mod loader and API allowing to easily create and play mods with features such as save file redirection, custom achievements and XML GameConfig/StageConfig data.
 * There is now a settings.ini file that the game uses to load all settings, similar to Sonic Mania
 * Dev menu can now be accessed from anywhere by pressing `ESC` if enabled in the config
 * The `F12` pause, `F11` step over & fast forward debug features from Sonic Mania have all been ported and are enabled if `devMenu` is enabled in the config
-* If `devMenu` is enabled in the config, pressing `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time
+* If `devMenu` is enabled in the config, pressing 'F9' will visualize hitboxes, and `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time
 * If `useSteamDir` is set in the config, and the user is on Windows, the game will try to load savedata from Steam's `userdata` directory (where the Steam version saves to)
+* Added the idle screen dimming feature from Sonic Mania Plus, as well as allowing the user to disable it or set how long it takes for the screen to dim.
 
 # How to build:
 ## Windows:
 * Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) to setup dependencies, then build via the Visual Studio solution
 * or grab a prebuilt executable from the releases section
-
-## Windows UWP (Phone, Xbox, etc.):
-* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, then build and deploy via the UWP Visual Studio solution.
-* After install copy your `Data.rsdk` and `videos` folder into the apps localstate folder
 
 ## Windows via MSYS2 (64-bit Only):
 * Download the newest version of the MSYS2 installer from [here](https://www.msys2.org/) and install it.
@@ -43,6 +41,10 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
 * Then run `make -f Makefile.msys2 CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+
+## Windows UWP (Phone, Xbox, etc.):
+* Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, then build and deploy via the UWP Visual Studio solution.
+* After install copy your `Data.rsdk` and `videos` folder into the apps localstate folder
 
 ## Mac:
 * Clone the repo, then follow the instructions in the [depencencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the Xcode project
