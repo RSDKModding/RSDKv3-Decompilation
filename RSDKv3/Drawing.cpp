@@ -392,7 +392,7 @@ void FlipScreen()
 
         switch (Engine.scalingMode) {
             // reset to default if value is invalid.
-            default: Engine.scalingMode = RETRO_DEFAULTSCALINGMODE; break;
+            default: Engine.scalingMode = 0; break;
             case 0: break;                         // nearest
             case 1: integerScaling = true; break;  // integer scaling
             case 2: break;                         // sharp bilinear
