@@ -620,7 +620,7 @@ void RetroEngine::LoadXMLSoundFX()
                                 sfxPath = getXMLAttributeValueString(pathAttr);
 
 #if RETRO_USE_MOD_LOADER
-                            SetSfxName(sfxPath, globalSFXCount, false);
+                            SetSfxName(sfxPath, globalSFXCount, true);
 #endif
 
                             GetFileInfo(&infoStore);
