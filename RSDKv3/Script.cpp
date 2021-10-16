@@ -1114,7 +1114,7 @@ void ConvertFunctionText(char *text)
             }
 
 #if RETRO_USE_MOD_LOADER
-            // Eg: TempValue0 = AchievementName[Jump]
+            // Eg: TempValue0 = SfxName[Jump]
             if (StrComp(funcName, "SfxName")) {
                 funcName[0] = 0;
                 AppendIntegerToString(funcName, 0);
@@ -1185,7 +1185,7 @@ void ConvertFunctionText(char *text)
                 }
             }
 
-            // Eg: TempValue0 = StageName[R - PALMTREE PANIC 1]
+            // Eg: TempValue0 = StageName[R - PALMTREE PANIC ZONE 1 A]
             if (StrComp(funcName, "StageName")) {
                 funcName[0] = 0;
                 int s       = -1;
@@ -2072,7 +2072,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
         int opcodeSize       = functions[opcode].opcodeSize;
         int scriptCodeOffset = scriptDataPtr;
 
-        // Get Valuess
+        // Get Values
         for (int i = 0; i < opcodeSize; ++i) {
             int opcodeType = scriptData[scriptDataPtr++];
 
