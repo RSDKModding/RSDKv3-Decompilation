@@ -1016,9 +1016,13 @@ void setFullScreen(bool fs)
             h = mode.w;
         }
 
+#if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID
         float aspect = SCREEN_XSIZE / (float)SCREEN_YSIZE;
         w            = aspect * h;
         viewOffsetX  = abs(mode.w - w) / 2;
+#else
+        viewOffsetX = 0;
+#endif
 
         SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, w, h);
     }
