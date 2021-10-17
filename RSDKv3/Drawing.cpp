@@ -379,7 +379,7 @@ void FlipScreen()
 #if RETRO_USING_OPENGL
 
 #if !RETRO_USE_ORIGINAL_CODE
-        if (dimAmount < 1.0)
+        if (dimAmount < 1.0 && stageMode != STAGEMODE_PAUSED)
             DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, 0, 0, 0, 0xFF - (dimAmount * 0xFF));
 #endif
         if (Engine.gameMode == ENGINE_VIDEOWAIT) {
@@ -618,7 +618,7 @@ void FlipScreen()
 #endif
     }
     else if (renderType == RENDER_HW) {
-        if (dimAmount < 1.0)
+        if (dimAmount < 1.0 && stageMode != STAGEMODE_PAUSED)
             DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, 0, 0, 0, 0xFF - (dimAmount * 0xFF));
 
         if (Engine.gameMode == ENGINE_VIDEOWAIT)
