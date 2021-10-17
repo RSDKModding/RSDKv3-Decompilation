@@ -1960,7 +1960,7 @@ void DrawHLineScrollLayer(int layerID)
                         deform = *deformationData;
 
                     // Fix for SS5 mobile bug
-                    if (StrComp(stageList[activeStageList][stageListPosition].name, "5") && activeStageList == STAGELIST_SPECIAL)
+                    if (StrComp(stageList[activeStageList][stageListPosition].name, "5") && activeStageList == STAGELIST_SPECIAL && renderType == RENDER_HW)
                         deform >>= 4;
 
                     chunkX += deform;
