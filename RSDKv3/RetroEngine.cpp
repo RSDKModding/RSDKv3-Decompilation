@@ -972,11 +972,14 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_PAUSE_REQUESTED: // PC/Mobile = Pause Requested (Mobile uses in-game menu, PC does as well if devMenu is active)
             // I know this is kinda lazy and a copout, buuuuuuut the in-game menu is so much better than the janky PC one
             stageMode = STAGEMODE_PAUSED;
+            PauseSound();
             for (int o = 0; o < OBJECT_COUNT; ++o) {
                 if (StrComp("PauseMenu", typeNames[o])) {
                     objectEntityList[9].type      = o;
                     objectEntityList[9].drawOrder = 6;
                     objectEntityList[9].priority  = PRIORITY_ACTIVE_PAUSED;
+                    if (activeStageList == STAGELIST_SPECIAL)
+                        stageLayouts[0].type = LAYER_3DFLOOR;
                     for (int s = 0; s < globalSFXCount + stageSFXCount; ++s) {
                         if (StrComp("Global/Select.wav", sfxList[s].name))
                             PlaySfx(s, 0);
