@@ -69,7 +69,7 @@ bool processEvents()
 
                     int width = 0, height = 0;
                     SDL_GetWindowSize(Engine.window, &width, &height);
-                    touchX[0]  = (touchX[0] / (float)width) * SCREEN_XSIZE;
+                    touchX[0]  = ((touchX[0] - viewOffsetX) / (float)width) * SCREEN_XSIZE;
                     touchY[0]  = (touchY[0] / (float)height) * SCREEN_YSIZE;
 
                     touchDown[0] = state & SDL_BUTTON_LMASK;
@@ -130,49 +130,7 @@ bool processEvents()
                         break;
                     case SDLK_F4:
                         Engine.isFullScreen ^= 1;
-                        if (Engine.isFullScreen) {
-#if RETRO_USING_SDL1
-                            Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16,
-                                                                    SDL_SWSURFACE | SDL_FULLSCREEN);
-                            SDL_ShowCursor(SDL_FALSE);
-#endif
-#if RETRO_USING_SDL2
-                            SDL_RestoreWindow(Engine.window);
-                            SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-#endif
-                            int w = SCREEN_XSIZE * Engine.windowScale;
-                            int h = SCREEN_YSIZE * Engine.windowScale;
-#if RETRO_USING_SDL2
-                            SDL_GetWindowSize(Engine.window, &w, &h);
-#endif
-                            float virtualAspect = (float)SCREEN_XSIZE / SCREEN_YSIZE;
-                            float realAspect    = (float)w / h;
-
-                            int vx = 0, vy = 0, vw = w, vh = h;
-                            if (virtualAspect > realAspect) {
-                                vh = SCREEN_YSIZE * ((float)w / SCREEN_XSIZE);
-                                vy = (h - vh) >> 1;
-                            }
-                            else {
-                                vw = SCREEN_XSIZE * ((float)h / SCREEN_YSIZE);
-                                vx = (w - vw) >> 1;
-                            }
-                            SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, w, h);
-                        }
-                        else {
-#if RETRO_USING_SDL1
-                            Engine.windowSurface =
-                                SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE);
-                            SDL_ShowCursor(SDL_TRUE);
-#endif
-                            SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
-#if RETRO_USING_SDL2
-                            SDL_SetWindowFullscreen(Engine.window, 0);
-                            SDL_SetWindowSize(Engine.window, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
-                            SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-                            SDL_RestoreWindow(Engine.window);
-#endif
-                        }
+                        setFullScreen(Engine.isFullScreen);
                         break;
                     case SDLK_F1:
                         if (Engine.devMenu) {

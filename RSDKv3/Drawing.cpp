@@ -38,6 +38,9 @@ bool hq3DFloorEnabled = false;
 ushort texBuffer[HW_TEXBUFFER_SIZE];
 byte texBufferMode = 0;
 
+#if !RETRO_USE_ORIGINAL_CODE
+int viewOffsetX = 0;
+#endif
 int viewWidth      = 0;
 int viewHeight     = 0;
 float viewAspect   = 0;
@@ -98,7 +101,6 @@ int InitRenderDevice()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-    SDL_GL_SetSwapInterval(Engine.vsync ? 1 : 0);
 #endif
 #endif
     
@@ -118,6 +120,7 @@ int InitRenderDevice()
 #endif
 
     SCREEN_CENTERX = SCREEN_XSIZE / 2;
+    viewOffsetX    = 0;
 
     Engine.window = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE * Engine.windowScale,
                                      SCREEN_YSIZE * Engine.windowScale, SDL_WINDOW_ALLOW_HIGHDPI | flags);
@@ -158,12 +161,6 @@ int InitRenderDevice()
         return 0;
     }
 #endif
-
-    if (Engine.startFullScreen) {
-        SDL_RestoreWindow(Engine.window);
-        SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-        Engine.isFullScreen = true;
-    }
 
     if (Engine.borderless) {
         SDL_RestoreWindow(Engine.window);
@@ -237,6 +234,8 @@ int InitRenderDevice()
 #if RETRO_USING_OPENGL
     // Init GL
     Engine.glContext = SDL_GL_CreateContext(Engine.window);
+
+    SDL_GL_SetSwapInterval(Engine.vsync ? 1 : 0);
 
 #if RETRO_PLATFORM != RETRO_ANDROID && RETRO_PLATFORM != RETRO_OSX
     // glew Setup
@@ -333,6 +332,11 @@ int InitRenderDevice()
     SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, vw, vh);
 #endif
 #endif
+
+    if (Engine.startFullScreen) {
+        Engine.isFullScreen = true;
+        setFullScreen(Engine.isFullScreen);
+    }
 
     if (renderType == RENDER_SW) {
         Engine.frameBuffer   = new ushort[SCREEN_XSIZE * SCREEN_YSIZE];
@@ -699,7 +703,7 @@ void FlipScreenNoFB()
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
     glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, -1.0, 1.0);
-    glViewport(0, 0, viewWidth, viewHeight);
+    glViewport(viewOffsetX, 0, viewWidth, viewHeight);
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glEnableClientState(GL_COLOR_ARRAY);
 
@@ -712,7 +716,7 @@ void FlipScreenNoFB()
         glEnable(GL_BLEND);
 
         // Init 3D Plane
-        glViewport(0, 0, viewWidth, viewHeight);
+        glViewport(viewOffsetX, 0, viewWidth, viewHeight);
         glPushMatrix();
         glLoadIdentity();
         CalcPerspective(1.8326f, viewAspect, 0.1f, 2000.0f);
@@ -730,7 +734,7 @@ void FlipScreenNoFB()
         glMatrixMode(GL_PROJECTION);
 
         // Return for blended rendering
-        glViewport(0, 0, bufferWidth, bufferHeight);
+        glViewport(viewOffsetX, 0, bufferWidth, bufferHeight);
         glPopMatrix();
     }
     else {
@@ -769,7 +773,7 @@ void FlipScreenHRes()
     glLoadIdentity();
 
     glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, -1.0, 1.0);
-    glViewport(0, 0, bufferWidth, bufferHeight);
+    glViewport(viewOffsetX, 0, bufferWidth, bufferHeight);
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glDisable(GL_BLEND);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
@@ -811,7 +815,7 @@ void RenderFromTexture()
         glClear(GL_COLOR_BUFFER_BIT);
     }
     glLoadIdentity();
-    glViewport(0, 0, viewWidth, viewHeight);
+    glViewport(viewOffsetX, 0, viewWidth, viewHeight);
     glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &screenRect[0].x);
     glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &screenRect[0].u);
     glDisable(GL_BLEND);
@@ -879,7 +883,7 @@ void RenderFromRetroBuffer()
         viewAnglePos -= 7.5;
         glClear(GL_COLOR_BUFFER_BIT);
     }
-    glViewport(0, 0, viewWidth, viewHeight);
+    glViewport(viewOffsetX, 0, viewWidth, viewHeight);
 
     glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &retroScreenRect[0].x);
     glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &retroScreenRect[0].u);
@@ -898,23 +902,23 @@ void FlipScreenVideo()
         screenVerts[i].v = retroScreenRect[i].v;
     }
 
-    float screenAR = SCREEN_XSIZE / (float)SCREEN_YSIZE;
+    float screenAR = viewWidth / (float)viewHeight;
     float x = -1.0f, y = 1.0f, w = 1.0f, h = -1.0f;
     if (screenAR > videoAR) {                      // If the screen is wider than the video. (Pillarboxed)
-        uint videoW = SCREEN_YSIZE * videoAR;      // This is to force Pillarboxed mode if the screen is wider than the video.
-        x           = (SCREEN_XSIZE - videoW) / 2; // Centers the video horizontally.
+        uint videoW = viewHeight * videoAR;     // This is to force Pillarboxed mode if the screen is wider than the video.
+        x           = (viewWidth - videoW) / 2;    // Centers the video horizontally.
         w           = videoW;
 
-        x = (normalize(x, 0, SCREEN_XSIZE) * 2) - 1.0f;
-        w = (normalize(w, 0, SCREEN_XSIZE) * 2) - 1.0f;
+        x = (normalize(x, 0, viewWidth) * 2) - 1.0f;
+        w = (normalize(w, 0, viewWidth) * 2) - 1.0f;
     }
     else if (screenAR < videoAR) {
-        uint videoH = SCREEN_XSIZE / videoAR;      // This is to force letterbox mode if the video is wider than the screen.
-        y           = (SCREEN_YSIZE - videoH) / 2; // Centers the video vertically.
+        uint videoH = viewWidth / videoAR;         // This is to force letterbox mode if the video is wider than the screen.
+        y           = (viewHeight - videoH) / 2; // Centers the video vertically.
         h           = videoH;
 
-        y = -((normalize(y, 0, SCREEN_YSIZE) * 2) - 1.0f);
-        h = -((normalize(h, 0, SCREEN_YSIZE) * 2) - 1.0f);
+        y = -((normalize(y, 0, viewHeight) * 2) - 1.0f);
+        h = -((normalize(h, 0, viewHeight) * 2) - 1.0f);
     }
 
     screenVerts[0].x = x;
@@ -941,7 +945,7 @@ void FlipScreenVideo()
         viewAnglePos -= 7.5;
         glClear(GL_COLOR_BUFFER_BIT);
     }
-    glViewport(0, 0, viewWidth, viewHeight);
+    glViewport(viewOffsetX, 0, viewWidth, viewHeight);
     glVertexPointer(2, GL_FLOAT, sizeof(DrawVertex3D), &screenVerts[0].x);
     glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex3D), &screenVerts[0].u);
     glDisable(GL_BLEND);
@@ -987,6 +991,51 @@ void ReleaseRenderDevice()
 #endif
     SDL_DestroyWindow(Engine.window);
 #endif
+}
+
+void setFullScreen(bool fs)
+{
+
+    if (fs) {
+#if RETRO_USING_SDL1
+        Engine.windowSurface =
+            SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE | SDL_FULLSCREEN);
+        SDL_ShowCursor(SDL_FALSE);
+#endif
+#if RETRO_USING_SDL2
+        SDL_RestoreWindow(Engine.window);
+        SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+#endif
+        SDL_DisplayMode mode;
+        SDL_GetDesktopDisplayMode(0, &mode);
+
+        int w = mode.w;
+        int h = mode.h;
+        if (mode.h > mode.w) {
+            w = mode.h;
+            h = mode.w;
+        }
+
+        float aspect = SCREEN_XSIZE / (float)SCREEN_YSIZE;
+        w            = aspect * h;
+        viewOffsetX  = abs(mode.w - w) / 2;
+
+        SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, w, h);
+    }
+    else {
+        viewOffsetX = 0;
+#if RETRO_USING_SDL1
+        Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE);
+        SDL_ShowCursor(SDL_TRUE);
+#endif
+        SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+#if RETRO_USING_SDL2
+        SDL_SetWindowFullscreen(Engine.window, 0);
+        SDL_SetWindowSize(Engine.window, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+        SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+        SDL_RestoreWindow(Engine.window);
+#endif
+    }
 }
 
 void GenerateBlendLookupTable()

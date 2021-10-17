@@ -99,6 +99,9 @@ extern bool hq3DFloorEnabled;
 extern ushort texBuffer[HW_TEXBUFFER_SIZE];
 extern byte texBufferMode;
 
+#if !RETRO_USE_ORIGINAL_CODE
+extern int viewOffsetX;
+#endif
 extern int viewWidth;
 extern int viewHeight;
 extern float viewAspect;
@@ -133,6 +136,8 @@ void RenderFromRetroBuffer();
 void FlipScreenVideo();
 
 void ReleaseRenderDevice();
+
+void setFullScreen(bool fs);
 
 void GenerateBlendLookupTable();
 
