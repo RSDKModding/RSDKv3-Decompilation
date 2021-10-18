@@ -53,7 +53,7 @@ objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 
-bin/soniccd: $(OBJECTS)
+bin/RSDKv3: $(OBJECTS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
