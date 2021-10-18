@@ -5,7 +5,8 @@ endif
 
 CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) vorbisfile vorbis theoradec sdl2 glew) $(CXXFLAGS) \
    -Idependencies/all/filesystem/include \
-   -Idependencies/all/theoraplay
+   -Idependencies/all/theoraplay \
+   -Idependencies/all/tinyxml2/
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) vorbisfile vorbis theoradec sdl2 glew) -pthread $(LIBS)
 
