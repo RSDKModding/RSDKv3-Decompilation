@@ -52,11 +52,13 @@ Even if your platform isn't supported by the official releases, you **must** buy
 
 ## Linux:
 * To setup your build enviroment and library dependecies run the following commands:
-* Ubuntu (Mint, Pop!_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev libtinyxml2-dev`
-* Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora libglew libtinyxml2`
+* Ubuntu (Mint, Pop!_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev `
+* Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora libglew `
 * Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
-* Then run `make CXXFLAGS=-O2 -j5` (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+* Clone the tinyxml2 repo with the following command: `git clone https://github.com/leethomason/tinyxml2.git ./dependencies/all/tinyxml2`
+* Then run `make CXXFLAGS=-O2 -j5`, if your distro is using gcc 8.x.x then add the argument `LIBS=-lstdc++fs`
+* (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
 
 ## iOS:
 * Clone the repo, then follow the instructions in the [depencencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
