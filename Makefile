@@ -45,7 +45,7 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
-all: bin/soniccd
+all: bin/RSDKv3
 
 include $(wildcard $(DEPENDENCIES))
 
