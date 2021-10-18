@@ -58,8 +58,8 @@ bin/soniccd: $(OBJECTS)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
 install: bin/soniccd
-	install -Dp -m755 bin/soniccd $(prefix)/bin/soniccd
-	chmod -x $(prefix)/bin/soniccd
+	install -Dp -m755 bin/RSDKv3 $(prefix)/bin/RSDKv3
+	chmod -x $(prefix)/bin/RSDKv3
 
 clean:
 	 rm -r -f bin && rm -r -f objects
