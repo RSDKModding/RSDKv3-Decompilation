@@ -57,7 +57,7 @@ bin/RSDKv3: $(OBJECTS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
-install: bin/soniccd
+install: bin/RSDKv3
 	install -Dp -m755 bin/RSDKv3 $(prefix)/bin/RSDKv3
 	chmod -x $(prefix)/bin/RSDKv3
 
