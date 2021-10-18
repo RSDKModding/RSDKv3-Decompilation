@@ -46,7 +46,7 @@ endif
 OBJECTS = $(SOURCES:%=objects/%.o)
 DEPENDENCIES = $(SOURCES:%=objects/%.d)
 
-all: bin/soniccd
+all: bin/RSDKv3
 
 include $(wildcard $(DEPENDENCIES))
 
@@ -54,13 +54,13 @@ objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 
-bin/soniccd: $(OBJECTS)
+bin/RSDKv3: $(OBJECTS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
-install: bin/soniccd
-	install -Dp -m755 bin/soniccd $(prefix)/bin/soniccd
-	chmod -x $(prefix)/bin/soniccd
+install: bin/RSDKv3
+	install -Dp -m755 bin/RSDKv3 $(prefix)/bin/RSDKv3
+	chmod -x $(prefix)/bin/RSDKv3
 
 clean:
 	 rm -r -f bin && rm -r -f objects
