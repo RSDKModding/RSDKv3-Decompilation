@@ -635,7 +635,7 @@ void writeSettings() {
     ini.SetComment("Window", "VSComment", "Determines if VSync will be active or not");
     ini.SetBool("Window", "VSync", Engine.vsync);
     ini.SetComment("Window", "SMComment",
-                   "Determines what scaling is used. 0 is nearest neighbour, 1 is integer scale, 2 is sharp bilinear, and 3 is regular bilinear.");
+                   "Determines what scaling is used. 0 is nearest neighbour, 1 or higher is linear.");
     ini.SetComment("Window", "SMWarning",
                    "Note: Not all scaling options work correctly on certain platforms, as they don't support bilinear filtering.");
     ini.SetInteger("Window", "ScalingMode", Engine.scalingMode);
