@@ -266,6 +266,8 @@ void RetroEngine::Init()
 #endif
     CheckRSDKFile(dest);
 
+    Engine.useFBTexture = Engine.scalingMode;
+
     gameMode = ENGINE_EXITGAME;
     running  = false;
     if (LoadGameConfig("Data/Game/GameConfig.bin")) {

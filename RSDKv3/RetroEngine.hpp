@@ -333,7 +333,7 @@ public:
     int language     = RETRO_EN;
     int message       = 0;
     bool highResMode  = false;
-    bool useFBTexture = true;
+    bool useFBTexture = false;
 
     bool trialMode      = false;
     bool onlineActive   = true;

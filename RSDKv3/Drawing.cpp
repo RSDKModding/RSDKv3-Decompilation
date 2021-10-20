@@ -55,8 +55,8 @@ float viewAnglePos = 0;
 
 #if RETRO_USING_OPENGL
 GLuint gfxTextureID[HW_TEXTURE_LIMIT];
-GLuint framebuffer240  = 0;
-GLuint renderbuffer240 = 0;
+GLuint framebufferHW  = 0;
+GLuint renderbufferHW = 0;
 GLuint retroBuffer     = 0;
 GLuint retroBuffer2x     = 0;
 GLuint videoBuffer     = 0;
@@ -276,16 +276,16 @@ int InitRenderDevice()
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
-    glGenFramebuffers(1, &framebuffer240);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer240);
-    glGenTextures(1, &renderbuffer240);
-    glBindTexture(GL_TEXTURE_2D, renderbuffer240);
+    glGenFramebuffers(1, &framebufferHW);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebufferHW);
+    glGenTextures(1, &renderbufferHW);
+    glBindTexture(GL_TEXTURE_2D, renderbufferHW);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderbuffer240, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderbufferHW, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -636,7 +636,8 @@ void FlipScreenFB()
     glOrtho(0, SCREEN_XSIZE << 4, 0.0, SCREEN_YSIZE << 4, -1.0, 1.0);
     glViewport(0, 0, SCREEN_YSIZE, SCREEN_XSIZE);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer240);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebufferHW);
+
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glEnableClientState(GL_COLOR_ARRAY);
 
@@ -704,8 +705,12 @@ void FlipScreenNoFB()
     glLoadIdentity();
     glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, -1.0, 1.0);
     glViewport(viewOffsetX, 0, viewWidth, viewHeight);
+
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glEnableClientState(GL_COLOR_ARRAY);
+    glDisable(GL_BLEND);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST); 
 
     if (render3DEnabled) {
         // Non Blended rendering
@@ -752,6 +757,9 @@ void FlipScreenNoFB()
     glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].u);
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
     glDrawElements(GL_TRIANGLES, blendedGfxCount, GL_UNSIGNED_SHORT, &gfxPolyListIndex[gfxIndexSizeOpaque]);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glDisableClientState(GL_COLOR_ARRAY);
 #endif
 }
@@ -803,7 +811,7 @@ void FlipScreenHRes()
 void RenderFromTexture()
 {
 #if RETRO_USING_OPENGL
-    glBindTexture(GL_TEXTURE_2D, renderbuffer240);
+    glBindTexture(GL_TEXTURE_2D, renderbufferHW);
     if (viewAngle >= 180.0) {
         if (viewAnglePos < 180.0) {
             viewAnglePos += 7.5;
@@ -1016,6 +1024,9 @@ void setFullScreen(bool fs)
             h = mode.w;
         }
 
+        float scaleH        = (mode.h / (float)SCREEN_YSIZE);
+        Engine.useFBTexture = ((float)scaleH - (int)scaleH) != 0 || Engine.scalingMode;
+
 #if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID
         float aspect = SCREEN_XSIZE / (float)SCREEN_YSIZE;
         w            = aspect * h;
@@ -1032,6 +1043,9 @@ void setFullScreen(bool fs)
         Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE);
         SDL_ShowCursor(SDL_TRUE);
 #endif
+
+        Engine.useFBTexture = Engine.scalingMode;
+
         SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
 #if RETRO_USING_SDL2
         SDL_SetWindowFullscreen(Engine.window, 0);
@@ -1197,7 +1211,6 @@ void UpdateHardwareTextures()
 
 #if RETRO_USING_OPENGL
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[0]);
-
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, HW_TEXTURE_SIZE, HW_TEXTURE_SIZE, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, texBuffer);
 #endif
 
@@ -1208,7 +1221,6 @@ void UpdateHardwareTextures()
 
 #if RETRO_USING_OPENGL
         glBindTexture(GL_TEXTURE_2D, gfxTextureID[b]);
-
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, HW_TEXTURE_SIZE, HW_TEXTURE_SIZE, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, texBuffer);
 #endif
     }
@@ -1230,27 +1242,30 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     SetScreenSize(width, width);
 
 #if RETRO_USING_OPENGL
-    if (framebuffer240 > 0) 
-        glDeleteFramebuffers(1, &framebuffer240);
+    if (framebufferHW) 
+        glDeleteFramebuffers(1, &framebufferHW);
 
-    if (renderbuffer240 > 0) 
-        glDeleteTextures(1, &renderbuffer240);
+    if (renderbufferHW) 
+        glDeleteTextures(1, &renderbufferHW);
 
-    if (retroBuffer > 0)
+    if (retroBuffer)
         glDeleteTextures(1, &retroBuffer);
+
+    if (retroBuffer2x)
+        glDeleteTextures(1, &retroBuffer2x);
 
     // Setup framebuffer texture
 
-    glGenFramebuffers(1, &framebuffer240);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer240);
-    glGenTextures(1, &renderbuffer240);
-    glBindTexture(GL_TEXTURE_2D, renderbuffer240);
+    glGenFramebuffers(1, &framebufferHW);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebufferHW);
+    glGenTextures(1, &renderbufferHW);
+    glBindTexture(GL_TEXTURE_2D, renderbufferHW);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderbuffer240, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderbufferHW, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -1261,6 +1276,14 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREEN_XSIZE, SCREEN_YSIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+    glGenTextures(1, &retroBuffer2x);
+    glBindTexture(GL_TEXTURE_2D, retroBuffer2x);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 #endif
 
     // int newWidth  = width * 8;
@@ -1400,16 +1423,14 @@ void UpdateTextureBufferWithTiles()
                 int bufPos = w + (h << 10);
                 for (int y = 0; y < TILE_SIZE; y++) {
                     for (int x = 0; x < TILE_SIZE; x++) {
-                        if (tilesetGFXData[dataPos] > 0) {
+                        if (tilesetGFXData[dataPos] > 0)
                             texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
-                        }
-                        else {
+                        else
                             texBuffer[bufPos] = 0;
-                        }
                         bufPos++;
                         dataPos++;
                     }
-                    bufPos += 1008;
+                    bufPos += HW_TEXTURE_SIZE - TILE_SIZE;
                 }
             }
         }
@@ -1423,21 +1444,17 @@ void UpdateTextureBufferWithTiles()
                     cnt = 1023;
 
                 int bufPos = w + (h << 10);
-                if (tilesetGFXData[dataPos] > 0) {
+                if (tilesetGFXData[dataPos] > 0)
                     texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
-                }
-                else {
+                else
                     texBuffer[bufPos] = 0;
-                }
                 bufPos++;
 
-                for (int l = 0; l < 15; l++) {
-                    if (tilesetGFXData[dataPos] > 0) {
+                for (int l = 0; l < TILE_SIZE - 1; l++) {
+                    if (tilesetGFXData[dataPos] > 0)
                         texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
-                    }
-                    else {
+                    else
                         texBuffer[bufPos] = 0;
-                    }
                     bufPos++;
                     dataPos++;
                 }
@@ -1453,24 +1470,20 @@ void UpdateTextureBufferWithTiles()
                     texBuffer[bufPos] = 0;
                 }
                 bufPos++;
-                dataPos -= 15;
-                bufPos += 1006;
+                dataPos -= TILE_SIZE - 1;
+                bufPos += HW_TEXTURE_SIZE - TILE_SIZE - 2;
 
-                for (int k = 0; k < 16; k++) {
-                    if (tilesetGFXData[dataPos] > 0) {
+                for (int k = 0; k < TILE_SIZE; k++) {
+                    if (tilesetGFXData[dataPos] > 0)
                         texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
-                    }
-                    else {
+                    else
                         texBuffer[bufPos] = 0;
-                    }
                     bufPos++;
-                    for (int l = 0; l < 15; l++) {
-                        if (tilesetGFXData[dataPos] > 0) {
+                    for (int l = 0; l < TILE_SIZE - 1; l++) {
+                        if (tilesetGFXData[dataPos] > 0)
                             texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
-                        }
-                        else {
+                        else
                             texBuffer[bufPos] = 0;
-                        }
                         bufPos++;
                         dataPos++;
                     }
@@ -1486,25 +1499,21 @@ void UpdateTextureBufferWithTiles()
                     }
                     bufPos++;
                     dataPos++;
-                    bufPos += 1006;
+                    bufPos += HW_TEXTURE_SIZE - TILE_SIZE - 2;
                 }
-                dataPos -= 16;
+                dataPos -= TILE_SIZE;
 
-                if (tilesetGFXData[dataPos] > 0) {
+                if (tilesetGFXData[dataPos] > 0)
                     texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
-                }
-                else {
+                else
                     texBuffer[bufPos] = 0;
-                }
                 bufPos++;
 
-                for (int l = 0; l < 15; l++) {
-                    if (tilesetGFXData[dataPos] > 0) {
+                for (int l = 0; l < TILE_SIZE - 1; l++) {
+                    if (tilesetGFXData[dataPos] > 0)
                         texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
-                    }
-                    else {
+                    else
                         texBuffer[bufPos] = 0;
-                    }
                     bufPos++;
                     dataPos++;
                 }
@@ -1520,19 +1529,19 @@ void UpdateTextureBufferWithTiles()
                     texBuffer[bufPos] = 0;
                 }
                 bufPos++;
-                bufPos += 1006;
+                bufPos += HW_TEXTURE_SIZE - TILE_SIZE - 2;
             }
         }
     }
 
     int bufPos = 0;
-    for (int k = 0; k < TILE_SIZE; k++) {
-        for (int l = 0; l < TILE_SIZE; l++) {
+    for (int y = 0; y < TILE_SIZE; y++) {
+        for (int x = 0; x < TILE_SIZE; x++) {
             PACK_RGB888(texBuffer[bufPos], 0xFF, 0xFF, 0xFF);
             texBuffer[bufPos] |= 1;
             bufPos++;
         }
-        bufPos += 1008;
+        bufPos += HW_TEXTURE_SIZE - TILE_SIZE;
     }
 }
 void UpdateTextureBufferWithSortedSprites()
@@ -1636,18 +1645,16 @@ void UpdateTextureBufferWithSortedSprites()
         }
 
         if (curSurface->texStartY + curSurface->height <= HW_TEXTURE_SIZE) {
-            int gfXPos  = curSurface->dataPosition;
+            int gfxPos  = curSurface->dataPosition;
             int dataPos = curSurface->texStartX + (curSurface->texStartY << 10);
             for (int h = 0; h < curSurface->height; h++) {
                 for (int w = 0; w < curSurface->width; w++) {
-                    if (graphicData[gfXPos] > 0) {
-                        texBuffer[dataPos] = fullPalette[texPaletteNum][graphicData[gfXPos]];
-                    }
-                    else {
+                    if (graphicData[gfxPos] > 0)
+                        texBuffer[dataPos] = fullPalette[texPaletteNum][graphicData[gfxPos]];
+                    else
                         texBuffer[dataPos] = 0;
-                    }
                     dataPos++;
-                    gfXPos++;
+                    gfxPos++;
                 }
                 dataPos += HW_TEXTURE_SIZE - curSurface->width;
             }
@@ -1659,18 +1666,18 @@ void UpdateTextureBufferWithSprites()
     for (int i = 0; i < SURFACE_MAX; ++i) {
         if (gfxSurface[i].texStartY + gfxSurface[i].height <= HW_TEXTURE_SIZE && gfxSurface[i].texStartX > -1) {
             int pos    = gfxSurface[i].dataPosition;
-            int teXPos = gfxSurface[i].texStartX + (gfxSurface[i].texStartY << 10);
-            for (int j = 0; j < gfxSurface[i].height; j++) {
-                for (int k = 0; k < gfxSurface[i].width; k++) {
+            int texPos = gfxSurface[i].texStartX + (gfxSurface[i].texStartY << 10);
+            for (int y = 0; y < gfxSurface[i].height; y++) {
+                for (int x = 0; x < gfxSurface[i].width; x++) {
                     if (graphicData[pos] > 0)
-                        texBuffer[teXPos] = fullPalette[texPaletteNum][graphicData[pos]];
+                        texBuffer[texPos] = fullPalette[texPaletteNum][graphicData[pos]];
                     else
-                        texBuffer[teXPos] = 0;
+                        texBuffer[texPos] = 0;
 
-                    teXPos++;
+                    texPos++;
                     pos++;
                 }
-                teXPos += HW_TEXTURE_SIZE - gfxSurface[i].width;
+                texPos += HW_TEXTURE_SIZE - gfxSurface[i].width;
             }
         }
     }
