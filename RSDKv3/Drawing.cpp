@@ -57,9 +57,9 @@ float viewAnglePos = 0;
 GLuint gfxTextureID[HW_TEXTURE_LIMIT];
 GLuint framebufferHW  = 0;
 GLuint renderbufferHW = 0;
-GLuint retroBuffer     = 0;
-GLuint retroBuffer2x     = 0;
-GLuint videoBuffer     = 0;
+GLuint retroBuffer    = 0;
+GLuint retroBuffer2x  = 0;
+GLuint videoBuffer    = 0;
 #endif
 DrawVertex screenRect[4];
 DrawVertex retroScreenRect[4];
@@ -90,8 +90,8 @@ int InitRenderDevice()
     byte flags = 0;
 #if RETRO_USING_OPENGL
     flags |= SDL_WINDOW_OPENGL;
-    
-#if RETRO_PLATFORM != RETRO_OSX //dude idk either you just gotta trust that this works
+
+#if RETRO_PLATFORM != RETRO_OSX // dude idk either you just gotta trust that this works
 #if RETRO_PLATFORM != RETRO_ANDROID
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #else
@@ -103,7 +103,7 @@ int InitRenderDevice()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 #endif
 #endif
-    
+
 #if RETRO_GAMEPLATFORM == RETRO_MOBILE
     Engine.startFullScreen = true;
 
@@ -652,7 +652,7 @@ void FlipScreenFB()
         glDrawElements(GL_TRIANGLES, gfxIndexSizeOpaque, GL_UNSIGNED_SHORT, gfxPolyListIndex);
         glEnable(GL_BLEND);
 
-        // Init 3D Plane    
+        // Init 3D Plane
         glViewport(floor3DTop, 0, floor3DBottom, SCREEN_XSIZE);
         glPushMatrix();
         glLoadIdentity();
@@ -692,7 +692,7 @@ void FlipScreenFB()
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(DrawVertex), &gfxPolyList[0].colour);
     glDrawElements(GL_TRIANGLES, blendedGfxCount, GL_UNSIGNED_SHORT, &gfxPolyListIndex[gfxIndexSizeOpaque]);
     glDisableClientState(GL_COLOR_ARRAY);
-    
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
     RenderFromTexture();
@@ -710,7 +710,7 @@ void FlipScreenNoFB()
     glEnableClientState(GL_COLOR_ARRAY);
     glDisable(GL_BLEND);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST); 
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
 
     if (render3DEnabled) {
         // Non Blended rendering
@@ -784,8 +784,8 @@ void FlipScreenHRes()
     glViewport(viewOffsetX, 0, bufferWidth, bufferHeight);
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glDisable(GL_BLEND);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glEnableClientState(GL_COLOR_ARRAY);
 
@@ -901,6 +901,7 @@ void RenderFromRetroBuffer()
 }
 
 #define normalize(val, minVal, maxVal) ((float)(val) - (float)(minVal)) / ((float)(maxVal) - (float)(minVal))
+#define MIN(a, b)                      (((a) < (b)) ? (a) : (b))
 void FlipScreenVideo()
 {
 #if RETRO_USING_OPENGL
@@ -910,36 +911,30 @@ void FlipScreenVideo()
         screenVerts[i].v = retroScreenRect[i].v;
     }
 
-    float screenAR = viewWidth / (float)viewHeight;
-    float x = -1.0f, y = 1.0f, w = 1.0f, h = -1.0f;
-    if (screenAR > videoAR) {                      // If the screen is wider than the video. (Pillarboxed)
-        uint videoW = viewHeight * videoAR;     // This is to force Pillarboxed mode if the screen is wider than the video.
-        x           = (viewWidth - videoW) / 2;    // Centers the video horizontally.
-        w           = videoW;
+    float best = MIN(viewWidth / (float)videoWidth, viewHeight / (float)videoHeight);
 
-        x = (normalize(x, 0, viewWidth) * 2) - 1.0f;
-        w = (normalize(w, 0, viewWidth) * 2) - 1.0f;
-    }
-    else if (screenAR < videoAR) {
-        uint videoH = viewWidth / videoAR;         // This is to force letterbox mode if the video is wider than the screen.
-        y           = (viewHeight - videoH) / 2; // Centers the video vertically.
-        h           = videoH;
+    float w = videoWidth * best;
+    float h = videoHeight * best;
 
-        y = -((normalize(y, 0, viewHeight) * 2) - 1.0f);
-        h = -((normalize(h, 0, viewHeight) * 2) - 1.0f);
-    }
+    float x = normalize((viewWidth - w) / 2, 0, viewWidth) * 2 - 1.0f;
+    float y = -(normalize((viewHeight - h) / 2, 0, viewHeight) * 2 - 1.0f);
+
+    w = normalize(w, 0, viewWidth) * 2;
+    h = -(normalize(h, 0, viewHeight) * 2);
 
     screenVerts[0].x = x;
     screenVerts[0].y = y;
 
-    screenVerts[1].x = w;
+    screenVerts[1].x = w + x;
     screenVerts[1].y = y;
 
     screenVerts[2].x = x;
-    screenVerts[2].y = h;
+    screenVerts[2].y = h + y;
 
-    screenVerts[3].x = w;
-    screenVerts[3].y = h;
+    screenVerts[3].x = w + x;
+    screenVerts[3].y = h + y;
+
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glLoadIdentity();
     glBindTexture(GL_TEXTURE_2D, videoBuffer);
@@ -1242,10 +1237,10 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     SetScreenSize(width, width);
 
 #if RETRO_USING_OPENGL
-    if (framebufferHW) 
+    if (framebufferHW)
         glDeleteFramebuffers(1, &framebufferHW);
 
-    if (renderbufferHW) 
+    if (renderbufferHW)
         glDeleteTextures(1, &renderbufferHW);
 
     if (retroBuffer)
@@ -1311,7 +1306,7 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     screenRect[3].u = (SCREEN_YSIZE - 0.5) * 4;
     screenRect[3].v = 0;
 
-    //HW_TEXTURE_SIZE == 1.0 due to the scaling we did on the Texture Matrix earlier
+    // HW_TEXTURE_SIZE == 1.0 due to the scaling we did on the Texture Matrix earlier
 
     retroScreenRect[0].x = -1;
     retroScreenRect[0].y = 1;
@@ -1971,7 +1966,8 @@ void DrawHLineScrollLayer(int layerID)
                         deform = *deformationData;
 
                     // Fix for SS5 mobile bug
-                    if (StrComp(stageList[activeStageList][stageListPosition].name, "5") && activeStageList == STAGELIST_SPECIAL && renderType == RENDER_HW)
+                    if (StrComp(stageList[activeStageList][stageListPosition].name, "5") && activeStageList == STAGELIST_SPECIAL
+                        && renderType == RENDER_HW)
                         deform >>= 4;
 
                     chunkX += deform;
@@ -4402,7 +4398,7 @@ void Draw3DSkyLayer(int layerID)
         }
     }
 
-    //Not avaliable in HW Render mode
+    // Not avaliable in HW Render mode
 }
 
 void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int B, int A)
@@ -4427,7 +4423,7 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
             return;
         int pitch              = SCREEN_XSIZE - width;
         ushort *frameBufferPtr = &Engine.frameBuffer[XPos + SCREEN_XSIZE * YPos];
-        ushort clr = 0;
+        ushort clr             = 0;
         PACK_RGB888(clr, R, G, B);
 
         if (A == 0xFF) {
@@ -4542,7 +4538,7 @@ void SetFadeHQ(int R, int G, int B, int A)
         }
     }
 
-    //Not Avaliable in HW mode
+    // Not Avaliable in HW mode
 }
 
 void DrawTintRectangle(int XPos, int YPos, int width, int height)
@@ -5229,10 +5225,10 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
     }
 }
 
-void DrawScaledChar(int direction, int XPos, int YPos, int pivotX, int pivotY, int scaleX, int scaleY, int width, int height,
-                                   int sprX, int sprY, int sheetID)
+void DrawScaledChar(int direction, int XPos, int YPos, int pivotX, int pivotY, int scaleX, int scaleY, int width, int height, int sprX, int sprY,
+                    int sheetID)
 {
-    //Not avaliable in SW Render mode
+    // Not avaliable in SW Render mode
 
     if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
