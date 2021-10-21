@@ -201,7 +201,7 @@ enum RetroStates {
 
 enum RetroEngineMessages {
     MESSAGE_NONE      = 0,
-    MESSAGE_MESSAGE_1 = 3,
+    MESSAGE_MESSAGE_1 = 1,
     MESSAGE_LOSTFOCUS = 2,
     MESSAGE_MESSAGE_3 = 3,
     MESSAGE_MESSAGE_4 = 4,
