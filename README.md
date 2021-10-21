@@ -16,11 +16,9 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * The window allows windows shortcuts to be used
 * Complete support for using mobile/updated scripts, allowing for features the official PC version never got to be played on PC
 * Native Windows x64 version, as well as an x86 version
-* Native mod support
 
 # Advantages over the Mobile versions of Sonic CD
 * The rendering backend is based off the PC version by default, so palettes are fully supported (Tidal Tempest water in particular)
-* Native mod support
 
 # Additional Tweaks
 * Added a built in mod loader and API allowing to easily create and play mods with features such as save file redirection, custom achievements and XML GameConfig/StageConfig data.
@@ -29,7 +27,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * The `F12` pause, `F11` step over & fast forward debug features from Sonic Mania have all been ported and are enabled if `devMenu` is enabled in the config
 * If `devMenu` is enabled in the config, pressing `F9` will visualize hitboxes, and `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time
 * If `useSteamDir` is set in the config, and the user is on Windows, the game will try to load savedata from Steam's `userdata` directory (where the Steam version saves to)
-* Added the idle screen dimming feature from Sonic Mania Plus, as well as allowing the user to disable it or set how long it takes for the screen to dim.
+* Added the idle screen dimming feature from Sonic Mania Plus, as well as allowing the user to disable it or set how long it takes for the screen to dim
 
 # How to build
 ## Windows
@@ -48,10 +46,10 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Clone the repo, then follow the instructions in the [dependencies readme for Windows](./dependencies/windows/dependencies.txt) and [dependencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, then build and deploy via the UWP Visual Studio solution.
 * After install, copy your `Data.rsdk` and `videos` folder into the apps localstate folder.
 
-## Mac:
+## Mac
 * Clone the repo, then follow the instructions in the [dependencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the Xcode project (or grab a prebuilt executable from the releases section)
 
-## Linux:
+## Linux
 * To setup your build enviroment and library dependecies run the following commands:
   * Ubuntu (Mint, Pop!\_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev`
   * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora libglew`
@@ -61,21 +59,21 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Then run `make CXXFLAGS=-O2 -j5`, if your distro is using gcc 8.x.x then add the argument `LIBS=-lstdc++fs`
   * (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
 
-## iOS:
+## iOS
 * Clone the repo, then follow the instructions in the [dependencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
 
-## Android:
+## Android
 * Clone the repo, then follow the instructions in the [dependencies readme for Android](./dependencies/android/dependencies.txt).
 * Ensure the symbolic links in `android/app/jni` are correct. If not, fix them with the following on Windows:
   * `mklink /D src ..\..\..`
   * `mklink /D SDL ..\..\..\dependencies\android\SDL`
 * Open `android/` in Android Studio, install the NDK and everything else that it asks for, and build.
 
-## PS Vita:
+## PS Vita
 * Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
   * NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
 
-## Other platforms:
+## Other platforms
 Currently the only "officially" supported platforms are the ones listed above, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
 If you've cloned this repo and ported it to a platform not on the list or made some changes you'd like to see added to this repo, submit a pull request and it'll most likely be added.
 
