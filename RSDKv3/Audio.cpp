@@ -66,6 +66,7 @@ int InitAudioPlayback()
     if ((audioDevice = SDL_OpenAudioDevice(nullptr, 0, &want, &audioDeviceFormat, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE)) > 0) {
         audioEnabled = true;
         SDL_PauseAudioDevice(audioDevice, 0);
+        printLog("Opened audio device: %d", audioDevice);
     }
     else {
         printLog("Unable to open audio device: %s", SDL_GetError());
@@ -165,6 +166,7 @@ void LoadGlobalSfx()
             strBuffer[fileBuffer] = 0;
 
             GetFileInfo(&infoStore);
+            CloseFile();
             LoadSfx(strBuffer, s);
             SetFileInfo(&infoStore);
 

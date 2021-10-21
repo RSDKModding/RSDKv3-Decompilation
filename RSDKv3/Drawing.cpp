@@ -622,10 +622,15 @@ void FlipScreen()
         if (dimAmount < 1.0 && stageMode != STAGEMODE_PAUSED)
             DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, 0, 0, 0, 0xFF - (dimAmount * 0xFF));
 
+        bool fb = Engine.useFBTexture;
+        Engine.useFBTexture = Engine.useFBTexture || stageMode == STAGEMODE_PAUSED;
+
         if (Engine.gameMode == ENGINE_VIDEOWAIT)
             FlipScreenVideo();
         else
             Engine.highResMode ? FlipScreenHRes() : Engine.useFBTexture ? FlipScreenFB() : FlipScreenNoFB();
+
+         Engine.useFBTexture = fb;
     }
 }
 

@@ -19,6 +19,9 @@ void initDevMenu()
     ClearGraphicsData();
     ClearAnimationData();
     LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+    Engine.LoadXMLPalettes();
+#endif
     SetActivePalette(0, 0, 256);
     textMenuSurfaceNo = 0;
     LoadGIFFile("Data/Game/SystemText.gif", 0);
@@ -73,6 +76,9 @@ void initErrorMessage()
     ClearGraphicsData();
     ClearAnimationData();
     LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+    Engine.LoadXMLPalettes();
+#endif
     SetActivePalette(0, 0, 256);
     textMenuSurfaceNo = 0;
     LoadGIFFile("Data/Game/SystemText.gif", 0);
@@ -174,6 +180,9 @@ void processStageSelect()
                     ClearGraphicsData();
                     ClearAnimationData();
                     LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+                    Engine.LoadXMLPalettes();
+#endif
                     activeStageList   = 0;
                     stageMode         = STAGEMODE_LOAD;
                     Engine.gameMode   = ENGINE_MAINGAME;
@@ -227,6 +236,9 @@ void processStageSelect()
                 ClearGraphicsData();
                 ClearAnimationData();
                 LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+                Engine.LoadXMLPalettes();
+#endif
                 activeStageList   = 0;
                 stageMode         = STAGEMODE_LOAD;
                 Engine.gameMode   = ENGINE_MAINGAME;
@@ -478,6 +490,9 @@ void processStageSelect()
                 ClearGraphicsData();
                 ClearAnimationData();
                 LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+                Engine.LoadXMLPalettes();
+#endif
                 activeStageList   = 0;
                 stageMode         = DEVMENU_MAIN;
                 Engine.gameMode   = ENGINE_MAINGAME;

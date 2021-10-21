@@ -100,6 +100,9 @@ void InitFirstStage()
     ClearAnimationData();
     activePalette = fullPalette[0];
     LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+    Engine.LoadXMLPalettes();
+#endif
     stageMode         = STAGEMODE_LOAD;
     Engine.gameMode   = ENGINE_MAINGAME;
     //activeStageList   = 0;
@@ -321,6 +324,9 @@ void LoadStageFiles(void)
         printLog("Loading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
         ReleaseStageSfx();
         LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+        Engine.LoadXMLPalettes();
+#endif
         ClearScriptData();
         for (int i = SURFACE_MAX; i > 0; i--) RemoveGraphicsFile((char *)"", i - 1);
 
@@ -365,6 +371,7 @@ void LoadStageFiles(void)
             bool bytecodeExists = false;
             FileInfo bytecodeInfo;
             GetFileInfo(&infoStore);
+            CloseFile();
             if (LoadFile(scriptPath, &info)) {
                 bytecodeExists = true;
                 CloseFile();
@@ -402,6 +409,7 @@ void LoadStageFiles(void)
                 SetObjectTypeName(modTypeNames[i], scriptID);
 
                 GetFileInfo(&infoStore);
+                CloseFile();
                 ParseScriptFile(modScriptPaths[i], scriptID++);
                 SetFileInfo(&infoStore);
                 if (Engine.gameMode == ENGINE_SCRIPTERROR)
@@ -456,6 +464,7 @@ void LoadStageFiles(void)
             bool bytecodeExists = false;
             FileInfo bytecodeInfo;
             GetFileInfo(&infoStore);
+            CloseFile();
             if (LoadFile(scriptPath, &info)) {
                 bytecodeExists = true;
                 CloseFile();
