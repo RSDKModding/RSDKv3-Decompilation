@@ -71,7 +71,7 @@ bool disableFocusPause        = false;
 bool disableFocusPause_Config = false;
 
 #if RETRO_USE_MOD_LOADER
-bool forceUseScripts = false;
+bool forceUseScripts        = false;
 bool forceUseScripts_Config = false;
 #endif
 
@@ -174,11 +174,11 @@ void InitUserdata()
     // userdata files are loaded from this directory
     sprintf(gamePath, "%s", BASE_PATH);
     sprintf(modsPath, "%s", BASE_PATH);
-    
+
 #if RETRO_PLATFORM == RETRO_OSX
     sprintf(gamePath, "%s/RSDKv3", getResourcesPath());
     sprintf(modsPath, "%s/RSDKv3/", getResourcesPath());
-    
+
     mkdir(gamePath, 0777);
 #elif RETRO_PLATFORM == RETRO_ANDROID
     {
@@ -211,7 +211,7 @@ void InitUserdata()
 #elif RETRO_PLATFORM == RETRO_iOS
     sprintf(buffer, "%s/settings.ini", getDocumentsPath());
 #else
-    sprintf(buffer, BASE_PATH"settings.ini");
+    sprintf(buffer, BASE_PATH "settings.ini");
 #endif
     FileIO *file = fOpen(buffer, "rb");
     IniParser ini;
@@ -332,7 +332,7 @@ void InitUserdata()
 
         if (!ini.GetInteger("Game", "Language", &Engine.language))
             Engine.language = RETRO_EN;
-        
+
         if (!ini.GetInteger("Game", "OriginalControls", &controlMode))
             controlMode = -1;
         if (!ini.GetBool("Game", "DisableTouchControls", &disableTouchControls))
@@ -340,6 +340,14 @@ void InitUserdata()
         if (!ini.GetBool("Game", "DisableFocusPause", &disableFocusPause))
             disableFocusPause = false;
         disableFocusPause_Config = disableFocusPause;
+        int platype              = -1;
+        ini.GetInteger("Game", "Platform", &platype);
+        if (platype != -1) {
+            if (!platype)
+                Engine.gamePlatform = "Standard";
+            else if (platype == 1)
+                Engine.gamePlatform = "Mobile";
+        }
 
         if (!ini.GetBool("Window", "FullScreen", &Engine.startFullScreen))
             Engine.startFullScreen = DEFAULT_FULLSCREEN;
@@ -356,7 +364,7 @@ void InitUserdata()
         if (!ini.GetInteger("Window", "RefreshRate", &Engine.refreshRate))
             Engine.refreshRate = 60;
         if (!ini.GetInteger("Window", "DimLimit", &Engine.dimLimit))
-            Engine.dimLimit = 300; //5 mins
+            Engine.dimLimit = 300; // 5 mins
         if (Engine.dimLimit >= 0)
             Engine.dimLimit *= Engine.refreshRate;
         bool hwRender = false;
@@ -596,12 +604,14 @@ void InitUserdata()
     StrCopy(achievements[11].name, "Saviour of the Planet");
 }
 
-void writeSettings() {
+void writeSettings()
+{
     IniParser ini;
 
     ini.SetComment("Dev", "DevMenuComment", "Enable this flag to activate dev menu via the ESC key");
     ini.SetBool("Dev", "DevMenu", Engine.devMenu);
-    ini.SetComment("Dev", "DebugModeComment", "Enable this flag to activate features used for debugging the engine (may result in slightly slower game speed)");
+    ini.SetComment("Dev", "DebugModeComment",
+                   "Enable this flag to activate features used for debugging the engine (may result in slightly slower game speed)");
     ini.SetBool("Dev", "EngineDebugMode", engineDebugMode);
     ini.SetComment("Dev", "ScriptsComment", "Enable this flag to force the engine to load from the scripts folder instead of from bytecode");
     ini.SetBool("Dev", "TxtScripts", forceUseScripts_Config);
@@ -613,7 +623,9 @@ void writeSettings() {
     ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
     ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it (windows only)");
     ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir);
-    ini.SetComment("Dev", "UseHQComment","Determines if applicable rendering modes (such as 3D floor from special stages) will render in \"High Quality\" mode or standard mode");
+    ini.SetComment(
+        "Dev", "UseHQComment",
+        "Determines if applicable rendering modes (such as 3D floor from special stages) will render in \"High Quality\" mode or standard mode");
     ini.SetBool("Dev", "UseHQModes", Engine.useHQModes);
 
     ini.SetComment("Dev", "DataFileComment", "Determines what RSDK file will be loaded");
@@ -627,6 +639,8 @@ void writeSettings() {
     ini.SetBool("Game", "DisableTouchControls", disableTouchControls);
     ini.SetComment("Game", "DFPMenuComment", "if set to true, disables the game pausing when focus is lost");
     ini.SetBool("Game", "DisableFocusPause", disableFocusPause_Config);
+    ini.SetComment("Game", "PlatformComment", "The platform type. 0 is standard (PC/Console), 1 is mobile");
+    ini.SetInteger("Game", "Platform", !StrComp(Engine.gamePlatform, "Standard"));
 
     ini.SetComment("Window", "FSComment", "Determines if the window will be fullscreen or not");
     ini.SetBool("Window", "FullScreen", Engine.startFullScreen);
@@ -634,8 +648,7 @@ void writeSettings() {
     ini.SetBool("Window", "Borderless", Engine.borderless);
     ini.SetComment("Window", "VSComment", "Determines if VSync will be active or not");
     ini.SetBool("Window", "VSync", Engine.vsync);
-    ini.SetComment("Window", "SMComment",
-                   "Determines what scaling is used. 0 is nearest neighbour, 1 or higher is linear.");
+    ini.SetComment("Window", "SMComment", "Determines what scaling is used. 0 is nearest neighbour, 1 or higher is linear.");
     ini.SetInteger("Window", "ScalingMode", Engine.scalingMode);
     ini.SetComment("Window", "WSComment", "How big the window will be");
     ini.SetInteger("Window", "WindowScale", Engine.windowScale);
@@ -652,7 +665,8 @@ void writeSettings() {
     ini.SetFloat("Audio", "SFXVolume", sfxVolume / (float)MAX_VOLUME);
 
 #if RETRO_USING_SDL2
-    ini.SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDLScancodeLookup.mediawiki)");
+    ini.SetComment("Keyboard 1", "IK1Comment",
+                   "Keyboard Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDLScancodeLookup.mediawiki)");
 #endif
 #if RETRO_USING_SDL1
     ini.SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://wiki.libsdl.org/SDLKeycodeLookup)");
@@ -668,7 +682,8 @@ void writeSettings() {
     ini.SetInteger("Keyboard 1", "Start", inputDevice[INPUT_START].keyMappings);
 
 #if RETRO_USING_SDL2
-    ini.SetComment("Controller 1", "IC1Comment", "Controller Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDLScancodeLookup.mediawiki)");
+    ini.SetComment("Controller 1", "IC1Comment",
+                   "Controller Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDLScancodeLookup.mediawiki)");
     ini.SetComment("Controller 1", "IC1Comment2", "Extra buttons can be mapped with the following IDs:");
     ini.SetComment("Controller 1", "IC1Comment3", "CONTROLLER_BUTTON_ZL             = 16");
     ini.SetComment("Controller 1", "IC1Comment4", "CONTROLLER_BUTTON_ZR             = 17");
@@ -696,7 +711,6 @@ void writeSettings() {
     ini.SetFloat("Controller 1", "LTriggerDeadzone", LTRIGGER_DEADZONE);
     ini.SetFloat("Controller 1", "RTriggerDeadzone", RTRIGGER_DEADZONE);
 
-    
     char buffer[0x200];
 #if RETRO_PLATFORM == RETRO_UWP
     if (!usingCWD)
@@ -708,9 +722,9 @@ void writeSettings() {
 #elif RETRO_PLATFORM == RETRO_iOS
     sprintf(buffer, "%s/settings.ini", getDocumentsPath());
 #else
-    sprintf(buffer, BASE_PATH"settings.ini");
+    sprintf(buffer, BASE_PATH "settings.ini");
 #endif
-    
+
     ini.Write(buffer, false);
 }
 
@@ -786,8 +800,8 @@ void AwardAchievement(int id, int status)
     if (id < 0 || id >= ACHIEVEMENT_MAX)
         return;
 
-        if (status != achievements[id].status)
-            printLog("Achieved achievement: %s (%d)!", achievements[id].name, status);
+    if (status != achievements[id].status)
+        printLog("Achieved achievement: %s (%d)!", achievements[id].name, status);
 
     achievements[id].status = status;
 
