@@ -640,6 +640,7 @@ void FlipScreenFB()
 
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glEnableClientState(GL_COLOR_ARRAY);
+    glDisable(GL_BLEND);
 
     if (render3DEnabled) {
         float floor3DTop    = 2.0;
@@ -1251,6 +1252,20 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
 
     // Setup framebuffer texture
 
+    int bufferW = 0;
+    int val   = 0;
+    do {
+        val = 1 << bufferW++;
+    } while (val < SCREEN_XSIZE);
+    bufferW--;
+
+    int bufferH = 0;
+    val     = 0;
+    do {
+        val = 1 << bufferH++;
+    } while (val < SCREEN_YSIZE);
+    bufferH--;
+
     glGenFramebuffers(1, &framebufferHW);
     glBindFramebuffer(GL_FRAMEBUFFER, framebufferHW);
     glGenTextures(1, &renderbufferHW);
@@ -1259,7 +1274,7 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1 << bufferH, 1 << bufferW, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderbufferHW, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1280,11 +1295,6 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Engine.scalingMode ? GL_LINEAR : GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 #endif
-
-    // int newWidth  = width * 8;
-    // int newHeight = (height * 8) + 4;
-    int newWidth  = width << 4;
-    int newHeight = height << 4;
 
     screenRect[0].x = -1;
     screenRect[0].y = 1;
