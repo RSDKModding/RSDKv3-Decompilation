@@ -226,7 +226,9 @@ enum RetroEngineCallbacks {
     CALLBACK_MOREGAMES               = 16,
     CALLBACK_AGEGATE                 = 100,
 #if RETRO_USE_MOD_LOADER
-    //Mod CBs start at 0x1000
+    // Mod CBs start at 0x1000
+    CALLBACK_SET1P = 0x1001,
+    CALLBACK_SET2P = 0x1002,
 #endif
 };
 

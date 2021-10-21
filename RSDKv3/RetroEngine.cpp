@@ -1022,7 +1022,8 @@ void RetroEngine::Callback(int callbackID)
             SetGlobalVariableByName("HaveLoadAllGDPRValue", 1);
             break;
 #if RETRO_USE_MOD_LOADER
-
+        case CALLBACK_SET1P: activePlayerCount = 1; break;
+        case CALLBACK_SET2P: activePlayerCount = 2; break;
 #endif
     }
 }
