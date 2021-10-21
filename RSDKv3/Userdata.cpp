@@ -304,7 +304,7 @@ void InitUserdata()
         ini.SetFloat("Controller 1", "RTriggerDeadzone", RTRIGGER_DEADZONE = 0.3);
 #endif
 
-        ini.Write(buffer);
+        ini.Write(buffer, false);
     }
     else {
         fClose(file);

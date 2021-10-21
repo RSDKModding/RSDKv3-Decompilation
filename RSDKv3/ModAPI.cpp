@@ -222,7 +222,7 @@ void scanModFolder(ModInfo *info)
                     }
 
                     if (tokenPos >= 0) {
-                        char buffer[0x80];
+                        char buffer[0x100];
                         for (int i = StrLength(modBuf); i >= tokenPos; --i) {
                             buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
                         }
@@ -270,7 +270,7 @@ void scanModFolder(ModInfo *info)
                     }
 
                     if (tokenPos >= 0) {
-                        char buffer[0x80];
+                        char buffer[0x100];
                         for (int i = StrLength(modBuf); i >= tokenPos; --i) {
                             buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
                         }
@@ -318,7 +318,7 @@ void scanModFolder(ModInfo *info)
                     }
 
                     if (tokenPos >= 0) {
-                        char buffer[0x80];
+                        char buffer[0x100];
                         for (int i = StrLength(modBuf); i >= tokenPos; --i) {
                             buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
                         }
