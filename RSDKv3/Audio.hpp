@@ -9,8 +9,8 @@
 #include "SDL.h"
 #endif
 
-#define TRACK_COUNT (0x10)
-#define SFX_COUNT (0x100)
+#define TRACK_COUNT   (0x10)
+#define SFX_COUNT     (0x100)
 #define CHANNEL_COUNT (0x4)
 #define SFXDATA_COUNT (0x400000)
 
@@ -131,14 +131,13 @@ void ProcessAudioMixing() {}
 inline void freeMusInfo() { ov_clear(&streamInfo[currentStreamIndex].vorbisFile); }
 #endif
 
-
 #if RETRO_USE_MOD_LOADER
 extern char globalSfxNames[SFX_COUNT][0x40];
 extern char stageSfxNames[SFX_COUNT][0x40];
 void SetSfxName(const char *sfxName, int sfxID, bool global);
 #endif
 
-void LoadMusic(void *userdata);
+void LoadMusic();
 void SetMusicTrack(char *filePath, byte trackID, bool loop, uint loopPoint);
 bool PlayMusic(int track);
 inline void StopMusic()

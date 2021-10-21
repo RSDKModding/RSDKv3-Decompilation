@@ -1,6 +1,7 @@
 #include "RetroEngine.hpp"
 #include <cmath>
 #include <iostream>
+#include <thread>
 
 int globalSFXCount = 0;
 int stageSFXCount  = 0;
@@ -228,7 +229,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
         case MUSIC_READY:
         case MUSIC_PLAYING: {
 #if RETRO_USING_SDL2
-            while (SDL_AudioStreamAvailable(streamInfoPtr->stream) < bytes_wanted) {
+            while (musicStatus == MUSIC_PLAYING && SDL_AudioStreamAvailable(streamInfoPtr->stream) < bytes_wanted) {
                 // We need more samples: get some
                 long bytes_read = ov_read(&streamInfoPtr->vorbisFile, (char *)streamInfoPtr->buffer, sizeof(streamInfoPtr->buffer), 0, 2, 1,
                                           &streamInfoPtr->vorbBitstream);
@@ -245,7 +246,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
                     }
                 }
 
-                if (SDL_AudioStreamPut(streamInfoPtr->stream, streamInfoPtr->buffer, (int)bytes_read) == -1)
+                if (musicStatus != MUSIC_PLAYING || SDL_AudioStreamPut(streamInfoPtr->stream, streamInfoPtr->buffer, (int)bytes_read) == -1)
                     return;
             }
 
@@ -534,7 +535,8 @@ void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sby
 #if RETRO_USE_MOD_LOADER
 char globalSfxNames[SFX_COUNT][0x40];
 char stageSfxNames[SFX_COUNT][0x40];
-void SetSfxName(const char* sfxName, int sfxID, bool global) {
+void SetSfxName(const char *sfxName, int sfxID, bool global)
+{
     char *sfxNamePtr = global ? globalSfxNames[sfxID] : stageSfxNames[sfxID];
 
     int sfxNamePos = 0;
@@ -554,10 +556,8 @@ void SetSfxName(const char* sfxName, int sfxID, bool global) {
 }
 #endif
 
-void LoadMusic(void *userdata)
+void LoadMusic()
 {
-    (void)userdata;
-
     currentStreamIndex++;
     currentStreamIndex %= STREAMFILE_COUNT;
 
@@ -570,9 +570,9 @@ void LoadMusic(void *userdata)
     if (LoadFile(musicTracks[currentMusicTrack].fileName, &info)) {
         StreamInfo *strmInfo = &streamInfo[currentStreamIndex];
 
-        StreamFile *musFile = &streamFile[currentStreamIndex];
-        musFile->filePos    = 0;
-        musFile->fileSize   = info.vFileSize;
+        StreamFile *musFile                   = &streamFile[currentStreamIndex];
+        musFile->filePos                      = 0;
+        musFile->fileSize                     = info.vFileSize;
         streamFile[currentStreamIndex].buffer = (byte *)malloc(musFile->fileSize);
 
         FileRead(streamFile[currentStreamIndex].buffer, musFile->fileSize);
@@ -652,7 +652,7 @@ bool PlayMusic(int track)
         if (musicStatus != MUSIC_LOADING) {
             currentMusicTrack = track;
             musicStatus       = MUSIC_LOADING;
-            SDL_CreateThread((SDL_ThreadFunction)LoadMusic, "LoadMusic", NULL);
+            LoadMusic();
             return true;
         }
         else {
@@ -681,8 +681,8 @@ void LoadSfx(char *filePath, byte sfxID)
         FileRead(sfx, info.vFileSize);
         CloseFile();
 
+        LockAudioDevice();
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
-        SDL_LockAudio();
         SDL_RWops *src = SDL_RWFromMem(sfx, info.vFileSize);
         if (src == NULL) {
             printLog("Unable to open sfx: %s", info.fileName);
@@ -722,8 +722,8 @@ void LoadSfx(char *filePath, byte sfxID)
                 }
             }
         }
-        SDL_UnlockAudio();
 #endif
+        UnlockAudioDevice();
     }
 }
 void PlaySfx(int sfx, bool loop)

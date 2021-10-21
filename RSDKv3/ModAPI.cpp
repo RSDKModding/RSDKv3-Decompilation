@@ -21,8 +21,8 @@ byte playerCount = 0;
 
 int OpenModMenu()
 {
-    //Engine.gameMode      = ENGINE_INITMODMENU;
-    //Engine.modMenuCalled = true;
+    // Engine.gameMode      = ENGINE_INITMODMENU;
+    // Engine.modMenuCalled = true;
     return 1;
 }
 
@@ -97,9 +97,11 @@ void initMods()
     sprintf(savePath, "");
     redirectSave = false;
     for (int m = 0; m < modList.size(); ++m) {
-        if (modList[m].useScripts && modList[m].active)
+        if (!modList[m].active)
+            continue;
+        if (modList[m].useScripts)
             forceUseScripts = true;
-        if (modList[m].redirectSave && modList[m].active) {
+        if (modList[m].redirectSave) {
             sprintf(savePath, "%s", modList[m].savePath.c_str());
             redirectSave = true;
         }
@@ -381,12 +383,14 @@ void RefreshEngine()
     sprintf(savePath, "");
     redirectSave = false;
     for (int m = 0; m < modList.size(); ++m) {
-        if (modList[m].useScripts && modList[m].active)
+        if (!modList[m].active)
+            continue;
+        if (modList[m].useScripts)
             forceUseScripts = true;
-        if (modList[m].redirectSave && modList[m].active) {
+        if (modList[m].redirectSave) {
             sprintf(savePath, "%s", modList[m].savePath.c_str());
             redirectSave = true;
-        }   
+        }
     }
 
     saveMods();
