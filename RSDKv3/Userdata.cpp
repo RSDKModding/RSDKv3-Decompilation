@@ -623,7 +623,7 @@ void writeSettings()
     ini.SetInteger("Dev", "StartingScene", Engine.startStage);
     ini.SetComment("Dev", "FFComment", "Determines how fast the game will be when fastforwarding is active");
     ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
-    ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it (windows only)");
+    ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it (Windows only)");
     ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir);
     ini.SetComment(
         "Dev", "UseHQComment",
@@ -639,7 +639,7 @@ void writeSettings()
     ini.SetInteger("Game", "OriginalControls", controlMode);
     ini.SetComment("Game", "DTCtrlComment", "Determines if the game should hide the touch controls UI");
     ini.SetBool("Game", "DisableTouchControls", disableTouchControls);
-    ini.SetComment("Game", "DFPMenuComment", "if set to true, disables the game pausing when focus is lost");
+    ini.SetComment("Game", "DFPMenuComment", "If set to true, disables the game pausing when focus is lost");
     ini.SetBool("Game", "DisableFocusPause", disableFocusPause_Config);
     ini.SetComment("Game", "PlatformComment", "The platform type. 0 is standard (PC/Console), 1 is mobile");
     ini.SetInteger("Game", "Platform", !StrComp(Engine.gamePlatform, "Standard"));
@@ -652,7 +652,7 @@ void writeSettings()
     ini.SetBool("Window", "VSync", Engine.vsync);
     ini.SetComment("Window", "SMComment", "Determines what scaling is used. 0 is nearest neighbour, 1 or higher is linear.");
     ini.SetInteger("Window", "ScalingMode", Engine.scalingMode);
-    ini.SetComment("Window", "WSComment", "How big the window will be");
+    ini.SetComment("Window", "WSComment", "The window size multiplier");
     ini.SetInteger("Window", "WindowScale", Engine.windowScale);
     ini.SetComment("Window", "SWComment", "How wide the base screen will be in pixels");
     ini.SetInteger("Window", "ScreenWidth", SCREEN_XSIZE_CONFIG);
