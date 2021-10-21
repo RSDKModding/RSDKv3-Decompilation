@@ -36,6 +36,7 @@ extern short tintLookupTable[TINTTABLE_SIZE];
 
 extern int SCREEN_XSIZE;
 extern int SCREEN_CENTERX;
+extern int SCREEN_XSIZE_CONFIG;
 
 extern int touchWidth;
 extern int touchHeight;

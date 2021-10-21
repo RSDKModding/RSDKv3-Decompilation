@@ -6,6 +6,7 @@ short tintLookupTable[TINTTABLE_SIZE];
 
 int SCREEN_XSIZE   = 424;
 int SCREEN_CENTERX = 424 / 2;
+int SCREEN_XSIZE_CONFIG = 424;
 
 int touchWidth  = SCREEN_XSIZE;
 int touchHeight = SCREEN_YSIZE;
@@ -1023,15 +1024,27 @@ void setFullScreen(bool fs)
         float scaleH        = (mode.h / (float)SCREEN_YSIZE);
         Engine.useFBTexture = ((float)scaleH - (int)scaleH) != 0 || Engine.scalingMode;
 
+        float width = w;
 #if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID
-        float aspect = SCREEN_XSIZE / (float)SCREEN_YSIZE;
-        w            = aspect * h;
-        viewOffsetX  = abs(mode.w - w) / 2;
+        float aspect = SCREEN_XSIZE_CONFIG / (float)SCREEN_YSIZE;
+        width            = aspect * h;
+        viewOffsetX  = abs(w - width) / 2;
+        if (width > w) {
+            int gameWidth = (w / (float)h) * SCREEN_YSIZE;
+            SetScreenSize(gameWidth, (gameWidth + 9) & -0x10);
+            
+            width = 0;
+            while (width <= w) {
+                width += SCREEN_XSIZE;
+            }
+            width -= SCREEN_XSIZE;
+            viewOffsetX  = abs(w - width) / 2;
+        }
 #else
         viewOffsetX = 0;
 #endif
 
-        SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, w, h);
+        SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, width, h);
     }
     else {
         viewOffsetX = 0;
@@ -1042,7 +1055,7 @@ void setFullScreen(bool fs)
 
         Engine.useFBTexture = Engine.scalingMode;
 
-        SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+        SetScreenDimensions(SCREEN_XSIZE_CONFIG, SCREEN_YSIZE, SCREEN_XSIZE_CONFIG * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
 #if RETRO_USING_SDL2
         SDL_SetWindowFullscreen(Engine.window, 0);
         SDL_SetWindowSize(Engine.window, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
@@ -1228,14 +1241,15 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     bufferHeight = height;
     bufferWidth = viewWidth = touchWidth = winWidth;
     bufferHeight = viewHeight = touchHeight = winHeight;
+    
 
     viewAspect = 0.75f;
     if (viewHeight > SCREEN_YSIZE * 2)
         hq3DFloorEnabled = true;
     else
         hq3DFloorEnabled = false;
-
-    SetScreenSize(width, width);
+    
+    SetScreenSize(width, (width + 9) & -0x10);
 
 #if RETRO_USING_OPENGL
     if (framebufferHW)
@@ -5241,7 +5255,6 @@ void DrawScaledChar(int direction, int XPos, int YPos, int pivotX, int pivotY, i
     // Not avaliable in SW Render mode
 
     if (renderType == RENDER_HW) {
-        GFXSurface *surface = &gfxSurface[sheetID];
         if (gfxVertexSize < VERTEX_LIMIT && XPos > -8192 && XPos < 13951 && YPos > -1024 && YPos < 4864) {
             XPos -= pivotX * scaleX >> 5;
             scaleX = width * scaleX >> 5;
@@ -5457,8 +5470,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
             if (direction == FLIP_NONE) {
                 int x                               = -pivotX;
                 int y                               = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5469,8 +5482,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 
                 x                                   = width - pivotX;
                 y                                   = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5481,8 +5494,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 
                 x                                   = -pivotX;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5493,8 +5506,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 
                 x                                   = width - pivotX;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5507,8 +5520,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
             else {
                 int x                               = pivotX;
                 int y                               = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5519,8 +5532,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 
                 x                                   = pivotX - width;
                 y                                   = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5531,8 +5544,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 
                 x                                   = pivotX;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5543,8 +5556,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
 
                 x                                   = pivotX - width;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5726,8 +5739,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
             if (direction == FLIP_NONE) {
                 int x                               = -pivotX;
                 int y                               = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5738,8 +5751,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
 
                 x                                   = width - pivotX;
                 y                                   = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5750,8 +5763,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
 
                 x                                   = -pivotX;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5762,8 +5775,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
 
                 x                                   = width - pivotX;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5776,8 +5789,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
             else {
                 int x                               = pivotX;
                 int y                               = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5788,8 +5801,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
 
                 x                                   = pivotX - width;
                 y                                   = -pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5800,8 +5813,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
 
                 x                                   = pivotX;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -5812,8 +5825,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
 
                 x                                   = pivotX - width;
                 y                                   = height - pivotY;
-                gfxPolyList[gfxVertexSize].x        = XPos + (x * cos + y * sin >> 5);
-                gfxPolyList[gfxVertexSize].y        = YPos + (y * cos - x * sin >> 5);
+                gfxPolyList[gfxVertexSize].x        = XPos + ((x * cos + y * sin) >> 5);
+                gfxPolyList[gfxVertexSize].y        = YPos + ((y * cos - x * sin) >> 5);
                 gfxPolyList[gfxVertexSize].colour.r = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.g = 0xFF;
                 gfxPolyList[gfxVertexSize].colour.b = 0xFF;
@@ -6230,7 +6243,7 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
             gfxVertexSize++;
 
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
-            gfxPolyList[gfxVertexSize].y        = YPos + height << 4;
+            gfxPolyList[gfxVertexSize].y        = (YPos + height) << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
             gfxPolyList[gfxVertexSize].colour.g = 0xFF;
             gfxPolyList[gfxVertexSize].colour.b = 0xFF;

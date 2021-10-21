@@ -19,7 +19,7 @@ byte atanVal256[0x100 * 0x100];
 
 void CalculateTrigAngles()
 {
-    srand(time(NULL));
+    srand((unsigned)time(NULL));
 
     for (int i = 0; i < 0x200; ++i) {
         float Val     = sin(((float)i / 256.0) * M_PI);

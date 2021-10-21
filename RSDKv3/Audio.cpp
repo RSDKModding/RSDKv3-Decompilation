@@ -189,7 +189,7 @@ size_t readVorbis(void *mem, size_t size, size_t nmemb, void *ptr)
 {
     StreamFile *file = (StreamFile *)ptr;
 
-    int n = size * nmemb;
+    size_t n = size * nmemb;
     if (size * nmemb > file->fileSize - file->filePos)
         n = file->fileSize - file->filePos;
 
@@ -209,7 +209,7 @@ int seekVorbis(void *ptr, ogg_int64_t offset, int whence)
         case SEEK_END: whence = file->fileSize; break;
         default: break;
     }
-    file->filePos = whence + offset;
+    file->filePos = (int)(whence + offset);
     return 0;
 }
 long tellVorbis(void *ptr)

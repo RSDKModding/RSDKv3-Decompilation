@@ -2378,7 +2378,6 @@ void BoxCollision(int left, int top, int right, int bottom)
 
 #if !RETRO_USE_ORIGINAL_CODE
     int thisHitboxID  = 0;
-    int otherHitboxID = 0;
     if (showHitboxes) {
         Entity *entity = &objectEntityList[objectLoop];
         left -= entity->XPos;
@@ -2637,7 +2636,6 @@ void BoxCollision2(int left, int top, int right, int bottom)
 
 #if !RETRO_USE_ORIGINAL_CODE
     int thisHitboxID  = 0;
-    int otherHitboxID = 0;
     if (showHitboxes) {
         Entity *entity = &objectEntityList[objectLoop];
         left -= entity->XPos;
@@ -2703,7 +2701,6 @@ void PlatformCollision(int left, int top, int right, int bottom)
 
 #if !RETRO_USE_ORIGINAL_CODE
     int thisHitboxID  = 0;
-    int otherHitboxID = 0;
     if (showHitboxes) {
         Entity *entity = &objectEntityList[objectLoop];
         left -= entity->XPos;

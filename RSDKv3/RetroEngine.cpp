@@ -179,11 +179,11 @@ bool processEvents()
                         if (Engine.devMenu)
                             Engine.showPaletteOverlay ^= 1;
                         break;
-#if RETRO_PLATFORM == RETRO_OSX
-                    case SDLK_TAB:
+                    case SDLK_BACKSPACE:
                         if (Engine.devMenu)
                             Engine.gameSpeed = Engine.fastForwardSpeed;
                         break;
+#if RETRO_PLATFORM == RETRO_OSX
                     case SDLK_F6:
                         if (Engine.masterPaused)
                             Engine.frameStep = true;
@@ -193,10 +193,6 @@ bool processEvents()
                             Engine.masterPaused ^= 1;
                         break;
 #else
-                    case SDLK_BACKSPACE:
-                        if (Engine.devMenu)
-                            Engine.gameSpeed = Engine.fastForwardSpeed;
-                        break;
                     case SDLK_F11:
                     case SDLK_INSERT:
                         if (Engine.masterPaused)
@@ -217,11 +213,7 @@ bool processEvents()
             case SDL_KEYUP:
                 switch (Engine.sdlEvents.key.keysym.sym) {
                     default: break;
-#if RETRO_PLATFORM == RETRO_OSX
-                    case SDLK_TAB: Engine.gameSpeed = 1; break;
-#else
                     case SDLK_BACKSPACE: Engine.gameSpeed = 1; break;
-#endif
                 }
 #if RETRO_USING_SDL1
                 keyState[Engine.sdlEvents.key.keysym.sym] = 0;
