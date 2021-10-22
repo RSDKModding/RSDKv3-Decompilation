@@ -32,6 +32,26 @@ namespace fs = std::__fs::filesystem;
 namespace fs = std::filesystem;
 #endif
 
+fs::path resolvePath(fs::path given)
+{
+    if (given.is_relative())
+        given = fs::current_path() / given; // thanks for the weird syntax!
+    for (auto &p : fs::directory_iterator{ given.parent_path() }) {
+        char pbuf[0x100];
+        char gbuf[0x100];
+        auto pf   = p.path().filename();
+        auto pstr = pf.string();
+        std::transform(pstr.begin(), pstr.end(), pstr.begin(), [](char c) { return std::tolower(c); });
+        auto gf   = given.filename();
+        auto gstr = gf.string();
+        std::transform(gstr.begin(), gstr.end(), gstr.begin(), [](char c) { return std::tolower(c); });
+        if (pbuf == gbuf) {
+            return p.path();
+        }
+    }
+    return given; // might work might not!
+}
+
 void initMods()
 {
     modList.clear();
@@ -41,8 +61,8 @@ void initMods()
     sprintf(savePath, "");
 
     char modBuf[0x100];
-    sprintf(modBuf, "%smods/", modsPath);
-    fs::path modPath(modBuf);
+    sprintf(modBuf, "%smods", modsPath);
+    fs::path modPath = resolvePath(modBuf);
 
     if (fs::exists(modPath) && fs::is_directory(modPath)) {
         std::string mod_config = modPath.string() + "/modconfig.ini";
@@ -192,14 +212,14 @@ void scanModFolder(ModInfo *info)
         return;
 
     char modBuf[0x100];
-    sprintf(modBuf, "%smods/", modsPath);
+    sprintf(modBuf, "%smods", modsPath);
 
-    fs::path modPath(modBuf);
+    fs::path modPath = resolvePath(modBuf);
 
     const std::string modDir = modPath.string() + "/" + info->folder;
 
     // Check for Data/ replacements
-    fs::path dataPath(modDir + "/Data");
+    fs::path dataPath = resolvePath(modDir + "/Data");
 
     if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
         try {
@@ -247,7 +267,7 @@ void scanModFolder(ModInfo *info)
     }
 
     // Check for Scripts/ replacements
-    fs::path scriptPath(modDir + "/Scripts");
+    fs::path scriptPath = resolvePath(modDir + "/Scripts");
 
     if (fs::exists(scriptPath) && fs::is_directory(scriptPath)) {
         try {
@@ -295,7 +315,7 @@ void scanModFolder(ModInfo *info)
     }
 
     // Check for Bytecode/ replacements
-    fs::path bytecodePath(modDir + "/Videos");
+    fs::path bytecodePath = resolvePath(modDir + "/Videos");
 
     if (fs::exists(bytecodePath) && fs::is_directory(bytecodePath)) {
         try {
@@ -346,8 +366,8 @@ void scanModFolder(ModInfo *info)
 void saveMods()
 {
     char modBuf[0x100];
-    sprintf(modBuf, "%smods/", modsPath);
-    fs::path modPath(modBuf);
+    sprintf(modBuf, "%smods", modsPath);
+    fs::path modPath = resolvePath(modBuf);
 
     if (fs::exists(modPath) && fs::is_directory(modPath)) {
         std::string mod_config = modPath.string() + "/modconfig.ini";
