@@ -18,7 +18,7 @@ byte eNybbleSwap;
 char encryptionStringA[] = { "4RaS9D7KaEbxcp2o5r6t" };
 char encryptionStringB[] = { "3tRaUxLmEaSn" };
 #if RETRO_USE_MOD_LOADER
-byte isModdedFile        = false;
+byte isModdedFile = false;
 #endif
 
 FileIO *cFileHandle = nullptr;
@@ -26,16 +26,16 @@ FileIO *cFileHandle = nullptr;
 bool CheckRSDKFile(const char *filePath)
 {
     FileInfo info;
-    
+
     char filePathBuffer[0x100];
     sprintf(filePathBuffer, "%s", filePath);
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
     sprintf(filePathBuffer, "%s/%s", gamePath, filePath);
 #endif
 
-    Engine.usingDataFile = false;
+    Engine.usingDataFile      = false;
     Engine.usingDataFileStore = false;
-    Engine.usingBytecode = false;
+    Engine.usingBytecode      = false;
 
     cFileHandle = fOpen(filePathBuffer, "rb");
     if (cFileHandle) {
@@ -57,7 +57,7 @@ bool CheckRSDKFile(const char *filePath)
     }
     else {
         Engine.usingDataFile = false;
-        cFileHandle = NULL;
+        cFileHandle          = NULL;
         if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
             Engine.usingBytecode = true;
             Engine.bytecodeMode  = BYTECODE_MOBILE;
@@ -92,7 +92,6 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
 
     char filePathBuf[0x100];
     StrCopy(filePathBuf, filePath);
-
 
     if (Engine.forceFolder)
         Engine.usingDataFile = Engine.usingDataFileStore;
@@ -154,7 +153,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         }
     }
 #endif
-    
+
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_ANDROID
     if (addPath) {
         char pathBuf[0x100];
@@ -162,7 +161,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         sprintf(filePathBuf, "%s", pathBuf);
     }
 #endif
-    
+
     StrCopy(fileInfo->fileName, "");
     StrCopy(fileName, "");
 
@@ -174,7 +173,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         bufferPosition = 0;
         readSize       = 0;
         readPos        = 0;
-        
+
         StrCopy(fileInfo->fileName, filePath);
         StrCopy(fileName, filePath);
         if (!ParseVirtualFileSystem(fileInfo)) {
@@ -201,17 +200,17 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
             printLog("Couldn't load file '%s'", filePathBuf);
             return false;
         }
-        
+
         StrCopy(fileInfo->fileName, filePathBuf);
         StrCopy(fileName, filePathBuf);
         virtualFileOffset = 0;
         fSeek(cFileHandle, 0, SEEK_END);
-        fileInfo->fileSize = (int)fTell(cFileHandle);
+        fileInfo->fileSize  = (int)fTell(cFileHandle);
         fileInfo->vFileSize = fileInfo->fileSize;
         fileSize            = fileInfo->fileSize;
         vFileSize           = fileInfo->fileSize;
         fSeek(cFileHandle, 0, SEEK_SET);
-        readPos = 0;
+        readPos                     = 0;
         fileInfo->readPos           = readPos;
         fileInfo->virtualFileOffset = 0;
         fileInfo->eStringNo         = 0;
@@ -277,8 +276,8 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
     FileRead(&fileBuffer, 1);
     dirCount += fileBuffer << 8;
 
-    i          = 0;
-    fileOffset = 0;
+    i                  = 0;
+    fileOffset         = 0;
     int nextFileOffset = 0;
     while (i < dirCount) {
         FileRead(&fileBuffer, 1);
@@ -298,10 +297,10 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
             FileRead(&fileBuffer, 1);
             fileOffset += fileBuffer << 24;
 
-            //Grab info for next dir to know when we've found an error
-            //Ignore dir name we dont care
+            // Grab info for next dir to know when we've found an error
+            // Ignore dir name we dont care
             if (i == dirCount - 1) {
-                nextFileOffset = fileSize - headerSize; //There is no next dir, so just make this the EOF
+                nextFileOffset = fileSize - headerSize; // There is no next dir, so just make this the EOF
             }
             else {
                 FileRead(&fileBuffer, 1);
@@ -382,7 +381,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
                 virtualFileOffset += j;
             }
 
-            //No File has been found (next file would be in a new dir)
+            // No File has been found (next file would be in a new dir)
             if (virtualFileOffset >= nextFileOffset + headerSize) {
                 Engine.usingDataFile = true;
                 return false;
@@ -399,7 +398,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
         Engine.usingDataFile = true;
         return true;
     }
-    //Engine.usingDataFile = true;
+    // Engine.usingDataFile = true;
     return false;
 }
 
@@ -468,7 +467,7 @@ void SetFileInfo(FileInfo *fileInfo)
 #if RETRO_USE_MOD_LOADER
     }
     else {
-        Engine.forceFolder   = true;
+        Engine.forceFolder = true;
     }
 #endif
 

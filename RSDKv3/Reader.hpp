@@ -23,7 +23,7 @@
 #define fClose(file)                                    SDL_RWclose(file)
 #define fWrite(buffer, elementSize, elementCount, file) SDL_RWwrite(file, buffer, elementSize, elementCount)
 #else
-#define FileIO                                            FILE
+#define FileIO                                          FILE
 #define fOpen(path, mode)                               fopen(path, mode)
 #define fRead(buffer, elementSize, elementCount, file)  fread(buffer, elementSize, elementCount, file)
 #define fSeek(file, offset, whence)                     fseek(file, offset, whence)
@@ -107,7 +107,7 @@ inline size_t FillFileBuffer()
 {
     if (readPos + 0x2000 <= fileSize)
         readSize = 0x2000;
-    else 
+    else
         readSize = fileSize - readPos;
 
     size_t result = fRead(fileBuffer, 1u, readSize, cFileHandle);
@@ -129,7 +129,7 @@ inline void GetFileInfo(FileInfo *fileInfo)
     fileInfo->eStringNo         = eStringNo;
     fileInfo->eNybbleSwap       = eNybbleSwap;
 #if RETRO_USE_MOD_LOADER
-    fileInfo->isMod             = isModdedFile;
+    fileInfo->isMod = isModdedFile;
 #endif
 }
 void SetFileInfo(FileInfo *fileInfo);

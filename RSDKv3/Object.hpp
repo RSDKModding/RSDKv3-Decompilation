@@ -1,9 +1,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#define ENTITY_COUNT (0x4A0)
+#define ENTITY_COUNT     (0x4A0)
 #define TEMPENTITY_START (ENTITY_COUNT - 0x80)
-#define OBJECT_COUNT (0x100)
+#define OBJECT_COUNT     (0x100)
 
 struct Entity {
     int XPos;
@@ -27,7 +27,7 @@ struct Entity {
 };
 
 enum ObjectTypes {
-    OBJ_TYPE_BLANKOBJECT = 0 //0 is always blank obj
+    OBJ_TYPE_BLANKOBJECT = 0 // 0 is always blank obj
 };
 
 enum ObjectPriority {

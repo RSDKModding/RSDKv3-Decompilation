@@ -413,7 +413,7 @@ void ProcessInput()
 
 #ifdef RETRO_USING_MOUSE
     if (touches <= 0) {
-#endif                                                                         //! RETRO_USING_SDL2
+#endif //! RETRO_USING_SDL2
         int mx = 0, my = 0;
         SDL_GetMouseState(&mx, &my);
 

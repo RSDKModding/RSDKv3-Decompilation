@@ -22,10 +22,10 @@ void CalculateTrigAngles()
     srand((unsigned)time(NULL));
 
     for (int i = 0; i < 0x200; ++i) {
-        float Val     = sin(((float)i / 256.0) * M_PI);
-        sinM[i] = (Val * 4096.0);
-        Val           = cos(((float)i / 256.0) * M_PI);
-        cosM[i] = (Val * 4096.0);
+        float Val = sin(((float)i / 256.0) * M_PI);
+        sinM[i]   = (Val * 4096.0);
+        Val       = cos(((float)i / 256.0) * M_PI);
+        cosM[i]   = (Val * 4096.0);
     }
 
     cosM[0]   = 4096;
@@ -38,9 +38,9 @@ void CalculateTrigAngles()
     sinM[384] = -4096;
 
     for (int i = 0; i < 0x200; ++i) {
-        float Val       = sinf(((float)i / 256) * M_PI);
+        float Val    = sinf(((float)i / 256) * M_PI);
         sinVal512[i] = (signed int)(Val * 512.0);
-        Val             = cosf(((float)i / 256) * M_PI);
+        Val          = cosf(((float)i / 256) * M_PI);
         cosVal512[i] = (signed int)(Val * 512.0);
     }
 
@@ -76,12 +76,12 @@ byte ArcTanLookup(int X, int Y)
 
     if (X >= 0)
         XVal = X;
-    else 
+    else
         XVal = -X;
 
     if (Y >= 0)
         YVal = Y;
-    else 
+    else
         YVal = -Y;
 
     if (XVal <= YVal) {
@@ -104,7 +104,7 @@ byte ArcTanLookup(int X, int Y)
     }
     else if (Y <= 0)
         result = -atanVal256[0x100 * XVal + YVal];
-    else 
+    else
         result = atanVal256[0x100 * XVal + YVal];
     return result;
 }

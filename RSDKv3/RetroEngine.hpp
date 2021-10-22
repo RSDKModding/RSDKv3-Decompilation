@@ -71,7 +71,7 @@ typedef unsigned int uint;
 #error "Unknown Apple platform"
 #endif
 #elif defined __ANDROID__
-#define RETRO_PLATFORM   (RETRO_ANDROID)
+#define RETRO_PLATFORM (RETRO_ANDROID)
 #elif defined __vita__
 #define RETRO_PLATFORM (RETRO_VITA)
 #else
@@ -87,7 +87,7 @@ typedef unsigned int uint;
 #define DEFAULT_SCREEN_XSIZE 424
 #define DEFAULT_FULLSCREEN   false
 #else
-#define BASE_PATH            ""
+#define BASE_PATH ""
 #define RETRO_USING_MOUSE
 #define RETRO_USING_TOUCH
 #define DEFAULT_SCREEN_XSIZE 424
@@ -332,8 +332,8 @@ public:
     bool initialised = false;
     bool running     = false;
 
-    int gameMode     = 1;
-    int language     = RETRO_EN;
+    int gameMode      = 1;
+    int language      = RETRO_EN;
     int message       = 0;
     bool highResMode  = false;
     bool useFBTexture = false;
@@ -394,7 +394,7 @@ public:
 
     // No_Haptics is default for pc but people with controllers exist
 #if RETRO_USE_HAPTICS
-    const char *gameHapticSetting = "Use_Haptics"; 
+    const char *gameHapticSetting = "Use_Haptics";
 #else
     const char *gameHapticSetting = "No_Haptics";
 #endif
@@ -426,7 +426,7 @@ public:
 #if RETRO_USING_SDL2
     SDL_Window *window = nullptr;
 #if !RETRO_USING_OPENGL
-    SDL_Renderer *renderer = nullptr;
+    SDL_Renderer *renderer      = nullptr;
     SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;
     SDL_Texture *videoBuffer    = nullptr;

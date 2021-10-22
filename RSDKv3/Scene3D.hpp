@@ -2,7 +2,7 @@
 #define DRAWING3D_H
 
 #define VERTEXBUFFER_SIZE (0x1000)
-#define FACEBUFFER_SIZE (0x400)
+#define FACEBUFFER_SIZE   (0x400)
 
 enum FaceFlags {
     FACE_FLAG_TEXTURED_3D = 0,
@@ -13,8 +13,8 @@ enum FaceFlags {
 
 enum MatrixTypes {
     MAT_WORLD = 0,
-    MAT_VIEW = 1,
-    MAT_TEMP = 2,
+    MAT_VIEW  = 1,
+    MAT_TEMP  = 2,
 };
 
 struct Matrix {

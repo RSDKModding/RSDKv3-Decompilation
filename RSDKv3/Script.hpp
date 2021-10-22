@@ -2,8 +2,8 @@
 #define SCRIPT_H
 
 #define SCRIPTDATA_COUNT (0x40000)
-#define JUMPTABLE_COUNT (0x4000)
-#define FUNCTION_COUNT (0x200)
+#define JUMPTABLE_COUNT  (0x4000)
+#define FUNCTION_COUNT   (0x200)
 
 #define JUMPSTACK_COUNT (0x400)
 #define FUNCSTACK_COUNT (0x400)
@@ -21,8 +21,8 @@ struct ObjectScript {
     ScriptPtr subDraw;
     ScriptPtr subStartup;
     int frameListOffset;
-    AnimationFile* animFile;
-    bool mobile; //flag for detecting mobile/updated bytecode
+    AnimationFile *animFile;
+    bool mobile; // flag for detecting mobile/updated bytecode
 };
 
 struct ScriptEngine {
@@ -43,8 +43,8 @@ extern int jumpTableData[JUMPTABLE_COUNT];
 extern int jumpTableStack[JUMPSTACK_COUNT];
 extern int functionStack[FUNCSTACK_COUNT];
 
-extern int scriptCodePos; //Bytecode file readpos
-extern int jumpTablePos;  //Bytecode file readpos
+extern int scriptCodePos; // Bytecode file readpos
+extern int jumpTablePos;  // Bytecode file readpos
 
 extern int jumpTableStackPos;
 extern int functionStackPos;

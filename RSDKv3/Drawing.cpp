@@ -4,8 +4,8 @@ short blendLookupTable[BLENDTABLE_SIZE];
 short subtractLookupTable[BLENDTABLE_SIZE];
 short tintLookupTable[TINTTABLE_SIZE];
 
-int SCREEN_XSIZE   = 424;
-int SCREEN_CENTERX = 424 / 2;
+int SCREEN_XSIZE        = 424;
+int SCREEN_CENTERX      = 424 / 2;
 int SCREEN_XSIZE_CONFIG = 424;
 
 int touchWidth  = SCREEN_XSIZE;
@@ -622,7 +622,7 @@ void FlipScreen()
         if (dimAmount < 1.0 && stageMode != STAGEMODE_PAUSED)
             DrawRectangle(0, 0, SCREEN_XSIZE, SCREEN_YSIZE, 0, 0, 0, 0xFF - (dimAmount * 0xFF));
 
-        bool fb = Engine.useFBTexture;
+        bool fb             = Engine.useFBTexture;
         Engine.useFBTexture = Engine.useFBTexture || stageMode == STAGEMODE_PAUSED;
 
         if (Engine.gameMode == ENGINE_VIDEOWAIT)
@@ -630,7 +630,7 @@ void FlipScreen()
         else
             Engine.highResMode ? FlipScreenHRes() : Engine.useFBTexture ? FlipScreenFB() : FlipScreenNoFB();
 
-         Engine.useFBTexture = fb;
+        Engine.useFBTexture = fb;
     }
 }
 
@@ -1033,18 +1033,18 @@ void setFullScreen(bool fs)
         float width = w;
 #if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID
         float aspect = SCREEN_XSIZE_CONFIG / (float)SCREEN_YSIZE;
-        width            = aspect * h;
+        width        = aspect * h;
         viewOffsetX  = abs(w - width) / 2;
         if (width > w) {
             int gameWidth = (w / (float)h) * SCREEN_YSIZE;
             SetScreenSize(gameWidth, (gameWidth + 9) & -0x10);
-            
+
             width = 0;
             while (width <= w) {
                 width += SCREEN_XSIZE;
             }
             width -= SCREEN_XSIZE;
-            viewOffsetX  = abs(w - width) / 2;
+            viewOffsetX = abs(w - width) / 2;
         }
 #else
         viewOffsetX = 0;
@@ -1247,14 +1247,13 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     bufferHeight = height;
     bufferWidth = viewWidth = touchWidth = winWidth;
     bufferHeight = viewHeight = touchHeight = winHeight;
-    
 
     viewAspect = 0.75f;
     if (viewHeight > SCREEN_YSIZE * 2)
         hq3DFloorEnabled = true;
     else
         hq3DFloorEnabled = false;
-    
+
     SetScreenSize(width, (width + 9) & -0x10);
 
 #if RETRO_USING_OPENGL
@@ -1273,14 +1272,14 @@ void SetScreenDimensions(int width, int height, int winWidth, int winHeight)
     // Setup framebuffer texture
 
     int bufferW = 0;
-    int val   = 0;
+    int val     = 0;
     do {
         val = 1 << bufferW++;
     } while (val < SCREEN_XSIZE);
     bufferW--;
 
     int bufferH = 0;
-    val     = 0;
+    val         = 0;
     do {
         val = 1 << bufferH++;
     } while (val < SCREEN_YSIZE);

@@ -69,8 +69,8 @@ bool processEvents()
 
                     int width = 0, height = 0;
                     SDL_GetWindowSize(Engine.window, &width, &height);
-                    touchX[0]  = ((touchX[0] - viewOffsetX) / (float)width) * SCREEN_XSIZE;
-                    touchY[0]  = (touchY[0] / (float)height) * SCREEN_YSIZE;
+                    touchX[0] = ((touchX[0] - viewOffsetX) / (float)width) * SCREEN_XSIZE;
+                    touchY[0] = (touchY[0] / (float)height) * SCREEN_YSIZE;
 
                     touchDown[0] = state & SDL_BUTTON_LMASK;
                     if (touchDown[0])
@@ -281,9 +281,9 @@ void RetroEngine::Run()
     const Uint64 frequency = SDL_GetPerformanceFrequency();
     Uint64 frameStart = SDL_GetPerformanceCounter(), frameEnd = SDL_GetPerformanceCounter();
     Uint64 frameStartBlunt = SDL_GetTicks(), frameEndBlunt = SDL_GetTicks();
-    float frameDelta = 0.0f;
+    float frameDelta      = 0.0f;
     float frameDeltaBlunt = 0.0f;
-    
+
     while (running) {
 #if !RETRO_USE_ORIGINAL_CODE
         frameStartBlunt = SDL_GetTicks();
@@ -292,14 +292,14 @@ void RetroEngine::Run()
         if (frameDeltaBlunt < 1000.0f / (float)refreshRate) {
             SDL_Delay(1000.0f / (float)refreshRate - frameDeltaBlunt);
             continue;
-        }        
-        
+        }
+
         frameStart = SDL_GetPerformanceCounter();
         frameDelta = frameStart - frameEnd;
         if (frameDelta < frequency / (float)refreshRate) {
             continue;
         }
-        frameEnd = SDL_GetPerformanceCounter();
+        frameEnd      = SDL_GetPerformanceCounter();
         frameEndBlunt = SDL_GetTicks();
 #endif
         running = processEvents();
@@ -328,7 +328,7 @@ void RetroEngine::Run()
                             indexSize3D         = 0;
                             render3DEnabled     = false;
                         }
-                        ProcessStage(); 
+                        ProcessStage();
                         break;
                     case ENGINE_INITDEVMENU:
                         LoadGameConfig("Data/Game/GameConfig.bin");
@@ -372,11 +372,11 @@ void RetroEngine::Run()
 
         int hapticID = GetHapticEffectNum();
         if (hapticID >= 0) {
-            //playHaptics(hapticID);
+            // playHaptics(hapticID);
         }
         else if (hapticID == HAPTIC_STOP) {
-            //stopHaptics();
-        } 
+            // stopHaptics();
+        }
     }
 
     ReleaseAudioDevice();
@@ -490,19 +490,19 @@ void RetroEngine::LoadXMLPalettes()
             bool success = doc->Parse(xmlData) == tinyxml2::XML_SUCCESS;
 
             if (success) {
-                const tinyxml2::XMLElement *gameElement      = firstXMLChildElement(doc, nullptr, "game");
+                const tinyxml2::XMLElement *gameElement    = firstXMLChildElement(doc, nullptr, "game");
                 const tinyxml2::XMLElement *paletteElement = firstXMLChildElement(doc, gameElement, "palette");
                 if (paletteElement) {
                     const tinyxml2::XMLElement *clrElement = firstXMLChildElement(doc, paletteElement, "color");
                     if (clrElement) {
                         do {
                             const tinyxml2::XMLAttribute *bankAttr = findXMLAttribute(clrElement, "bank");
-                            int clrBank                    = 0;
+                            int clrBank                            = 0;
                             if (bankAttr)
                                 clrBank = getXMLAttributeValueInt(bankAttr);
 
                             const tinyxml2::XMLAttribute *indAttr = findXMLAttribute(clrElement, "index");
-                            int clrInd                          = 0;
+                            int clrInd                            = 0;
                             if (indAttr)
                                 clrInd = getXMLAttributeValueInt(indAttr);
 
@@ -627,7 +627,7 @@ void RetroEngine::LoadXMLSoundFX()
                     if (sfxElement) {
                         do {
                             const tinyxml2::XMLAttribute *pathAttr = findXMLAttribute(sfxElement, "path");
-                            const char *sfxPath                   = "unknownSFX.wav";
+                            const char *sfxPath                    = "unknownSFX.wav";
                             if (pathAttr)
                                 sfxPath = getXMLAttributeValueString(pathAttr);
 
@@ -745,7 +745,7 @@ void RetroEngine::LoadXMLStages(TextMenu *menu, int listNo)
                                     stgID = getXMLAttributeValueString(idAttr);
 
                                 const tinyxml2::XMLAttribute *highlightAttr = findXMLAttribute(stgElement, "highlight");
-                                bool stgHighlighted                          = false;
+                                bool stgHighlighted                         = false;
                                 if (stgHighlighted)
                                     stgHighlighted = getXMLAttributeValueBool(highlightAttr);
 
@@ -794,7 +794,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
     byte fileBuffer2 = 0;
     char data[0x40];
     char strBuffer[0x40];
-    StrCopy(gameWindowText, "Retro-Engine"); //this is the default window name
+    StrCopy(gameWindowText, "Retro-Engine"); // this is the default window name
 
     globalVariablesCount = 0;
 #if RETRO_USE_MOD_LOADER
@@ -904,11 +904,10 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
                 // Read Stage Mode
                 FileRead(&fileBuffer, 1);
                 stageList[cat][s].highlighted = fileBuffer;
-
             }
         }
 
-        //Temp maybe?
+        // Temp maybe?
         if (controlMode >= 0) {
             saveRAM[35] = controlMode;
             SetGlobalVariableByName("Options.OriginalControls", controlMode);
@@ -982,7 +981,7 @@ void RetroEngine::Callback(int callbackID)
             printLog("Callback: Buy Full Game Selected");
             break;
         case CALLBACK_TERMS_SELECTED: // PC = How to play, Mobile = Full Game Only Screen
-            //Uncomment when Hi Res mode is added
+            // Uncomment when Hi Res mode is added
             /*if (bytecodeMode == BYTECODE_PC) {
                 for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
                     if (StrComp("HELP", stageList[STAGELIST_PRESENTATION][s].name)) {
@@ -1063,7 +1062,7 @@ void RetroEngine::Callback(int callbackID)
                 printLog("Callback: Staff Credits Requested");
             }
             else {
-                //Go to this URL http://www.sega.com/legal/privacy_mobile.php
+                // Go to this URL http://www.sega.com/legal/privacy_mobile.php
                 printLog("Callback: Privacy Requested");
             }
             break;

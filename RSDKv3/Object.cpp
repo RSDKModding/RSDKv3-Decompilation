@@ -26,7 +26,7 @@ void SetObjectTypeName(const char *objectName, int objectID)
 
 void ProcessStartupObjects()
 {
-    scriptFrameCount           = 0;
+    scriptFrameCount = 0;
     ClearAnimationData();
     activePlayer               = 0;
     activePlayerCount          = 1;
@@ -59,8 +59,8 @@ void ProcessObjects()
             case PRIORITY_ACTIVE_BOUNDS:
                 x      = entity->XPos >> 16;
                 y      = entity->YPos >> 16;
-                active = x > xScrollOffset - OBJECT_BORDER_X1 && x < OBJECT_BORDER_X2 + xScrollOffset
-                         && y > yScrollOffset - OBJECT_BORDER_Y1 && y < yScrollOffset + OBJECT_BORDER_Y2;
+                active = x > xScrollOffset - OBJECT_BORDER_X1 && x < OBJECT_BORDER_X2 + xScrollOffset && y > yScrollOffset - OBJECT_BORDER_Y1
+                         && y < yScrollOffset + OBJECT_BORDER_Y2;
                 break;
             case PRIORITY_ACTIVE: active = true; break;
             case PRIORITY_ACTIVE_PAUSED: active = true; break;
@@ -71,8 +71,8 @@ void ProcessObjects()
             case PRIORITY_ACTIVE_BOUNDS_REMOVE:
                 x = entity->XPos >> 16;
                 y = entity->YPos >> 16;
-                if (x <= xScrollOffset - OBJECT_BORDER_X1 || x >= OBJECT_BORDER_X2 + xScrollOffset
-                    || y <= yScrollOffset - OBJECT_BORDER_Y1 || y >= yScrollOffset + OBJECT_BORDER_Y2) {
+                if (x <= xScrollOffset - OBJECT_BORDER_X1 || x >= OBJECT_BORDER_X2 + xScrollOffset || y <= yScrollOffset - OBJECT_BORDER_Y1
+                    || y >= yScrollOffset + OBJECT_BORDER_Y2) {
                     active       = false;
                     entity->type = OBJ_TYPE_BLANKOBJECT;
                 }

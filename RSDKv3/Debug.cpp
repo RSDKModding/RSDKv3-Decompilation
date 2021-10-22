@@ -8,8 +8,8 @@ void initDevMenu()
     for (int m = 0; m < modList.size(); ++m) scanModFolder(&modList[m]);
 #endif
     drawStageGFXHQ = false;
-    xScrollOffset = 0;
-    yScrollOffset = 0;
+    xScrollOffset  = 0;
+    yScrollOffset  = 0;
     StopMusic();
     StopAllSfx();
     ReleaseStageSfx();
@@ -65,8 +65,8 @@ void initDevMenu()
 void initErrorMessage()
 {
     drawStageGFXHQ = false;
-    xScrollOffset = 0;
-    yScrollOffset = 0;
+    xScrollOffset  = 0;
+    yScrollOffset  = 0;
     StopMusic();
     StopAllSfx();
     ReleaseStageSfx();
@@ -106,11 +106,11 @@ void processStageSelect()
     CheckKeyDown(&keyDown, 0xFF);
     CheckKeyPress(&keyPress, 0xFF);
 
-//#if defined RETRO_USING_MOUSE || defined RETRO_USING_TOUCH
+    //#if defined RETRO_USING_MOUSE || defined RETRO_USING_TOUCH
     DrawSprite(32, 0x42, 16, 16, 78, 240, textMenuSurfaceNo);
     DrawSprite(32, 0xB2, 16, 16, 95, 240, textMenuSurfaceNo);
     DrawSprite(SCREEN_XSIZE - 32, SCREEN_YSIZE - 32, 16, 16, 112, 240, textMenuSurfaceNo);
-//#endif
+    //#endif
 
     if (!keyDown.start && !keyDown.up && !keyDown.down) {
         int tFlags = touchFlags;
@@ -225,7 +225,7 @@ void processStageSelect()
                     gameMenu[0].selectionCount   = 1;
                     gameMenu[1].timer            = 0;
                     gameMenu[1].visibleRowOffset = 0;
-                    stageMode                  = DEVMENU_MODMENU;
+                    stageMode                    = DEVMENU_MODMENU;
                 }
 #endif
                 else {
@@ -326,22 +326,22 @@ void processStageSelect()
             DrawTextMenu(&gameMenu[0], SCREEN_CENTERX - 80, 72);
             bool nextMenu = false;
             switch (gameMenu[0].selection2) {
-                case 3: //Presentation
+                case 3: // Presentation
                     if (stageListCount[0] > 0)
                         nextMenu = true;
                     activeStageList = 0;
                     break;
-                case 5: //Regular
+                case 5: // Regular
                     if (stageListCount[1] > 0)
                         nextMenu = true;
                     activeStageList = 1;
                     break;
-                case 7: //Special
+                case 7: // Special
                     if (stageListCount[3] > 0)
                         nextMenu = true;
                     activeStageList = 3;
                     break;
-                case 9: //Bonus
+                case 9: // Bonus
                     if (stageListCount[2] > 0)
                         nextMenu = true;
                     activeStageList = 2;
@@ -366,19 +366,19 @@ void processStageSelect()
                 gameMenu[0].selectionCount   = 1;
                 gameMenu[1].timer            = 0;
                 gameMenu[1].visibleRowOffset = 0;
-                stageMode                  = DEVMENU_STAGESEL;
+                stageMode                    = DEVMENU_STAGESEL;
             }
             else if (keyPress.B) {
                 SetupTextMenu(&gameMenu[0], 0);
                 AddTextMenuEntry(&gameMenu[0], "SELECT A PLAYER");
                 SetupTextMenu(&gameMenu[1], 0);
                 LoadConfigListText(&gameMenu[1], 0);
-                gameMenu[0].alignment      = 2;
-                gameMenu[1].alignment      = 0;
+                gameMenu[0].alignment       = 2;
+                gameMenu[1].alignment       = 0;
                 gameMenu[1].selectionCount  = 1;
                 gameMenu[1].visibleRowCount = 0;
-                gameMenu[1].selection1     = playerListPos;
-                stageMode                  = DEVMENU_PLAYERSEL;
+                gameMenu[1].selection1      = playerListPos;
+                stageMode                   = DEVMENU_PLAYERSEL;
             }
             break;
         }
@@ -564,7 +564,7 @@ void processStageSelect()
 
             char buffer[0x100];
             if (gameMenu[1].selection1 < modList.size() && (keyPress.A || keyPress.start || keyPress.left || keyPress.right)) {
-                modList[gameMenu[1].selection1].active ^= 1; 
+                modList[gameMenu[1].selection1].active ^= 1;
                 StrCopy(buffer, modList[gameMenu[1].selection1].name.c_str());
                 StrAdd(buffer, ": ");
                 StrAdd(buffer, (modList[gameMenu[1].selection1].active ? "  Active" : "Inactive"));
@@ -576,7 +576,6 @@ void processStageSelect()
                 modList[preOption] = modList[option];
                 modList[option]    = swap;
 
-                
                 SetupTextMenu(&gameMenu[0], 0);
                 AddTextMenuEntry(&gameMenu[0], "MOD LIST");
                 SetupTextMenu(&gameMenu[1], 0);

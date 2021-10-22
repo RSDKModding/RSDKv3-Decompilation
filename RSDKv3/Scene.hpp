@@ -9,12 +9,12 @@
 
 #define TILE_COUNT    (0x400)
 #define TILE_SIZE     (0x10)
-#define CHUNK_SIZE     (0x80)
+#define CHUNK_SIZE    (0x80)
 #define TILE_DATASIZE (TILE_SIZE * TILE_SIZE)
 #define TILESET_SIZE  (TILE_COUNT * TILE_DATASIZE)
 
-#define TILELAYER_CHUNK_W  (0x100)
-#define TILELAYER_CHUNK_H  (0x100)
+#define TILELAYER_CHUNK_W    (0x100)
+#define TILELAYER_CHUNK_H    (0x100)
 #define TILELAYER_CHUNK_MAX  (TILELAYER_CHUNK_W * TILELAYER_CHUNK_H)
 #define TILELAYER_SCROLL_MAX (TILELAYER_CHUNK_H * CHUNK_SIZE)
 
@@ -27,7 +27,7 @@ enum StageListNames {
     STAGELIST_REGULAR      = 1,
     STAGELIST_BONUS        = 2,
     STAGELIST_SPECIAL      = 3,
-    STAGELIST_MAX, //StageList size
+    STAGELIST_MAX, // StageList size
 };
 
 enum TileLayerTypes {

@@ -50,7 +50,7 @@ void matrixMultiply(Matrix *matrixA, Matrix *matrixB)
 
     for (int i = 0; i < 0x10; ++i) {
         uint RowB = i & 3;
-        uint RowA = (i & 0xC)/4;
+        uint RowA = (i & 0xC) / 4;
         output[i] = (matrixA->values[RowA][3] * matrixB->values[3][RowB] >> 8) + (matrixA->values[RowA][2] * matrixB->values[2][RowB] >> 8)
                     + (matrixA->values[RowA][1] * matrixB->values[1][RowB] >> 8) + (matrixA->values[RowA][0] * matrixB->values[0][RowB] >> 8);
     }
@@ -148,8 +148,8 @@ void matrixRotateZ(Matrix *matrix, int rotationZ)
     if (rotationZ < 0)
         rotationZ = 0x200 - rotationZ;
     rotationZ &= 0x1FF;
-    int sine            = sinVal512[rotationZ] >> 1;
-    int cosine          = cosVal512[rotationZ] >> 1;
+    int sine             = sinVal512[rotationZ] >> 1;
+    int cosine           = cosVal512[rotationZ] >> 1;
     matrix->values[0][0] = cosine;
     matrix->values[0][1] = 0;
     matrix->values[0][2] = sine;

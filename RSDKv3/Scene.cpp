@@ -48,7 +48,7 @@ int lastXSize = -1;
 bool pauseEnabled     = true;
 bool timeEnabled      = true;
 bool debugMode        = false;
-int frameCounter        = 0;
+int frameCounter      = 0;
 int stageMilliseconds = 0;
 int stageSeconds      = 0;
 int stageMinutes      = 0;
@@ -103,10 +103,10 @@ void InitFirstStage()
 #if RETRO_USE_MOD_LOADER
     Engine.LoadXMLPalettes();
 #endif
-    stageMode         = STAGEMODE_LOAD;
-    Engine.gameMode   = ENGINE_MAINGAME;
-    //activeStageList   = 0;
-    //stageListPosition = 0;
+    stageMode       = STAGEMODE_LOAD;
+    Engine.gameMode = ENGINE_MAINGAME;
+    // activeStageList   = 0;
+    // stageListPosition = 0;
     activeStageList   = Engine.startList;
     stageListPosition = Engine.startStage;
 }
@@ -114,7 +114,7 @@ void InitFirstStage()
 void ProcessStage(void)
 {
 #if !RETRO_USE_ORIGINAL_CODE
-    debugHitboxCount         = 0;
+    debugHitboxCount = 0;
 #endif
 
     switch (stageMode) {
@@ -167,7 +167,7 @@ void ProcessStage(void)
             stageMinutes      = 0;
             Engine.frameCount = 0;
             stageMode         = STAGEMODE_NORMAL;
-#if RETRO_USE_MOD_LOADER 
+#if RETRO_USE_MOD_LOADER
             for (int m = 0; m < modList.size(); ++m) scanModFolder(&modList[m]);
 #endif
             ResetBackgroundSettings();
@@ -245,9 +245,9 @@ void ProcessStage(void)
                 }
                 stageMilliseconds = 100 * frameCounter / Engine.refreshRate;
             }
-			else {
-				frameCounter = Engine.refreshRate * stageMilliseconds / 100;
-			}
+            else {
+                frameCounter = Engine.refreshRate * stageMilliseconds / 100;
+            }
 
             // Update
             ProcessObjects();
@@ -317,7 +317,7 @@ void LoadStageFiles(void)
     FileInfo info;
     byte fileBuffer  = 0;
     byte fileBuffer2 = 0;
-    int scriptID    = 1;
+    int scriptID     = 1;
     char strBuffer[0x100];
 
     if (!CheckCurrentStageFolder(stageListPosition)) {
@@ -562,9 +562,9 @@ void LoadStageFiles(void)
     Init3DFloorBuffer(0);
     ProcessStartupObjects();
     xScrollA = (playerList[0].XPos >> 16) - SCREEN_CENTERX;
-    xScrollB                 = (playerList[0].XPos >> 16) - SCREEN_CENTERX + SCREEN_XSIZE;
+    xScrollB = (playerList[0].XPos >> 16) - SCREEN_CENTERX + SCREEN_XSIZE;
     yScrollA = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP;
-    yScrollB                 = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP + SCREEN_YSIZE;
+    yScrollB = (playerList[0].YPos >> 16) - SCREEN_SCROLL_UP + SCREEN_YSIZE;
 }
 int LoadActFile(const char *ext, int stageID, FileInfo *info)
 {
@@ -755,7 +755,6 @@ void LoadStageBackground()
             stageLayouts[i].scrollSpeed = fileBuffer << 10;
             stageLayouts[i].scrollPos   = 0;
 
-            
             memset(stageLayouts[i].tiles, 0, TILELAYER_CHUNK_MAX * sizeof(ushort));
             byte *lineScrollPtr = stageLayouts[i].lineScroll;
             memset(stageLayouts[i].lineScroll, 0, 0x7FFF);
@@ -832,7 +831,7 @@ void LoadStageCollisions()
     if (LoadStageFile("CollisionMasks.bin", stageListPosition, &info)) {
 
         byte fileBuffer = 0;
-        int tileIndex  = 0;
+        int tileIndex   = 0;
         for (int t = 0; t < 1024; ++t) {
             for (int p = 0; p < 2; ++p) {
                 FileRead(&fileBuffer, 1);
@@ -954,7 +953,7 @@ void LoadStageCollisions()
                         id <<= 1;
                     }
 
-                    //LWall rotations
+                    // LWall rotations
                     for (int c = 0; c < TILE_SIZE; ++c) {
                         int h = 0;
                         while (h > -1) {
@@ -972,7 +971,7 @@ void LoadStageCollisions()
                         }
                     }
 
-                    //RWall rotations
+                    // RWall rotations
                     for (int c = 0; c < TILE_SIZE; ++c) {
                         int h = TILE_SIZE - 1;
                         while (h < TILE_SIZE) {
@@ -1014,8 +1013,8 @@ void LoadStageGIFFile(int stageID)
         height += (fileBuffer << 8);
 
         FileRead(&fileBuffer, 1); // Palette Size
-        //int has_pallete = (fileBuffer & 0x80) >> 7;
-        //int colors = ((fileBuffer & 0x70) >> 4) + 1;
+        // int has_pallete = (fileBuffer & 0x80) >> 7;
+        // int colors = ((fileBuffer & 0x70) >> 4) + 1;
         int palette_size = (fileBuffer & 0x7) + 1;
         if (palette_size > 0)
             palette_size = 1 << palette_size;
@@ -1023,8 +1022,7 @@ void LoadStageGIFFile(int stageID)
         FileRead(&fileBuffer, 1); // BG Colour index (thrown away)
         FileRead(&fileBuffer, 1); // Pixel aspect ratio (thrown away)
 
-        if (palette_size == 256)
-        {
+        if (palette_size == 256) {
             byte clr[3];
 
             for (int c = 0; c < 0x80; ++c) FileRead(clr, 3);
@@ -1150,7 +1148,7 @@ void SetLayerDeformation(int selectedDef, int waveLength, int waveWidth, int wav
 
     int id = 0;
     if (waveType == 1) {
-        id     = YPos;
+        id = YPos;
         for (int i = 0; i < waveSize; ++i) {
             deformPtr[id] = waveWidth * sinVal512[(i << 9) / waveLength & 0x1FF] >> shift;
             ++id;
@@ -1712,10 +1710,10 @@ void SetPlayerLockedScreenPosition(Player *player)
         }
     }
 
-    int yscrollA     = yScrollA;
-    int yscrollB     = yScrollB;
-    int adjustY      = cameraAdjustY + playerYPos;
-    //int adjustOffset = player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
+    int yscrollA = yScrollA;
+    int yscrollB = yScrollB;
+    int adjustY  = cameraAdjustY + playerYPos;
+    // int adjustOffset = player->lookPos + adjustY - (yScrollA + SCREEN_SCROLL_UP);
     if (player->lookPos + adjustY <= yScrollA + SCREEN_SCROLL_UP) {
         player->screenYPos = adjustY - yScrollA - cameraShakeY;
         yScrollOffset      = cameraShakeY + yscrollA;

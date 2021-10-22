@@ -3,7 +3,7 @@
 
 #define TEXTDATA_COUNT  (0x2800)
 #define TEXTENTRY_COUNT (0x200)
-#define TEXTMENU_COUNT (0x2)
+#define TEXTMENU_COUNT  (0x2)
 
 #define FONTCHAR_COUNT (0x400)
 
@@ -25,8 +25,7 @@ struct TextMenu {
     sbyte timer;
 };
 
-struct FontCharacter
-{
+struct FontCharacter {
     int id;
     short srcX;
     short srcY;

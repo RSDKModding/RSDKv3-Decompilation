@@ -23,14 +23,13 @@ enum CollisionSolidity {
 };
 
 enum ObjectCollisionTypes {
-    C_TOUCH       = 0,
-    C_BOX         = 1,
-    C_BOX2        = 2,
-    C_PLATFORM    = 3,
+    C_TOUCH    = 0,
+    C_BOX      = 1,
+    C_BOX2     = 2,
+    C_PLATFORM = 3,
 };
 
-struct CollisionSensor
-{
+struct CollisionSensor {
     int XPos;
     int YPos;
     int angle;
