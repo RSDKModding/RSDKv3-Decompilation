@@ -91,7 +91,7 @@ A: See above.
 A: Try turning on VSync in settings.ini.
 
 ### Q: I found a bug/I have a feature request!
-A: Submit an issue in the issues tab and I'll fix/add (if possible) it as soon as I can if it is critical enough.
+A: Submit an issue in the issues tab and we _might_ fix it in the main branch. Don't expect any future releases, however.
 
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?
 A: Yes! I've done a decompilation of RSDKv4 (the engine ver that S1/S2 run on) and it can be found [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation)!
