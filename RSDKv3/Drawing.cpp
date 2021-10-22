@@ -709,6 +709,7 @@ void FlipScreenNoFB()
 {
 #if RETRO_USING_OPENGL
     glClear(GL_COLOR_BUFFER_BIT);
+
     glLoadIdentity();
     glOrtho(0, SCREEN_XSIZE << 4, SCREEN_YSIZE << 4, 0.0, -1.0, 1.0);
     glViewport(viewOffsetX, 0, viewWidth, viewHeight);

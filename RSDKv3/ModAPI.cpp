@@ -315,11 +315,11 @@ void scanModFolder(ModInfo *info)
     }
 
     // Check for Bytecode/ replacements
-    fs::path bytecodePath = resolvePath(modDir + "/Videos");
+    fs::path videosPath = resolvePath(modDir + "/Videos");
 
-    if (fs::exists(bytecodePath) && fs::is_directory(bytecodePath)) {
+    if (fs::exists(videosPath) && fs::is_directory(videosPath)) {
         try {
-            auto data_rdi = fs::recursive_directory_iterator(bytecodePath);
+            auto data_rdi = fs::recursive_directory_iterator(videosPath);
             for (auto data_de : data_rdi) {
                 if (data_de.is_regular_file()) {
                     char modBuf[0x100];
