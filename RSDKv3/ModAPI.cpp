@@ -45,7 +45,7 @@ fs::path resolvePath(fs::path given)
         auto gf   = given.filename();
         auto gstr = gf.string();
         std::transform(gstr.begin(), gstr.end(), gstr.begin(), [](char c) { return std::tolower(c); });
-        if (pbuf == gbuf) {
+        if (pstr == gstr) {
             return p.path();
         }
     }
