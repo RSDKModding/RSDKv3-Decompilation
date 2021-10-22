@@ -1,6 +1,6 @@
 ![](header.png?raw=true)
 # **SUPPORT THE OFFICIAL RELEASE OF SONIC CD**
-+ Without assets from the official release this decompilation will not run.
++ Without assets from the official release, this decompilation will not run.
 
 + You can get the official release of Sonic CD from:
   * [Windows (Via Steam)](https://store.steampowered.com/app/200940/Sonic_CD/)
@@ -36,31 +36,34 @@ Even if your platform isn't supported by the official releases, you **must** buy
 ## Windows via MSYS2 (64-bit only)
 * Download the newest version of the MSYS2 installer from [here](https://www.msys2.org/) and install it.
 * Run the MINGW64 prompt (from the windows Start Menu/MSYS2 64-bit/MSYS2 MinGW 64-bit), when the program starts enter `pacman -Syuu` in the prompt and hit Enter. Press `Y` when it asks if you want to update packages. If it asks you to close the prompt, do so, then restart it and run the same command again. This updates the packages to their latest versions.
-* Now install the dependencies with the following command: `pacman -S pkg-config make git mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libtheora mingw-w64-x86_64-glew`
-* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
-* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
-* Then run `make -f Makefile.msys2 CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5` 
-  * (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
+* Now install the dependencies with the following command: `pacman -S pkg-config make git mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libtheora mingw-w64-x86_64-glew`.
+* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`.
+* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`.
+* Then run `make -f Makefile.msys2 CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5`.
+  * The `CXXFLAGS` option can be removed if you do not want optimizations. 
+  * -j switch is optional, but will make building faster by running it parallel on multiple cores (8 cores would be -j9.)
 
 ## Windows UWP (Phone, Xbox, etc.)
 * Clone the repo, then follow the instructions in the [dependencies readme for Windows](./dependencies/windows/dependencies.txt) and [dependencies readme for UWP](./dependencies/win-uwp/dependencies.txt) to setup dependencies, then build and deploy via the UWP Visual Studio solution.
 * After install, copy your `Data.rsdk` and `videos` folder into the apps localstate folder.
 
 ## Mac
-* Clone the repo, then follow the instructions in the [dependencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the Xcode project (or grab a prebuilt executable from the releases section)
+* Clone the repo, follow the instructions in the [dependencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the Xcode project (or grab a prebuilt executable from the releases section.)
 
 ## Linux
 * To setup your build enviroment and library dependecies run the following commands:
   * Ubuntu (Mint, Pop!\_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev`
   * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora libglew`
-* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
-* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`
-* Clone the tinyxml2 repo with the following command: `git clone https://github.com/leethomason/tinyxml2.git ./dependencies/all/tinyxml2`
-* Then run `make CXXFLAGS=-O2 -j5`, if your distro is using gcc 8.x.x then add the argument `LIBS=-lstdc++fs`
-  * (-j switch is optional but will make building faster, it's based on the number of cores you have +1 so 8 cores wold be -j9)
-
+* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`.
+* Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`.
+* Clone the TinyXML-2 repo with the following command: `git clone https://github.com/leethomason/tinyxml2.git ./dependencies/all/tinyxml2`.
+* Run `make CXXFLAGS=-O2 -j5`. 
+  * If your distro is using gcc 8.x.x, then add the argument `LIBS=-lstdc++fs`.
+  * The `CXXFLAGS` option can be removed if you do not want optimizations.
+  * -j switch is optional, but will make building faster by running it parallel on multiple cores (8 cores would be -j9.)
+ 
 ## iOS
-* Clone the repo, then follow the instructions in the [dependencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
+* Clone the repo, follow the instructions in the [dependencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project
 
 ## Android
 * Clone the repo, then follow the instructions in the [dependencies readme for Android](./dependencies/android/dependencies.txt).
@@ -74,7 +77,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
   * NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
 
 ## Other platforms
-Currently the only "officially" supported platforms are the ones listed above, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
+Currently the only supported platforms are the ones listed above, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
 If you've cloned this repo and ported it to a platform not on the list or made some changes you'd like to see added to this repo, submit a pull request and it'll most likely be added.
 
 # FAQ
@@ -94,10 +97,10 @@ A: Try turning on VSync in settings.ini.
 A: Submit an issue in the issues tab and we _might_ fix it in the master branch. Don't expect any future releases, however.
 
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?
-A: Yes! I've done a decompilation of RSDKv4 (the engine ver that S1/S2 run on) and it can be found [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation)!
+A: Yes! I've done a decompilation of RSDKv4 (the engine version that S1/S2 run on) and it can be found [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation)!
 
 ### Q: Will you do a decompilation for Sonic Mania?
-A: No. Mania is tons bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also make all _600_+ objects work
+A: No. Sonic Mania is much bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also all _600_+ objects work.
 
 # Special Thanks
 * [Xeeynamo](https://github.com/Xeeynamo): for creating the RSDK Animation editor & an early version of the script unpacker, both of which got me into RSDK modding.
