@@ -45,7 +45,7 @@ void PlayVideoFile(char *filePath)
     StrCopy(pathBuffer, "videos/");
     StrAdd(pathBuffer, filePath);
     StrAdd(pathBuffer, ".ogv");
-    
+
     bool addPath = true;
     // Fixes ".ani" ".Ani" bug and any other case differences
     char pathLower[0x100];
@@ -62,13 +62,13 @@ void PlayVideoFile(char *filePath)
                 StrCopy(pathBuffer, iter->second.c_str());
                 Engine.forceFolder   = true;
                 Engine.usingDataFile = false;
-                addPath = false;
+                addPath              = false;
                 break;
             }
         }
     }
 #endif
-    
+
     char filepath[0x100];
     if (addPath) {
 #if RETRO_PLATFORM == RETRO_UWP
@@ -103,7 +103,7 @@ void PlayVideoFile(char *filePath)
         videoDecoder = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_IYUV, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
 #endif
 
-        //TODO: does SDL1.2 support YUV?
+        // TODO: does SDL1.2 support YUV?
 #if RETRO_USING_SDL1 && !RETRO_USING_OPENGL
         videoDecoder = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
 #endif
@@ -111,7 +111,6 @@ void PlayVideoFile(char *filePath)
 #if RETRO_USING_OPENGL
         videoDecoder = THEORAPLAY_startDecode(&callbacks, /*FPS*/ 30, THEORAPLAY_VIDFMT_RGBA, GetGlobalVariableByName("Options.Soundtrack") ? 1 : 0);
 #endif
-
 
         if (!videoDecoder) {
             printLog("Video Decoder Error!");
@@ -150,8 +149,8 @@ void UpdateVideoFrame()
     if (videoPlaying) {
         if (videoFrameCount > currentVideoFrame) {
             GFXSurface *surface = &gfxSurface[videoData];
-            byte fileBuffer      = 0;
-            byte fileBuffer2      = 0;
+            byte fileBuffer     = 0;
+            byte fileBuffer2    = 0;
             FileRead(&fileBuffer, 1);
             videoFilePos += fileBuffer;
             FileRead(&fileBuffer, 1);
@@ -177,7 +176,7 @@ void UpdateVideoFrame()
             FileRead(&fileBuffer2, 2); // IMAGE TOP
             FileRead(&fileBuffer2, 2); // IMAGE WIDTH
             FileRead(&fileBuffer2, 2); // IMAGE HEIGHT
-            FileRead(&fileBuffer, 1); // PaletteType
+            FileRead(&fileBuffer, 1);  // PaletteType
             bool interlaced = (fileBuffer & 0x40) >> 6;
             if (fileBuffer >> 7 == 1) {
                 int c = 0x80;
@@ -216,7 +215,7 @@ int ProcessVideo()
 
         if (!THEORAPLAY_isDecoding(videoDecoder) || (videoSkipped && fadeMode >= 0xFF)) {
             StopVideoPlayback();
-
+            ResumeSound();
             return 1; // video finished
         }
 
@@ -267,7 +266,6 @@ int ProcessVideo()
 #elif RETRO_USING_SDL1
                 memcpy(Engine.videoBuffer->pixels, videoVidData->pixels, videoVidData->width * videoVidData->height * sizeof(uint));
 #endif
-
 
                 THEORAPLAY_freeVideo(videoVidData);
                 videoVidData = NULL;

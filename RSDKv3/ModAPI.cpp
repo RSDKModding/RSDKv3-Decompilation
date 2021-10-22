@@ -18,6 +18,7 @@ char playerNames[PLAYER_MAX][0x20];
 byte playerCount = 0;
 
 #include <filesystem>
+#include <algorithm>
 
 int OpenModMenu()
 {
@@ -26,11 +27,11 @@ int OpenModMenu()
     return 1;
 }
 
-#if RETRO_PLATFORM == RETRO_ANDROID
-namespace fs = std::__fs::filesystem;
-#else
+//#if RETRO_PLATFORM == RETRO_ANDROID
+// namespace fs = std::__fs::filesystem;
+//#else
 namespace fs = std::filesystem;
-#endif
+//#endif
 
 fs::path resolvePath(fs::path given)
 {

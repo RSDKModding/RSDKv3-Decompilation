@@ -77,7 +77,9 @@ LOCAL_MODULE := main
 
 SDL_PATH := ../SDL
 
-LOCAL_CFLAGS   := -fexceptions 
+LOCAL_CFLAGS   := -fexceptions
+LOCAL_CPPFLAGS :=  -std=c++17
+APP_CPPFLAGS :=  -std=c++17
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/$(SDL_PATH)/include \
