@@ -372,7 +372,7 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
 
             // Mix the converted audio data into the final output
             if (get != -1)
-                ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), (bgmVolume * masterVolume) / MAX_VOLUME, 0);
+                ProcessAudioMixing(mix_buffer, buffer, get / sizeof(Sint16), bgmVolume, 0);
         }
         else {
             SDL_AudioStreamClear(ogv_stream); // Prevent leftover audio from playing at the start of the next video
