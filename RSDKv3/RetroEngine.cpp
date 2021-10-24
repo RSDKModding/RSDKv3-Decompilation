@@ -153,6 +153,7 @@ bool processEvents()
                             }
                             stageMode       = STAGEMODE_LOAD;
                             Engine.gameMode = ENGINE_MAINGAME;
+                            SetGlobalVariableByName("LampPost.Check", 0);
                         }
                         break;
                     case SDLK_F3:
@@ -169,6 +170,7 @@ bool processEvents()
                             }
                             stageMode       = STAGEMODE_LOAD;
                             Engine.gameMode = ENGINE_MAINGAME;
+                            SetGlobalVariableByName("LampPost.Check", 0);
                         }
                         break;
                     case SDLK_F9:
