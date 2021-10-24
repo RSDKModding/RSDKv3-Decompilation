@@ -1,5 +1,20 @@
 #include "RetroEngine.hpp"
 
+// Workaround for a "bug" in Linux with AMD cards where the presented buffer
+// isn't cleared and displays corrupted memory in the letter/pillar boxes.
+//
+// It's very possible the same thing happens in Windows and Nvidia on Linux but
+// the GPU driver preemptively clears the texture to avoid out-of-bounds reads.
+//
+// The problem comes down to how viewAngle is used, or rather, unused. It is
+// initialized to 0, never changed, then checked if it's greater or equal to
+// 180.0f or greater than 0.0f to determine if the texture should be cleared.
+// That means the texture is never cleared correctly.
+//
+// For the sake of maintaining the original code, we'll use a macro to disable
+// it rather than remove it outright.
+#define DONT_USE_VIEW_ANGLE (1)
+
 short blendLookupTable[BLENDTABLE_SIZE];
 short subtractLookupTable[BLENDTABLE_SIZE];
 short tintLookupTable[TINTTABLE_SIZE];
@@ -51,8 +66,11 @@ int virtualX       = 0;
 int virtualY       = 0;
 int virtualWidth   = 0;
 int virtualHeight  = 0;
+
+#if !DONT_USE_VIEW_ANGLE
 float viewAngle    = 0;
 float viewAnglePos = 0;
+#endif
 
 #if RETRO_USING_OPENGL
 GLuint gfxTextureID[HW_TEXTURE_LIMIT];
@@ -775,6 +793,9 @@ void FlipScreenNoFB()
 void FlipScreenHRes()
 {
 #if RETRO_USING_OPENGL
+#if DONT_USE_VIEW_ANGLE
+    glClear(GL_COLOR_BUFFER_BIT);
+#else
     if (viewAngle >= 180.0) {
         if (viewAnglePos < 180.0) {
             viewAnglePos += 7.5;
@@ -785,6 +806,7 @@ void FlipScreenHRes()
         viewAnglePos -= 7.5;
         glClear(GL_COLOR_BUFFER_BIT);
     }
+#endif
 
     glLoadIdentity();
 
@@ -820,6 +842,9 @@ void RenderFromTexture()
 {
 #if RETRO_USING_OPENGL
     glBindTexture(GL_TEXTURE_2D, renderbufferHW);
+#if DONT_USE_VIEW_ANGLE
+    glClear(GL_COLOR_BUFFER_BIT);
+#else
     if (viewAngle >= 180.0) {
         if (viewAnglePos < 180.0) {
             viewAnglePos += 7.5;
@@ -830,6 +855,7 @@ void RenderFromTexture()
         viewAnglePos -= 7.5;
         glClear(GL_COLOR_BUFFER_BIT);
     }
+#endif
     glLoadIdentity();
     glViewport(viewOffsetX, 0, viewWidth, viewHeight);
     glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &screenRect[0].x);
@@ -889,6 +915,9 @@ void RenderFromRetroBuffer()
 #if RETRO_USING_OPENGL
     glLoadIdentity();
     glBindTexture(GL_TEXTURE_2D, drawStageGFXHQ ? retroBuffer2x : retroBuffer);
+#if DONT_USE_VIEW_ANGLE
+    glClear(GL_COLOR_BUFFER_BIT);
+#else
     if (viewAngle >= 180.0) {
         if (viewAnglePos < 180.0) {
             viewAnglePos += 7.5;
@@ -899,6 +928,7 @@ void RenderFromRetroBuffer()
         viewAnglePos -= 7.5;
         glClear(GL_COLOR_BUFFER_BIT);
     }
+#endif
     glViewport(viewOffsetX, 0, viewWidth, viewHeight);
 
     glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &retroScreenRect[0].x);
@@ -946,6 +976,9 @@ void FlipScreenVideo()
 
     glLoadIdentity();
     glBindTexture(GL_TEXTURE_2D, videoBuffer);
+#if DONT_USE_VIEW_ANGLE
+    glClear(GL_COLOR_BUFFER_BIT);
+#else
     if (viewAngle >= 180.0) {
         if (viewAnglePos < 180.0) {
             viewAnglePos += 7.5;
@@ -956,6 +989,7 @@ void FlipScreenVideo()
         viewAnglePos -= 7.5;
         glClear(GL_COLOR_BUFFER_BIT);
     }
+#endif
     glViewport(viewOffsetX, 0, viewWidth, viewHeight);
     glVertexPointer(2, GL_FLOAT, sizeof(DrawVertex3D), &screenVerts[0].x);
     glTexCoordPointer(2, GL_SHORT, sizeof(DrawVertex3D), &screenVerts[0].u);
