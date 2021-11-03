@@ -21,7 +21,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * The rendering backend is based off the PC version by default, so palettes are fully supported (Tidal Tempest water in particular)
 
 # Additional Tweaks
-* Added a built in mod loader and API allowing to easily create and play mods with features such as save file redirection, custom achievements and XML GameConfig/StageConfig data.
+* Added a built in mod loader and API allowing to easily create and play mods with features such as save file redirection and XML GameConfig data.
 * There is now a settings.ini file that the game uses to load all settings, similar to Sonic Mania
 * Dev menu can now be accessed from anywhere by pressing `ESC` if enabled in the config
 * The `F12` pause, `F11` step over & fast forward debug features from Sonic Mania have all been ported and are enabled if `devMenu` is enabled in the config
