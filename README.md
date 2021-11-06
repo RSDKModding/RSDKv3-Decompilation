@@ -72,11 +72,18 @@ Even if your platform isn't supported by the official releases, you **must** buy
   * `mklink /D SDL ..\..\..\dependencies\android\SDL`
 * Open `android/` in Android Studio, install the NDK and everything else that it asks for, and build.
 
-## PS Vita
+## PlayStation Vita
 * Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
   * NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
 
-## Other platforms
+## Unofficial Branches
+Follow the installation instructions in the readme of each branch.
+* For the **Nintendo Switch**, go to [heyjoeway's fork](https://github.com/heyjoeway/Sonic-CD-11-Decompilation).
+* For the **Nintendo 3DS**, go to [SaturnSH2x2's fork](https://github.com/SaturnSH2x2/Sonic-CD-11-3DS).
+  * A New Nintendo 3DS is required for the game to run smoothly.
+Because these branches are unofficial, we can't provide support for them and they may not be up-to-date.
+
+## Other Platforms
 Currently the only supported platforms are the ones listed above, however the backend uses libogg, libvorbis, libtheora & SDL2 to power it, so the codebase is very multiplatform.
 If you're able to, you can clone this repo and port it to a platform not on the list.
 
