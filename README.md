@@ -73,8 +73,8 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Open `android/` in Android Studio, install the NDK and everything else that it asks for, and build.
 
 ## PlayStation Vita
-* Ensure you have Docker installed and run the script `build.sh` from `SonicCD.Vita`. If you are on Windows, WSL2 is recommended.
-  * NOTE: You would need to copy Sonic CD game data into `ux0:data/SonicCD` to boot the game.
+* Ensure you have Docker installed and run the script `build.sh` from `RSDKv3.vita`. If you are on Windows, WSL2 is recommended.
+  * NOTE: You would need to copy Sonic CD game data into `ux0:data/RSDKv3` to boot the game.
 
 ## Unofficial Branches
 Follow the installation instructions in the readme of each branch.
