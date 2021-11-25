@@ -54,7 +54,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * To setup your build enviroment and library dependecies run the following commands:
   * Ubuntu (Mint, Pop!\_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev`
   * Fedora Linux: `sudo rpm install g++ SDL2-devel libvorbis-devel libogg-devel libtheora-devel glew-devel tinyxml2-devel`
-  * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora libglew`
+  * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora glew tinyxml2`
 * Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`.
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`.
 * Clone the TinyXML-2 repo with the following command: `git clone https://github.com/leethomason/tinyxml2.git ./dependencies/all/tinyxml2`.
