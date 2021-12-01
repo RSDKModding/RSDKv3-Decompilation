@@ -1746,6 +1746,9 @@ void ParseScriptFile(char *scriptName, int scriptID)
 #if RETRO_USE_HAPTICS
                                  && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1
 #endif
+#if !RETRO_USE_ORIGINAL_CODE
+                                 && FindStringToken(scriptText, "Use_Decomp", 1) == -1
+#endif
 #if RETRO_USE_MOD_LOADER
                                  && FindStringToken(scriptText, "Use_Mod_Loader", 1) == -1
 #endif
