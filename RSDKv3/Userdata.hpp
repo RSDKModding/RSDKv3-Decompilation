@@ -38,7 +38,7 @@ extern bool disableTouchControls;
 extern bool disableFocusPause;
 extern bool disableFocusPause_Config;
 
-#if RETRO_USE_MOD_LOADER
+#if RETRO_USE_MOD_LOADER || !RETRO_USE_ORIGINAL_CODE
 extern bool forceUseScripts;
 extern bool forceUseScripts_Config;
 #endif

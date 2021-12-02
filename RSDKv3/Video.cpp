@@ -1,4 +1,5 @@
 #include "RetroEngine.hpp"
+#include <string>
 
 int currentVideoFrame = 0;
 int videoFrameCount   = 0;

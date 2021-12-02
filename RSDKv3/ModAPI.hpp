@@ -29,7 +29,6 @@ extern int activeMod;
 extern char modsPath[0x100];
 
 extern bool redirectSave;
-extern char savePath[0x100];
 
 extern char modTypeNames[OBJECT_COUNT][0x40];
 extern char modScriptPaths[OBJECT_COUNT][0x40];
@@ -50,8 +49,11 @@ int OpenModMenu();
 
 void RefreshEngine();
 
-int GetSceneID(byte listID, const char *sceneName);
+#endif
 
+#if RETRO_USE_MOD_LOADER || !RETRO_USE_ORIGINAL_CODE
+extern char savePath[0x100];
+int GetSceneID(byte listID, const char *sceneName);
 #endif
 
 #endif

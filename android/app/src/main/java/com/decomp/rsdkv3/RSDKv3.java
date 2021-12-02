@@ -16,6 +16,21 @@ public class RSDKv3 extends SDLActivity {
         getBasePath();
 
     }
+    
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            SDLActivity.mCurrentNativeState = SDLActivity.NativeState.PAUSED;
+            SDLActivity.mNextNativeState = SDLActivity.NativeState.RESUMED;
+        } 
+        else {
+            SDLActivity.mCurrentNativeState = SDLActivity.NativeState.RESUMED;
+            SDLActivity.mNextNativeState = SDLActivity.NativeState.PAUSED;
+        }
+
+        SDLActivity.handleNativeState();
+    }
 
     public String getBasePath() {
         Context c = getApplicationContext();
