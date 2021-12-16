@@ -74,6 +74,8 @@ Even if your platform isn't supported by the official releases, you **must** buy
   * `mklink /D SDL ..\..\..\dependencies\android\SDL`
 * Open `android/` in Android Studio, install the NDK and everything else that it asks for, and build.
 
+**The Android build is currently a work-in-progress. Unless you're reporting a bug, no support will be given for this build whatsoever.**
+
 ## PlayStation Vita
 * Ensure you have Docker installed and run the script `build.sh` from `RSDKv3.vita`. If you are on Windows, WSL2 is recommended.
   * NOTE: You would need to copy Sonic CD game data into `ux0:data/RSDKv3` to boot the game.
