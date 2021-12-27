@@ -109,7 +109,7 @@ A: Try turning on VSync in settings.ini.
 A: Submit an issue in the issues tab and we _might_ fix it in the master branch. Don't expect any future releases, however.
 
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?
-A: Yes! I've done a decompilation of RSDKv4 (the engine version that S1/S2 run on) and it can be found [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation)!
+A: I already have! You can find it [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation).
 
 ### Q: Will you do a decompilation for Sonic Mania?
 A: No. Sonic Mania is much bigger and requires that I'd decompile not only how the (far more complex) RSDKv5 works, but also all _600_+ objects work.
