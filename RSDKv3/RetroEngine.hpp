@@ -7,6 +7,7 @@
 // Setting this to true removes (almost) ALL changes from the original code, the trade off is that a playable game cannot be built, it is advised to
 // be set to true only for preservation purposes
 #define RETRO_USE_ORIGINAL_CODE (0)
+
 #define RETRO_USE_MOD_LOADER    (!RETRO_USE_ORIGINAL_CODE && 1)
 
 // ================
