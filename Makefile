@@ -51,7 +51,7 @@ include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
+	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $^ -o $@ -c
 
 bin/RSDKv3: $(OBJECTS)
 	mkdir -p $(@D)
