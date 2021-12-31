@@ -5,7 +5,8 @@ endif
 
 CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) vorbisfile vorbis theoradec sdl2 glew) $(CXXFLAGS) \
    -Idependencies/all/filesystem/include \
-   -Idependencies/all/theoraplay
+   -Idependencies/all/theoraplay \
+   -Idependencies/all/tinyxml2/
 LDFLAGS_ALL += $(LDFLAGS)
 LIBS_ALL += $(shell pkg-config --libs $(PKG_CONFIG_STATIC_FLAG) vorbisfile vorbis theoradec sdl2 glew) -pthread $(LIBS)
 
@@ -51,9 +52,9 @@ include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $^ -o $@ -c
+	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 
-bin/RSDKv3: $(SOURCES:%=objects/%.o)
+bin/RSDKv3: $(OBJECTS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) $(LDFLAGS_ALL) $^ -o $@ $(LIBS_ALL)
 
