@@ -36,8 +36,8 @@ Even if your platform isn't supported by the official releases, you **must** buy
 ## Windows via MSYS2 (64-bit only)
 * Download the newest version of the MSYS2 installer from [here](https://www.msys2.org/) and install it.
 * Run the MINGW64 prompt (from the windows Start Menu/MSYS2 64-bit/MSYS2 MinGW 64-bit), when the program starts enter `pacman -Syuu` in the prompt and hit Enter. Press `Y` when it asks if you want to update packages. If it asks you to close the prompt, do so, then restart it and run the same command again. This updates the packages to their latest versions.
-* Now install the dependencies with the following command: `pacman -S pkg-config make git mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libtheora mingw-w64-x86_64-glew mingw-w64-x86_64-tinyxml2`.
-* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`.
+* Now install the dependencies with the following command: `pacman -S pkg-config make git mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libtheora mingw-w64-x86_64-glew`.
+* Clone the repo with the following command: `git clone --recursive https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`.
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`.
 * Then run `make -f Makefile.msys2 CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5`.
   * The `CXXFLAGS` option can be removed if you do not want optimizations. 
@@ -53,11 +53,11 @@ Even if your platform isn't supported by the official releases, you **must** buy
 
 ## Linux
 * To setup your build enviroment and library dependecies run the following commands:
-  * Ubuntu (Mint, Pop!\_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev libtinyxml2-dev`
+  * Ubuntu (Mint, Pop!\_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev`
     * If you're using Debian, add `libgbm-dev` and `libdrm-dev`
-  * Fedora Linux: `sudo rpm install g++ SDL2-devel libvorbis-devel libogg-devel libtheora-devel glew-devel tinyxml2-devel`
-  * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora glew tinyxml2`
-* Clone the repo with the following command: `git clone https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`.
+  * Fedora Linux: `sudo rpm install g++ SDL2-devel libvorbis-devel libogg-devel libtheora-devel glew-devel`
+  * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora glew`
+* Clone the repo with the following command: `git clone --recursive https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`.
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`.
 * Run `make CXXFLAGS=-O2 -j5`. 
   * If your distro is using gcc 8.x.x, then add the argument `LIBS=-lstdc++fs`.

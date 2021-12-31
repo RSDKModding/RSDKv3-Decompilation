@@ -1,2 +1,0 @@
-tinyxml2: download https://github.com/leethomason/tinyxml2
-download the source code and unzip it in "./tinyxml2/"
