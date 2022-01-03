@@ -327,7 +327,7 @@ bool getControllerButton(byte buttonID)
 
     return pressed;
 }
-#endif
+#endif //! RETRO_USING_SDL2
 
 void controllerInit(byte controllerID)
 {
@@ -413,7 +413,6 @@ void ProcessInput()
 
 #ifdef RETRO_USING_MOUSE
     if (touches <= 0) {
-#endif //! RETRO_USING_SDL2
         int mx = 0, my = 0;
         SDL_GetMouseState(&mx, &my);
 
@@ -432,7 +431,6 @@ void ProcessInput()
 
         lastMouseX = mx;
         lastMouseY = my;
-#if RETRO_USING_SDL2
     }
 #endif //! RETRO_USING_MOUSE
 
@@ -503,9 +501,9 @@ void ProcessInput()
     if (!flag && inputType == 1) {
         inputDevice[INPUT_ANY].setReleased();
     }
-#endif
+#endif //! RETRO_USING_SDL2
 }
-#endif
+#endif //! !RETRO_USE_ORIGINAL_CODE
 
 void CheckKeyPress(InputData *input, byte flags)
 {
