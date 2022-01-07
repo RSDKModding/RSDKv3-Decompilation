@@ -168,10 +168,13 @@ inline void SetMusicVolume(int volume)
     masterVolume = volume;
 }
 
-inline void PauseSound()
+inline bool PauseSound()
 {
-    if (musicStatus == MUSIC_PLAYING)
+    if (musicStatus == MUSIC_PLAYING) {
         musicStatus = MUSIC_PAUSED;
+        return true;
+    }
+    return false;
 }
 
 inline void ResumeSound()

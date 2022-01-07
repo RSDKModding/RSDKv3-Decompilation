@@ -391,7 +391,7 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
             readSize       = 0;
             readPos        = virtualFileOffset;
         }
-        eStringNo            = (vFileSize & 0x1FCu) >> 2;
+        eStringNo            = (vFileSize & 0x1FC) >> 2;
         eStringPosB          = (eStringNo % 9) + 1;
         eStringPosA          = (eStringNo % eStringPosB) + 1;
         eNybbleSwap          = false;

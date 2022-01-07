@@ -53,7 +53,7 @@ void InitGifDecoder()
     gifDecoder.stackPtr       = 0;
     gifDecoder.prevCode       = NO_SUCH_CODE;
     gifDecoder.shiftState     = 0;
-    gifDecoder.shiftData      = 0u;
+    gifDecoder.shiftData      = 0;
     for (int i = 0; i <= LZ_MAX_CODE; ++i) gifDecoder.prefix[i] = (byte)NO_SUCH_CODE;
 }
 void ReadGifLine(byte *line, int length, int offset)

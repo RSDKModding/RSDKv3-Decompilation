@@ -192,7 +192,7 @@ void UpdateVideoFrame()
             ++currentVideoFrame;
         }
         else {
-            videoPlaying = 0;
+            videoPlaying = false;
             CloseFile();
         }
     }

@@ -371,6 +371,10 @@ public:
     void LoadXMLStages(TextMenu *menu, int listNo);
 #endif
 
+    bool hasFocus = true;
+    byte focusState = 0;
+
+
     int callbackMessage = 0;
     int prevMessage     = 0;
     int waitValue       = 0;

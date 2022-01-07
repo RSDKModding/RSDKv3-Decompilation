@@ -49,7 +49,9 @@ bool processEvents()
                     case SDL_WINDOWEVENT_FOCUS_LOST:
                         if (!disableFocusPause)
                             Engine.message = MESSAGE_LOSTFOCUS;
+                        Engine.hasFocus = false;
                         break;
+                    case SDL_WINDOWEVENT_FOCUS_GAINED: Engine.hasFocus = true; break;
                 }
                 break;
             case SDL_CONTROLLERDEVICEADDED: controllerInit(Engine.sdlEvents.cdevice.which); break;
@@ -57,7 +59,9 @@ bool processEvents()
             case SDL_APP_WILLENTERBACKGROUND:
                 if (!disableFocusPause)
                     Engine.message = MESSAGE_LOSTFOCUS;
+                Engine.hasFocus = false;
                 break;
+            case SDL_APP_WILLENTERFOREGROUND: Engine.hasFocus = true; break;
             case SDL_APP_TERMINATING: Engine.gameMode = ENGINE_EXITGAME; return false;
 
 #endif
@@ -280,86 +284,84 @@ void RetroEngine::Init()
 
 void RetroEngine::Run()
 {
-    const Uint64 frequency = SDL_GetPerformanceFrequency();
-    Uint64 frameStart = SDL_GetPerformanceCounter(), frameEnd = SDL_GetPerformanceCounter();
-    Uint64 frameStartBlunt = SDL_GetTicks(), frameEndBlunt = SDL_GetTicks();
-    float frameDelta      = 0.0f;
-    float frameDeltaBlunt = 0.0f;
+    unsigned long long targetFreq = SDL_GetPerformanceFrequency() / Engine.refreshRate;
+    unsigned long long curTicks   = 0;
 
     while (running) {
 #if !RETRO_USE_ORIGINAL_CODE
-        frameStartBlunt = SDL_GetTicks();
-        frameDeltaBlunt = frameStartBlunt - frameEndBlunt;
-        ++frameDeltaBlunt;
-        if (frameDeltaBlunt < 1000.0f / (float)refreshRate) {
-            SDL_Delay(1000.0f / (float)refreshRate - frameDeltaBlunt);
+        if (SDL_GetPerformanceCounter() < curTicks + targetFreq)
             continue;
-        }
-
-        frameStart = SDL_GetPerformanceCounter();
-        frameDelta = frameStart - frameEnd;
-        if (frameDelta < frequency / (float)refreshRate) {
-            continue;
-        }
-        frameEnd      = SDL_GetPerformanceCounter();
-        frameEndBlunt = SDL_GetTicks();
+        curTicks = SDL_GetPerformanceCounter();
 #endif
         running = processEvents();
 
-        for (int s = 0; s < gameSpeed; ++s) {
-            ProcessInput();
+        // Focus Checks
+        if (!Engine.hasFocus) {
+            if (!(Engine.focusState & 1)) 
+                Engine.focusState = PauseSound() ? 3 : 1;
+        }
+        else if (Engine.focusState) {
+            if ((Engine.focusState & 2))
+                ResumeSound();
+            Engine.focusState = 0;
+        }
 
-            if (!masterPaused || frameStep) {
-                switch (gameMode) {
-                    case ENGINE_DEVMENU:
-                        if (renderType == RENDER_HW) {
-                            gfxIndexSize        = 0;
-                            gfxVertexSize       = 0;
-                            gfxIndexSizeOpaque  = 0;
-                            gfxVertexSizeOpaque = 0;
-                        }
-                        processStageSelect();
-                        break;
-                    case ENGINE_MAINGAME:
-                        if (renderType == RENDER_HW) {
-                            gfxIndexSize        = 0;
-                            gfxVertexSize       = 0;
-                            gfxIndexSizeOpaque  = 0;
-                            gfxVertexSizeOpaque = 0;
-                            vertexSize3D        = 0;
-                            indexSize3D         = 0;
-                            render3DEnabled     = false;
-                        }
-                        ProcessStage();
-                        break;
-                    case ENGINE_INITDEVMENU:
-                        LoadGameConfig("Data/Game/GameConfig.bin");
-                        initDevMenu();
-                        ResetCurrentStageFolder();
-                        break;
-                    case ENGINE_EXITGAME: running = false; break;
-                    case ENGINE_SCRIPTERROR:
-                        LoadGameConfig("Data/Game/GameConfig.bin");
-                        initErrorMessage();
-                        ResetCurrentStageFolder();
-                        break;
-                    case ENGINE_ENTER_HIRESMODE:
-                        gameMode    = ENGINE_MAINGAME;
-                        highResMode = true;
-                        printLog("Callback: HiRes Mode Enabled");
-                        break;
-                    case ENGINE_EXIT_HIRESMODE:
-                        gameMode    = ENGINE_MAINGAME;
-                        highResMode = false;
-                        printLog("Callback: HiRes Mode Disabled");
-                        break;
-                    case ENGINE_PAUSE: break;
-                    case ENGINE_WAIT: break;
-                    case ENGINE_VIDEOWAIT:
-                        if (ProcessVideo() == 1)
-                            gameMode = ENGINE_MAINGAME;
-                        break;
-                    default: break;
+        if (!(Engine.focusState & 1)) {
+            for (int s = 0; s < gameSpeed; ++s) {
+                ProcessInput();
+
+                if (!masterPaused || frameStep) {
+                    switch (gameMode) {
+                        case ENGINE_DEVMENU:
+                            if (renderType == RENDER_HW) {
+                                gfxIndexSize        = 0;
+                                gfxVertexSize       = 0;
+                                gfxIndexSizeOpaque  = 0;
+                                gfxVertexSizeOpaque = 0;
+                            }
+                            processStageSelect();
+                            break;
+                        case ENGINE_MAINGAME:
+                            if (renderType == RENDER_HW) {
+                                gfxIndexSize        = 0;
+                                gfxVertexSize       = 0;
+                                gfxIndexSizeOpaque  = 0;
+                                gfxVertexSizeOpaque = 0;
+                                vertexSize3D        = 0;
+                                indexSize3D         = 0;
+                                render3DEnabled     = false;
+                            }
+                            ProcessStage();
+                            break;
+                        case ENGINE_INITDEVMENU:
+                            LoadGameConfig("Data/Game/GameConfig.bin");
+                            initDevMenu();
+                            ResetCurrentStageFolder();
+                            break;
+                        case ENGINE_EXITGAME: running = false; break;
+                        case ENGINE_SCRIPTERROR:
+                            LoadGameConfig("Data/Game/GameConfig.bin");
+                            initErrorMessage();
+                            ResetCurrentStageFolder();
+                            break;
+                        case ENGINE_ENTER_HIRESMODE:
+                            gameMode    = ENGINE_MAINGAME;
+                            highResMode = true;
+                            printLog("Callback: HiRes Mode Enabled");
+                            break;
+                        case ENGINE_EXIT_HIRESMODE:
+                            gameMode    = ENGINE_MAINGAME;
+                            highResMode = false;
+                            printLog("Callback: HiRes Mode Disabled");
+                            break;
+                        case ENGINE_PAUSE: break;
+                        case ENGINE_WAIT: break;
+                        case ENGINE_VIDEOWAIT:
+                            if (ProcessVideo() == 1)
+                                gameMode = ENGINE_MAINGAME;
+                            break;
+                        default: break;
+                    }
                 }
             }
         }
