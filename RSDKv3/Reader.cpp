@@ -412,24 +412,25 @@ void FileRead(void *dest, int size)
                 if (bufferPosition == readSize)
                     FillFileBuffer();
 
-                *data = encryptionStringB[eStringPosB] ^ eStringNo ^ fileBuffer[bufferPosition++];
+                *data = fileBuffer[bufferPosition++];
+                *data ^= encryptionStringB[eStringPosB++] ^ eStringNo;
                 if (eNybbleSwap)
-                    *data = 16 * (*data & 0xF) + ((signed int)*data >> 4);
+                    *data = ((*data & 0xF) << 4) | ((signed int)*data >> 4);
                 *data ^= encryptionStringA[eStringPosA++];
-                ++eStringPosB;
+
                 if (eStringPosA <= 19 || eStringPosB <= 11) {
                     if (eStringPosA > 19) {
                         eStringPosA = 1;
-                        eNybbleSwap ^= 1u;
+                        eNybbleSwap ^= 1;
                     }
                     if (eStringPosB > 11) {
                         eStringPosB = 1;
-                        eNybbleSwap ^= 1u;
+                        eNybbleSwap ^= 1;
                     }
                 }
                 else {
                     ++eStringNo;
-                    eStringNo &= 0x7Fu;
+                    eStringNo &= 0x7F;
                     if (eNybbleSwap) {
                         eNybbleSwap = 0;
                         eStringPosA = (eStringNo % 12) + 6;
@@ -454,6 +455,9 @@ void FileRead(void *dest, int size)
                 size--;
             }
         }
+    }
+    else {
+        printf("");
     }
 }
 

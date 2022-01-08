@@ -110,7 +110,7 @@ inline size_t FillFileBuffer()
     else
         readSize = fileSize - readPos;
 
-    size_t result = fRead(fileBuffer, 1u, readSize, cFileHandle);
+    size_t result = fRead(fileBuffer, 1, readSize, cFileHandle);
     readPos += readSize;
     bufferPosition = 0;
     return result;

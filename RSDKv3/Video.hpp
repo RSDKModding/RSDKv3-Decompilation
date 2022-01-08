@@ -14,7 +14,7 @@ extern const THEORAPLAY_VideoFrame *videoVidData;
 extern const THEORAPLAY_AudioPacket *videoAudioData;
 extern THEORAPLAY_Io callbacks;
 
-extern byte videoData;
+extern byte videoSurface;
 extern int videoFilePos;
 extern bool videoPlaying;
 extern int vidFrameMS;

@@ -32,12 +32,12 @@ void LoadFontFile(const char *filePath)
             fontCharacterList[cnt].srcY += fileBuffer << 8;
 
             FileRead(&fileBuffer, 1);
-            fontCharacterList[cnt].width = fileBuffer;
+            fontCharacterList[cnt].width = fileBuffer + 1;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].width += fileBuffer << 8;
 
             FileRead(&fileBuffer, 1);
-            fontCharacterList[cnt].height = fileBuffer;
+            fontCharacterList[cnt].height = fileBuffer + 1;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].height += fileBuffer << 8;
 

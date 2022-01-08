@@ -11,7 +11,7 @@ THEORAPLAY_Decoder *videoDecoder;
 const THEORAPLAY_VideoFrame *videoVidData;
 THEORAPLAY_Io callbacks;
 
-byte videoData    = 0;
+byte videoSurface    = 0;
 int videoFilePos  = 0;
 bool videoPlaying = 0;
 int vidFrameMS    = 0;
@@ -148,8 +148,8 @@ void PlayVideoFile(char *filePath)
 void UpdateVideoFrame()
 {
     if (videoPlaying) {
-        if (videoFrameCount > currentVideoFrame) {
-            GFXSurface *surface = &gfxSurface[videoData];
+        if (currentVideoFrame < videoFrameCount) {
+            GFXSurface *surface = &gfxSurface[videoSurface];
             byte fileBuffer     = 0;
             byte fileBuffer2    = 0;
             FileRead(&fileBuffer, 1);
@@ -183,7 +183,9 @@ void UpdateVideoFrame()
                 int c = 0x80;
                 do {
                     ++c;
-                    FileRead(&fileBuffer, 3);
+                    FileRead(&fileBuffer, 1);
+                    FileRead(&fileBuffer, 1);
+                    FileRead(&fileBuffer, 1);
                 } while (c != 0x100);
             }
             ReadGifPictureData(surface->width, surface->height, interlaced, graphicData, surface->dataPosition);
