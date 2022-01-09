@@ -987,7 +987,8 @@ void RetroEngine::Callback(int callbackID)
             printLog("Callback: Buy Full Game Selected");
             break;
         case CALLBACK_TERMS_SELECTED: // PC = How to play, Mobile = Full Game Only Screen
-            if (bytecodeMode == BYTECODE_PC) {
+            //PC doesn't have hi res mode
+            /*if (bytecodeMode == BYTECODE_PC) {
                 for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
                     if (StrComp("HELP", stageList[STAGELIST_PRESENTATION][s].name)) {
                         activeStageList   = STAGELIST_PRESENTATION;
@@ -995,7 +996,7 @@ void RetroEngine::Callback(int callbackID)
                         stageMode         = STAGEMODE_LOAD;
                     }
                 }
-            }
+            }*/
             printLog("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen");
             break;
         case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
