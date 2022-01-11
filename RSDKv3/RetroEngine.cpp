@@ -291,9 +291,11 @@ void RetroEngine::Run()
 
     while (running) {
 #if !RETRO_USE_ORIGINAL_CODE
-        if (SDL_GetPerformanceCounter() < curTicks + targetFreq)
-            continue;
-        curTicks = SDL_GetPerformanceCounter();
+        if (!vsync) {
+            if (SDL_GetPerformanceCounter() < curTicks + targetFreq)
+                continue;
+            curTicks = SDL_GetPerformanceCounter();
+        }
 #endif
         running = processEvents();
 
