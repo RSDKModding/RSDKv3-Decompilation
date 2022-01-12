@@ -238,10 +238,10 @@ void RetroEngine::Init()
 {
     CalculateTrigAngles();
     GenerateBlendLookupTable();
+    InitUserdata();
 #if RETRO_USE_MOD_LOADER
     initMods();
 #endif
-    InitUserdata();
     char dest[0x200];
 #if RETRO_PLATFORM == RETRO_UWP
     static char resourcePath[256] = { 0 };
