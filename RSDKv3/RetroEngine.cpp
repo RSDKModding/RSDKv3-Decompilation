@@ -238,10 +238,10 @@ void RetroEngine::Init()
 {
     CalculateTrigAngles();
     GenerateBlendLookupTable();
-    InitUserdata();
 #if RETRO_USE_MOD_LOADER
     initMods();
 #endif
+    InitUserdata();
     char dest[0x200];
 #if RETRO_PLATFORM == RETRO_UWP
     static char resourcePath[256] = { 0 };
@@ -915,11 +915,18 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
             }
         }
 
-        // Temp maybe?
-        if (controlMode >= 0) {
-            saveRAM[35] = controlMode;
-            SetGlobalVariableByName("Options.OriginalControls", controlMode);
+#if !RETRO_USE_ORIGINAL_CODE
+#if RETRO_USE_MOD_LOADER
+        if (!disableSaveIniOverride) {
+#endif
+            if (controlMode >= 0) {
+                saveRAM[35] = controlMode;
+                SetGlobalVariableByName("Options.OriginalControls", controlMode);
+            }
+#if RETRO_USE_MOD_LOADER
         }
+#endif
+#endif
 
         CloseFile();
 #if RETRO_USE_MOD_LOADER

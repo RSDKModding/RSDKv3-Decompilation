@@ -110,9 +110,16 @@ bool ReadSaveRAMData()
 #endif
 #endif
 
-    // Temp(?)
-    saveRAM[33] = bgmVolume;
-    saveRAM[34] = sfxVolume;
+#if !RETRO_USE_ORIGINAL_CODE
+#if RETRO_USE_MOD_LOADER
+    if (!disableSaveIniOverride) {
+#endif
+	    saveRAM[33] = bgmVolume;
+	    saveRAM[34] = sfxVolume;
+#if RETRO_USE_MOD_LOADER
+    }
+#endif
+#endif
 
     FileIO *saveFile = fOpen(buffer, "rb");
     if (!saveFile) {
@@ -221,9 +228,16 @@ bool WriteSaveRAMData()
     if (!saveFile)
         return false;
 
-    // Temp
-    saveRAM[33] = bgmVolume;
-    saveRAM[34] = sfxVolume;
+#if !RETRO_USE_ORIGINAL_CODE
+#if RETRO_USE_MOD_LOADER
+    if (!disableSaveIniOverride) {
+#endif
+	    saveRAM[33] = bgmVolume;
+	    saveRAM[34] = sfxVolume;
+#if RETRO_USE_MOD_LOADER
+    }
+#endif
+#endif
 
     fWrite(saveRAM, 4, SAVEDATA_MAX, saveFile);
     fClose(saveFile);

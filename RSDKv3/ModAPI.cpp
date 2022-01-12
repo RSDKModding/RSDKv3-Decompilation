@@ -10,7 +10,8 @@ int activeMod = -1;
 
 char modsPath[0x100];
 
-bool redirectSave = false;
+bool redirectSave           = false;
+bool disableSaveIniOverride = false;
 
 char modTypeNames[OBJECT_COUNT][0x40];
 char modScriptPaths[OBJECT_COUNT][0x40];
@@ -59,9 +60,10 @@ fs::path resolvePath(fs::path given)
 void initMods()
 {
     modList.clear();
-    forceUseScripts   = forceUseScripts_Config;
-    disableFocusPause = disableFocusPause_Config;
-    redirectSave      = false;
+    forceUseScripts        = forceUseScripts_Config;
+    disableFocusPause      = disableFocusPause_Config;
+    redirectSave           = false;
+    disableSaveIniOverride = false;
     sprintf(savePath, "");
 
     char modBuf[0x100];
@@ -119,16 +121,21 @@ void initMods()
     disableFocusPause = disableFocusPause_Config;
     forceUseScripts   = forceUseScripts_Config;
     sprintf(savePath, "");
-    redirectSave = false;
+    redirectSave           = false;
+    disableSaveIniOverride = false;
     for (int m = 0; m < modList.size(); ++m) {
         if (!modList[m].active)
             continue;
         if (modList[m].useScripts)
             forceUseScripts = true;
+        if (modList[m].disableFocusPause)
+            disableFocusPause = true;
         if (modList[m].redirectSave) {
             sprintf(savePath, "%s", modList[m].savePath.c_str());
             redirectSave = true;
         }
+        if (modList[m].disableSaveIniOverride)
+            disableSaveIniOverride = true;
     }
 
     ReadSaveRAMData();
@@ -204,6 +211,11 @@ bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool activ
             sprintf(path, "mods/%s/", folder.c_str());
             info->savePath = path;
         }
+
+        info->disableSaveIniOverride = false;
+        modSettings.GetBool("", "DisableSaveIniOverride", &info->disableSaveIniOverride);
+        if (info->disableSaveIniOverride && info->active)
+            disableSaveIniOverride = true;
 
         return true;
     }
@@ -405,16 +417,21 @@ void RefreshEngine()
     disableFocusPause = disableFocusPause_Config;
     forceUseScripts   = forceUseScripts_Config;
     sprintf(savePath, "");
-    redirectSave = false;
+    redirectSave           = false;
+    disableSaveIniOverride = false;
     for (int m = 0; m < modList.size(); ++m) {
         if (!modList[m].active)
             continue;
         if (modList[m].useScripts)
             forceUseScripts = true;
+        if (modList[m].disableFocusPause)
+            disableFocusPause = true;
         if (modList[m].redirectSave) {
             sprintf(savePath, "%s", modList[m].savePath.c_str());
             redirectSave = true;
         }
+        if (modList[m].disableSaveIniOverride)
+            disableSaveIniOverride = true;
     }
 
     saveMods();
