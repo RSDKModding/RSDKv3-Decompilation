@@ -120,7 +120,7 @@ void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
                             while (i < 1024) {
                                 if (fontCharacterList[i].id == character) {
                                     character = i;
-                                    i   = 1025;
+                                    i         = 1025;
                                 }
                                 else {
                                     ++i;
@@ -155,7 +155,7 @@ void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
                         while (i < 1024) {
                             if (fontCharacterList[i].id == character) {
                                 character = i;
-                                i   = 1025;
+                                i         = 1025;
                             }
                             else {
                                 ++i;
@@ -190,7 +190,7 @@ void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
                             while (i < 1024) {
                                 if (fontCharacterList[i].id == character) {
                                     character = i;
-                                    i   = 1025;
+                                    i         = 1025;
                                 }
                                 else {
                                     ++i;
@@ -379,12 +379,12 @@ void LoadConfigListText(TextMenu *menu, int listNo)
                 // Stage Folder
                 FileRead(&strLen, 1);
                 FileRead(&strBuf, strLen);
-                strBuf[strLen] = 0;
+                strBuf[strLen] = '\0';
 
                 // Stage ID
                 FileRead(&strLen, 1);
                 FileRead(&strBuf, strLen);
-                strBuf[strLen] = 0;
+                strBuf[strLen] = '\0';
 
                 // Stage Name
                 FileRead(&strLen, 1);
@@ -394,8 +394,8 @@ void LoadConfigListText(TextMenu *menu, int listNo)
                 // IsHighlighted
                 FileRead(&fileBuffer, 1);
                 if (listNo == c) {
-                    menu->entryHighlight[s] = fileBuffer;
                     AddTextMenuEntry(menu, strBuf);
+                    menu->entryHighlight[menu->rowCount - 1] = fileBuffer;
                 }
             }
         }
