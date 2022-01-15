@@ -5,7 +5,7 @@ install [Flathub](https://flathub.org/) which provides it.
 
 # Sonic CD (Steam Version) Flatpak
 
-First, you first need to install the game on Windows using Steam.
+First, you first need to install the game using Steam.
 To get it, visit https://store.steampowered.com/app/200940/Sonic_CD/.
 
 Once you have the game, right click it in your Steam library and click `Manage` > `Browse local files`. 
