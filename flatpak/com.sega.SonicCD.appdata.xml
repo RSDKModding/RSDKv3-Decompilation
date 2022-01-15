@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>com.sega.SonicCD</id>
+  <name>Sonic CD</name>
+  <metadata_license>CC0-1.0</metadata_license>
+  <summary>It’s time to usher the past into the future in this enhanced recreation of Sonic CD!</summary>
+  <description>
+    <p>The fate of the world is determined by the choices you make throughout your adventure! Fight through the past, recover the Time Stones, and defeat the evil Metal Sonic in order to save the future from Dr. Eggman's nefarious schemes!</p>
+  </description>
+  <url type="homepage">https://www.sega.com/games/sonic-cd</url>
+  <screenshots>
+    <screenshot type="default">https://cdn.sega.com/img_0329.jpg</screenshot>
+    <screenshot>https://cdn.sega.com/img_0334.jpg</screenshot>
+    <screenshot>https://cdn.sega.com/img_0340.jpg</screenshot>
+    <screenshot>https://cdn.sega.com/img_0350.jpg</screenshot>
+    <screenshot>https://cdn.sega.com/img_0368.jpg</screenshot>
+  </screenshots>
+  <launchable type="desktop-id">com.sega.SonicCD.desktop</launchable>
+  <project_license>LicenseRef-proprietary</project_license>
+  <developer_name>SEGA</developer_name>
+  <content_rating type="oars-1.0">
+    <content_attribute id="violence-cartoon">moderate</content_attribute>
+    <content_attribute id="violence-fantasy">none</content_attribute>
+    <content_attribute id="violence-realistic">none</content_attribute>
+    <content_attribute id="violence-bloodshed">none</content_attribute>
+    <content_attribute id="violence-sexual">none</content_attribute>
+    <content_attribute id="drugs-alcohol">none</content_attribute>
+    <content_attribute id="drugs-narcotics">none</content_attribute>
+    <content_attribute id="drugs-tobacco">none</content_attribute>
+    <content_attribute id="sex-nudity">none</content_attribute>
+    <content_attribute id="sex-themes">none</content_attribute>
+    <content_attribute id="language-profanity">none</content_attribute>
+    <content_attribute id="language-humor">none</content_attribute>
+    <content_attribute id="language-discrimination">none</content_attribute>
+    <content_attribute id="social-chat">intense</content_attribute>
+    <content_attribute id="social-info">none</content_attribute>
+    <content_attribute id="social-audio">none</content_attribute>
+    <content_attribute id="social-location">none</content_attribute>
+    <content_attribute id="social-contacts">none</content_attribute>
+    <content_attribute id="money-purchasing">none</content_attribute>
+    <content_attribute id="money-gambling">none</content_attribute>
+  </content_rating>
+</component>

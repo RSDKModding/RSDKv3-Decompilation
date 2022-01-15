@@ -280,3 +280,8 @@ Ignored/
 android/key/
 android/local.properties
 *.apk
+
+# Linux
+.flatpak-builder
+flatpak/*.apk
+build-dir
