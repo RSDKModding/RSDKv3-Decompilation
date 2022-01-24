@@ -107,8 +107,8 @@ void InitFirstStage()
     Engine.gameMode = ENGINE_MAINGAME;
     // activeStageList   = 0;
     // stageListPosition = 0;
-    activeStageList   = Engine.startList;
-    stageListPosition = Engine.startStage;
+    activeStageList   = Engine.startList_Game == 0xFF ? 0 : Engine.startList_Game;
+    stageListPosition = Engine.startStage_Game == 0xFF ? 0 : Engine.startStage_Game;
 }
 
 void ProcessStage(void)

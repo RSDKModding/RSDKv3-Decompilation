@@ -342,9 +342,13 @@ public:
 
 #if !RETRO_USE_ORIGINAL_CODE
     // Ported from RSDKv5
+    int startList_Game  = -1;
+    int startStage_Game = -1;
+
+    bool consoleEnabled  = false;
     bool devMenu         = false;
-    int startList        = 0;
-    int startStage       = 0;
+    int startList        = -1;
+    int startStage       = -1;
     int gameSpeed        = 1;
     int fastForwardSpeed = 8;
     bool masterPaused    = false;
@@ -353,6 +357,9 @@ public:
     int dimLimit         = 0;
     float dimPercent     = 1.0;
     float dimMax         = 1.0;
+
+    char startSceneFolder[0x10];
+    char startSceneID[0x10];
 
     bool showPaletteOverlay = false;
     bool useHQModes         = true;

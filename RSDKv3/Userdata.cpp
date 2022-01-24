@@ -307,6 +307,9 @@ void InitUserdata()
         sprintf(Engine.dataFile, "%s", "Data.rsdk");
         ini.SetString("Dev", "DataFile", Engine.dataFile);
 
+        Engine.startList_Game  = Engine.startList;
+        Engine.startStage_Game = Engine.startStage;
+
         ini.SetInteger("Game", "Language", Engine.language = RETRO_EN);
         ini.SetInteger("Game", "OriginalControls", controlMode = -1);
         ini.SetBool("Game", "DisableTouchControls", disableTouchControls = false);
@@ -406,6 +409,9 @@ void InitUserdata()
             Engine.useSteamDir = true;
         if (!ini.GetBool("Dev", "UseHQModes", &Engine.useHQModes))
             Engine.useHQModes = true;
+
+        Engine.startList_Game  = Engine.startList;
+        Engine.startStage_Game = Engine.startStage;
 
         if (!ini.GetString("Dev", "DataFile", Engine.dataFile))
             StrCopy(Engine.dataFile, "Data.rsdk");
