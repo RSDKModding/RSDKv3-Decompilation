@@ -2,8 +2,8 @@
 
 #if !RETRO_USE_ORIGINAL_CODE
 
-#if RETRO_PLATFORM == RETRO_WIN
-#include <Windows.h>
+#if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
+#include "Windows.h"
 #endif
 
 void parseArguments(int argc, char *argv[]) {
