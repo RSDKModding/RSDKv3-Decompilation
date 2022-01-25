@@ -31,7 +31,7 @@ void parseArguments(int argc, char *argv[]) {
             engineDebugMode       = true;
             Engine.devMenu        = true;
             Engine.consoleEnabled = true;
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
             AllocConsole();
             freopen_s((FILE **)stdin, "CONIN$", "w", stdin);
             freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 #if !RETRO_USE_ORIGINAL_CODE
     if (Engine.consoleEnabled) {
-#if RETRO_PLATFORM == RETRO_WIN
+#if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
         FreeConsole();
 #endif
     }
