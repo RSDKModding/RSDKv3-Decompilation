@@ -21,7 +21,6 @@ SOURCES = \
   RSDKv3/Ini.cpp \
   RSDKv3/Input.cpp \
   RSDKv3/ModAPI.cpp \
-  RSDKv3/main.cpp \
   RSDKv3/Math.cpp \
   RSDKv3/Object.cpp \
   RSDKv3/Palette.cpp \
@@ -35,7 +34,8 @@ SOURCES = \
   RSDKv3/String.cpp \
   RSDKv3/Text.cpp \
   RSDKv3/Userdata.cpp \
-  RSDKv3/Video.cpp
+  RSDKv3/Video.cpp \
+  RSDKv3/main.cpp
 
 	  
 ifeq ($(FORCE_CASE_INSENSITIVE),1)
