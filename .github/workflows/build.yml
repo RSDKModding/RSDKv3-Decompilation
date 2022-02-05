@@ -7,7 +7,7 @@ on:
 
 jobs: 
   v3-windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -54,7 +54,7 @@ jobs:
           name: v3-windows
           path: artifacts
   v3-windows-x64:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout
         uses: actions/checkout@v1
