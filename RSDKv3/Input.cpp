@@ -407,7 +407,7 @@ void ProcessInput()
     if (inputDevice[INPUT_ANY].press || inputDevice[INPUT_ANY].hold || touches > 1) {
         Engine.dimTimer = 0;
     }
-    else if (Engine.dimTimer < Engine.dimLimit) {
+    else if (Engine.dimTimer < Engine.dimLimit && !Engine.masterPaused) {
         ++Engine.dimTimer;
     }
 
@@ -416,7 +416,7 @@ void ProcessInput()
         int mx = 0, my = 0;
         SDL_GetMouseState(&mx, &my);
 
-        if ((mx == lastMouseX && my == lastMouseY)) {
+        if (mx == lastMouseX && my == lastMouseY) {
             ++mouseHideTimer;
             if (mouseHideTimer == 120) {
                 SDL_ShowCursor(false);
