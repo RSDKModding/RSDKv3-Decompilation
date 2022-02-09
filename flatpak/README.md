@@ -23,12 +23,13 @@ To get it, visit https://www.sega.com/games/sonic-cd.
 
 Once you have the game, use a file manager on your device to navigate
 to the directory `Android/obb/com.sega.soniccd.classic` and copy the
-`patch.56.com.sega.soniccd.classic.obb` file into this directory.
-
-Note that using this method will not install the video files, as the decompilation
-only supports video files from the Steam version.
+`patch.[number].com.sega.soniccd.classic.obb` file into this directory.
+Rename the patch obb file to `Data.rsdk`.
 
 To build and install the flatpak, run:
 ```
 $ sudo flatpak-builder --install --force-clean soniccd com.sega.SonicCDAndroid.json
 ```
+
+Note that using this method will not install the video files, as the decompilation
+only supports video files from the Steam version.
