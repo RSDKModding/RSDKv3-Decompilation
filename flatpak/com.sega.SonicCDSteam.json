@@ -36,7 +36,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git",
-                    "branch": "main"
+                    "branch": "master"
                 },
                 {
                     "type": "file",
@@ -44,7 +44,7 @@
                 },
                 {
                     "type": "dir",
-                    "path": "videos/"
+                    "path": "videos"
                 },
                 {
                     "type": "file",
