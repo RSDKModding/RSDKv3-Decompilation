@@ -27,7 +27,7 @@
             ],
             "post-install": [
                 "install -Dp -m 644 Data.rsdk /app/share/soniccd/Data.rsdk",
-                "install -Dp -m 644 ./videos /app/share/soniccd/videos",
+                "cp -r ./videos /app/share/soniccd/videos",
                 "install -Dp -m 644 com.sega.SonicCD.desktop /app/share/applications/com.sega.SonicCD.desktop",
                 "install -Dp -m 644 com.sega.SonicCD.svg /app/share/icons/hicolor/256x256/apps/com.sega.SonicCD.svg",
                 "install -Dp -m 644 com.sega.SonicCD.appdata.xml /app/share/appdata/com.sega.SonicCD.appdata.xml"
