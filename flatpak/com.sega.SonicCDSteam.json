@@ -43,10 +43,6 @@
                     "path": "Data.rsdk"
                 },
                 {
-                    "type": "dir",
-                    "path": "./videos/"
-                },
-                {
                     "type": "file",
                     "path": "com.sega.SonicCD.desktop"
                 },
