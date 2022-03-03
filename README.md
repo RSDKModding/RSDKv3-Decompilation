@@ -58,7 +58,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * To setup your build enviroment and library dependecies, run the following commands:
   * Ubuntu (Mint, Pop!\_OS, etc...): `sudo apt install build-essential git libsdl2-dev libvorbis-dev libogg-dev libtheora-dev libglew-dev`
     * If you're using Debian, add `libgbm-dev` and `libdrm-dev`.
-  * Fedora Linux: `sudo rpm install g++ SDL2-devel libvorbis-devel libogg-devel libtheora-devel glew-devel`
+  * Fedora Linux: `sudo dnf install g++ SDL2-devel libvorbis-devel libogg-devel libtheora-devel glew-devel`
   * Arch Linux: `sudo pacman -S base-devel git sdl2 libvorbis libogg libtheora glew`
 * Clone the repo with the following command: `git clone --recursive https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git`
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`.
