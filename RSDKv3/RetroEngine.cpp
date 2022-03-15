@@ -179,6 +179,10 @@ bool processEvents()
                             SetGlobalVariableByName("Warp.XPos", 0);
                         }
                         break;
+                    case SDLK_F8:
+                        if (Engine.devMenu)
+                            showHitboxes ^= 2;
+                        break;
                     case SDLK_F9:
                         if (Engine.devMenu)
                             showHitboxes ^= 1;
