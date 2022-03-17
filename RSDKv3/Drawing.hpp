@@ -41,9 +41,6 @@ extern int SCREEN_XSIZE_CONFIG;
 extern int touchWidth;
 extern int touchHeight;
 
-extern float videoAR;
-extern bool videoPlaying;
-
 extern DrawListEntry drawListEntries[DRAWLAYER_COUNT];
 
 extern int gfxDataPosition;

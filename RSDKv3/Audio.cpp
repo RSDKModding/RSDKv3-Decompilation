@@ -347,8 +347,8 @@ void ProcessAudioPlayback(void *userdata, Uint8 *stream, int len)
         ProcessMusicStream(mix_buffer, samples_to_do * sizeof(Sint16));
 
 #if RETRO_USING_SDL2
-        // Process music being played by a video
-        if (videoPlaying) {
+        // Process music being played by a ogv video
+        if (videoPlaying == 1) {
             // Fetch THEORAPLAY audio packets, and shove them into the SDL Audio Stream
             const size_t bytes_to_do = samples_to_do * sizeof(Sint16);
 

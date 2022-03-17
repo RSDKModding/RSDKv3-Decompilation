@@ -13,7 +13,7 @@ THEORAPLAY_Io callbacks;
 
 byte videoSurface    = 0;
 int videoFilePos  = 0;
-bool videoPlaying = 0;
+int videoPlaying = 0;
 int vidFrameMS    = 0;
 int vidBaseticks  = 0;
 
@@ -134,7 +134,7 @@ void PlayVideoFile(char *filePath)
         SetupVideoBuffer(videoWidth, videoHeight);
         vidBaseticks = SDL_GetTicks();
         vidFrameMS   = (videoVidData->fps == 0.0) ? 0 : ((Uint32)(1000.0 / videoVidData->fps));
-        videoPlaying = true;
+        videoPlaying = 1; // playing ogv
         trackID      = TRACK_COUNT - 1;
 
         videoSkipped    = false;
@@ -147,11 +147,11 @@ void PlayVideoFile(char *filePath)
 
 void UpdateVideoFrame()
 {
-    if (videoPlaying) {
+    if (videoPlaying == 2) {
         if (currentVideoFrame < videoFrameCount) {
             GFXSurface *surface = &gfxSurface[videoSurface];
             byte fileBuffer     = 0;
-            byte fileBuffer2    = 0;
+            ushort fileBuffer2  = 0;
             FileRead(&fileBuffer, 1);
             videoFilePos += fileBuffer;
             FileRead(&fileBuffer, 1);
@@ -194,7 +194,7 @@ void UpdateVideoFrame()
             ++currentVideoFrame;
         }
         else {
-            videoPlaying = false;
+            videoPlaying = 0;
             CloseFile();
         }
     }
@@ -202,7 +202,7 @@ void UpdateVideoFrame()
 
 int ProcessVideo()
 {
-    if (videoPlaying) {
+    if (videoPlaying == 1) {
         CheckKeyPress(&keyPress, 0xFF);
 
         if (videoSkipped && fadeMode < 0xFF) {
@@ -223,7 +223,7 @@ int ProcessVideo()
         }
 
         // Don't pause or it'll go wild
-        if (videoPlaying) {
+        if (videoPlaying == 1) {
             const Uint32 now = (SDL_GetTicks() - vidBaseticks);
 
             if (!videoVidData)
@@ -283,7 +283,7 @@ int ProcessVideo()
 
 void StopVideoPlayback()
 {
-    if (videoPlaying) {
+    if (videoPlaying == 1) {
         // `videoPlaying` and `videoDecoder` are read by
         // the audio thread, so lock it to prevent a race
         // condition that results in invalid memory accesses.
@@ -302,7 +302,7 @@ void StopVideoPlayback()
         }
 
         CloseVideoBuffer();
-        videoPlaying = false;
+        videoPlaying = 0;
 
         SDL_UnlockAudio();
     }
@@ -340,7 +340,7 @@ void SetupVideoBuffer(int width, int height)
 
 void CloseVideoBuffer()
 {
-    if (videoPlaying) {
+    if (videoPlaying == 1) {
 #if RETRO_USING_OPENGL
         if (videoBuffer > 0) {
             glDeleteTextures(1, &videoBuffer);
