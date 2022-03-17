@@ -510,7 +510,7 @@ void processStageSelect()
         {
             int preOption = gameMenu[1].selection1;
             if (keyDown.down) {
-                gameMenu[1].timer += 1;
+                gameMenu[1].timer++;
                 if (gameMenu[1].timer > 8) {
                     gameMenu[1].timer = 0;
                     keyPress.down     = true;
@@ -518,7 +518,7 @@ void processStageSelect()
             }
             else {
                 if (keyDown.up) {
-                    gameMenu[1].timer -= 1;
+                    gameMenu[1].timer--;
                     if (gameMenu[1].timer < -8) {
                         gameMenu[1].timer = 0;
                         keyPress.up       = true;
@@ -528,28 +528,32 @@ void processStageSelect()
                     gameMenu[1].timer = 0;
                 }
             }
+
             if (keyPress.down) {
                 gameMenu[1].selection1++;
                 if (gameMenu[1].selection1 - gameMenu[1].visibleRowOffset >= gameMenu[1].visibleRowCount) {
-                    gameMenu[1].visibleRowOffset += 1;
+                    gameMenu[1].visibleRowOffset++;
                 }
             }
+
             if (keyPress.up) {
                 gameMenu[1].selection1--;
-                if (gameMenu[1].selection1 - gameMenu[1].visibleRowOffset < 0) {
-                    gameMenu[1].visibleRowOffset -= 1;
+                if (gameMenu[1].selection1 - gameMenu[1].visibleRowOffset < 0 && gameMenu[1].visibleRowOffset > 0) {
+                    gameMenu[1].visibleRowOffset--;
                 }
             }
 
             if (gameMenu[1].selection1 >= gameMenu[1].rowCount) {
                 if (keyDown.C) {
                     gameMenu[1].selection1--;
+                    gameMenu[1].visibleRowOffset--;
                 }
                 else {
                     gameMenu[1].selection1       = 0;
                     gameMenu[1].visibleRowOffset = 0;
                 }
             }
+
             if (gameMenu[1].selection1 < 0) {
                 if (keyDown.C) {
                     gameMenu[1].selection1++;
@@ -569,7 +573,9 @@ void processStageSelect()
                 StrAdd(buffer, (modList[gameMenu[1].selection1].active ? "  Active" : "Inactive"));
                 EditTextMenuEntry(&gameMenu[1], buffer, gameMenu[1].selection1);
             }
+
             if (keyDown.C && gameMenu[1].selection1 != preOption) {
+                int visibleOffset  = gameMenu[1].visibleRowOffset;
                 int option         = gameMenu[1].selection1;
                 ModInfo swap       = modList[preOption];
                 modList[preOption] = modList[option];
@@ -598,7 +604,7 @@ void processStageSelect()
                 gameMenu[0].alignment        = 2;
                 gameMenu[0].selectionCount   = 1;
                 gameMenu[1].timer            = 0;
-                gameMenu[1].visibleRowOffset = 0;
+                gameMenu[1].visibleRowOffset = visibleOffset;
             }
             else if (keyPress.B) {
                 RefreshEngine();
