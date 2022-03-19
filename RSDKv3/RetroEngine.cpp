@@ -47,7 +47,7 @@ bool processEvents()
                     }
                     case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
                     case SDL_WINDOWEVENT_FOCUS_LOST:
-                        if (!disableFocusPause)
+                        if (!(disableFocusPause & 1))
                             Engine.message = MESSAGE_LOSTFOCUS;
                         Engine.hasFocus = false;
                         break;
@@ -57,7 +57,7 @@ bool processEvents()
             case SDL_CONTROLLERDEVICEADDED: controllerInit(Engine.sdlEvents.cdevice.which); break;
             case SDL_CONTROLLERDEVICEREMOVED: controllerClose(Engine.sdlEvents.cdevice.which); break;
             case SDL_APP_WILLENTERBACKGROUND:
-                if (!disableFocusPause)
+                if (!(disableFocusPause & 1))
                     Engine.message = MESSAGE_LOSTFOCUS;
                 Engine.hasFocus = false;
                 break;
@@ -279,6 +279,10 @@ void RetroEngine::Init()
     strcat(dest, resourcePath);
     strcat(dest, "\\");
     strcat(dest, Engine.dataFile);
+#elif RETRO_PLATFORM == RETRO_ANDROID
+    StrCopy(dest, gamePath);
+    StrAdd(dest, Engine.dataFile);
+    disableFocusPause = 0; // focus pause is ALWAYS enabled.
 #else
     StrCopy(dest, BASE_PATH);
     StrAdd(dest, Engine.dataFile);
@@ -323,14 +327,16 @@ void RetroEngine::Run()
         running = processEvents();
 
         // Focus Checks
-        if (!Engine.hasFocus) {
-            if (!(Engine.focusState & 1)) 
-                Engine.focusState = PauseSound() ? 3 : 1;
-        }
-        else if (Engine.focusState) {
-            if ((Engine.focusState & 2))
-                ResumeSound();
-            Engine.focusState = 0;
+        if (!(disableFocusPause & 2)) {
+            if (!Engine.hasFocus) {
+                if (!(Engine.focusState & 1))
+                    Engine.focusState = PauseSound() ? 3 : 1;
+            }
+            else if (Engine.focusState) {
+                if ((Engine.focusState & 2))
+                    ResumeSound();
+                Engine.focusState = 0;
+            }
         }
 
         if (!(Engine.focusState & 1)) {
@@ -777,7 +783,7 @@ void RetroEngine::LoadXMLStages(TextMenu *menu, int listNo)
 
                                 const tinyxml2::XMLAttribute *highlightAttr = findXMLAttribute(stgElement, "highlight");
                                 bool stgHighlighted                         = false;
-                                if (stgHighlighted)
+                                if (highlightAttr)
                                     stgHighlighted = getXMLAttributeValueBool(highlightAttr);
 
                                 if (menu) {

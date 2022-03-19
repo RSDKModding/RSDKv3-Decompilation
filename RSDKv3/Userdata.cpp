@@ -66,9 +66,9 @@ LeaderboardEntry leaderboards[LEADERBOARD_MAX];
 #endif
 
 int controlMode               = -1;
-bool disableTouchControls     = false;
-bool disableFocusPause        = false;
-bool disableFocusPause_Config = false;
+bool disableTouchControls    = false;
+int disableFocusPause        = 0;
+int disableFocusPause_Config = 0;
 
 #if RETRO_USE_MOD_LOADER || !RETRO_USE_ORIGINAL_CODE
 bool forceUseScripts        = false;
@@ -313,7 +313,7 @@ void InitUserdata()
         ini.SetInteger("Game", "Language", Engine.language = RETRO_EN);
         ini.SetInteger("Game", "OriginalControls", controlMode = -1);
         ini.SetBool("Game", "DisableTouchControls", disableTouchControls = false);
-        ini.SetBool("Game", "DisableFocusPause", disableFocusPause = false);
+        ini.SetInteger("Game", "DisableFocusPause", disableFocusPause = 0);
         disableFocusPause_Config = disableFocusPause;
 
         ini.SetBool("Window", "FullScreen", Engine.startFullScreen = DEFAULT_FULLSCREEN);
@@ -423,9 +423,10 @@ void InitUserdata()
             controlMode = -1;
         if (!ini.GetBool("Game", "DisableTouchControls", &disableTouchControls))
             disableTouchControls = false;
-        if (!ini.GetBool("Game", "DisableFocusPause", &disableFocusPause))
-            disableFocusPause = false;
+        if (!ini.GetInteger("Game", "DisableFocusPause", &disableFocusPause))
+            disableFocusPause = 0;
         disableFocusPause_Config = disableFocusPause;
+
         int platype              = -1;
         ini.GetInteger("Game", "Platform", &platype);
         if (platype != -1) {
@@ -724,8 +725,10 @@ void writeSettings()
     ini.SetInteger("Game", "OriginalControls", controlMode);
     ini.SetComment("Game", "DTCtrlComment", "Determines if the game should hide the touch controls UI");
     ini.SetBool("Game", "DisableTouchControls", disableTouchControls);
-    ini.SetComment("Game", "DFPMenuComment", "If set to true, disables the game pausing when focus is lost");
-    ini.SetBool("Game", "DisableFocusPause", disableFocusPause_Config);
+    ini.SetComment("Game", "DFPMenuComment",
+                   "handles pausing behaviour when focus is lost\n; 0 = game focus disabled, engine focus disabled\n; 1 = game focus disabled, "
+                   "engine focus enabled\n; 2 = game focus enabled, engine focus disabled\n; 3 = game focus disabled, engine focus disabled");
+    ini.SetInteger("Game", "DisableFocusPause", disableFocusPause_Config);
     ini.SetComment("Game", "PlatformComment", "The platform type. 0 is standard (PC/Console), 1 is mobile");
     ini.SetInteger("Game", "Platform", !StrComp(Engine.gamePlatform, "Standard"));
 

@@ -129,7 +129,7 @@ void initMods()
         if (modList[m].useScripts)
             forceUseScripts = true;
         if (modList[m].disableFocusPause)
-            disableFocusPause = true;
+            disableFocusPause |= modList[m].disableFocusPause;
         if (modList[m].redirectSave) {
             sprintf(savePath, "%s", modList[m].savePath.c_str());
             redirectSave = true;
@@ -200,9 +200,9 @@ bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool activ
             forceUseScripts = true;
 
         info->disableFocusPause = false;
-        modSettings.GetBool("", "DisableFocusPause", &info->disableFocusPause);
+        modSettings.GetInteger("", "DisableFocusPause", &info->disableFocusPause);
         if (info->disableFocusPause && info->active)
-            disableFocusPause = true;
+            disableFocusPause |= info->disableFocusPause;
 
         info->redirectSave = false;
         modSettings.GetBool("", "RedirectSaveRAM", &info->redirectSave);
@@ -425,7 +425,7 @@ void RefreshEngine()
         if (modList[m].useScripts)
             forceUseScripts = true;
         if (modList[m].disableFocusPause)
-            disableFocusPause = true;
+            disableFocusPause |= modList[m].disableFocusPause;
         if (modList[m].redirectSave) {
             sprintf(savePath, "%s", modList[m].savePath.c_str());
             redirectSave = true;

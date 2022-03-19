@@ -35,8 +35,8 @@ extern LeaderboardEntry leaderboards[LEADERBOARD_MAX];
 
 extern int controlMode;
 extern bool disableTouchControls;
-extern bool disableFocusPause;
-extern bool disableFocusPause_Config;
+extern int disableFocusPause;
+extern int disableFocusPause_Config;
 
 #if RETRO_USE_MOD_LOADER || !RETRO_USE_ORIGINAL_CODE
 extern bool forceUseScripts;

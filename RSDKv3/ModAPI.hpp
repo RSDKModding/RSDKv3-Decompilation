@@ -17,7 +17,7 @@ struct ModInfo {
     std::map<std::string, std::string> fileMap;
     std::string folder;
     bool useScripts;
-    bool disableFocusPause;
+    int disableFocusPause;
     bool redirectSave;
     bool disableSaveIniOverride;
     std::string savePath;
