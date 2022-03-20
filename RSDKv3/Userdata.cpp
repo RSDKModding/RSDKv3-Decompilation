@@ -726,8 +726,8 @@ void writeSettings()
     ini.SetComment("Game", "DTCtrlComment", "Determines if the game should hide the touch controls UI");
     ini.SetBool("Game", "DisableTouchControls", disableTouchControls);
     ini.SetComment("Game", "DFPMenuComment",
-                   "handles pausing behaviour when focus is lost\n; 0 = game focus disabled, engine focus disabled\n; 1 = game focus disabled, "
-                   "engine focus enabled\n; 2 = game focus enabled, engine focus disabled\n; 3 = game focus disabled, engine focus disabled");
+                   "Handles pausing behaviour when focus is lost\n; 0 = Game focus disabled, engine focus disabled\n; 1 = Game focus disabled, "
+                   "engine focus enabled\n; 2 = Game focus enabled, engine focus disabled\n; 3 = Game focus disabled, engine focus disabled");
     ini.SetInteger("Game", "DisableFocusPause", disableFocusPause_Config);
     ini.SetComment("Game", "PlatformComment", "The platform type. 0 is standard (PC/Console), 1 is mobile");
     ini.SetInteger("Game", "Platform", !StrComp(Engine.gamePlatform, "Standard"));
@@ -761,7 +761,6 @@ void writeSettings()
 #if RETRO_USING_SDL1
     ini.SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://wiki.libsdl.org/SDLKeycodeLookup)");
 #endif
-    ini.SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://wiki.libsdl.org/SDL_Scancode)");
     ini.SetInteger("Keyboard 1", "Up", inputDevice[INPUT_UP].keyMappings);
     ini.SetInteger("Keyboard 1", "Down", inputDevice[INPUT_DOWN].keyMappings);
     ini.SetInteger("Keyboard 1", "Left", inputDevice[INPUT_LEFT].keyMappings);
