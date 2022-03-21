@@ -14,7 +14,7 @@ ushort jumpHoldBuffer  = 0;
 
 void ProcessPlayerControl(Player *player)
 {
-    if (player->controlMode == -1) {
+    if (player->controlMode == CONTROLMODE_NONE) {
         upBuffer <<= 1;
         upBuffer |= (byte)player->up;
         downBuffer <<= 1;
@@ -28,7 +28,7 @@ void ProcessPlayerControl(Player *player)
         jumpHoldBuffer <<= 1;
         jumpHoldBuffer |= (byte)player->jumpHold;
     }
-    else if (player->controlMode == 1) {
+    else if (player->controlMode == CONTROLMODE_SIDEKICK) {
         player->up        = upBuffer >> 15;
         player->down      = downBuffer >> 15;
         player->left      = leftBuffer >> 15;

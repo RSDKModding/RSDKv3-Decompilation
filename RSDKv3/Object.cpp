@@ -62,12 +62,15 @@ void ProcessObjects()
                 active = x > xScrollOffset - OBJECT_BORDER_X1 && x < OBJECT_BORDER_X2 + xScrollOffset && y > yScrollOffset - OBJECT_BORDER_Y1
                          && y < yScrollOffset + OBJECT_BORDER_Y2;
                 break;
-            case PRIORITY_ACTIVE: active = true; break;
+
+            case PRIORITY_ACTIVE: 
             case PRIORITY_ACTIVE_PAUSED: active = true; break;
+
             case PRIORITY_ACTIVE_XBOUNDS:
                 x      = entity->XPos >> 16;
                 active = x > xScrollOffset - OBJECT_BORDER_X1 && x < OBJECT_BORDER_X2 + xScrollOffset;
                 break;
+
             case PRIORITY_ACTIVE_BOUNDS_REMOVE:
                 x = entity->XPos >> 16;
                 y = entity->YPos >> 16;
@@ -80,9 +83,12 @@ void ProcessObjects()
                     active = true;
                 }
                 break;
+
             case PRIORITY_INACTIVE: active = false; break;
+
             default: break;
         }
+
         if (active && entity->type > OBJ_TYPE_BLANKOBJECT) {
             ObjectScript *scriptInfo = &objectScriptList[entity->type];
             activePlayer             = 0;

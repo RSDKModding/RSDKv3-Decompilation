@@ -13,7 +13,7 @@ SceneInfo stageList[STAGELIST_MAX][0x100];
 int stageMode = STAGEMODE_LOAD;
 
 int cameraTarget   = -1;
-int cameraStyle    = 0;
+int cameraStyle    = CAMERASTYLE_FOLLOW;
 int cameraEnabled  = 0;
 int cameraAdjustY  = 0;
 int xScrollOffset  = 0;
@@ -122,7 +122,7 @@ void ProcessStage(void)
             fadeMode = 0;
             SetActivePalette(0, 0, 256);
 
-            cameraEnabled = 1;
+            cameraEnabled = true;
             cameraTarget  = -1;
             cameraAdjustY = 0;
             xScrollOffset = 0;
@@ -215,6 +215,7 @@ void ProcessStage(void)
                 gfxVertexSizeOpaque = 0;
             }
             break;
+
         case STAGEMODE_NORMAL:
             drawStageGFXHQ = false;
             if (fadeMode > 0)
@@ -255,11 +256,11 @@ void ProcessStage(void)
             if (cameraTarget > -1) {
                 if (cameraEnabled == 1) {
                     switch (cameraStyle) {
-                        case 0: SetPlayerScreenPosition(&playerList[cameraTarget]); break;
-                        case 1: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
-                        case 2: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
-                        case 3: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
-                        case 4: SetPlayerHLockedScreenPosition(&playerList[cameraTarget]); break;
+                        case CAMERASTYLE_FOLLOW: SetPlayerScreenPosition(&playerList[cameraTarget]); break;
+                        case CAMERASTYLE_EXTENDED:
+                        case CAMERASTYLE_EXTENDED_OFFSET_L:
+                        case CAMERASTYLE_EXTENDED_OFFSET_R: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
+                        case CAMERASTYLE_HLOCKED: SetPlayerHLockedScreenPosition(&playerList[cameraTarget]); break;
                         default: break;
                     }
                 }
@@ -270,6 +271,7 @@ void ProcessStage(void)
 
             DrawStageGFX();
             break;
+
         case STAGEMODE_PAUSED:
             drawStageGFXHQ = false;
             if (fadeMode > 0)
@@ -1446,13 +1448,13 @@ void SetPlayerScreenPositionCDStyle(Player *player)
     }
     if (!player->gravity) {
         if (player->boundEntity->direction) {
-            if (cameraStyle == 3 || player->speed < -0x5F5C2)
+            if (cameraStyle == CAMERASTYLE_EXTENDED_OFFSET_R || player->speed < -0x5F5C2)
                 cameraLagStyle = 2;
             else
                 cameraLagStyle = 0;
         }
         else {
-            cameraLagStyle = (cameraStyle == 2 || player->speed > 0x5F5C2) != 0;
+            cameraLagStyle = (cameraStyle == CAMERASTYLE_EXTENDED_OFFSET_L || player->speed > 0x5F5C2) != 0;
         }
     }
     if (cameraLagStyle) {
