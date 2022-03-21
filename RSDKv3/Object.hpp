@@ -39,8 +39,8 @@ enum ObjectPriority {
     PRIORITY_ACTIVE_PAUSED,
     // Same as PRIORITY_ACTIVE_BOUNDS, however it only does checks on the x-axis, so when in bounds on the x-axis, the y position doesn't matter
     PRIORITY_ACTIVE_XBOUNDS,
-    // Same as PRIORITY_ACTIVE_XBOUNDS, however the entity's type will be set to BLANK OBJECT when it becomes inactive
-    PRIORITY_ACTIVE_XBOUNDS_REMOVE,
+    // Same as PRIORITY_ACTIVE_BOUNDS, however the entity's type will be set to BLANK OBJECT when it becomes inactive
+    PRIORITY_ACTIVE_BOUNDS_REMOVE,
     // Never Active.
     PRIORITY_INACTIVE,
 };
