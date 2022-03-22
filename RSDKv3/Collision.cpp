@@ -16,11 +16,22 @@ DebugHitboxInfo debugHitboxList[DEBUG_HITBOX_MAX];
 
 int addDebugHitbox(byte type, Entity *entity, int left, int top, int right, int bottom)
 {
+    int XPos = 0, YPos = 0;
+    if (entity) {
+        XPos = entity->XPos;
+        YPos = entity->YPos;
+    }
+    else if (type != H_TYPE_FINGER) {
+        Player *player = &playerList[activePlayer];
+        XPos           = player->XPos;
+        YPos           = player->YPos;
+    }
+
     int i = 0;
     for (; i < debugHitboxCount; ++i) {
         if (debugHitboxList[i].left == left && debugHitboxList[i].top == top && debugHitboxList[i].right == right
-            && debugHitboxList[i].bottom == bottom && (entity && debugHitboxList[i].entity == entity
-            && (!entity || (debugHitboxList[i].XPos == entity->XPos && debugHitboxList[i].YPos == entity->YPos)))) {
+            && debugHitboxList[i].bottom == bottom && debugHitboxList[i].XPos == XPos && debugHitboxList[i].YPos == YPos
+            && debugHitboxList[i].entity == entity) {
             return i;
         }
     }
@@ -33,10 +44,8 @@ int addDebugHitbox(byte type, Entity *entity, int left, int top, int right, int 
         debugHitboxList[i].top       = top;
         debugHitboxList[i].right     = right;
         debugHitboxList[i].bottom    = bottom;
-        if (entity) {
-            debugHitboxList[i].XPos = entity ? entity->XPos : 0;
-            debugHitboxList[i].YPos = entity ? entity->YPos : 0;
-        }
+        debugHitboxList[i].XPos      = XPos;
+        debugHitboxList[i].YPos      = YPos;
 
         int id = debugHitboxCount;
         debugHitboxCount++;
