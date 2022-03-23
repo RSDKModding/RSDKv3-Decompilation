@@ -14,7 +14,7 @@ int stageMode = STAGEMODE_LOAD;
 
 int cameraTarget   = -1;
 int cameraStyle    = CAMERASTYLE_FOLLOW;
-int cameraEnabled  = 0;
+int cameraEnabled  = false;
 int cameraAdjustY  = 0;
 int xScrollOffset  = 0;
 int yScrollOffset  = 0;
