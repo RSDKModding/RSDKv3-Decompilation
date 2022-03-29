@@ -172,6 +172,9 @@ void UpdateTextureBufferWithSprites();
 // Layer Drawing
 void DrawObjectList(int layer);
 void DrawStageGFX();
+#if !RETRO_USE_ORIGINAL_CODE
+void DrawDebugOverlays();
+#endif
 
 // TileLayer Drawing
 void DrawHLineScrollLayer(int layerID);
