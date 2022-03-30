@@ -22,8 +22,8 @@ int scriptDataOffset    = 0;
 int jumpTableDataPos    = 0;
 int jumpTableDataOffset = 0;
 
-#define ALIAS_COUNT       (0x80)
 #define COMMONALIAS_COUNT (0x20)
+#define ALIAS_COUNT       (COMMONALIAS_COUNT + 0x60)
 int aliasCount = 0;
 int lineID     = 0;
 
