@@ -314,8 +314,11 @@ public:
             gamePlatform = "Mobile";
     }
 
+#if !RETRO_USE_ORIGINAL_CODE
+    bool usingDataFile_Config = false;
+    bool usingDataFileStore   = false;
+#endif
     bool usingDataFile      = false;
-    bool usingDataFileStore = false;
     bool usingBytecode      = false;
     byte bytecodeMode       = BYTECODE_MOBILE;
     bool forceFolder        = false;

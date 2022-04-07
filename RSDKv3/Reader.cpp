@@ -33,13 +33,20 @@ bool CheckRSDKFile(const char *filePath)
     sprintf(filePathBuffer, "%s/%s", gamePath, filePath);
 #endif
 
-    Engine.usingDataFile      = false;
-    Engine.usingDataFileStore = false;
+    Engine.usingDataFile = false;
+#if !RETRO_USE_ORIGINAL_CODE
+    Engine.usingDataFile_Config = false;
+    Engine.usingDataFileStore   = false;
+#endif
     Engine.usingBytecode      = false;
 
     cFileHandle = fOpen(filePathBuffer, "rb");
     if (cFileHandle) {
         Engine.usingDataFile = true;
+#if !RETRO_USE_ORIGINAL_CODE
+        Engine.usingDataFile_Config = true;
+#endif
+
         StrCopy(rsdkName, filePathBuffer);
         fClose(cFileHandle);
         cFileHandle = NULL;
@@ -57,6 +64,10 @@ bool CheckRSDKFile(const char *filePath)
     }
     else {
         Engine.usingDataFile = false;
+#if !RETRO_USE_ORIGINAL_CODE
+        Engine.usingDataFile_Config = false;
+#endif
+
         cFileHandle          = NULL;
         if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
             Engine.usingBytecode = true;

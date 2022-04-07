@@ -4,11 +4,6 @@
 #define SURFACE_MAX (24)
 #define GFXDATA_MAX (0x800 * 0x800)
 
-#define BLENDTABLE_YSIZE (0x100)
-#define BLENDTABLE_XSIZE (0x20)
-#define BLENDTABLE_SIZE  (BLENDTABLE_XSIZE * BLENDTABLE_YSIZE)
-#define TINTTABLE_SIZE   (0x1000)
-
 #define DRAWLAYER_COUNT (7)
 
 enum FlipFlags { FLIP_NONE, FLIP_X, FLIP_Y, FLIP_XY };
@@ -30,9 +25,9 @@ struct GFXSurface {
     int dataPosition;
 };
 
-extern short blendLookupTable[BLENDTABLE_SIZE];
-extern short subtractLookupTable[BLENDTABLE_SIZE];
-extern short tintLookupTable[TINTTABLE_SIZE];
+extern ushort blendLookupTable[0x100 * 0x20];
+extern ushort subtractLookupTable[0x100 * 0x20];
+extern ushort tintLookupTable[0x10000];
 
 extern int SCREEN_XSIZE;
 extern int SCREEN_CENTERX;
@@ -47,7 +42,11 @@ extern int gfxDataPosition;
 extern GFXSurface gfxSurface[SURFACE_MAX];
 extern byte graphicData[GFXDATA_MAX];
 
-#define VERTEX_LIMIT        (0x2000)
+#if RETRO_USE_ORIGINAL_CODE
+#define VERTEX_LIMIT (0x2000)
+#else
+#define VERTEX_LIMIT (0x4000) // doubled so debug overlays & etc work
+#endif
 #define INDEX_LIMIT         (VERTEX_LIMIT * 6)
 #define VERTEX3D_LIMIT      (0x1904)
 #define TILEUV_SIZE         (0x1000)
