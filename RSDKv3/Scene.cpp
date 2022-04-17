@@ -79,7 +79,7 @@ CollisionMasks collisionMasks[2];
 
 byte tilesetGFXData[TILESET_SIZE];
 
-ushort tile3DFloorBuffer[0x13334];
+ushort tile3DFloorBuffer[0x100 * 0x100];
 bool drawStageGFXHQ = false;
 
 #if RETRO_USE_MOD_LOADER
@@ -619,24 +619,24 @@ void LoadActLayout()
         FileRead(activeTileLayers, 4);
         FileRead(&tLayerMidPoint, 1);
 
-        FileRead(&stageLayouts[0].width, 1);
-        FileRead(&stageLayouts[0].height, 1);
+        FileRead(&stageLayouts[0].xsize, 1);
+        FileRead(&stageLayouts[0].ysize, 1);
         xBoundary1    = 0;
         newXBoundary1 = 0;
         yBoundary1    = 0;
         newYBoundary1 = 0;
-        xBoundary2    = stageLayouts[0].width << 7;
-        yBoundary2    = stageLayouts[0].height << 7;
+        xBoundary2    = stageLayouts[0].xsize << 7;
+        yBoundary2    = stageLayouts[0].ysize << 7;
         waterLevel    = yBoundary2 + 128;
-        newXBoundary2 = stageLayouts[0].width << 7;
-        newYBoundary2 = stageLayouts[0].height << 7;
+        newXBoundary2 = stageLayouts[0].xsize << 7;
+        newYBoundary2 = stageLayouts[0].ysize << 7;
 
         for (int i = 0; i < 0x10000; ++i) stageLayouts[0].tiles[i] = 0;
 
         byte fileBuffer = 0;
-        for (int y = 0; y < stageLayouts[0].height; ++y) {
+        for (int y = 0; y < stageLayouts[0].ysize; ++y) {
             ushort *tiles = &stageLayouts[0].tiles[(y * 0x100)];
-            for (int x = 0; x < stageLayouts[0].width; ++x) {
+            for (int x = 0; x < stageLayouts[0].xsize; ++x) {
                 FileRead(&fileBuffer, 1);
                 tiles[x] = fileBuffer << 8;
                 FileRead(&fileBuffer, 1);
@@ -753,9 +753,9 @@ void LoadStageBackground()
 
         for (int i = 1; i < layerCount + 1; ++i) {
             FileRead(&fileBuffer, 1);
-            stageLayouts[i].width = fileBuffer;
+            stageLayouts[i].xsize = fileBuffer;
             FileRead(&fileBuffer, 1);
-            stageLayouts[i].height = fileBuffer;
+            stageLayouts[i].ysize = fileBuffer;
             FileRead(&fileBuffer, 1);
             stageLayouts[i].type = fileBuffer;
             FileRead(&fileBuffer, 1);
@@ -792,9 +792,9 @@ void LoadStageBackground()
             }
 
             // Read Layout
-            for (int y = 0; y < stageLayouts[i].height; ++y) {
+            for (int y = 0; y < stageLayouts[i].ysize; ++y) {
                 ushort *chunks = &stageLayouts[i].tiles[y * 0x100];
-                for (int x = 0; x < stageLayouts[i].width; ++x) {
+                for (int x = 0; x < stageLayouts[i].xsize; ++x) {
                     FileRead(&fileBuffer, 1);
                     *chunks = fileBuffer << 8;
                     FileRead(&fileBuffer, 1);

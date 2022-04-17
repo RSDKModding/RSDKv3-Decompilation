@@ -145,7 +145,7 @@ inline void ClearGraphicsData()
 }
 void ClearScreen(byte index);
 
-void SetScreenSize(int width, int height);
+void SetScreenSize(int width, int lineSize);
 void CopyFrameOverlay2x();
 void TransferRetroBuffer();
 

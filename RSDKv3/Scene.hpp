@@ -83,7 +83,7 @@ struct CollisionMasks {
     sbyte lWallMasks[TILE_COUNT * TILE_SIZE];
     sbyte rWallMasks[TILE_COUNT * TILE_SIZE];
     sbyte roofMasks[TILE_COUNT * TILE_SIZE];
-    int angles[TILE_COUNT];
+    uint angles[TILE_COUNT];
     byte flags[TILE_COUNT];
 };
 
@@ -100,8 +100,8 @@ struct TileLayer {
     int deformationOffset;
     int deformationOffsetW;
     byte type;
-    byte width;
-    byte height;
+    byte xsize;
+    byte ysize;
 };
 
 struct LineScroll {
@@ -196,7 +196,7 @@ extern CollisionMasks collisionMasks[2];
 
 extern byte tilesetGFXData[TILESET_SIZE];
 
-extern ushort tile3DFloorBuffer[0x13334];
+extern ushort tile3DFloorBuffer[0x100 * 0x100];
 extern bool drawStageGFXHQ;
 
 void InitFirstStage();
@@ -246,7 +246,7 @@ inline void Copy16x16Tile(ushort dest, ushort src)
         while (cnt--) *destPtr++ = *srcPtr++;
     }
     else if (renderType == RENDER_HW) {
-        tileUVArray[4 * dest]     = tileUVArray[4 * src];
+        tileUVArray[4 * dest + 0] = tileUVArray[4 * src + 0];
         tileUVArray[4 * dest + 1] = tileUVArray[4 * src + 1];
         tileUVArray[4 * dest + 2] = tileUVArray[4 * src + 2];
         tileUVArray[4 * dest + 3] = tileUVArray[4 * src + 3];

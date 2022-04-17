@@ -24,6 +24,11 @@ extern ushort *activePalette; // Ptr to the 256 colour set thats active
 extern PaletteEntry *activePalette32;
 
 extern byte gfxLineBuffer[SCREEN_YSIZE]; // Pointers to active palette
+extern int GFX_LINESIZE;
+extern int GFX_LINESIZE_MINUSONE;
+extern int GFX_LINESIZE_DOUBLE;
+extern int GFX_FRAMEBUFFERSIZE;
+extern int GFX_FBUFFERMINUSONE;
 
 extern int fadeMode;
 extern byte fadeA;

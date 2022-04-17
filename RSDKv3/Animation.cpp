@@ -55,7 +55,7 @@ void LoadAnimationFile(const char *filePath)
             FileRead(&anim->frameCount, 1);
             FileRead(&anim->speed, 1);
             FileRead(&anim->loopPoint, 1);
-            FileRead(&anim->rotationFlag, 1);
+            FileRead(&anim->rotationStyle, 1);
 
             for (int j = 0; j < anim->frameCount; ++j) {
                 SpriteFrame *frame = &animFrames[animFrameCount++];
@@ -79,7 +79,7 @@ void LoadAnimationFile(const char *filePath)
             }
 
             // 90 Degree (Extra rotation Frames) rotation
-            if (anim->rotationFlag == ROTFLAG_STATICFRAMES)
+            if (anim->rotationStyle == ROTSTYLE_STATICFRAMES)
                 anim->frameCount >>= 1;
         }
 

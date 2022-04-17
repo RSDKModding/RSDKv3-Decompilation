@@ -2674,8 +2674,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_KEYPRESSSTART: scriptEng.operands[i] = keyPress.start; break;
                     case VAR_MENU1SELECTION: scriptEng.operands[i] = gameMenu[0].selection1; break;
                     case VAR_MENU2SELECTION: scriptEng.operands[i] = gameMenu[1].selection1; break;
-                    case VAR_TILELAYERXSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].width; break;
-                    case VAR_TILELAYERYSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].height; break;
+                    case VAR_TILELAYERXSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].xsize; break;
+                    case VAR_TILELAYERYSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].ysize; break;
                     case VAR_TILELAYERTYPE: scriptEng.operands[i] = stageLayouts[arrayVal].type; break;
                     case VAR_TILELAYERANGLE: scriptEng.operands[i] = stageLayouts[arrayVal].angle; break;
                     case VAR_TILELAYERXPOS: scriptEng.operands[i] = stageLayouts[arrayVal].XPos; break;
@@ -4442,8 +4442,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_KEYPRESSSTART: keyPress.start = scriptEng.operands[i]; break;
                     case VAR_MENU1SELECTION: gameMenu[0].selection1 = scriptEng.operands[i]; break;
                     case VAR_MENU2SELECTION: gameMenu[1].selection1 = scriptEng.operands[i]; break;
-                    case VAR_TILELAYERXSIZE: stageLayouts[arrayVal].width = scriptEng.operands[i]; break;
-                    case VAR_TILELAYERYSIZE: stageLayouts[arrayVal].height = scriptEng.operands[i]; break;
+                    case VAR_TILELAYERXSIZE: stageLayouts[arrayVal].xsize = scriptEng.operands[i]; break;
+                    case VAR_TILELAYERYSIZE: stageLayouts[arrayVal].ysize = scriptEng.operands[i]; break;
                     case VAR_TILELAYERTYPE: stageLayouts[arrayVal].type = scriptEng.operands[i]; break;
                     case VAR_TILELAYERANGLE:
                         stageLayouts[arrayVal].angle = scriptEng.operands[i];
