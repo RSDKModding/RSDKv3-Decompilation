@@ -3404,7 +3404,6 @@ void DrawVLineScrollLayer(int layerID)
 
         // Draw Above Water (if applicable)
         int drawableLines = GFX_LINESIZE;
-        int line          = 0;
         while (drawableLines--) {
             int chunkY = vParallax.linePos[*scrollIndex];
             if (vParallax.deform[*scrollIndex])
@@ -3935,7 +3934,7 @@ void Draw3DFloorLayer(int layerID)
         int layerZPos          = layer->ZPos;
         int sinValue           = sinM[layer->angle];
         int cosValue           = cosM[layer->angle];
-        byte *gfxLineBufferPtr = &gfxLineBuffer[((SCREEN_YSIZE / 2) + 12) * GFX_LINESIZE];
+        byte *gfxLineBufferPtr = &gfxLineBuffer[((SCREEN_YSIZE / 2) + 12)];
         ushort *frameBufferPtr = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * GFX_LINESIZE];
         int layerXPos          = layer->XPos >> 4;
         int ZBuffer            = layerZPos >> 4;
