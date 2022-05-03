@@ -7,8 +7,9 @@
   * [iOS (Via the App Store)](https://apps.apple.com/us/app/sonic-cd-classic/id454316134)
   * [Android (Via Google Play)](https://play.google.com/store/apps/details?id=com.sega.soniccd.classic&hl=en&gl=US)
   * [Android (Via Amazon)](https://www.amazon.com/Sega-of-America-Sonic-CD/dp/B008K9UZY4/ref=sr_1_2?dchild=1&keywords=Sonic+CD&qid=1607930514&sr=8-2)
+    * A tutorial for finding the game assets from the Android version can be found [here](https://gamebanana.com/tuts/14942).
 
-Even if your platform isn't supported by the official releases, you **must** buy or officially download it for the assets (you don't need to run the official release, you just need the game assets)
+Even if your platform isn't supported by the official releases, you **must** buy or officially download it for the assets (you don't need to run the official release, you just need the game assets).
 
 # Advantages over the PC version of Sonic CD
 * Sharp, pixel-perfect display.
@@ -18,7 +19,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Native Windows x64 version, as well as an x86 version.
 
 # Advantages over the Mobile versions of Sonic CD
-* The rendering backend is based off the PC version by default, so palettes are fully supported (Tidal Tempest water in particular)
+* The rendering backend is based off the PC version by default, so palettes are fully supported (Tidal Tempest water in particular).
 
 # Additional Tweaks
 * Added a built in mod loader and API, allowing to easily create and play mods with features such as save file redirection and XML GameConfig data.
@@ -26,11 +27,11 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Dev menu can now be accessed from anywhere by pressing the `ESC` key if enabled in the config.
 * The `F12` pause, `F11` step over & fast forward debug features from Sonic Mania have all been ported and are enabled if `devMenu` is enabled in the config.
 * A number of additional dev menu debug features have been added:
-  * `F1` will load the first scene in the Presentation stage list (usually the title screen)
-  * `F2` and `F3` will load the previous and next scene in the current stage list
-  * `F5` will reload the current scene, as well as all assets and scripts
-  * `F8` and `F9` will visualize touch screen and object hitboxes
-  * `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time
+  * `F1` will load the first scene in the Presentation stage list (usually the title screen).
+  * `F2` and `F3` will load the previous and next scene in the current stage list.
+  * `F5` will reload the current scene, as well as all assets and scripts.
+  * `F8` and `F9` will visualize touch screen and object hitboxes.
+  * `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time.
 * If `useSteamDir` is set in the config, and the user is on Windows, the game will try to load savedata from Steam's `userdata` directory (where the Steam version saves to).
 * Added the idle screen dimming feature from Sonic Mania Plus, as well as allowing the user to disable it or set how long it takes for the screen to dim.
 
@@ -48,7 +49,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Go into the repo you just cloned with `cd Sonic-CD-11-Decompilation`.
 * Run `make -f Makefile.msys2 CXXFLAGS=-O2 CXX=x86_64-w64-mingw32-g++ STATIC=1 -j5`.
   * The `CXXFLAGS` option can be removed if you do not want optimizations.
-  * -j switch is optional, but will make building faster by running it parallel on multiple cores (8 cores would be -j9.)
+  * -j switch is optional, but will make building faster by running it parallel on multiple cores (8 cores would be -j9).
 
 ## Windows UWP (Phone, Xbox, etc.)
 * Clone the repo, then follow the instructions in the [depencencies readme for Windows](./dependencies/windows/dependencies.txt) and [depencencies readme for UWP](./dependencies/windows-uwp/dependencies.txt) to setup dependencies.
@@ -70,7 +71,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Run `make CXXFLAGS=-O2 -j5`.
   * If your distro is using gcc 8.x.x, then add the argument `LIBS=-lstdc++fs`.
   * The `CXXFLAGS` option can be removed if you do not want optimizations.
-  * -j switch is optional, but will make building faster by running it parallel on multiple cores (8 cores would be -j9.)
+  * -j switch is optional, but will make building faster by running it parallel on multiple cores (8 cores would be -j9).
  
 ## iOS
 * Clone the repo, follow the instructions in the [dependencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project.
