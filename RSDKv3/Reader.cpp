@@ -28,9 +28,10 @@ bool CheckRSDKFile(const char *filePath)
     FileInfo info;
 
     char filePathBuffer[0x100];
-    sprintf(filePathBuffer, "%s", filePath);
 #if RETRO_PLATFORM == RETRO_OSX
     sprintf(filePathBuffer, "%s/%s", gamePath, filePath);
+#else
+    sprintf(filePathBuffer, "%s", filePath);
 #endif
 
     Engine.usingDataFile = false;
