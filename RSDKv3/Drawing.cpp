@@ -559,8 +559,8 @@ void FlipScreen()
                         pixels++;
 
                         *pixels = *framebufferPtr;
-                        framebufferPtr++;           
-                   		pixels++;
+                        framebufferPtr++;
+                        pixels++;
                     }
                     framebufferPtr += GFX_LINESIZE - SCREEN_XSIZE;
                 }
