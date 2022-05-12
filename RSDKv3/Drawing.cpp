@@ -560,8 +560,8 @@ void FlipScreen()
 
                         *pixels = *framebufferPtr;
                         framebufferPtr++;
-                        pixe framebufferPtr += GFX_LINESIZE - SCREEN_XSIZE;
-                        ls++;
+                        framebufferPtr += GFX_LINESIZE - SCREEN_XSIZE;
+                        pixels++;
                     }
                 }
                 SDL_UnlockTexture(Engine.screenBuffer2x);
