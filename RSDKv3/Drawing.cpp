@@ -559,10 +559,10 @@ void FlipScreen()
                         pixels++;
 
                         *pixels = *framebufferPtr;
-                        framebufferPtr++;
-                        framebufferPtr += GFX_LINESIZE - SCREEN_XSIZE;
-                        pixels++;
+                        framebufferPtr++;           
+                   		pixels++;
                     }
+                    framebufferPtr += GFX_LINESIZE - SCREEN_XSIZE;
                 }
                 SDL_UnlockTexture(Engine.screenBuffer2x);
                 SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, destScreenPos);
@@ -884,6 +884,7 @@ void RenderFromTexture()
 
 void RenderFromRetroBuffer()
 {
+    #if RETRO_USING_OPENGL
     if (drawStageGFXHQ) {
         glBindTexture(GL_TEXTURE_2D, retroBuffer2x);
 
@@ -931,7 +932,6 @@ void RenderFromRetroBuffer()
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2, GL_RGBA, GL_UNSIGNED_BYTE, Engine.texBuffer2x);
     }
 
-#if RETRO_USING_OPENGL
     glLoadIdentity();
     glBindTexture(GL_TEXTURE_2D, drawStageGFXHQ ? retroBuffer2x : retroBuffer);
 #if DONT_USE_VIEW_ANGLE
