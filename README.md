@@ -3,7 +3,6 @@
 + Without assets from the official release, this decompilation will not run.
 
 + You can get the official release of Sonic CD from:
-  * [Windows (Via Steam)](https://store.steampowered.com/app/200940/Sonic_CD/)
   * [iOS (Via the App Store)](https://apps.apple.com/us/app/sonic-cd-classic/id454316134)
   * [Android (Via Google Play)](https://play.google.com/store/apps/details?id=com.sega.soniccd.classic&hl=en&gl=US)
   * [Android (Via Amazon)](https://www.amazon.com/Sega-of-America-Sonic-CD/dp/B008K9UZY4/ref=sr_1_2?dchild=1&keywords=Sonic+CD&qid=1607930514&sr=8-2)
