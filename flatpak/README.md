@@ -5,10 +5,7 @@ install [Flathub](https://flathub.org/) which provides it.
 
 # Sonic CD (Steam Version) Flatpak
 
-First, you first need to install the game using Steam.
-To get it, visit https://store.steampowered.com/app/200940/Sonic_CD/.
-
-Once you have the game, right click it in your Steam library and click `Manage` > `Browse local files`. 
+First, go to your Steam library, right click on Sonic CD and click `Manage` > `Browse local files`. 
 Copy the `Data.rsdk` file and the `videos` folder into this directory.
 
 To build and install the flatpak, run:
