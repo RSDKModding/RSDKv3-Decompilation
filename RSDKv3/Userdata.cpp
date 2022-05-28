@@ -699,7 +699,7 @@ void InitUserdata()
     StrCopy(achievements[11].name, "Saviour of the Planet");
 }
 
-void writeSettings()
+void WriteSettings()
 {
     IniParser ini;
 

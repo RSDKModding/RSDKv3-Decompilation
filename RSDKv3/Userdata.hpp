@@ -67,7 +67,7 @@ bool ReadSaveRAMData();
 bool WriteSaveRAMData();
 
 void InitUserdata();
-void writeSettings();
+void WriteSettings();
 void ReadUserdata();
 void WriteUserdata();
 

@@ -421,7 +421,7 @@ void RetroEngine::Run()
     ReleaseAudioDevice();
     StopVideoPlayback();
     ReleaseRenderDevice();
-    writeSettings();
+    WriteSettings();
 #if RETRO_USE_MOD_LOADER
     SaveMods();
 #endif
