@@ -12,5 +12,6 @@ download libvorbis and unzip it in "./libvorbis/", then build the VS2010 static 
 
 libtheora: https://xiph.org/downloads/ (libtheora)
 download libtheora and unzip it in "./libtheora/", then build the VS2008 static library (win32/VS2008/libtheora_static.sln)
+ignore any building errors you may get, you should at least build the library itself which is all you need
 
 glew: http://glew.sourceforge.net/ download binaries, place the unzipped folder into "./" and rename it to "glew"

@@ -412,7 +412,7 @@ void InitUserdata()
             Engine.fastForwardSpeed = 8;
 #if RETRO_PLATFORM == RETRO_WINDOWS
         if (!ini.GetBool("Dev", "UseSteamDir", &Engine.useSteamDir))
-            Engine.useSteamDir = true;
+            Engine.useSteamDir = false;
 #endif
         if (!ini.GetBool("Dev", "UseHQModes", &Engine.useHQModes))
             Engine.useHQModes = true;
@@ -717,7 +717,7 @@ void WriteSettings()
     ini.SetComment("Dev", "FFComment", "Determines how fast the game will be when fastforwarding is active");
     ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
 #if RETRO_PLATFORM == RETRO_WINDOWS
-    ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it (Windows only)");
+    ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it");
     ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir);
 #endif
     ini.SetComment(
