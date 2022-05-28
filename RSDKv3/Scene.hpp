@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #define LAYER_COUNT    (9)
-#define DEFORM_STORE   (0x100)
+#define DEFORM_STORE   (256)
 #define DEFORM_SIZE    (320)
 #define DEFORM_COUNT   (DEFORM_STORE + DEFORM_SIZE)
 #define PARALLAX_COUNT (0x100)
