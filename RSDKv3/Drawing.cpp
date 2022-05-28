@@ -61,15 +61,15 @@ byte texBufferMode = 0;
 #if !RETRO_USE_ORIGINAL_CODE
 int viewOffsetX = 0;
 #endif
-int viewWidth      = 0;
-int viewHeight     = 0;
-float viewAspect   = 0;
-int bufferWidth    = 0;
-int bufferHeight   = 0;
-int virtualX       = 0;
-int virtualY       = 0;
-int virtualWidth   = 0;
-int virtualHeight  = 0;
+int viewWidth     = 0;
+int viewHeight    = 0;
+float viewAspect  = 0;
+int bufferWidth   = 0;
+int bufferHeight  = 0;
+int virtualX      = 0;
+int virtualY      = 0;
+int virtualWidth  = 0;
+int virtualHeight = 0;
 
 #if !DONT_USE_VIEW_ANGLE
 float viewAngle    = 0;
@@ -387,7 +387,7 @@ void FlipScreen()
         return;
 
 #if !RETRO_USE_ORIGINAL_CODE
-    float dimAmount = 1.0; 
+    float dimAmount = 1.0;
     if ((!Engine.masterPaused || Engine.frameStep) && !drawStageGFXHQ) {
         if (Engine.dimTimer < Engine.dimLimit) {
             if (Engine.dimPercent < 1.0) {
@@ -753,7 +753,7 @@ void FlipScreenNoFB()
     if (render3DEnabled) {
         float scale         = viewHeight / SCREEN_YSIZE;
         float floor3DTop    = -2.0 * scale;
-        float floor3DBottom = (viewHeight) - 4.0 * scale;
+        float floor3DBottom = (viewHeight)-4.0 * scale;
 
         // Non Blended rendering
         glVertexPointer(2, GL_SHORT, sizeof(DrawVertex), &gfxPolyList[0].x);
@@ -885,7 +885,7 @@ void RenderFromTexture()
 
 void RenderFromRetroBuffer()
 {
-    #if RETRO_USING_OPENGL
+#if RETRO_USING_OPENGL
     if (drawStageGFXHQ) {
         glBindTexture(GL_TEXTURE_2D, retroBuffer2x);
 
@@ -1128,7 +1128,7 @@ void GenerateBlendLookupTable()
 {
     for (int y = 0; y < 0x100; y++) {
         for (int x = 0; x < 0x20; x++) {
-            blendLookupTable[x + (0x20 * y)]      = y * x >> 8;
+            blendLookupTable[x + (0x20 * y)]    = y * x >> 8;
             subtractLookupTable[x + (0x20 * y)] = y * (0x1F - x) >> 8;
         }
     }
@@ -4530,8 +4530,8 @@ void Draw3DSkyLayer(int layerID)
         if (!drawStageGFXHQ)
             bufferPtr = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * GFX_LINESIZE];
         byte *gfxLineBufferPtr = &gfxLineBuffer[((SCREEN_YSIZE / 2) + 12)];
-        int layerXPos = layer->XPos >> 4;
-        int layerZPos = layer->ZPos >> 4;
+        int layerXPos          = layer->XPos >> 4;
+        int layerZPos          = layer->ZPos >> 4;
         for (int i = TILE_SIZE / 2; i < SCREEN_YSIZE - TILE_SIZE; ++i) {
             if (!(i & 1)) {
                 activePalette   = fullPalette[*gfxLineBufferPtr];
@@ -4569,9 +4569,9 @@ void Draw3DSkyLayer(int layerID)
                 if (lineBuffer & 1)
                     ++frameBufferPtr;
 
-                if (drawStageGFXHQ) 
+                if (drawStageGFXHQ)
                     bufferPtr++;
-                else if (lineBuffer & 1) 
+                else if (lineBuffer & 1)
                     ++bufferPtr;
 
                 lineBuffer++;
@@ -6165,7 +6165,7 @@ void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX,
                 int w = width;
                 while (w--) {
                     if (*gfxData > 0) {
-                        ushort colour         = activePalette[*gfxData];
+                        ushort colour = activePalette[*gfxData];
 
                         int R = (fbufferBlend[(*frameBufferPtr & 0xF800) >> 11] + pixelBlend[(colour & 0xF800) >> 11]) << 11;
                         int G = (fbufferBlend[(*frameBufferPtr & 0x7E0) >> 6] + pixelBlend[(colour & 0x7E0) >> 6]) << 6;
@@ -6251,7 +6251,7 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
         if (alpha > 0xFF)
             alpha = 0xFF;
 
-        ushort *blendTablePtr   = &blendLookupTable[0x20 * alpha];
+        ushort *blendTablePtr  = &blendLookupTable[0x20 * alpha];
         GFXSurface *surface    = &gfxSurface[sheetID];
         int pitch              = GFX_LINESIZE - width;
         int gfxPitch           = surface->width - width;
@@ -6266,7 +6266,7 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
             int w = width;
             while (w--) {
                 if (*gfxData > 0) {
-                    ushort colour   = activePalette[*gfxData];
+                    ushort colour = activePalette[*gfxData];
 
                     int R = minVal((blendTablePtr[(colour & 0xF800) >> 11] << 11) + (*frameBufferPtr & 0xF800), 0xF800);
                     int G = minVal((blendTablePtr[(colour & 0x7E0) >> 6] << 6) + (*frameBufferPtr & 0x7E0), 0x7E0);
@@ -6351,7 +6351,7 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
         if (alpha > 0xFF)
             alpha = 0xFF;
 
-        ushort *subBlendTable   = &subtractLookupTable[0x20 * alpha];
+        ushort *subBlendTable  = &subtractLookupTable[0x20 * alpha];
         GFXSurface *surface    = &gfxSurface[sheetID];
         int pitch              = GFX_LINESIZE - width;
         int gfxPitch           = surface->width - width;
@@ -6366,7 +6366,7 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
             int w = width;
             while (w--) {
                 if (*gfxData > 0) {
-                    ushort colour      = activePalette[*gfxData];
+                    ushort colour = activePalette[*gfxData];
 
                     int R = maxVal((*frameBufferPtr & 0xF800) - (subBlendTable[(colour & 0xF800) >> 11] << 11), 0);
                     int G = maxVal((*frameBufferPtr & 0x7E0) - (subBlendTable[(colour & 0x7E0) >> 6] << 6), 0);

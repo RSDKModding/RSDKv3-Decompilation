@@ -65,7 +65,7 @@ LeaderboardEntry leaderboards[LEADERBOARD_COUNT];
 #include <sys/types.h>
 #endif
 
-int controlMode               = -1;
+int controlMode              = -1;
 bool disableTouchControls    = false;
 int disableFocusPause        = 0;
 int disableFocusPause_Config = 0;
@@ -114,8 +114,8 @@ bool ReadSaveRAMData()
 #if RETRO_USE_MOD_LOADER
     if (!disableSaveIniOverride) {
 #endif
-	    saveRAM[33] = bgmVolume;
-	    saveRAM[34] = sfxVolume;
+        saveRAM[33] = bgmVolume;
+        saveRAM[34] = sfxVolume;
 #if RETRO_USE_MOD_LOADER
     }
 #endif
@@ -232,8 +232,8 @@ bool WriteSaveRAMData()
 #if RETRO_USE_MOD_LOADER
     if (!disableSaveIniOverride) {
 #endif
-	    saveRAM[33] = bgmVolume;
-	    saveRAM[34] = sfxVolume;
+        saveRAM[33] = bgmVolume;
+        saveRAM[34] = sfxVolume;
 #if RETRO_USE_MOD_LOADER
     }
 #endif
@@ -335,7 +335,8 @@ void InitUserdata()
         ini.SetFloat("Audio", "SFXVolume", sfxVolume / (float)MAX_VOLUME);
 
 #if RETRO_USING_SDL2
-        ini.SetComment("Keyboard 1", "IK1Comment", "Keyboard Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDLScancodeLookup.mediawiki)");
+        ini.SetComment("Keyboard 1", "IK1Comment",
+                       "Keyboard Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDLScancodeLookup.mediawiki)");
         ini.SetInteger("Keyboard 1", "Up", inputDevice[INPUT_UP].keyMappings = SDL_SCANCODE_UP);
         ini.SetInteger("Keyboard 1", "Down", inputDevice[INPUT_DOWN].keyMappings = SDL_SCANCODE_DOWN);
         ini.SetInteger("Keyboard 1", "Left", inputDevice[INPUT_LEFT].keyMappings = SDL_SCANCODE_LEFT);
@@ -345,7 +346,8 @@ void InitUserdata()
         ini.SetInteger("Keyboard 1", "C", inputDevice[INPUT_BUTTONC].keyMappings = SDL_SCANCODE_C);
         ini.SetInteger("Keyboard 1", "Start", inputDevice[INPUT_START].keyMappings = SDL_SCANCODE_RETURN);
 
-        ini.SetComment("Controller 1", "IC1Comment", "Controller Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDL_GameControllerButton.mediawiki)");
+        ini.SetComment("Controller 1", "IC1Comment",
+                       "Controller Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDL_GameControllerButton.mediawiki)");
         ini.SetInteger("Controller 1", "Up", inputDevice[INPUT_UP].contMappings = SDL_CONTROLLER_BUTTON_DPAD_UP);
         ini.SetInteger("Controller 1", "Down", inputDevice[INPUT_DOWN].contMappings = SDL_CONTROLLER_BUTTON_DPAD_DOWN);
         ini.SetInteger("Controller 1", "Left", inputDevice[INPUT_LEFT].contMappings = SDL_CONTROLLER_BUTTON_DPAD_LEFT);
@@ -372,7 +374,8 @@ void InitUserdata()
         ini.SetInteger("Keyboard 1", "C", inputDevice[INPUT_BUTTONC].keyMappings = SDLK_c);
         ini.SetInteger("Keyboard 1", "Start", inputDevice[INPUT_START].keyMappings = SDLK_RETURN);
 
-        ini.SetComment("Controller 1", "IC1Comment", "Controller Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDL_GameControllerButton.mediawiki)");
+        ini.SetComment("Controller 1", "IC1Comment",
+                       "Controller Mappings for P1 (Based on: https://github.com/libsdl-org/sdlwiki/blob/main/SDL_GameControllerButton.mediawiki)");
         ini.SetInteger("Controller 1", "Up", inputDevice[INPUT_UP].contMappings = 1);
         ini.SetInteger("Controller 1", "Down", inputDevice[INPUT_DOWN].contMappings = 2);
         ini.SetInteger("Controller 1", "Left", inputDevice[INPUT_LEFT].contMappings = 3);
@@ -431,7 +434,7 @@ void InitUserdata()
             disableFocusPause = 0;
         disableFocusPause_Config = disableFocusPause;
 
-        int platype              = -1;
+        int platype = -1;
         ini.GetInteger("Game", "Platform", &platype);
         if (platype != -1) {
             if (!platype)
@@ -742,7 +745,8 @@ void writeSettings()
     ini.SetBool("Window", "FullScreen", Engine.startFullScreen);
     ini.SetComment("Window", "BLComment", "Determines if the window will be borderless or not");
     ini.SetBool("Window", "Borderless", Engine.borderless);
-    ini.SetComment("Window", "VSComment", "Determines if VSync will be active or not (not recommended as the engine is built around running at 60 FPS)");
+    ini.SetComment("Window", "VSComment",
+                   "Determines if VSync will be active or not (not recommended as the engine is built around running at 60 FPS)");
     ini.SetBool("Window", "VSync", Engine.vsync);
     ini.SetComment("Window", "SMComment", "Determines what scaling is used. 0 is nearest neighbour, 1 or higher is linear.");
     ini.SetInteger("Window", "ScalingMode", Engine.scalingMode);

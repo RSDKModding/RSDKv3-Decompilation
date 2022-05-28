@@ -11,9 +11,9 @@ THEORAPLAY_Decoder *videoDecoder;
 const THEORAPLAY_VideoFrame *videoVidData;
 THEORAPLAY_Io callbacks;
 
-byte videoSurface    = 0;
+byte videoSurface = 0;
 int videoFilePos  = 0;
-int videoPlaying = 0;
+int videoPlaying  = 0;
 int vidFrameMS    = 0;
 int vidBaseticks  = 0;
 

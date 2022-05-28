@@ -13,8 +13,8 @@
 #define TILE_DATASIZE (TILE_SIZE * TILE_SIZE)
 #define TILESET_SIZE  (TILE_COUNT * TILE_DATASIZE)
 
-#define TILELAYER_CHUNK_W    (0x100)
-#define TILELAYER_CHUNK_H    (0x100)
+#define TILELAYER_CHUNK_W      (0x100)
+#define TILELAYER_CHUNK_H      (0x100)
 #define TILELAYER_CHUNK_COUNT  (TILELAYER_CHUNK_W * TILELAYER_CHUNK_H)
 #define TILELAYER_SCROLL_COUNT (TILELAYER_CHUNK_H * CHUNK_SIZE)
 
@@ -24,18 +24,18 @@
 
 enum StageListNames {
     STAGELIST_PRESENTATION,
-    STAGELIST_REGULAR     ,
-    STAGELIST_BONUS       ,
-    STAGELIST_SPECIAL     ,
+    STAGELIST_REGULAR,
+    STAGELIST_BONUS,
+    STAGELIST_SPECIAL,
     STAGELIST_MAX, // StageList size
 };
 
 enum TileLayerTypes {
     LAYER_NOSCROLL,
-    LAYER_HSCROLL ,
-    LAYER_VSCROLL ,
-    LAYER_3DFLOOR ,
-    LAYER_3DSKY   ,
+    LAYER_HSCROLL,
+    LAYER_VSCROLL,
+    LAYER_3DFLOOR,
+    LAYER_3DSKY,
 };
 
 enum StageModes {
@@ -57,9 +57,9 @@ enum TileInfo {
 };
 
 enum DeformationModes {
-    DEFORM_FG      ,
+    DEFORM_FG,
     DEFORM_FG_WATER,
-    DEFORM_BG      ,
+    DEFORM_BG,
     DEFORM_BG_WATER,
 };
 

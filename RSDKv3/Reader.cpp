@@ -39,7 +39,7 @@ bool CheckRSDKFile(const char *filePath)
     Engine.usingDataFile_Config = false;
     Engine.usingDataFileStore   = false;
 #endif
-    Engine.usingBytecode      = false;
+    Engine.usingBytecode = false;
 
     cFileHandle = fOpen(filePathBuffer, "rb");
     if (cFileHandle) {
@@ -69,7 +69,7 @@ bool CheckRSDKFile(const char *filePath)
         Engine.usingDataFile_Config = false;
 #endif
 
-        cFileHandle          = NULL;
+        cFileHandle = NULL;
         if (LoadFile("Data/Scripts/ByteCode/GlobalCode.bin", &info)) {
             Engine.usingBytecode = true;
             Engine.bytecodeMode  = BYTECODE_MOBILE;

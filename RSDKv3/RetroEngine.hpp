@@ -8,7 +8,7 @@
 // be set to true only for preservation purposes
 #define RETRO_USE_ORIGINAL_CODE (0)
 
-#define RETRO_USE_MOD_LOADER    (!RETRO_USE_ORIGINAL_CODE && 1)
+#define RETRO_USE_MOD_LOADER (!RETRO_USE_ORIGINAL_CODE && 1)
 
 // ================
 // STANDARD LIBS
@@ -318,10 +318,10 @@ public:
     bool usingDataFile_Config = false;
     bool usingDataFileStore   = false;
 #endif
-    bool usingDataFile      = false;
-    bool usingBytecode      = false;
-    byte bytecodeMode       = BYTECODE_MOBILE;
-    bool forceFolder        = false;
+    bool usingDataFile = false;
+    bool usingBytecode = false;
+    byte bytecodeMode  = BYTECODE_MOBILE;
+    bool forceFolder   = false;
 
     char dataFile[0x80];
 
@@ -381,9 +381,8 @@ public:
     void LoadXMLStages(TextMenu *menu, int listNo);
 #endif
 
-    bool hasFocus = true;
+    bool hasFocus   = true;
     byte focusState = 0;
-
 
     int callbackMessage = 0;
     int prevMessage     = 0;

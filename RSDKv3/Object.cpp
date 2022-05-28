@@ -63,7 +63,7 @@ void ProcessObjects()
                          && y < yScrollOffset + OBJECT_BORDER_Y2;
                 break;
 
-            case PRIORITY_ACTIVE: 
+            case PRIORITY_ACTIVE:
             case PRIORITY_ACTIVE_PAUSED: active = true; break;
 
             case PRIORITY_ACTIVE_XBOUNDS:

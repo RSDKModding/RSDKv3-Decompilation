@@ -459,7 +459,7 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        videoSurface         = sheetID;
+        videoSurface      = sheetID;
         currentVideoFrame = 0;
 
         byte fileBuffer = 0;

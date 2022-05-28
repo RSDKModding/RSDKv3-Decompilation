@@ -4,8 +4,8 @@
 #define PLAYER_COUNT (2)
 
 enum PlayerControlModes {
-    CONTROLMODE_NONE   = -1,
-    CONTROLMODE_NORMAL = 0,
+    CONTROLMODE_NONE     = -1,
+    CONTROLMODE_NORMAL   = 0,
     CONTROLMODE_SIDEKICK = 1,
 };
 
