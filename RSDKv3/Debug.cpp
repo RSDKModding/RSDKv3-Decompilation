@@ -2,10 +2,10 @@
 
 int touchFlags = 0;
 
-void initDevMenu()
+void InitDevMenu()
 {
 #if RETRO_USE_MOD_LOADER
-    for (int m = 0; m < modList.size(); ++m) scanModFolder(&modList[m]);
+    for (int m = 0; m < modList.size(); ++m) ScanModFolder(&modList[m]);
 #endif
     drawStageGFXHQ = false;
     xScrollOffset  = 0;
@@ -62,7 +62,7 @@ void initDevMenu()
         UpdateHardwareTextures();
     }
 }
-void initErrorMessage()
+void InitErrorMessage()
 {
     drawStageGFXHQ = false;
     xScrollOffset  = 0;
@@ -95,7 +95,7 @@ void initErrorMessage()
         UpdateHardwareTextures();
     }
 }
-void processStageSelect()
+void ProcessStageSelect()
 {
     ClearScreen(0xF0);
     keyDown.start = false;
@@ -202,7 +202,7 @@ void processStageSelect()
                     SetupTextMenu(&gameMenu[0], 0);
                     AddTextMenuEntry(&gameMenu[0], "MOD LIST");
                     SetupTextMenu(&gameMenu[1], 0);
-                    initMods();
+                    InitMods();
 
                     char buffer[0x100];
                     for (int m = 0; m < modList.size(); ++m) {
@@ -245,6 +245,7 @@ void processStageSelect()
             }
             break;
         }
+
         case DEVMENU_PLAYERSEL: // Selecting Player
         {
             if (keyPress.down)
@@ -309,6 +310,7 @@ void processStageSelect()
             }
             break;
         }
+
         case DEVMENU_STAGELISTSEL: // Selecting Category
         {
             if (keyPress.down)
@@ -381,6 +383,7 @@ void processStageSelect()
             }
             break;
         }
+
         case DEVMENU_STAGESEL: // Selecting Stage
         {
             if (keyDown.down) {
@@ -451,6 +454,7 @@ void processStageSelect()
             }
             break;
         }
+
         case DEVMENU_SCRIPTERROR: // Script Error
         {
             DrawTextMenu(&gameMenu[0], SCREEN_CENTERX, 72);
@@ -505,6 +509,7 @@ void processStageSelect()
             }
             break;
         }
+
 #if RETRO_USE_MOD_LOADER
         case DEVMENU_MODMENU: // Mod Menu
         {
@@ -627,10 +632,8 @@ void processStageSelect()
                 AddTextMenuEntry(&gameMenu[0], " ");
                 AddTextMenuEntry(&gameMenu[0], "STAGE SELECT");
                 AddTextMenuEntry(&gameMenu[0], " ");
-#if RETRO_USE_MOD_LOADER
                 AddTextMenuEntry(&gameMenu[0], "MODS");
                 AddTextMenuEntry(&gameMenu[0], " ");
-#endif
                 AddTextMenuEntry(&gameMenu[0], "EXIT GAME");
                 gameMenu[0].alignment        = 2;
                 gameMenu[0].selectionCount   = 2;
@@ -645,6 +648,7 @@ void processStageSelect()
             break;
         }
 #endif
+
         default: break;
     }
 

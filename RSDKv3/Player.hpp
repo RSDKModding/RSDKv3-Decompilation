@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#define PLAYER_COUNT (0x2)
+#define PLAYER_COUNT (2)
 
 enum PlayerControlModes {
     CONTROLMODE_NONE   = -1,

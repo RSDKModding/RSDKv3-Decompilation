@@ -27,6 +27,7 @@ int jumpTableDataOffset = 0;
 int aliasCount = 0;
 int lineID     = 0;
 
+#if RETRO_USE_COMPILER
 struct AliasInfo {
     AliasInfo()
     {
@@ -42,6 +43,7 @@ struct AliasInfo {
     char name[0x20];
     char value[0x20];
 };
+#endif
 
 struct FunctionInfo {
     FunctionInfo()
@@ -59,6 +61,7 @@ struct FunctionInfo {
     int opcodeSize;
 };
 
+#if RETRO_USE_COMPILER
 const char variableNames[][0x20] = {
     "TempValue0",
     "TempValue1",
@@ -290,6 +293,7 @@ const char variableNames[][0x20] = {
     "KeyPress.AnyStart",
     "Engine.HapticsEnabled",
 };
+#endif
 
 const FunctionInfo functions[] = { FunctionInfo("End", 0),
                                    FunctionInfo("Equal", 2),
@@ -427,6 +431,7 @@ const FunctionInfo functions[] = { FunctionInfo("End", 0),
                                    FunctionInfo("EngineCallback", 1),
                                    FunctionInfo("HapticEffect", 4) };
 
+#if RETRO_USE_COMPILER
 AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
                             AliasInfo("false", "0"),
                             AliasInfo("FX_SCALE", "0"),
@@ -474,6 +479,7 @@ enum ScriptParseModes {
     PARSEMODE_SWITCHREAD   = 3,
     PARSEMODE_ERROR        = 0xFF
 };
+#endif
 
 enum ScriptVarTypes { SCRIPTVAR_VAR = 1, SCRIPTVAR_INTCONST = 2, SCRIPTVAR_STRCONST = 3 };
 enum ScriptVarArrTypes { VARARR_NONE = 0, VARARR_ARRAY = 1, VARARR_ENTNOPLUS1 = 2, VARARR_ENTNOMINUS1 = 3 };
@@ -850,6 +856,7 @@ enum ScrFunction {
     FUNC_MAX_CNT
 };
 
+#if RETRO_USE_COMPILER
 void CheckAliasText(char *text)
 {
     if (FindStringToken(text, "#alias", 1))
@@ -1162,7 +1169,7 @@ void ConvertFunctionText(char *text)
                 funcName[0] = 0;
                 AppendIntegerToString(funcName, 0);
                 int a = 0;
-                for (; a < ACHIEVEMENT_MAX; ++a) {
+                for (; a < ACHIEVEMENT_COUNT; ++a) {
                     if (StrComp(strBuffer, achievements[a].name)) {
                         funcName[0] = 0;
                         AppendIntegerToString(funcName, a);
@@ -1170,7 +1177,7 @@ void ConvertFunctionText(char *text)
                     }
                 }
 
-                if (a == ACHIEVEMENT_MAX) {
+                if (a == ACHIEVEMENT_COUNT) {
                     char buf[0x40];
                     sprintf(buf, "WARNING: Unknown AchievementName \"%s\"", strBuffer);
                     printLog(buf);
@@ -1182,7 +1189,7 @@ void ConvertFunctionText(char *text)
                 funcName[0] = 0;
                 AppendIntegerToString(funcName, 0);
                 int p = 0;
-                for (; p < PLAYER_MAX; ++p) {
+                for (; p < PLAYERNAME_COUNT; ++p) {
                     if (StrComp(strBuffer, playerNames[p])) {
                         funcName[0] = 0;
                         AppendIntegerToString(funcName, p);
@@ -1190,7 +1197,7 @@ void ConvertFunctionText(char *text)
                     }
                 }
 
-                if (p == PLAYER_MAX) {
+                if (p == PLAYERNAME_COUNT) {
                     char buf[0x40];
                     sprintf(buf, "WARNING: Unknown PlayerName \"%s\"", strBuffer);
                     printLog(buf);
@@ -1434,6 +1441,8 @@ void AppendIntegerToString(char *text, int value)
         text[textPos++] = '0';
     text[textPos] = 0;
 }
+#endif
+
 bool ConvertStringToInteger(char *text, int *value)
 {
     int charID    = 0;
@@ -1506,6 +1515,8 @@ bool ConvertStringToInteger(char *text, int *value)
         *value = -*value;
     return true;
 }
+
+#if RETRO_USE_COMPILER
 void CopyAliasStr(char *dest, char *text, bool arrayIndex)
 {
     int textPos     = 0;
@@ -1790,6 +1801,9 @@ void ParseScriptFile(char *scriptName, int scriptID)
         CloseFile();
     }
 }
+
+#endif
+
 void LoadBytecode(int stageListID, int scriptID)
 {
     char scriptPath[0x40];
@@ -1803,7 +1817,9 @@ void LoadBytecode(int stageListID, int scriptID)
                 StrAdd(scriptPath, stageList[stageListID][stageListPosition].folder);
                 StrAdd(scriptPath, ".bin");
                 break;
+
             case 4: StrCopy(scriptPath, "Data/Scripts/ByteCode/GlobalCode.bin"); break;
+
             default: break;
         }
     }
@@ -2038,7 +2054,9 @@ void ClearScriptData()
     jumpTableDataPos    = 0;
     jumpTableDataOffset = 0;
 
+#if RETRO_USE_COMPILER
     scriptFunctionCount = 0;
+#endif
 
     aliasCount = COMMONALIAS_COUNT;
     lineID     = 0;
@@ -2910,27 +2928,27 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 break;
             case FUNC_RAND: scriptEng.operands[0] = rand() % scriptEng.operands[1]; break;
             case FUNC_SIN: {
-                scriptEng.operands[0] = sin512(scriptEng.operands[1]);
+                scriptEng.operands[0] = Sin512(scriptEng.operands[1]);
                 break;
             }
             case FUNC_COS: {
-                scriptEng.operands[0] = cos512(scriptEng.operands[1]);
+                scriptEng.operands[0] = Cos512(scriptEng.operands[1]);
                 break;
             }
             case FUNC_SIN256: {
-                scriptEng.operands[0] = sin256(scriptEng.operands[1]);
+                scriptEng.operands[0] = Sin256(scriptEng.operands[1]);
                 break;
             }
             case FUNC_COS256: {
-                scriptEng.operands[0] = cos256(scriptEng.operands[1]);
+                scriptEng.operands[0] = Cos256(scriptEng.operands[1]);
                 break;
             }
             case FUNC_SINCHANGE: {
-                scriptEng.operands[0] = scriptEng.operands[3] + (sin512(scriptEng.operands[1]) >> scriptEng.operands[2]) - scriptEng.operands[4];
+                scriptEng.operands[0] = scriptEng.operands[3] + (Sin512(scriptEng.operands[1]) >> scriptEng.operands[2]) - scriptEng.operands[4];
                 break;
             }
             case FUNC_COSCHANGE: {
-                scriptEng.operands[0] = scriptEng.operands[3] + (cos512(scriptEng.operands[1]) >> scriptEng.operands[2]) - scriptEng.operands[4];
+                scriptEng.operands[0] = scriptEng.operands[3] + (Cos512(scriptEng.operands[1]) >> scriptEng.operands[2]) - scriptEng.operands[4];
                 break;
             }
             case FUNC_ATAN2: {
@@ -3613,16 +3631,16 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
             case FUNC_NOT: scriptEng.operands[0] = ~scriptEng.operands[0]; break;
             case FUNC_DRAW3DSCENE:
                 opcodeSize = 0;
-                transformVertexBuffer();
-                sort3DDrawList();
-                draw3DScene(scriptInfo->spriteSheetID);
+                TransformVertexBuffer();
+                Sort3DDrawList();
+                Draw3DScene(scriptInfo->spriteSheetID);
                 break;
             case FUNC_SETIDENTITYMATRIX:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: setIdentityMatrix(&matWorld); break;
-                    case MAT_VIEW: setIdentityMatrix(&matView); break;
-                    case MAT_TEMP: setIdentityMatrix(&matTemp); break;
+                    case MAT_WORLD: SetIdentityMatrix(&matWorld); break;
+                    case MAT_VIEW: SetIdentityMatrix(&matView); break;
+                    case MAT_TEMP: SetIdentityMatrix(&matTemp); break;
                 }
                 break;
             case FUNC_MATRIXMULTIPLY:
@@ -3630,23 +3648,23 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 switch (scriptEng.operands[0]) {
                     case MAT_WORLD:
                         switch (scriptEng.operands[1]) {
-                            case MAT_WORLD: matrixMultiply(&matWorld, &matWorld); break;
-                            case MAT_VIEW: matrixMultiply(&matWorld, &matView); break;
-                            case MAT_TEMP: matrixMultiply(&matWorld, &matTemp); break;
+                            case MAT_WORLD: MatrixMultiply(&matWorld, &matWorld); break;
+                            case MAT_VIEW: MatrixMultiply(&matWorld, &matView); break;
+                            case MAT_TEMP: MatrixMultiply(&matWorld, &matTemp); break;
                         }
                         break;
                     case MAT_VIEW:
                         switch (scriptEng.operands[1]) {
-                            case MAT_WORLD: matrixMultiply(&matView, &matWorld); break;
-                            case MAT_VIEW: matrixMultiply(&matView, &matView); break;
-                            case MAT_TEMP: matrixMultiply(&matView, &matTemp); break;
+                            case MAT_WORLD: MatrixMultiply(&matView, &matWorld); break;
+                            case MAT_VIEW: MatrixMultiply(&matView, &matView); break;
+                            case MAT_TEMP: MatrixMultiply(&matView, &matTemp); break;
                         }
                         break;
                     case MAT_TEMP:
                         switch (scriptEng.operands[1]) {
-                            case MAT_WORLD: matrixMultiply(&matTemp, &matWorld); break;
-                            case MAT_VIEW: matrixMultiply(&matTemp, &matView); break;
-                            case MAT_TEMP: matrixMultiply(&matTemp, &matTemp); break;
+                            case MAT_WORLD: MatrixMultiply(&matTemp, &matWorld); break;
+                            case MAT_VIEW: MatrixMultiply(&matTemp, &matView); break;
+                            case MAT_TEMP: MatrixMultiply(&matTemp, &matTemp); break;
                         }
                         break;
                 }
@@ -3654,57 +3672,57 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
             case FUNC_MATRIXTRANSLATEXYZ:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: matrixTranslateXYZ(&matWorld, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
-                    case MAT_VIEW: matrixTranslateXYZ(&matView, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
-                    case MAT_TEMP: matrixTranslateXYZ(&matTemp, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_WORLD: MatrixTranslateXYZ(&matWorld, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_VIEW: MatrixTranslateXYZ(&matView, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_TEMP: MatrixTranslateXYZ(&matTemp, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                 }
                 break;
             case FUNC_MATRIXSCALEXYZ:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: matrixScaleXYZ(&matWorld, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
-                    case MAT_VIEW: matrixScaleXYZ(&matView, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
-                    case MAT_TEMP: matrixScaleXYZ(&matTemp, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_WORLD: MatrixScaleXYZ(&matWorld, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_VIEW: MatrixScaleXYZ(&matView, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_TEMP: MatrixScaleXYZ(&matTemp, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                 }
                 break;
             case FUNC_MATRIXROTATEX:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: matrixRotateX(&matWorld, scriptEng.operands[1]); break;
-                    case MAT_VIEW: matrixRotateX(&matView, scriptEng.operands[1]); break;
-                    case MAT_TEMP: matrixRotateX(&matTemp, scriptEng.operands[1]); break;
+                    case MAT_WORLD: MatrixRotateX(&matWorld, scriptEng.operands[1]); break;
+                    case MAT_VIEW: MatrixRotateX(&matView, scriptEng.operands[1]); break;
+                    case MAT_TEMP: MatrixRotateX(&matTemp, scriptEng.operands[1]); break;
                 }
                 break;
             case FUNC_MATRIXROTATEY:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: matrixRotateY(&matWorld, scriptEng.operands[1]); break;
-                    case MAT_VIEW: matrixRotateY(&matView, scriptEng.operands[1]); break;
-                    case MAT_TEMP: matrixRotateY(&matTemp, scriptEng.operands[1]); break;
+                    case MAT_WORLD: MatrixRotateY(&matWorld, scriptEng.operands[1]); break;
+                    case MAT_VIEW: MatrixRotateY(&matView, scriptEng.operands[1]); break;
+                    case MAT_TEMP: MatrixRotateY(&matTemp, scriptEng.operands[1]); break;
                 }
                 break;
             case FUNC_MATRIXROTATEZ:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: matrixRotateZ(&matWorld, scriptEng.operands[1]); break;
-                    case MAT_VIEW: matrixRotateZ(&matView, scriptEng.operands[1]); break;
-                    case MAT_TEMP: matrixRotateZ(&matTemp, scriptEng.operands[1]); break;
+                    case MAT_WORLD: MatrixRotateZ(&matWorld, scriptEng.operands[1]); break;
+                    case MAT_VIEW: MatrixRotateZ(&matView, scriptEng.operands[1]); break;
+                    case MAT_TEMP: MatrixRotateZ(&matTemp, scriptEng.operands[1]); break;
                 }
                 break;
             case FUNC_MATRIXROTATEXYZ:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: matrixRotateXYZ(&matWorld, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
-                    case MAT_VIEW: matrixRotateXYZ(&matView, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
-                    case MAT_TEMP: matrixRotateXYZ(&matTemp, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_WORLD: MatrixRotateXYZ(&matWorld, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_VIEW: MatrixRotateXYZ(&matView, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case MAT_TEMP: MatrixRotateXYZ(&matTemp, scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                 }
                 break;
             case FUNC_TRANSFORMVERTICES:
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
-                    case MAT_WORLD: transformVerticies(&matWorld, scriptEng.operands[1], scriptEng.operands[2]); break;
-                    case MAT_VIEW: transformVerticies(&matView, scriptEng.operands[1], scriptEng.operands[2]); break;
-                    case MAT_TEMP: transformVerticies(&matTemp, scriptEng.operands[1], scriptEng.operands[2]); break;
+                    case MAT_WORLD: TransformVerticies(&matWorld, scriptEng.operands[1], scriptEng.operands[2]); break;
+                    case MAT_VIEW: TransformVerticies(&matView, scriptEng.operands[1], scriptEng.operands[2]); break;
+                    case MAT_TEMP: TransformVerticies(&matTemp, scriptEng.operands[1], scriptEng.operands[2]); break;
                 }
                 break;
             case FUNC_CALLFUNCTION: {

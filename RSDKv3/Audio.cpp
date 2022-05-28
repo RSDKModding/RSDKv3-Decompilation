@@ -36,19 +36,12 @@ SDL_AudioDeviceID audioDevice;
 SDL_AudioStream *ogv_stream;
 #endif
 
-#define LockAudioDevice()   SDL_LockAudio()
-#define UnlockAudioDevice() SDL_UnlockAudio()
-
 #define AUDIO_FREQUENCY (44100)
 #define AUDIO_FORMAT    (AUDIO_S16SYS) /**< Signed 16-bit samples */
 #define AUDIO_SAMPLES   (0x800)
 #define AUDIO_CHANNELS  (2)
 
 #define ADJUST_VOLUME(s, v) (s = (s * v) / MAX_VOLUME)
-
-#else
-#define LockAudioDevice()   ;
-#define UnlockAudioDevice() ;
 #endif
 
 int InitAudioPlayback()

@@ -9,6 +9,16 @@
 #include "SDL.h"
 #endif
 
+#if RETRO_USING_SDL1 || RETRO_USING_SDL2
+
+#define LockAudioDevice()   SDL_LockAudio()
+#define UnlockAudioDevice() SDL_UnlockAudio()
+
+#else
+#define LockAudioDevice()   ;
+#define UnlockAudioDevice() ;
+#endif
+
 #define TRACK_COUNT   (0x10)
 #define SFX_COUNT     (0x100)
 #define CHANNEL_COUNT (0x4)
@@ -107,7 +117,7 @@ void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sby
 
 inline void freeMusInfo()
 {
-    SDL_LockAudio();
+    LockAudioDevice();
 
 #if RETRO_USING_SDL2
     if (streamInfo[currentStreamIndex].stream)
@@ -121,7 +131,7 @@ inline void freeMusInfo()
         free(streamFile[currentStreamIndex].buffer);
     streamFile[currentStreamIndex].buffer = NULL;
 
-    SDL_UnlockAudio();
+    UnlockAudioDevice();
 }
 #else
 void ProcessMusicStream() {}

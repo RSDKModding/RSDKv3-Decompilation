@@ -3,10 +3,10 @@
 int vertexCount = 0;
 int faceCount   = 0;
 
-Matrix matFinal = Matrix();
-Matrix matWorld = Matrix();
-Matrix matView  = Matrix();
-Matrix matTemp  = Matrix();
+Matrix matFinal = {};
+Matrix matWorld = {};
+Matrix matView  = {};
+Matrix matTemp  = {};
 
 Face faceBuffer[FACEBUFFER_SIZE];
 Vertex vertexBuffer[VERTEXBUFFER_SIZE];
@@ -24,7 +24,7 @@ int faceLineEndU[SCREEN_YSIZE];
 int faceLineStartV[SCREEN_YSIZE];
 int faceLineEndV[SCREEN_YSIZE];
 
-void setIdentityMatrix(Matrix *matrix)
+void SetIdentityMatrix(Matrix *matrix)
 {
     matrix->values[0][0] = 0x100;
     matrix->values[0][1] = 0;
@@ -44,7 +44,7 @@ void setIdentityMatrix(Matrix *matrix)
     matrix->values[3][2] = 0;
     matrix->values[3][3] = 0x100;
 }
-void matrixMultiply(Matrix *matrixA, Matrix *matrixB)
+void MatrixMultiply(Matrix *matrixA, Matrix *matrixB)
 {
     int output[16];
 
@@ -57,7 +57,7 @@ void matrixMultiply(Matrix *matrixA, Matrix *matrixB)
 
     for (int i = 0; i < 0x10; ++i) matrixA->values[i / 4][i % 4] = output[i];
 }
-void matrixTranslateXYZ(Matrix *matrix, int XPos, int YPos, int ZPos)
+void MatrixTranslateXYZ(Matrix *matrix, int x, int y, int z)
 {
     matrix->values[0][0] = 0x100;
     matrix->values[0][1] = 0;
@@ -71,12 +71,12 @@ void matrixTranslateXYZ(Matrix *matrix, int XPos, int YPos, int ZPos)
     matrix->values[2][1] = 0;
     matrix->values[2][2] = 0x100;
     matrix->values[2][3] = 0;
-    matrix->values[3][0] = XPos;
-    matrix->values[3][1] = YPos;
-    matrix->values[3][2] = ZPos;
+    matrix->values[3][0] = x;
+    matrix->values[3][1] = y;
+    matrix->values[3][2] = z;
     matrix->values[3][3] = 0x100;
 }
-void matrixScaleXYZ(Matrix *matrix, int scaleX, int scaleY, int scaleZ)
+void MatrixScaleXYZ(Matrix *matrix, int scaleX, int scaleY, int scaleZ)
 {
     matrix->values[0][0] = scaleX;
     matrix->values[0][1] = 0;
@@ -95,13 +95,13 @@ void matrixScaleXYZ(Matrix *matrix, int scaleX, int scaleY, int scaleZ)
     matrix->values[3][2] = 0;
     matrix->values[3][3] = 0x100;
 }
-void matrixRotateX(Matrix *matrix, int rotationX)
+void MatrixRotateX(Matrix *matrix, int rotationX)
 {
     if (rotationX < 0)
         rotationX = 0x200 - rotationX;
     rotationX &= 0x1FF;
-    int sine             = sinVal512[rotationX] >> 1;
-    int cosine           = cosVal512[rotationX] >> 1;
+    int sine             = sin512LookupTable[rotationX] >> 1;
+    int cosine           = cos512LookupTable[rotationX] >> 1;
     matrix->values[0][0] = 0x100;
     matrix->values[0][1] = 0;
     matrix->values[0][2] = 0;
@@ -119,13 +119,13 @@ void matrixRotateX(Matrix *matrix, int rotationX)
     matrix->values[3][2] = 0;
     matrix->values[3][3] = 0x100;
 }
-void matrixRotateY(Matrix *matrix, int rotationY)
+void MatrixRotateY(Matrix *matrix, int rotationY)
 {
     if (rotationY < 0)
         rotationY = 0x200 - rotationY;
     rotationY &= 0x1FF;
-    int sine             = sinVal512[rotationY] >> 1;
-    int cosine           = cosVal512[rotationY] >> 1;
+    int sine             = sin512LookupTable[rotationY] >> 1;
+    int cosine           = cos512LookupTable[rotationY] >> 1;
     matrix->values[0][0] = cosine;
     matrix->values[0][1] = 0;
     matrix->values[0][2] = sine;
@@ -143,13 +143,13 @@ void matrixRotateY(Matrix *matrix, int rotationY)
     matrix->values[3][2] = 0;
     matrix->values[3][3] = 0x100;
 }
-void matrixRotateZ(Matrix *matrix, int rotationZ)
+void MatrixRotateZ(Matrix *matrix, int rotationZ)
 {
     if (rotationZ < 0)
         rotationZ = 0x200 - rotationZ;
     rotationZ &= 0x1FF;
-    int sine             = sinVal512[rotationZ] >> 1;
-    int cosine           = cosVal512[rotationZ] >> 1;
+    int sine             = sin512LookupTable[rotationZ] >> 1;
+    int cosine           = cos512LookupTable[rotationZ] >> 1;
     matrix->values[0][0] = cosine;
     matrix->values[0][1] = 0;
     matrix->values[0][2] = sine;
@@ -167,7 +167,7 @@ void matrixRotateZ(Matrix *matrix, int rotationZ)
     matrix->values[3][2] = 0;
     matrix->values[3][3] = 0x100;
 }
-void matrixRotateXYZ(Matrix *matrix, int rotationX, int rotationY, int rotationZ)
+void MatrixRotateXYZ(Matrix *matrix, int rotationX, int rotationY, int rotationZ)
 {
     if (rotationX < 0)
         rotationX = 0x200 - rotationX;
@@ -178,12 +178,12 @@ void matrixRotateXYZ(Matrix *matrix, int rotationX, int rotationY, int rotationZ
     if (rotationZ < 0)
         rotationZ = 0x200 - rotationZ;
     rotationZ &= 0x1FF;
-    int sineX   = sinVal512[rotationX] >> 1;
-    int cosineX = cosVal512[rotationX] >> 1;
-    int sineY   = sinVal512[rotationY] >> 1;
-    int cosineY = cosVal512[rotationY] >> 1;
-    int sineZ   = sinVal512[rotationZ] >> 1;
-    int cosineZ = cosVal512[rotationZ] >> 1;
+    int sineX   = sin512LookupTable[rotationX] >> 1;
+    int cosineX = cos512LookupTable[rotationX] >> 1;
+    int sineY   = sin512LookupTable[rotationY] >> 1;
+    int cosineY = cos512LookupTable[rotationY] >> 1;
+    int sineZ   = sin512LookupTable[rotationZ] >> 1;
+    int cosineZ = cos512LookupTable[rotationZ] >> 1;
 
     matrix->values[0][0] = (sineZ * (sineY * sineX >> 8) >> 8) + (cosineZ * cosineY >> 8);
     matrix->values[0][1] = (sineZ * cosineY >> 8) - (cosineZ * (sineY * sineX >> 8) >> 8);
@@ -202,14 +202,14 @@ void matrixRotateXYZ(Matrix *matrix, int rotationX, int rotationY, int rotationZ
     matrix->values[3][2] = 0;
     matrix->values[3][3] = 0x100;
 }
-void transformVertexBuffer()
+void TransformVertexBuffer()
 {
     for (int y = 0; y < 4; ++y) {
         for (int x = 0; x < 4; ++x) {
             matFinal.values[y][x] = matWorld.values[y][x];
         }
     }
-    matrixMultiply(&matFinal, &matView);
+    MatrixMultiply(&matFinal, &matView);
 
     if (vertexCount <= 0)
         return;
@@ -227,7 +227,7 @@ void transformVertexBuffer()
         vert->z = (vx * matFinal.values[0][2] >> 8) + (vy * matFinal.values[1][2] >> 8) + (vz * matFinal.values[2][2] >> 8) + matFinal.values[3][2];
     } while (++outVertexID != vertexCount);
 }
-void transformVerticies(Matrix *matrix, int startIndex, int endIndex)
+void TransformVerticies(Matrix *matrix, int startIndex, int endIndex)
 {
     if (startIndex > endIndex)
         return;
@@ -242,7 +242,7 @@ void transformVerticies(Matrix *matrix, int startIndex, int endIndex)
         vert->z      = (vx * matrix->values[0][2] >> 8) + (vy * matrix->values[1][2] >> 8) + (vz * matrix->values[2][2] >> 8) + matrix->values[3][2];
     } while (++startIndex < endIndex);
 }
-void sort3DDrawList()
+void Sort3DDrawList()
 {
     for (int i = 0; i < faceCount; ++i) {
         drawList3D[i].depth = (vertexBufferT[faceBuffer[i].d].z + vertexBufferT[faceBuffer[i].c].z + vertexBufferT[faceBuffer[i].b].z
@@ -264,7 +264,7 @@ void sort3DDrawList()
         }
     }
 }
-void draw3DScene(int spriteSheetID)
+void Draw3DScene(int spriteSheetID)
 {
     Vertex quad[4];
     for (int i = 0; i < faceCount; ++i) {
@@ -342,7 +342,7 @@ void draw3DScene(int spriteSheetID)
     }
 }
 
-void processScanEdge(Vertex *vertA, Vertex *vertB)
+void ProcessScanEdge(Vertex *vertA, Vertex *vertB)
 {
     int bottom, top;
     int fullX, fullY;
@@ -378,7 +378,7 @@ void processScanEdge(Vertex *vertA, Vertex *vertB)
         fullX += fullY;
     }
 }
-void processScanEdgeUV(Vertex *vertA, Vertex *vertB)
+void ProcessScanEdgeUV(Vertex *vertA, Vertex *vertB)
 {
     int bottom, top;
     int fullX, fullU, fullV;

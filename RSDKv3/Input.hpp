@@ -11,7 +11,7 @@ enum InputButtons {
     INPUT_BUTTONC,
     INPUT_START,
     INPUT_ANY,
-    INPUT_MAX,
+    INPUT_BUTTONCOUNT,
 };
 
 struct InputData {
@@ -62,7 +62,7 @@ extern int touches;
 extern int hapticEffectNum;
 
 #if !RETRO_USE_ORIGINAL_CODE
-extern InputButton inputDevice[INPUT_MAX];
+extern InputButton inputDevice[INPUT_BUTTONCOUNT];
 extern int inputType;
 
 extern float LSTICK_DEADZONE;
@@ -90,8 +90,8 @@ enum ExtraSDLButtons {
     SDL_CONTROLLER_BUTTON_MAX_EXTRA,
 };
 
-void controllerInit(byte controllerID);
-void controllerClose(byte controllerID);
+void ControllerInit(byte controllerID);
+void ControllerClose(byte controllerID);
 #endif
 
 #if RETRO_USING_SDL1
@@ -106,6 +106,7 @@ void ProcessInput();
 void CheckKeyPress(InputData *input, byte Flags);
 void CheckKeyDown(InputData *input, byte Flags);
 
+#if RETRO_USE_HAPTICS
 inline int GetHapticEffectNum()
 {
     int num         = hapticEffectNum;
@@ -116,5 +117,6 @@ void QueueHapticEffect(int hapticID);
 void PlayHaptics(int left, int right, int power);
 void PlayHapticsID(int hapticID);
 void StopHaptics(int hapticID);
+#endif
 
 #endif // !INPUT_H

@@ -56,9 +56,9 @@ int globalVariables[GLOBALVAR_COUNT];
 char globalVariableNames[GLOBALVAR_COUNT][0x20];
 
 char gamePath[0x100];
-int saveRAM[SAVEDATA_MAX];
-Achievement achievements[ACHIEVEMENT_MAX];
-LeaderboardEntry leaderboards[LEADERBOARD_MAX];
+int saveRAM[SAVEDATA_SIZE];
+Achievement achievements[ACHIEVEMENT_COUNT];
+LeaderboardEntry leaderboards[LEADERBOARD_COUNT];
 
 #if RETRO_PLATFORM == RETRO_OSX
 #include <sys/stat.h>
@@ -156,7 +156,7 @@ bool ReadSaveRAMData()
             return false;
         useSGame = true;
     }
-    fRead(saveRAM, 4, SAVEDATA_MAX, saveFile);
+    fRead(saveRAM, 4, SAVEDATA_SIZE, saveFile);
 
     fClose(saveFile);
     return true;
@@ -239,7 +239,7 @@ bool WriteSaveRAMData()
 #endif
 #endif
 
-    fWrite(saveRAM, 4, SAVEDATA_MAX, saveFile);
+    fWrite(saveRAM, 4, SAVEDATA_SIZE, saveFile);
     fClose(saveFile);
     return true;
 }
@@ -302,7 +302,9 @@ void InitUserdata()
         ini.SetInteger("Dev", "StartingCategory", Engine.startList = 0);
         ini.SetInteger("Dev", "StartingScene", Engine.startStage = 0);
         ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
+#if RETRO_PLATFORM == RETRO_WINDOWS
         ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir = true);
+#endif
         ini.SetBool("Dev", "UseHQModes", Engine.useHQModes = true);
         sprintf(Engine.dataFile, "%s", "Data.rsdk");
         ini.SetString("Dev", "DataFile", Engine.dataFile);
@@ -405,8 +407,10 @@ void InitUserdata()
             Engine.startStage = 0;
         if (!ini.GetInteger("Dev", "FastForwardSpeed", &Engine.fastForwardSpeed))
             Engine.fastForwardSpeed = 8;
+#if RETRO_PLATFORM == RETRO_WINDOWS
         if (!ini.GetBool("Dev", "UseSteamDir", &Engine.useSteamDir))
             Engine.useSteamDir = true;
+#endif
         if (!ini.GetBool("Dev", "UseHQModes", &Engine.useHQModes))
             Engine.useHQModes = true;
 
@@ -709,8 +713,10 @@ void writeSettings()
     ini.SetInteger("Dev", "StartingScene", Engine.startStage);
     ini.SetComment("Dev", "FFComment", "Determines how fast the game will be when fastforwarding is active");
     ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed);
+#if RETRO_PLATFORM == RETRO_WINDOWS
     ini.SetComment("Dev", "SDComment", "Determines if the game will try to use the steam directory for the game if it can locate it (Windows only)");
     ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir);
+#endif
     ini.SetComment(
         "Dev", "UseHQComment",
         "Determines if applicable rendering modes (such as 3D floor from special stages) will render in \"High Quality\" mode or standard mode");
@@ -853,11 +859,11 @@ void ReadUserdata()
         return;
 
     int buf = 0;
-    for (int a = 0; a < ACHIEVEMENT_MAX; ++a) {
+    for (int a = 0; a < ACHIEVEMENT_COUNT; ++a) {
         fRead(&buf, 4, 1, userFile);
         achievements[a].status = buf;
     }
-    for (int l = 0; l < LEADERBOARD_MAX; ++l) {
+    for (int l = 0; l < LEADERBOARD_COUNT; ++l) {
         fRead(&buf, 4, 1, userFile);
         leaderboards[l].score = buf;
         if (!leaderboards[l].score)
@@ -906,8 +912,8 @@ void WriteUserdata()
     if (!userFile)
         return;
 
-    for (int a = 0; a < ACHIEVEMENT_MAX; ++a) fWrite(&achievements[a].status, 4, 1, userFile);
-    for (int l = 0; l < LEADERBOARD_MAX; ++l) fWrite(&leaderboards[l].score, 4, 1, userFile);
+    for (int a = 0; a < ACHIEVEMENT_COUNT; ++a) fWrite(&achievements[a].status, 4, 1, userFile);
+    for (int l = 0; l < LEADERBOARD_COUNT; ++l) fWrite(&leaderboards[l].score, 4, 1, userFile);
 
     fClose(userFile);
 
@@ -918,7 +924,7 @@ void WriteUserdata()
 
 void AwardAchievement(int id, int status)
 {
-    if (id < 0 || id >= ACHIEVEMENT_MAX)
+    if (id < 0 || id >= ACHIEVEMENT_COUNT)
         return;
 
     if (status != achievements[id].status)

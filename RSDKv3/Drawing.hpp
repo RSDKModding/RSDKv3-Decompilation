@@ -1,8 +1,8 @@
 #ifndef DRAWING_H
 #define DRAWING_H
 
-#define SURFACE_MAX (24)
-#define GFXDATA_MAX (0x800 * 0x800)
+#define SURFACE_COUNT (24)
+#define GFXDATA_SIZE (0x800 * 0x800)
 
 #define DRAWLAYER_COUNT (7)
 
@@ -39,18 +39,18 @@ extern int touchHeight;
 extern DrawListEntry drawListEntries[DRAWLAYER_COUNT];
 
 extern int gfxDataPosition;
-extern GFXSurface gfxSurface[SURFACE_MAX];
-extern byte graphicData[GFXDATA_MAX];
+extern GFXSurface gfxSurface[SURFACE_COUNT];
+extern byte graphicData[GFXDATA_SIZE];
 
 #if RETRO_USE_ORIGINAL_CODE
-#define VERTEX_LIMIT (0x2000)
+#define VERTEX_COUNT (0x2000)
 #else
-#define VERTEX_LIMIT (0x4000) // doubled so debug overlays & etc work
+#define VERTEX_COUNT (0x4000) // doubled so debug overlays & etc work
 #endif
-#define INDEX_LIMIT         (VERTEX_LIMIT * 6)
-#define VERTEX3D_LIMIT      (0x1904)
+#define INDEX_COUNT         (VERTEX_COUNT * 6)
+#define VERTEX3D_COUNT      (0x1904)
 #define TILEUV_SIZE         (0x1000)
-#define HW_TEXTURE_LIMIT    (6)
+#define HW_TEXTURE_COUNT    (6)
 #define HW_TEXTURE_SIZE     (0x400)
 #define HW_TEXTURE_DATASIZE (HW_TEXTURE_SIZE * HW_TEXTURE_SIZE * 2)
 #define HW_TEXBUFFER_SIZE   (HW_TEXTURE_SIZE * HW_TEXTURE_SIZE)
@@ -74,14 +74,14 @@ struct DrawVertex3D {
     Colour colour;
 };
 
-extern DrawVertex gfxPolyList[VERTEX_LIMIT];
-extern short gfxPolyListIndex[INDEX_LIMIT];
+extern DrawVertex gfxPolyList[VERTEX_COUNT];
+extern short gfxPolyListIndex[INDEX_COUNT];
 extern ushort gfxVertexSize;
 extern ushort gfxVertexSizeOpaque;
 extern ushort gfxIndexSize;
 extern ushort gfxIndexSizeOpaque;
 
-extern DrawVertex3D polyList3D[VERTEX3D_LIMIT];
+extern DrawVertex3D polyList3D[VERTEX3D_COUNT];
 
 extern ushort vertexSize3D;
 extern ushort indexSize3D;
@@ -112,7 +112,7 @@ extern float viewAngle;
 extern float viewAnglePos;
 
 #if RETRO_USING_OPENGL
-extern GLuint gfxTextureID[HW_TEXTURE_LIMIT];
+extern GLuint gfxTextureID[HW_TEXTURE_COUNT];
 extern GLuint framebufferHW;
 extern GLuint renderbufferHW;
 extern GLuint retroBuffer;
@@ -140,7 +140,7 @@ void GenerateBlendLookupTable();
 
 inline void ClearGraphicsData()
 {
-    for (int i = 0; i < SURFACE_MAX; ++i) StrCopy(gfxSurface[i].fileName, "");
+    for (int i = 0; i < SURFACE_COUNT; ++i) StrCopy(gfxSurface[i].fileName, "");
     gfxDataPosition = 0;
 }
 void ClearScreen(byte index);

@@ -54,8 +54,8 @@ bool processEvents()
                     case SDL_WINDOWEVENT_FOCUS_GAINED: Engine.hasFocus = true; break;
                 }
                 break;
-            case SDL_CONTROLLERDEVICEADDED: controllerInit(Engine.sdlEvents.cdevice.which); break;
-            case SDL_CONTROLLERDEVICEREMOVED: controllerClose(Engine.sdlEvents.cdevice.which); break;
+            case SDL_CONTROLLERDEVICEADDED: ControllerInit(Engine.sdlEvents.cdevice.which); break;
+            case SDL_CONTROLLERDEVICEREMOVED: ControllerClose(Engine.sdlEvents.cdevice.which); break;
             case SDL_APP_WILLENTERBACKGROUND:
                 if (!(disableFocusPause & 1))
                     Engine.message = MESSAGE_LOSTFOCUS;
@@ -263,7 +263,7 @@ void RetroEngine::Init()
     GenerateBlendLookupTable();
     InitUserdata();
 #if RETRO_USE_MOD_LOADER
-    initMods();
+    InitMods();
 #endif
     char dest[0x200];
 #if RETRO_PLATFORM == RETRO_UWP
@@ -354,7 +354,7 @@ void RetroEngine::Run()
                                 gfxIndexSizeOpaque  = 0;
                                 gfxVertexSizeOpaque = 0;
                             }
-                            processStageSelect();
+                            ProcessStageSelect();
                             break;
                         case ENGINE_MAINGAME:
                             if (renderType == RENDER_HW) {
@@ -370,13 +370,13 @@ void RetroEngine::Run()
                             break;
                         case ENGINE_INITDEVMENU:
                             LoadGameConfig("Data/Game/GameConfig.bin");
-                            initDevMenu();
+                            InitDevMenu();
                             ResetCurrentStageFolder();
                             break;
                         case ENGINE_EXITGAME: running = false; break;
                         case ENGINE_SCRIPTERROR:
                             LoadGameConfig("Data/Game/GameConfig.bin");
-                            initErrorMessage();
+                            InitErrorMessage();
                             ResetCurrentStageFolder();
                             break;
                         case ENGINE_ENTER_HIRESMODE:
@@ -423,7 +423,7 @@ void RetroEngine::Run()
     ReleaseRenderDevice();
     writeSettings();
 #if RETRO_USE_MOD_LOADER
-    saveMods();
+    SaveMods();
 #endif
 
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2

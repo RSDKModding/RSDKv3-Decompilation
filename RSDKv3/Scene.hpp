@@ -15,52 +15,52 @@
 
 #define TILELAYER_CHUNK_W    (0x100)
 #define TILELAYER_CHUNK_H    (0x100)
-#define TILELAYER_CHUNK_MAX  (TILELAYER_CHUNK_W * TILELAYER_CHUNK_H)
-#define TILELAYER_SCROLL_MAX (TILELAYER_CHUNK_H * CHUNK_SIZE)
+#define TILELAYER_CHUNK_COUNT  (TILELAYER_CHUNK_W * TILELAYER_CHUNK_H)
+#define TILELAYER_SCROLL_COUNT (TILELAYER_CHUNK_H * CHUNK_SIZE)
 
 #define CHUNKTILE_COUNT (0x200 * (8 * 8))
 
 #define CPATH_COUNT (2)
 
 enum StageListNames {
-    STAGELIST_PRESENTATION = 0,
-    STAGELIST_REGULAR      = 1,
-    STAGELIST_BONUS        = 2,
-    STAGELIST_SPECIAL      = 3,
+    STAGELIST_PRESENTATION,
+    STAGELIST_REGULAR     ,
+    STAGELIST_BONUS       ,
+    STAGELIST_SPECIAL     ,
     STAGELIST_MAX, // StageList size
 };
 
 enum TileLayerTypes {
-    LAYER_NOSCROLL = 0,
-    LAYER_HSCROLL  = 1,
-    LAYER_VSCROLL  = 2,
-    LAYER_3DFLOOR  = 3,
-    LAYER_3DSKY    = 4,
+    LAYER_NOSCROLL,
+    LAYER_HSCROLL ,
+    LAYER_VSCROLL ,
+    LAYER_3DFLOOR ,
+    LAYER_3DSKY   ,
 };
 
 enum StageModes {
-    STAGEMODE_LOAD   = 0,
-    STAGEMODE_NORMAL = 1,
-    STAGEMODE_PAUSED = 2,
+    STAGEMODE_LOAD,
+    STAGEMODE_NORMAL,
+    STAGEMODE_PAUSED,
 };
 
 enum TileInfo {
-    TILEINFO_INDEX       = 0,
-    TILEINFO_DIRECTION   = 1,
-    TILEINFO_VISUALPLANE = 2,
-    TILEINFO_SOLIDITYA   = 3,
-    TILEINFO_SOLIDITYB   = 4,
-    TILEINFO_FLAGSA      = 5,
-    TILEINFO_ANGLEA      = 6,
-    TILEINFO_FLAGSB      = 7,
-    TILEINFO_ANGLEB      = 8,
+    TILEINFO_INDEX,
+    TILEINFO_DIRECTION,
+    TILEINFO_VISUALPLANE,
+    TILEINFO_SOLIDITYA,
+    TILEINFO_SOLIDITYB,
+    TILEINFO_FLAGSA,
+    TILEINFO_ANGLEA,
+    TILEINFO_FLAGSB,
+    TILEINFO_ANGLEB,
 };
 
 enum DeformationModes {
-    DEFORM_FG       = 0,
-    DEFORM_FG_WATER = 1,
-    DEFORM_BG       = 2,
-    DEFORM_BG_WATER = 3,
+    DEFORM_FG      ,
+    DEFORM_FG_WATER,
+    DEFORM_BG      ,
+    DEFORM_BG_WATER,
 };
 
 enum CameraStyles {
@@ -88,8 +88,8 @@ struct CollisionMasks {
 };
 
 struct TileLayer {
-    ushort tiles[TILELAYER_CHUNK_MAX];
-    byte lineScroll[TILELAYER_SCROLL_MAX];
+    ushort tiles[TILELAYER_CHUNK_COUNT];
+    byte lineScroll[TILELAYER_SCROLL_COUNT];
     int parallaxFactor;
     int scrollSpeed;
     int scrollPos;

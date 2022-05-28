@@ -43,11 +43,13 @@ enum DevMenuMenus {
     DEVMENU_STAGELISTSEL,
     DEVMENU_STAGESEL,
     DEVMENU_SCRIPTERROR,
+#if RETRO_USE_MOD_LOADER
     DEVMENU_MODMENU,
+#endif
 };
 
-void initDevMenu();
-void initErrorMessage();
-void processStageSelect();
+void InitDevMenu();
+void InitErrorMessage();
+void ProcessStageSelect();
 
 #endif //! DEBUG_H

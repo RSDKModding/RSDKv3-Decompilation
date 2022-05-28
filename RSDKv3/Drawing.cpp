@@ -33,17 +33,17 @@ int touchHeight = SCREEN_YSIZE;
 DrawListEntry drawListEntries[DRAWLAYER_COUNT];
 
 int gfxDataPosition;
-GFXSurface gfxSurface[SURFACE_MAX];
-byte graphicData[GFXDATA_MAX];
+GFXSurface gfxSurface[SURFACE_COUNT];
+byte graphicData[GFXDATA_SIZE];
 
-DrawVertex gfxPolyList[VERTEX_LIMIT];
-short gfxPolyListIndex[INDEX_LIMIT];
+DrawVertex gfxPolyList[VERTEX_COUNT];
+short gfxPolyListIndex[INDEX_COUNT];
 ushort gfxVertexSize       = 0;
 ushort gfxVertexSizeOpaque = 0;
 ushort gfxIndexSize        = 0;
 ushort gfxIndexSizeOpaque  = 0;
 
-DrawVertex3D polyList3D[VERTEX3D_LIMIT];
+DrawVertex3D polyList3D[VERTEX3D_COUNT];
 
 ushort vertexSize3D = 0;
 ushort indexSize3D  = 0;
@@ -77,7 +77,7 @@ float viewAnglePos = 0;
 #endif
 
 #if RETRO_USING_OPENGL
-GLuint gfxTextureID[HW_TEXTURE_LIMIT];
+GLuint gfxTextureID[HW_TEXTURE_COUNT];
 GLuint framebufferHW  = 0;
 GLuint renderbufferHW = 0;
 GLuint retroBuffer    = 0;
@@ -292,7 +292,7 @@ int InitRenderDevice()
     glScalef(1.0 / HW_TEXTURE_SIZE, 1.0 / HW_TEXTURE_SIZE, 1.0f);
     glMatrixMode(GL_PROJECTION);
 
-    for (int i = 0; i < HW_TEXTURE_LIMIT; i++) {
+    for (int i = 0; i < HW_TEXTURE_COUNT; i++) {
         glGenTextures(1, &gfxTextureID[i]);
         glBindTexture(GL_TEXTURE_2D, gfxTextureID[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, HW_TEXTURE_SIZE, HW_TEXTURE_SIZE, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, texBuffer);
@@ -387,18 +387,21 @@ void FlipScreen()
         return;
 
 #if !RETRO_USE_ORIGINAL_CODE
-    if (Engine.dimTimer < Engine.dimLimit) {
-        if (Engine.dimPercent < 1.0) {
-            Engine.dimPercent += 0.05;
-            if (Engine.dimPercent > 1.0)
-                Engine.dimPercent = 1.0;
+    float dimAmount = 1.0; 
+    if ((!Engine.masterPaused || Engine.frameStep) && !drawStageGFXHQ) {
+        if (Engine.dimTimer < Engine.dimLimit) {
+            if (Engine.dimPercent < 1.0) {
+                Engine.dimPercent += 0.05;
+                if (Engine.dimPercent > 1.0)
+                    Engine.dimPercent = 1.0;
+            }
         }
-    }
-    else if (Engine.dimPercent > 0.25 && Engine.dimLimit >= 0) {
-        Engine.dimPercent *= 0.9;
-    }
+        else if (Engine.dimPercent > 0.25 && Engine.dimLimit >= 0) {
+            Engine.dimPercent *= 0.9;
+        }
 
-    float dimAmount = Engine.dimMax * Engine.dimPercent;
+        dimAmount = Engine.dimMax * Engine.dimPercent;
+    }
 #endif
 
     if (renderType == RENDER_SW) {
@@ -514,9 +517,7 @@ void FlipScreen()
                 SDL_LockTexture(Engine.screenBuffer, NULL, (void **)&pixels, &pitch);
                 ushort *frameBufferPtr = Engine.frameBuffer;
                 for (int y = 0; y < SCREEN_YSIZE; ++y) {
-                    for (int x = 0; x < SCREEN_XSIZE; ++x) {
-                        pixels[x] = frameBufferPtr[x];
-                    }
+                    memcpy(pixels, frameBufferPtr, SCREEN_XSIZE * sizeof(ushort));
                     frameBufferPtr += GFX_LINESIZE;
                     pixels += pitch / sizeof(ushort);
                 }
@@ -1040,7 +1041,7 @@ void ReleaseRenderDevice()
     }
 
 #if RETRO_USING_OPENGL
-    for (int i = 0; i < HW_TEXTURE_LIMIT; i++) glDeleteTextures(1, &gfxTextureID[i]);
+    for (int i = 0; i < HW_TEXTURE_COUNT; i++) glDeleteTextures(1, &gfxTextureID[i]);
 
 #if RETRO_USING_SDL2
     if (Engine.glContext)
@@ -1276,7 +1277,7 @@ void UpdateHardwareTextures()
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, HW_TEXTURE_SIZE, HW_TEXTURE_SIZE, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, texBuffer);
 #endif
 
-    for (byte b = 1; b < HW_TEXTURE_LIMIT; ++b) {
+    for (byte b = 1; b < HW_TEXTURE_COUNT; ++b) {
         SetActivePalette(b, 0, SCREEN_YSIZE);
         UpdateTextureBufferWithTiles();
         UpdateTextureBufferWithSprites();
@@ -1461,7 +1462,7 @@ void CalcPerspective(float fov, float aspectRatio, float nearPlane, float farPla
 void SetupPolygonLists()
 {
     int vID = 0;
-    for (int i = 0; i < VERTEX_LIMIT; i++) {
+    for (int i = 0; i < VERTEX_COUNT; i++) {
         gfxPolyListIndex[vID++] = (i << 2) + 0;
         gfxPolyListIndex[vID++] = (i << 2) + 1;
         gfxPolyListIndex[vID++] = (i << 2) + 2;
@@ -1475,7 +1476,7 @@ void SetupPolygonLists()
         gfxPolyList[i].colour.a = 0xFF;
     }
 
-    for (int i = 0; i < VERTEX3D_LIMIT; i++) {
+    for (int i = 0; i < VERTEX3D_COUNT; i++) {
         polyList3D[i].colour.r = 0xFF;
         polyList3D[i].colour.g = 0xFF;
         polyList3D[i].colour.b = 0xFF;
@@ -1618,14 +1619,14 @@ void UpdateTextureBufferWithTiles()
 void UpdateTextureBufferWithSortedSprites()
 {
     byte surfCnt = 0;
-    byte surfList[SURFACE_MAX];
+    byte surfList[SURFACE_COUNT];
     bool flag = true;
-    for (int i = 0; i < SURFACE_MAX; i++) gfxSurface[i].texStartX = -1;
+    for (int i = 0; i < SURFACE_COUNT; i++) gfxSurface[i].texStartX = -1;
 
-    for (int i = 0; i < SURFACE_MAX; i++) {
+    for (int i = 0; i < SURFACE_COUNT; i++) {
         int gfxSize  = 0;
         sbyte surfID = -1;
-        for (int s = 0; s < SURFACE_MAX; s++) {
+        for (int s = 0; s < SURFACE_COUNT; s++) {
             GFXSurface *surface = &gfxSurface[s];
             if (StrLength(surface->fileName) && surface->texStartX == -1) {
                 if (CheckSurfaceSize(surface->width) && CheckSurfaceSize(surface->height)) {
@@ -1641,7 +1642,7 @@ void UpdateTextureBufferWithSortedSprites()
         }
 
         if (surfID == -1) {
-            i = SURFACE_MAX;
+            i = SURFACE_COUNT;
         }
         else {
             gfxSurface[surfID].texStartX = 0;
@@ -1649,7 +1650,7 @@ void UpdateTextureBufferWithSortedSprites()
         }
     }
 
-    for (int i = 0; i < SURFACE_MAX; i++) gfxSurface[i].texStartX = -1;
+    for (int i = 0; i < SURFACE_COUNT; i++) gfxSurface[i].texStartX = -1;
 
     for (int i = 0; i < surfCnt; i++) {
         GFXSurface *curSurface = &gfxSurface[surfList[i]];
@@ -1671,7 +1672,7 @@ void UpdateTextureBufferWithSortedSprites()
                     }
                 }
                 else {
-                    for (int s = 0; s < SURFACE_MAX; s++) {
+                    for (int s = 0; s < SURFACE_COUNT; s++) {
                         GFXSurface *surface = &gfxSurface[s];
                         if (surface->texStartX > -1 && s != surfList[i] && curSurface->texStartX < surface->texStartX + surface->width
                             && curSurface->texStartX >= surface->texStartX && curSurface->texStartY < surface->texStartY + surface->height) {
@@ -1681,7 +1682,7 @@ void UpdateTextureBufferWithSortedSprites()
                                 curSurface->texStartX = 0;
                                 curSurface->texStartY += curSurface->height;
                             }
-                            s = SURFACE_MAX;
+                            s = SURFACE_COUNT;
                         }
                     }
                 }
@@ -1697,7 +1698,7 @@ void UpdateTextureBufferWithSortedSprites()
                         }
                     }
                     else {
-                        for (int s = 0; s < SURFACE_MAX; s++) {
+                        for (int s = 0; s < SURFACE_COUNT; s++) {
                             GFXSurface *surface = &gfxSurface[s];
                             if (surface->texStartX > -1 && s != surfList[i] && curSurface->texStartX < surface->texStartX + surface->width
                                 && curSurface->texStartX >= surface->texStartX && curSurface->texStartY < surface->texStartY + surface->height) {
@@ -1707,7 +1708,7 @@ void UpdateTextureBufferWithSortedSprites()
                                     curSurface->texStartX = 0;
                                     curSurface->texStartY += curSurface->height;
                                 }
-                                s = SURFACE_MAX;
+                                s = SURFACE_COUNT;
                             }
                         }
                     }
@@ -1734,7 +1735,7 @@ void UpdateTextureBufferWithSortedSprites()
 }
 void UpdateTextureBufferWithSprites()
 {
-    for (int i = 0; i < SURFACE_MAX; ++i) {
+    for (int i = 0; i < SURFACE_COUNT; ++i) {
         if (gfxSurface[i].texStartY + gfxSurface[i].height <= HW_TEXTURE_SIZE && gfxSurface[i].texStartX > -1) {
             int pos    = gfxSurface[i].dataPosition;
             int texPos = gfxSurface[i].texStartX + (gfxSurface[i].texStartY << 10);
@@ -3943,8 +3944,8 @@ void Draw3DFloorLayer(int layerID)
         int layerHeight        = layer->ysize << 7;
         int layerYPos          = layer->YPos;
         int layerZPos          = layer->ZPos;
-        int sinValue           = sinM[layer->angle];
-        int cosValue           = cosM[layer->angle];
+        int sinValue           = sinMLookupTable[layer->angle];
+        int cosValue           = cosMLookupTable[layer->angle];
         byte *gfxLineBufferPtr = &gfxLineBuffer[((SCREEN_YSIZE / 2) + 12)];
         ushort *frameBufferPtr = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * GFX_LINESIZE];
         int layerXPos          = layer->XPos >> 4;
@@ -4041,11 +4042,11 @@ void Draw3DFloorLayer(int layerID)
         indexSize3D += 6;
         if (hq3DFloorEnabled) {
             sinValue512 = (layer->XPos >> 16) - 0x100;
-            sinValue512 += (sinVal512[layer->angle] >> 1);
+            sinValue512 += (sin512LookupTable[layer->angle] >> 1);
             sinValue512 = sinValue512 >> 4 << 4;
 
             cosValue512 = (layer->ZPos >> 16) - 0x100;
-            cosValue512 += (cosVal512[layer->angle] >> 1);
+            cosValue512 += (cos512LookupTable[layer->angle] >> 1);
             cosValue512 = cosValue512 >> 4 << 4;
             for (int i = 32; i > 0; i--) {
                 for (int j = 32; j > 0; j--) {
@@ -4274,11 +4275,11 @@ void Draw3DFloorLayer(int layerID)
         }
         else {
             sinValue512 = (layer->XPos >> 16) - 0xA0;
-            sinValue512 += sinVal512[layer->angle] / 3;
+            sinValue512 += sin512LookupTable[layer->angle] / 3;
             sinValue512 = sinValue512 >> 4 << 4;
 
             cosValue512 = (layer->ZPos >> 16) - 0xA0;
-            cosValue512 += cosVal512[layer->angle] / 3;
+            cosValue512 += cos512LookupTable[layer->angle] / 3;
             cosValue512 = cosValue512 >> 4 << 4;
             for (int i = 20; i > 0; i--) {
                 for (int j = 20; j > 0; j--) {
@@ -4522,8 +4523,8 @@ void Draw3DSkyLayer(int layerID)
         int layerWidth         = layer->xsize << 7;
         int layerHeight        = layer->ysize << 7;
         int layerYPos          = layer->YPos;
-        int sinValue           = sinM[layer->angle & 0x1FF];
-        int cosValue           = cosM[layer->angle & 0x1FF];
+        int sinValue           = sinMLookupTable[layer->angle & 0x1FF];
+        int cosValue           = cosMLookupTable[layer->angle & 0x1FF];
         ushort *frameBufferPtr = &Engine.frameBuffer[((SCREEN_YSIZE / 2) + 12) * GFX_LINESIZE];
         ushort *bufferPtr      = Engine.frameBuffer2x;
         if (!drawStageGFXHQ)
@@ -4651,7 +4652,7 @@ void DrawRectangle(int XPos, int YPos, int width, int height, int R, int G, int 
         }
     }
     else if (renderType == RENDER_HW) {
-        if (gfxVertexSize < VERTEX_LIMIT) {
+        if (gfxVertexSize < VERTEX_COUNT) {
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
             gfxPolyList[gfxVertexSize].y        = YPos << 4;
             gfxPolyList[gfxVertexSize].colour.r = R;
@@ -4924,7 +4925,7 @@ void DrawSprite(int XPos, int YPos, int width, int height, int sprX, int sprY, i
     }
     else if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
             gfxPolyList[gfxVertexSize].y        = YPos << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
@@ -5095,7 +5096,7 @@ void DrawSpriteFlipped(int XPos, int YPos, int width, int height, int sprX, int 
     }
     else if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
             switch (direction) {
                 case FLIP_NONE:
                     gfxPolyList[gfxVertexSize].x        = XPos << 4;
@@ -5371,7 +5372,7 @@ void DrawSpriteScaled(int direction, int XPos, int YPos, int pivotX, int pivotY,
         }
     }
     else if (renderType == RENDER_HW) {
-        if (gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
+        if (gfxVertexSize < VERTEX_COUNT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
             scaleX <<= 2;
             scaleY <<= 2;
             XPos -= pivotX * scaleX >> 11;
@@ -5431,7 +5432,7 @@ void DrawScaledChar(int direction, int XPos, int YPos, int pivotX, int pivotY, i
     // Not avaliable in SW Render mode
 
     if (renderType == RENDER_HW) {
-        if (gfxVertexSize < VERTEX_LIMIT && XPos > -8192 && XPos < 13951 && YPos > -1024 && YPos < 4864) {
+        if (gfxVertexSize < VERTEX_COUNT && XPos > -8192 && XPos < 13951 && YPos > -1024 && YPos < 4864) {
             XPos -= pivotX * scaleX >> 5;
             scaleX = width * scaleX >> 5;
             YPos -= pivotY * scaleY >> 5;
@@ -5496,8 +5497,8 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
             angle += 0x200;
         if (angle)
             angle = 0x200 - angle;
-        int sine   = sinVal512[angle];
-        int cosine = cosVal512[angle];
+        int sine   = sin512LookupTable[angle];
+        int cosine = cos512LookupTable[angle];
         int XPositions[4];
         int YPositions[4];
 
@@ -5640,9 +5641,9 @@ void DrawSpriteRotated(int direction, int XPos, int YPos, int pivotX, int pivotY
         if (rotation != 0) {
             rotation = 0x200 - rotation;
         }
-        int sin = sinVal512[rotation];
-        int cos = cosVal512[rotation];
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -8192 && XPos < 13952 && YPos > -8192 && YPos < 12032) {
+        int sin = sin512LookupTable[rotation];
+        int cos = cos512LookupTable[rotation];
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -8192 && XPos < 13952 && YPos > -8192 && YPos < 12032) {
             if (direction == FLIP_NONE) {
                 int x                               = -pivotX;
                 int y                               = -pivotY;
@@ -5763,8 +5764,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
             angle += 0x200;
         if (angle)
             angle = 0x200 - angle;
-        int sine   = scale * sinVal512[angle] >> 9;
-        int cosine = scale * cosVal512[angle] >> 9;
+        int sine   = scale * sin512LookupTable[angle] >> 9;
+        int cosine = scale * cos512LookupTable[angle] >> 9;
         int XPositions[4];
         int YPositions[4];
 
@@ -5793,8 +5794,8 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
             YPositions[3] = YPos + ((cosine * b - sine * a) >> 9);
         }
         int truescale = (signed int)(float)((float)(512.0 / (float)scale) * 512.0);
-        sine          = truescale * sinVal512[angle] >> 9;
-        cosine        = truescale * cosVal512[angle] >> 9;
+        sine          = truescale * sin512LookupTable[angle] >> 9;
+        cosine        = truescale * cos512LookupTable[angle] >> 9;
 
         int left = GFX_LINESIZE;
         for (int i = 0; i < 4; ++i) {
@@ -5909,9 +5910,9 @@ void DrawSpriteRotozoom(int direction, int XPos, int YPos, int pivotX, int pivot
         if (rotation != 0)
             rotation = 0x200 - rotation;
 
-        int sin = sinVal512[rotation] * scale >> 9;
-        int cos = cosVal512[rotation] * scale >> 9;
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -8192 && XPos < 13952 && YPos > -8192 && YPos < 12032) {
+        int sin = sin512LookupTable[rotation] * scale >> 9;
+        int cos = cos512LookupTable[rotation] * scale >> 9;
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -8192 && XPos < 13952 && YPos > -8192 && YPos < 12032) {
             if (direction == FLIP_NONE) {
                 int x                               = -pivotX;
                 int y                               = -pivotY;
@@ -6059,7 +6060,7 @@ void DrawBlendedSprite(int XPos, int YPos, int width, int height, int sprX, int 
     }
     else if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
             gfxPolyList[gfxVertexSize].y        = YPos << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
@@ -6182,7 +6183,7 @@ void DrawAlphaBlendedSprite(int XPos, int YPos, int width, int height, int sprX,
     }
     else if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
             gfxPolyList[gfxVertexSize].y        = YPos << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
@@ -6282,7 +6283,7 @@ void DrawAdditiveBlendedSprite(int XPos, int YPos, int width, int height, int sp
     }
     else if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
             gfxPolyList[gfxVertexSize].y        = YPos << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
@@ -6382,7 +6383,7 @@ void DrawSubtractiveBlendedSprite(int XPos, int YPos, int width, int height, int
     }
     else if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
-        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_LIMIT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
+        if (surface->texStartX > -1 && gfxVertexSize < VERTEX_COUNT && XPos > -512 && XPos < 872 && YPos > -512 && YPos < 752) {
             gfxPolyList[gfxVertexSize].x        = XPos << 4;
             gfxPolyList[gfxVertexSize].y        = YPos << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;
@@ -6600,12 +6601,12 @@ void DrawFace(void *v, uint colour)
             faceLineEnd[i]   = -100000;
         }
 
-        processScanEdge(&verts[vertexA], &verts[vertexB]);
-        processScanEdge(&verts[vertexA], &verts[vertexC]);
-        processScanEdge(&verts[vertexA], &verts[vertexD]);
-        processScanEdge(&verts[vertexB], &verts[vertexC]);
-        processScanEdge(&verts[vertexC], &verts[vertexD]);
-        processScanEdge(&verts[vertexB], &verts[vertexD]);
+        ProcessScanEdge(&verts[vertexA], &verts[vertexB]);
+        ProcessScanEdge(&verts[vertexA], &verts[vertexC]);
+        ProcessScanEdge(&verts[vertexA], &verts[vertexD]);
+        ProcessScanEdge(&verts[vertexB], &verts[vertexC]);
+        ProcessScanEdge(&verts[vertexC], &verts[vertexD]);
+        ProcessScanEdge(&verts[vertexB], &verts[vertexD]);
 
         ushort colour16 = 0;
         PACK_RGB888(colour16, ((colour >> 16) & 0xFF), ((colour >> 8) & 0xFF), ((colour >> 0) & 0xFF));
@@ -6666,7 +6667,7 @@ void DrawFace(void *v, uint colour)
         }
     }
     else if (renderType == RENDER_HW) {
-        if (gfxVertexSize < VERTEX_LIMIT) {
+        if (gfxVertexSize < VERTEX_COUNT) {
             gfxPolyList[gfxVertexSize].x        = verts[0].x << 4;
             gfxPolyList[gfxVertexSize].y        = verts[0].y << 4;
             gfxPolyList[gfxVertexSize].colour.r = (byte)((uint)(colour >> 16) & 0xFF);
@@ -6780,12 +6781,12 @@ void DrawTexturedFace(void *v, byte sheetID)
             faceLineEnd[i]   = -100000;
         }
 
-        processScanEdgeUV(&verts[vertexA], &verts[vertexB]);
-        processScanEdgeUV(&verts[vertexA], &verts[vertexC]);
-        processScanEdgeUV(&verts[vertexA], &verts[vertexD]);
-        processScanEdgeUV(&verts[vertexB], &verts[vertexC]);
-        processScanEdgeUV(&verts[vertexC], &verts[vertexD]);
-        processScanEdgeUV(&verts[vertexB], &verts[vertexD]);
+        ProcessScanEdgeUV(&verts[vertexA], &verts[vertexB]);
+        ProcessScanEdgeUV(&verts[vertexA], &verts[vertexC]);
+        ProcessScanEdgeUV(&verts[vertexA], &verts[vertexD]);
+        ProcessScanEdgeUV(&verts[vertexB], &verts[vertexC]);
+        ProcessScanEdgeUV(&verts[vertexC], &verts[vertexD]);
+        ProcessScanEdgeUV(&verts[vertexB], &verts[vertexD]);
 
         ushort *frameBufferPtr = &Engine.frameBuffer[GFX_LINESIZE * faceTop];
         byte *sheetPtr         = &graphicData[gfxSurface[sheetID].dataPosition];
@@ -6844,7 +6845,7 @@ void DrawTexturedFace(void *v, byte sheetID)
     }
     else if (renderType == RENDER_HW) {
         GFXSurface *surface = &gfxSurface[sheetID];
-        if (gfxVertexSize < VERTEX_LIMIT) {
+        if (gfxVertexSize < VERTEX_COUNT) {
             gfxPolyList[gfxVertexSize].x        = verts[0].x << 4;
             gfxPolyList[gfxVertexSize].y        = verts[0].y << 4;
             gfxPolyList[gfxVertexSize].colour.r = 0xFF;

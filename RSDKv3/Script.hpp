@@ -8,6 +8,8 @@
 #define JUMPSTACK_COUNT (0x400)
 #define FUNCSTACK_COUNT (0x400)
 
+#define RETRO_USE_COMPILER (1)
+
 struct ScriptPtr {
     int scriptCodePtr;
     int jumpTablePtr;
@@ -22,7 +24,9 @@ struct ObjectScript {
     ScriptPtr subStartup;
     int frameListOffset;
     AnimationFile *animFile;
+#if !RETRO_USE_ORIGINAL_CODE
     bool mobile; // flag for detecting mobile/updated bytecode
+#endif
 };
 
 struct ScriptEngine {
@@ -63,6 +67,10 @@ extern char scriptFunctionNames[FUNCTION_COUNT][0x20];
 extern int aliasCount;
 extern int lineID;
 
+bool ConvertStringToInteger(char *text, int *value);
+
+#if RETRO_USE_COMPILER
+
 void CheckAliasText(char *text);
 void ConvertArithmaticSyntax(char *text);
 void ConvertIfWhileStatement(char *text);
@@ -71,11 +79,11 @@ void ConvertFunctionText(char *text);
 void CheckCaseNumber(char *text);
 bool ReadSwitchCase(char *text);
 void AppendIntegerToString(char *text, int value);
-bool ConvertStringToInteger(char *text, int *value);
 void CopyAliasStr(char *dest, char *text, bool arrayIndex);
 bool CheckOpcodeType(char *text); // Never actually used
 
 void ParseScriptFile(char *scriptName, int scriptID);
+#endif
 void LoadBytecode(int stageListID, int scriptID);
 
 void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub);

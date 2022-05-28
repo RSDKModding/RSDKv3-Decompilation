@@ -168,7 +168,7 @@ void ProcessStage(void)
             Engine.frameCount = 0;
             stageMode         = STAGEMODE_NORMAL;
 #if RETRO_USE_MOD_LOADER
-            for (int m = 0; m < modList.size(); ++m) scanModFolder(&modList[m]);
+            for (int m = 0; m < modList.size(); ++m) ScanModFolder(&modList[m]);
 #endif
             ResetBackgroundSettings();
             LoadStageFiles();
@@ -335,7 +335,7 @@ void LoadStageFiles(void)
         Engine.LoadXMLPalettes();
 #endif
         ClearScriptData();
-        for (int i = SURFACE_MAX; i > 0; i--) RemoveGraphicsFile((char *)"", i - 1);
+        for (int i = SURFACE_COUNT; i > 0; i--) RemoveGraphicsFile((char *)"", i - 1);
 
 #if RETRO_USE_MOD_LOADER
         loadGlobalScripts = false;
@@ -372,6 +372,7 @@ void LoadStageFiles(void)
             }
 #endif
 
+#if RETRO_USE_COMPILER
 #if RETRO_USE_MOD_LOADER
             char scriptPath[0x40];
             if (Engine.bytecodeMode == BYTECODE_MOBILE)
@@ -412,9 +413,16 @@ void LoadStageFiles(void)
                         return;
                 }
             }
+#else
+            GetFileInfo(&infoStore);
+            CloseFile();
+            LoadBytecode(4, scriptID);
+            scriptID += globalObjectCount;
+            SetFileInfo(&infoStore);
+#endif
             CloseFile();
 
-#if RETRO_USE_MOD_LOADER
+#if RETRO_USE_MOD_LOADER && RETRO_USE_COMPILER
             globalObjCount = globalObjectCount;
             for (byte i = 0; i < modObjCount && loadGlobalScripts; ++i) {
                 SetObjectTypeName(modTypeNames[i], scriptID);
@@ -445,6 +453,8 @@ void LoadStageFiles(void)
                 strBuffer[fileBuffer2] = 0;
                 SetObjectTypeName(strBuffer, scriptID + i);
             }
+
+#if RETRO_USE_COMPILER
 #if RETRO_USE_MOD_LOADER
             char scriptPath[0x40];
             if (Engine.bytecodeMode == BYTECODE_MOBILE) {
@@ -472,6 +482,7 @@ void LoadStageFiles(void)
                     scriptPath[pos + 4] = stageListPosition % 10 + '0';
                 }
             }
+
             bool bytecodeExists = false;
             FileInfo bytecodeInfo;
             GetFileInfo(&infoStore);
@@ -509,6 +520,17 @@ void LoadStageFiles(void)
                         return;
                 }
             }
+#else
+            for (byte i = 0; i < stageObjectCount; ++i) {
+                FileRead(&fileBuffer2, 1);
+                FileRead(strBuffer, fileBuffer2);
+                strBuffer[fileBuffer2] = 0;
+            }
+            GetFileInfo(&infoStore);
+            CloseFile();
+            LoadBytecode(activeStageList, scriptID);
+            SetFileInfo(&infoStore);
+#endif
 
             FileRead(&fileBuffer2, 1);
             stageSFXCount = fileBuffer2;
@@ -543,31 +565,10 @@ void LoadStageFiles(void)
     LoadStageChunks();
     for (int i = 0; i < TRACK_COUNT; ++i) SetMusicTrack((char *)"", i, 0, 0);
     for (int i = 0; i < ENTITY_COUNT; ++i) {
-        objectEntityList[i].type           = 0;
-        objectEntityList[i].direction      = 0;
-        objectEntityList[i].animation      = 0;
-        objectEntityList[i].prevAnimation  = 0;
-        objectEntityList[i].animationSpeed = 0;
-        objectEntityList[i].animationTimer = 0;
-        objectEntityList[i].frame          = 0;
-        objectEntityList[i].priority       = 0;
-        objectEntityList[i].direction      = 0;
-        objectEntityList[i].rotation       = 0;
-        objectEntityList[i].state          = 0;
-        objectEntityList[i].propertyValue  = 0;
-        objectEntityList[i].XPos           = 0;
-        objectEntityList[i].YPos           = 0;
-        objectEntityList[i].drawOrder      = 3;
-        objectEntityList[i].scale          = 512;
-        objectEntityList[i].inkEffect      = 0;
-        objectEntityList[i].values[0]      = 0;
-        objectEntityList[i].values[1]      = 0;
-        objectEntityList[i].values[2]      = 0;
-        objectEntityList[i].values[3]      = 0;
-        objectEntityList[i].values[4]      = 0;
-        objectEntityList[i].values[5]      = 0;
-        objectEntityList[i].values[6]      = 0;
-        objectEntityList[i].values[7]      = 0;
+        memset(&objectEntityList[i], 0, sizeof(objectEntityList[i]));
+
+        objectEntityList[i].drawOrder = 3;
+        objectEntityList[i].scale     = 512;
     }
     LoadActLayout();
     Init3DFloorBuffer(0);
@@ -766,7 +767,7 @@ void LoadStageBackground()
             stageLayouts[i].scrollSpeed = fileBuffer << 10;
             stageLayouts[i].scrollPos   = 0;
 
-            memset(stageLayouts[i].tiles, 0, TILELAYER_CHUNK_MAX * sizeof(ushort));
+            memset(stageLayouts[i].tiles, 0, TILELAYER_CHUNK_COUNT * sizeof(ushort));
             byte *lineScrollPtr = stageLayouts[i].lineScroll;
             memset(stageLayouts[i].lineScroll, 0, 0x7FFF);
 
@@ -1161,13 +1162,13 @@ void SetLayerDeformation(int selectedDef, int waveLength, int waveWidth, int wav
     if (waveType == 1) {
         id = YPos;
         for (int i = 0; i < waveSize; ++i) {
-            deformPtr[id] = waveWidth * sinVal512[(i << 9) / waveLength & 0x1FF] >> shift;
+            deformPtr[id] = waveWidth * sin512LookupTable[(i << 9) / waveLength & 0x1FF] >> shift;
             ++id;
         }
     }
     else {
         for (int i = 0; i < 0x200 * 0x100; i += 0x200) {
-            int val       = waveWidth * sinVal512[i / waveLength & 0x1FF] >> shift;
+            int val       = waveWidth * sin512LookupTable[i / waveLength & 0x1FF] >> shift;
             deformPtr[id] = val;
             if (deformPtr[id] >= waveWidth && renderType == RENDER_SW)
                 deformPtr[id] = waveWidth - 1;

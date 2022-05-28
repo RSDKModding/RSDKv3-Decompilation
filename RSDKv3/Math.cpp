@@ -6,105 +6,94 @@
 #define M_PI 3.14159265358979323846264338327950288
 #endif
 
-int sinM[512];
-int cosM[512];
+int sinMLookupTable[512];
+int cosMLookupTable[512];
 
-int sinVal512[512];
-int cosVal512[512];
+int sin512LookupTable[512];
+int cos512LookupTable[512];
 
-int sinVal256[256];
-int cosVal256[256];
+int sin256LookupTable[256];
+int cos256LookupTable[256];
 
-byte atanVal256[0x100 * 0x100];
+byte arcTan256LookupTable[0x100 * 0x100];
 
 void CalculateTrigAngles()
 {
     srand((unsigned)time(NULL));
 
     for (int i = 0; i < 0x200; ++i) {
-        float Val = sin(((float)i / 256.0) * M_PI);
-        sinM[i]   = (Val * 4096.0);
-        Val       = cos(((float)i / 256.0) * M_PI);
-        cosM[i]   = (Val * 4096.0);
+        sinMLookupTable[i] = (sin((i / 256.0) * M_PI) * 4096.0);
+        cosMLookupTable[i] = (cos((i / 256.0) * M_PI) * 4096.0);
     }
 
-    cosM[0]   = 4096;
-    cosM[128] = 0;
-    cosM[256] = -4096;
-    cosM[384] = 0;
-    sinM[0]   = 0;
-    sinM[128] = 4096;
-    sinM[256] = 0;
-    sinM[384] = -4096;
+    cosMLookupTable[0x00]  = 0x1000;
+    cosMLookupTable[0x80]  = 0;
+    cosMLookupTable[0x100] = -0x1000;
+    cosMLookupTable[0x180] = 0;
+
+    sinMLookupTable[0x00]  = 0;
+    sinMLookupTable[0x80]  = 0x1000;
+    sinMLookupTable[0x100] = 0;
+    sinMLookupTable[0x180] = -0x1000;
 
     for (int i = 0; i < 0x200; ++i) {
-        float Val    = sinf(((float)i / 256) * M_PI);
-        sinVal512[i] = (signed int)(Val * 512.0);
-        Val          = cosf(((float)i / 256) * M_PI);
-        cosVal512[i] = (signed int)(Val * 512.0);
+        sin512LookupTable[i] = (sinf((i / 256.0) * M_PI) * 512.0);
+        cos512LookupTable[i] = (cosf((i / 256.0) * M_PI) * 512.0);
     }
 
-    cosVal512[0]   = 0x200;
-    cosVal512[128] = 0;
-    cosVal512[256] = -0x200;
-    cosVal512[384] = 0;
-    sinVal512[0]   = 0;
-    sinVal512[128] = 0x200;
-    sinVal512[256] = 0;
-    sinVal512[384] = -0x200;
+    cos512LookupTable[0x00]  = 0x200;
+    cos512LookupTable[0x80]  = 0;
+    cos512LookupTable[0x100] = -0x200;
+    cos512LookupTable[0x180] = 0;
+
+    sin512LookupTable[0x00]  = 0;
+    sin512LookupTable[0x80]  = 0x200;
+    sin512LookupTable[0x100] = 0;
+    sin512LookupTable[0x180] = -0x200;
 
     for (int i = 0; i < 0x100; i++) {
-        sinVal256[i] = (sinVal512[i * 2] >> 1);
-        cosVal256[i] = (cosVal512[i * 2] >> 1);
+        sin256LookupTable[i] = (sin512LookupTable[i * 2] >> 1);
+        cos256LookupTable[i] = (cos512LookupTable[i * 2] >> 1);
     }
 
     for (int Y = 0; Y < 0x100; ++Y) {
-        byte *ATan = (byte *)&atanVal256[Y];
+        byte *atan = (byte *)&arcTan256LookupTable[Y];
         for (int X = 0; X < 0x100; ++X) {
             float angle = atan2f(Y, X);
-            *ATan       = (signed int)(angle * 40.743664f);
-            ATan += 0x100;
+            *atan       = (angle * 40.743664f);
+            atan += 0x100;
         }
     }
 }
 
 byte ArcTanLookup(int X, int Y)
 {
-    int XVal;
-    byte result = 0;
-    int YVal;
+    int x = 0;
+    int y = 0;
 
-    if (X >= 0)
-        XVal = X;
-    else
-        XVal = -X;
+    x = abs(X);
+    y = abs(Y);
 
-    if (Y >= 0)
-        YVal = Y;
-    else
-        YVal = -Y;
-
-    if (XVal <= YVal) {
-        while (YVal > 0xFF) {
-            XVal >>= 4;
-            YVal >>= 4;
+    if (x <= y) {
+        while (y > 0xFF) {
+            x >>= 4;
+            y >>= 4;
         }
     }
     else {
-        while (XVal > 0xFF) {
-            XVal >>= 4;
-            YVal >>= 4;
+        while (x > 0xFF) {
+            x >>= 4;
+            y >>= 4;
         }
     }
     if (X <= 0) {
         if (Y <= 0)
-            result = atanVal256[0x100 * XVal + YVal] + -0x80;
+            return arcTan256LookupTable[(x << 8) + y] + -0x80;
         else
-            result = -0x80 - atanVal256[0x100 * XVal + YVal];
+            return -0x80 - arcTan256LookupTable[(x << 8) + y];
     }
     else if (Y <= 0)
-        result = -atanVal256[0x100 * XVal + YVal];
+        return -arcTan256LookupTable[(x << 8) + y];
     else
-        result = atanVal256[0x100 * XVal + YVal];
-    return result;
+        return arcTan256LookupTable[(x << 8) + y];
 }

@@ -18,7 +18,7 @@ char modScriptPaths[OBJECT_COUNT][0x40];
 byte modScriptFlags[OBJECT_COUNT];
 byte modObjCount = 0;
 
-char playerNames[PLAYER_MAX][0x20];
+char playerNames[PLAYERNAME_COUNT][0x20];
 byte playerCount = 0;
 
 #include <filesystem>
@@ -37,10 +37,11 @@ int OpenModMenu()
 namespace fs = std::filesystem;
 //#endif
 
-fs::path resolvePath(fs::path given)
+fs::path ResolvePath(fs::path given)
 {
     if (given.is_relative())
         given = fs::current_path() / given; // thanks for the weird syntax!
+
     for (auto &p : fs::directory_iterator{ given.parent_path() }) {
         char pbuf[0x100];
         char gbuf[0x100];
@@ -57,7 +58,7 @@ fs::path resolvePath(fs::path given)
     return given; // might work might not!
 }
 
-void initMods()
+void InitMods()
 {
     modList.clear();
     forceUseScripts        = forceUseScripts_Config;
@@ -68,7 +69,7 @@ void initMods()
 
     char modBuf[0x100];
     sprintf(modBuf, "%smods", modsPath);
-    fs::path modPath = resolvePath(modBuf);
+    fs::path modPath = ResolvePath(modBuf);
 
     if (fs::exists(modPath) && fs::is_directory(modPath)) {
         std::string mod_config = modPath.string() + "/modconfig.ini";
@@ -81,7 +82,7 @@ void initMods()
                 bool active = false;
                 ModInfo info;
                 modConfig.GetBool("mods", modConfig.items[m].key, &active);
-                if (loadMod(&info, modPath.string(), modConfig.items[m].key, active))
+                if (LoadMod(&info, modPath.string(), modConfig.items[m].key, active))
                     modList.push_back(info);
             }
         }
@@ -107,7 +108,7 @@ void initMods()
                     }
 
                     if (flag) {
-                        if (loadMod(&info, modPath.string(), modDirPath.filename().string(), false))
+                        if (LoadMod(&info, modPath.string(), modDirPath.filename().string(), false))
                             modList.push_back(info);
                     }
                 }
@@ -142,7 +143,7 @@ void initMods()
     ReadUserdata();
 }
 
-bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool active)
+bool LoadMod(ModInfo *info, std::string modsPath, std::string folder, bool active)
 {
     if (!info)
         return false;
@@ -192,7 +193,7 @@ bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool activ
 
         info->active = active;
 
-        scanModFolder(info);
+        ScanModFolder(info);
 
         info->useScripts = false;
         modSettings.GetBool("", "TxtScripts", &info->useScripts);
@@ -206,7 +207,7 @@ bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool activ
 
         info->redirectSave = false;
         modSettings.GetBool("", "RedirectSaveRAM", &info->redirectSave);
-        if (info->redirectSave && info->active) {
+        if (info->redirectSave) {
             char path[0x100];
             sprintf(path, "mods/%s/", folder.c_str());
             info->savePath = path;
@@ -222,7 +223,7 @@ bool loadMod(ModInfo *info, std::string modsPath, std::string folder, bool activ
     return false;
 }
 
-void scanModFolder(ModInfo *info)
+void ScanModFolder(ModInfo *info)
 {
     if (!info)
         return;
@@ -230,12 +231,12 @@ void scanModFolder(ModInfo *info)
     char modBuf[0x100];
     sprintf(modBuf, "%smods", modsPath);
 
-    fs::path modPath = resolvePath(modBuf);
+    fs::path modPath = ResolvePath(modBuf);
 
     const std::string modDir = modPath.string() + "/" + info->folder;
 
     // Check for Data/ replacements
-    fs::path dataPath = resolvePath(modDir + "/Data");
+    fs::path dataPath = ResolvePath(modDir + "/Data");
 
     if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
         try {
@@ -283,7 +284,7 @@ void scanModFolder(ModInfo *info)
     }
 
     // Check for Scripts/ replacements
-    fs::path scriptPath = resolvePath(modDir + "/Scripts");
+    fs::path scriptPath = ResolvePath(modDir + "/Scripts");
 
     if (fs::exists(scriptPath) && fs::is_directory(scriptPath)) {
         try {
@@ -331,7 +332,7 @@ void scanModFolder(ModInfo *info)
     }
 
     // Check for Videos/ replacements
-    fs::path videosPath = resolvePath(modDir + "/Videos");
+    fs::path videosPath = ResolvePath(modDir + "/Videos");
 
     if (fs::exists(videosPath) && fs::is_directory(videosPath)) {
         try {
@@ -379,11 +380,11 @@ void scanModFolder(ModInfo *info)
     }
 }
 
-void saveMods()
+void SaveMods()
 {
     char modBuf[0x100];
     sprintf(modBuf, "%smods", modsPath);
-    fs::path modPath = resolvePath(modBuf);
+    fs::path modPath = ResolvePath(modBuf);
 
     if (fs::exists(modPath) && fs::is_directory(modPath)) {
         std::string mod_config = modPath.string() + "/modconfig.ini";
@@ -438,7 +439,7 @@ void RefreshEngine()
             disableSaveIniOverride = true;
     }
 
-    saveMods();
+    SaveMods();
 
     ReadSaveRAMData();
     ReadUserdata();
