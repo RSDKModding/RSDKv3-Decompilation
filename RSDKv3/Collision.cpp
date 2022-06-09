@@ -14,7 +14,7 @@ byte showHitboxes = 0;
 int debugHitboxCount = 0;
 DebugHitboxInfo debugHitboxList[DEBUG_HITBOX_COUNT];
 
-int addDebugHitbox(byte type, Entity *entity, int left, int top, int right, int bottom)
+int AddDebugHitbox(byte type, Entity *entity, int left, int top, int right, int bottom)
 {
     int XPos = 0, YPos = 0;
     if (entity) {
@@ -2136,12 +2136,12 @@ void TouchCollision(int left, int top, int right, int bottom)
         right -= entity->XPos >> 16;
         bottom -= entity->YPos >> 16;
 
-        int thisHitboxID = addDebugHitbox(H_TYPE_TOUCH, entity, left, top, right, bottom);
+        int thisHitboxID = AddDebugHitbox(H_TYPE_TOUCH, entity, left, top, right, bottom);
         if (thisHitboxID >= 0 && scriptEng.checkResult)
             debugHitboxList[thisHitboxID].collision |= 1;
 
         int otherHitboxID =
-            addDebugHitbox(H_TYPE_TOUCH, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+            AddDebugHitbox(H_TYPE_TOUCH, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
         if (otherHitboxID >= 0) {
             debugHitboxList[otherHitboxID].XPos = player->XPos;
             debugHitboxList[otherHitboxID].YPos = player->YPos;
@@ -2389,12 +2389,12 @@ void BoxCollision(int left, int top, int right, int bottom)
         right -= entity->XPos;
         bottom -= entity->YPos;
 
-        thisHitboxID = addDebugHitbox(H_TYPE_BOX, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
+        thisHitboxID = AddDebugHitbox(H_TYPE_BOX, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
         if (thisHitboxID >= 0 && scriptEng.checkResult)
             debugHitboxList[thisHitboxID].collision |= 1 << (scriptEng.checkResult - 1);
 
         int otherHitboxID =
-            addDebugHitbox(H_TYPE_BOX, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+            AddDebugHitbox(H_TYPE_BOX, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
         if (otherHitboxID >= 0) {
             debugHitboxList[otherHitboxID].XPos = player->XPos;
             debugHitboxList[otherHitboxID].YPos = player->YPos;
@@ -2647,12 +2647,12 @@ void BoxCollision2(int left, int top, int right, int bottom)
         right -= entity->XPos;
         bottom -= entity->YPos;
 
-        thisHitboxID = addDebugHitbox(H_TYPE_BOX, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
+        thisHitboxID = AddDebugHitbox(H_TYPE_BOX, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
         if (thisHitboxID >= 0 && scriptEng.checkResult)
             debugHitboxList[thisHitboxID].collision |= 1 << (scriptEng.checkResult - 1);
 
         int otherHitboxID =
-            addDebugHitbox(H_TYPE_BOX, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+            AddDebugHitbox(H_TYPE_BOX, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
         if (otherHitboxID >= 0) {
             debugHitboxList[otherHitboxID].XPos = player->XPos;
             debugHitboxList[otherHitboxID].YPos = player->YPos;
@@ -2712,12 +2712,12 @@ void PlatformCollision(int left, int top, int right, int bottom)
         right -= entity->XPos;
         bottom -= entity->YPos;
 
-        thisHitboxID = addDebugHitbox(H_TYPE_PLAT, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
+        thisHitboxID = AddDebugHitbox(H_TYPE_PLAT, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
         if (thisHitboxID >= 0 && scriptEng.checkResult)
             debugHitboxList[thisHitboxID].collision |= 1 << 0;
 
         int otherHitboxID =
-            addDebugHitbox(H_TYPE_PLAT, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+            AddDebugHitbox(H_TYPE_PLAT, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
         if (otherHitboxID >= 0) {
             debugHitboxList[otherHitboxID].XPos = player->XPos;
             debugHitboxList[otherHitboxID].YPos = player->YPos;

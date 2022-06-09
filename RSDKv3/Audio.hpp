@@ -115,7 +115,7 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
 void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan);
 
-inline void freeMusInfo()
+inline void FreeMusInfo()
 {
     LockAudioDevice();
 
@@ -138,7 +138,7 @@ void ProcessMusicStream() {}
 void ProcessAudioPlayback() {}
 void ProcessAudioMixing() {}
 
-inline void freeMusInfo() { ov_clear(&streamInfo[currentStreamIndex].vorbisFile); }
+inline void FreeMusInfo() { ov_clear(&streamInfo[currentStreamIndex].vorbisFile); }
 #endif
 
 #if RETRO_USE_MOD_LOADER
@@ -153,7 +153,7 @@ bool PlayMusic(int track);
 inline void StopMusic()
 {
     musicStatus = MUSIC_STOPPED;
-    freeMusInfo();
+    FreeMusInfo();
 }
 
 void LoadSfx(char *filePath, byte sfxID);

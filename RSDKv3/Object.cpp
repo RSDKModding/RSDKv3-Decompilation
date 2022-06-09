@@ -21,7 +21,7 @@ void SetObjectTypeName(const char *objectName, int objectID)
         ++objNameID;
     }
     typeNames[objectID][typeNameID] = 0;
-    printLog("Set Object (%d) name to: %s", objectID, objectName);
+    PrintLog("Set Object (%d) name to: %s", objectID, objectName);
 }
 
 void ProcessStartupObjects()

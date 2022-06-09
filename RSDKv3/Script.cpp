@@ -1159,7 +1159,7 @@ void ConvertFunctionText(char *text)
                     if (s == stageSFXCount) {
                         char buf[0x40];
                         sprintf(buf, "WARNING: Unknown SfxName \"%s\"", strBuffer);
-                        printLog(buf);
+                        PrintLog(buf);
                     }
                 }
             }
@@ -1180,7 +1180,7 @@ void ConvertFunctionText(char *text)
                 if (a == ACHIEVEMENT_COUNT) {
                     char buf[0x40];
                     sprintf(buf, "WARNING: Unknown AchievementName \"%s\"", strBuffer);
-                    printLog(buf);
+                    PrintLog(buf);
                 }
             }
 
@@ -1200,7 +1200,7 @@ void ConvertFunctionText(char *text)
                 if (p == PLAYERNAME_COUNT) {
                     char buf[0x40];
                     sprintf(buf, "WARNING: Unknown PlayerName \"%s\"", strBuffer);
-                    printLog(buf);
+                    PrintLog(buf);
                 }
             }
 
@@ -1222,7 +1222,7 @@ void ConvertFunctionText(char *text)
                 if (s == -1) {
                     char buf[0x40];
                     sprintf(buf, "WARNING: Unknown StageName \"%s\", on line %d", strBuffer, lineID);
-                    printLog(buf);
+                    PrintLog(buf);
                     s = 0;
                 }
                 funcName[0] = 0;
@@ -3747,7 +3747,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 break;
             case FUNC_CHECKTOUCHRECT: opcodeSize = 0; scriptEng.checkResult = -1;
 #if !RETRO_USE_ORIGINAL_CODE
-                addDebugHitbox(H_TYPE_FINGER, NULL, scriptEng.operands[0], scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]);
+                AddDebugHitbox(H_TYPE_FINGER, NULL, scriptEng.operands[0], scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]);
 #endif
                 for (int f = 0; f < touches; ++f) {
                     if (touchDown[f] && touchX[f] > scriptEng.operands[0] && touchX[f] < scriptEng.operands[2] && touchY[f] > scriptEng.operands[1]

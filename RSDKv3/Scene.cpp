@@ -328,7 +328,7 @@ void LoadStageFiles(void)
     char strBuffer[0x100];
 
     if (!CheckCurrentStageFolder(stageListPosition)) {
-        printLog("Loading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
+        PrintLog("Loading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
         ReleaseStageSfx();
         LoadPalette("MasterPalette.act", 0, 0, 0, 256);
 #if RETRO_USE_MOD_LOADER
@@ -560,7 +560,7 @@ void LoadStageFiles(void)
         LoadStageBackground();
     }
     else {
-        printLog("Reloading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
+        PrintLog("Reloading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
     }
     LoadStageChunks();
     for (int i = 0; i < TRACK_COUNT; ++i) SetMusicTrack((char *)"", i, 0, 0);
@@ -664,7 +664,7 @@ void LoadActLayout()
 
 #if !RETRO_USE_ORIGINAL_CODE
         if (ObjectCount > 0x400)
-            printLog("WARNING: object count %d exceeds the object limit", ObjectCount);
+            PrintLog("WARNING: object count %d exceeds the object limit", ObjectCount);
 #endif
 
 #if RETRO_USE_MOD_LOADER

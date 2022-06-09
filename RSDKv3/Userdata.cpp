@@ -660,7 +660,7 @@ void InitUserdata()
 
         int nummaps = SDL_GameControllerAddMappingsFromFile(buffer);
         if (nummaps >= 0)
-            printLog("loaded %d controller mappings from '%s'\n", buffer, nummaps);
+            PrintLog("loaded %d controller mappings from '%s'\n", buffer, nummaps);
     }
 #endif
 
@@ -932,7 +932,7 @@ void AwardAchievement(int id, int status)
         return;
 
     if (status != achievements[id].status)
-        printLog("Achieved achievement: %s (%d)!", achievements[id].name, status);
+        PrintLog("Achieved achievement: %s (%d)!", achievements[id].name, status);
 
     achievements[id].status = status;
 
@@ -952,12 +952,12 @@ void SetLeaderboard(int leaderboardID, int result)
 {
     if (!Engine.trialMode && !debugMode) {
         if (result < leaderboards[leaderboardID].score) {
-            printLog("Set leaderboard (%d) value to %d", leaderboardID, result);
+            PrintLog("Set leaderboard (%d) value to %d", leaderboardID, result);
             leaderboards[leaderboardID].score = result;
             WriteUserdata();
         }
         else {
-            printLog("Attempted to set leaderboard (%d) value to %d... but score was already %d!", leaderboardID, result,
+            PrintLog("Attempted to set leaderboard (%d) value to %d... but score was already %d!", leaderboardID, result,
                      leaderboards[leaderboardID].score);
         }
     }

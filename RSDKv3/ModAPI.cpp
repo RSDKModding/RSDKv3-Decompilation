@@ -114,8 +114,8 @@ void InitMods()
                 }
             }
         } catch (fs::filesystem_error fe) {
-            printLog("Mods Folder Scanning Error: ");
-            printLog(fe.what());
+            PrintLog("Mods Folder Scanning Error: ");
+            PrintLog(fe.what());
         }
     }
 
@@ -264,7 +264,7 @@ void ScanModFolder(ModInfo *info)
                             buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
                         }
 
-                        // printLog(modBuf);
+                        // PrintLog(modBuf);
                         std::string path(buffer);
                         std::string modPath(modBuf);
                         char pathLower[0x100];
@@ -278,8 +278,8 @@ void ScanModFolder(ModInfo *info)
                 }
             }
         } catch (fs::filesystem_error fe) {
-            printLog("Data Folder Scanning Error: ");
-            printLog(fe.what());
+            PrintLog("Data Folder Scanning Error: ");
+            PrintLog(fe.what());
         }
     }
 
@@ -312,7 +312,7 @@ void ScanModFolder(ModInfo *info)
                             buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
                         }
 
-                        // printLog(modBuf);
+                        // PrintLog(modBuf);
                         std::string path(buffer);
                         std::string modPath(modBuf);
                         char pathLower[0x100];
@@ -326,8 +326,8 @@ void ScanModFolder(ModInfo *info)
                 }
             }
         } catch (fs::filesystem_error fe) {
-            printLog("Script Folder Scanning Error: ");
-            printLog(fe.what());
+            PrintLog("Script Folder Scanning Error: ");
+            PrintLog(fe.what());
         }
     }
 
@@ -360,7 +360,7 @@ void ScanModFolder(ModInfo *info)
                             buffer[i - tokenPos] = modBuf[i] == '\\' ? '/' : modBuf[i];
                         }
 
-                        // printLog(modBuf);
+                        // PrintLog(modBuf);
                         std::string path(buffer);
                         std::string modPath(modBuf);
                         char pathLower[0x100];
@@ -374,8 +374,8 @@ void ScanModFolder(ModInfo *info)
                 }
             }
         } catch (fs::filesystem_error fe) {
-            printLog("Videos Folder Scanning Error: ");
-            printLog(fe.what());
+            PrintLog("Videos Folder Scanning Error: ");
+            PrintLog(fe.what());
         }
     }
 }

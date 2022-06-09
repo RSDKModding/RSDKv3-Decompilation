@@ -5,7 +5,7 @@
 #include <android/log.h>
 #endif
 
-inline void printLog(const char *msg, ...)
+inline void PrintLog(const char *msg, ...)
 {
     if (engineDebugMode) {
         char buffer[0x100];

@@ -306,7 +306,7 @@ int LoadBMPFile(const char *filePath, byte sheetID)
 
         if (gfxDataPosition >= GFXDATA_SIZE) {
             gfxDataPosition = 0;
-            printLog("WARNING: Exceeded max gfx size!");
+            PrintLog("WARNING: Exceeded max gfx size!");
         }
 
         CloseFile();
@@ -384,7 +384,7 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         }
         else {
             gfxDataPosition = 0;
-            printLog("WARNING: Exceeded max gfx surface size!");
+            PrintLog("WARNING: Exceeded max gfx surface size!");
         }
 
         CloseFile();
@@ -444,7 +444,7 @@ int LoadGFXFile(const char *filePath, byte sheetID)
 
         if (gfxDataPosition >= GFXDATA_SIZE) {
             gfxDataPosition = 0;
-            printLog("WARNING: Exceeded max gfx size!");
+            PrintLog("WARNING: Exceeded max gfx size!");
         }
 
         CloseFile();
@@ -488,7 +488,7 @@ int LoadRSVFile(const char *filePath, byte sheetID)
 
         if (gfxDataPosition >= GFXDATA_SIZE) {
             gfxDataPosition = 0;
-            printLog("WARNING: Exceeded max gfx size!");
+            PrintLog("WARNING: Exceeded max gfx size!");
         }
 
         return true;

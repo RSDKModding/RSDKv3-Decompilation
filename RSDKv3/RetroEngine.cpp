@@ -182,7 +182,7 @@ bool processEvents()
 
                     case SDLK_F4:
                         Engine.isFullScreen ^= 1;
-                        setFullScreen(Engine.isFullScreen);
+                        SetFullScreen(Engine.isFullScreen);
                         break;
 
                     case SDLK_F5:
@@ -356,6 +356,7 @@ void RetroEngine::Run()
                             }
                             ProcessStageSelect();
                             break;
+
                         case ENGINE_MAINGAME:
                             if (renderType == RENDER_HW) {
                                 gfxIndexSize        = 0;
@@ -368,33 +369,41 @@ void RetroEngine::Run()
                             }
                             ProcessStage();
                             break;
+
                         case ENGINE_INITDEVMENU:
                             LoadGameConfig("Data/Game/GameConfig.bin");
                             InitDevMenu();
                             ResetCurrentStageFolder();
                             break;
+
                         case ENGINE_EXITGAME: running = false; break;
+
                         case ENGINE_SCRIPTERROR:
                             LoadGameConfig("Data/Game/GameConfig.bin");
                             InitErrorMessage();
                             ResetCurrentStageFolder();
                             break;
+
                         case ENGINE_ENTER_HIRESMODE:
                             gameMode    = ENGINE_MAINGAME;
                             highResMode = true;
-                            printLog("Callback: HiRes Mode Enabled");
+                            PrintLog("Callback: HiRes Mode Enabled");
                             break;
+
                         case ENGINE_EXIT_HIRESMODE:
                             gameMode    = ENGINE_MAINGAME;
                             highResMode = false;
-                            printLog("Callback: HiRes Mode Disabled");
+                            PrintLog("Callback: HiRes Mode Disabled");
                             break;
+
                         case ENGINE_PAUSE: break;
                         case ENGINE_WAIT: break;
+
                         case ENGINE_VIDEOWAIT:
                             if (ProcessVideo() == 1)
                                 gameMode = ENGINE_MAINGAME;
                             break;
+
                         default: break;
                     }
                 }
@@ -989,7 +998,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
 void RetroEngine::Callback(int callbackID)
 {
     switch (callbackID) {
-        default: printLog("Callback: Unknown (%d)", callbackID); break;
+        default: PrintLog("Callback: Unknown (%d)", callbackID); break;
         case CALLBACK_DISPLAYLOGOS: // Display Logos, Called immediately
             /*if (ActiveStageList) {
                 callbackMessage = 1;
@@ -998,7 +1007,7 @@ void RetroEngine::Callback(int callbackID)
             else {
                 callbackMessage = 10;
             }*/
-            printLog("Callback: Display Logos");
+            PrintLog("Callback: Display Logos");
             break;
         case CALLBACK_PRESS_START: // Called when "Press Start" is activated, PC = NONE
             /*if (ActiveStageList) {
@@ -1008,24 +1017,24 @@ void RetroEngine::Callback(int callbackID)
             else {
                 callbackMessage = 10;
             }*/
-            printLog("Callback: Press Start");
+            PrintLog("Callback: Press Start");
             break;
-        case CALLBACK_TIMEATTACK_NOTIFY_ENTER: printLog("Callback: Time Attack Notify Enter"); break;
-        case CALLBACK_TIMEATTACK_NOTIFY_EXIT: printLog("Callback: Time Attack Notify Exit"); break;
+        case CALLBACK_TIMEATTACK_NOTIFY_ENTER: PrintLog("Callback: Time Attack Notify Enter"); break;
+        case CALLBACK_TIMEATTACK_NOTIFY_EXIT: PrintLog("Callback: Time Attack Notify Exit"); break;
         case CALLBACK_FINISHGAME_NOTIFY: // PC = NONE
-            printLog("Callback: Finish Game Notify");
+            PrintLog("Callback: Finish Game Notify");
             break;
         case CALLBACK_RETURNSTORE_SELECTED:
             gameMode = ENGINE_EXITGAME;
-            printLog("Callback: Return To Store Selected");
+            PrintLog("Callback: Return To Store Selected");
             break;
         case CALLBACK_RESTART_SELECTED:
-            printLog("Callback: Restart Selected");
+            PrintLog("Callback: Restart Selected");
             stageMode = STAGEMODE_LOAD;
             break;
         case CALLBACK_EXIT_SELECTED:
             // gameMode = ENGINE_EXITGAME;
-            printLog("Callback: Exit Selected");
+            PrintLog("Callback: Exit Selected");
             if (bytecodeMode == BYTECODE_PC) {
                 running = false;
             }
@@ -1037,7 +1046,7 @@ void RetroEngine::Callback(int callbackID)
             break;
         case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
             gameMode = ENGINE_EXITGAME;
-            printLog("Callback: Buy Full Game Selected");
+            PrintLog("Callback: Buy Full Game Selected");
             break;
         case CALLBACK_TERMS_SELECTED: // PC = How to play, Mobile = Full Game Only Screen
             // PC doesn't have hi res mode
@@ -1050,36 +1059,36 @@ void RetroEngine::Callback(int callbackID)
                     }
                 }
             }*/
-            printLog("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen");
+            PrintLog("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen");
             break;
         case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
-            printLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
+            PrintLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
             break;
         case CALLBACK_TRIAL_ENDED:
             if (bytecodeMode == BYTECODE_PC) {
-                printLog("Callback: ???");
+                PrintLog("Callback: ???");
             }
             else {
                 if (Engine.trialMode) {
-                    printLog("Callback: Trial Ended Screen Requested");
+                    PrintLog("Callback: Trial Ended Screen Requested");
                 }
                 else {
                     // Go to this URL http://www.sega.com
-                    printLog("Callback: Sega Website Requested");
+                    PrintLog("Callback: Sega Website Requested");
                 }
             }
             break;                       // PC = ???, Mobile = Trial Ended Screen
         case CALLBACK_SETTINGS_SELECTED: // PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)
             if (bytecodeMode == BYTECODE_PC) {
-                printLog("Callback: Settings Requested");
+                PrintLog("Callback: Settings Requested");
             }
             else {
                 if (Engine.trialMode) {
-                    printLog("Callback: Full Game Only Requested");
+                    PrintLog("Callback: Full Game Only Requested");
                 }
                 else {
                     // Go to this URL http://www.sega.com/legal/terms_mobile.php
-                    printLog("Callback: Terms Requested");
+                    PrintLog("Callback: Terms Requested");
                 }
             }
             break;
@@ -1106,9 +1115,9 @@ void RetroEngine::Callback(int callbackID)
                     }
                 }
             }
-            printLog("Callback: Pause Menu Requested");
+            PrintLog("Callback: Pause Menu Requested");
             break;
-        case CALLBACK_FULL_VERSION_ONLY: printLog("Callback: Full Version Only Notify"); break; // PC = ???, Mobile = Full Game Only Screen
+        case CALLBACK_FULL_VERSION_ONLY: PrintLog("Callback: Full Version Only Notify"); break; // PC = ???, Mobile = Full Game Only Screen
         case CALLBACK_STAFF_CREDITS:                                                            // PC = Staff Credits, Mobile = Privacy
             if (bytecodeMode == BYTECODE_PC) {
                 for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
@@ -1118,15 +1127,15 @@ void RetroEngine::Callback(int callbackID)
                         stageMode         = STAGEMODE_LOAD;
                     }
                 }
-                printLog("Callback: Staff Credits Requested");
+                PrintLog("Callback: Staff Credits Requested");
             }
             else {
                 // Go to this URL http://www.sega.com/legal/privacy_mobile.php
-                printLog("Callback: Privacy Requested");
+                PrintLog("Callback: Privacy Requested");
             }
             break;
         case CALLBACK_MOREGAMES: //, PC = ??? (only when online), Mobile = Show More Games
-            printLog("Callback: Show More Games");
+            PrintLog("Callback: Show More Games");
             break;
         case CALLBACK_AGEGATE:
             // Newer versions of the game wont continue without this

@@ -59,10 +59,10 @@ int InitAudioPlayback()
     if ((audioDevice = SDL_OpenAudioDevice(nullptr, 0, &want, &audioDeviceFormat, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE)) > 0) {
         audioEnabled = true;
         SDL_PauseAudioDevice(audioDevice, 0);
-        printLog("Opened audio device: %d", audioDevice);
+        PrintLog("Opened audio device: %d", audioDevice);
     }
     else {
-        printLog("Unable to open audio device: %s", SDL_GetError());
+        PrintLog("Unable to open audio device: %s", SDL_GetError());
         audioEnabled = false;
         return true; // no audio but game wont crash now
     }
@@ -74,7 +74,7 @@ int InitAudioPlayback()
     // makes this awkward.
     ogv_stream = SDL_NewAudioStream(AUDIO_F32SYS, 2, 48000, audioDeviceFormat.format, audioDeviceFormat.channels, audioDeviceFormat.freq);
     if (!ogv_stream) {
-        printLog("Failed to create stream: %s", SDL_GetError());
+        PrintLog("Failed to create stream: %s", SDL_GetError());
         SDL_CloseAudioDevice(audioDevice);
         audioEnabled = false;
         return true; // no audio but game wont crash now
@@ -85,7 +85,7 @@ int InitAudioPlayback()
         SDL_PauseAudio(0);
     }
     else {
-        printLog("Unable to open audio device: %s", SDL_GetError());
+        PrintLog("Unable to open audio device: %s", SDL_GetError());
         audioEnabled = false;
         return true; // no audio but game wont crash now
     }
@@ -282,7 +282,7 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
                     bytes_gotten += bytes_read;
                 }
                 else {
-                    printLog("Music read error: vorbis error: %d", bytes_read);
+                    PrintLog("Music read error: vorbis error: %d", bytes_read);
                 }
             }
 
@@ -547,7 +547,7 @@ void SetSfxName(const char *sfxName, int sfxID, bool global)
         ++sfxNamePos;
     }
     sfxNamePtr[sfxPtrPos] = 0;
-    printLog("Set %s SFX (%d) name to: %s", (global ? "Global" : "Stage"), sfxID, sfxNamePtr);
+    PrintLog("Set %s SFX (%d) name to: %s", (global ? "Global" : "Stage"), sfxID, sfxNamePtr);
 }
 #endif
 
@@ -559,7 +559,7 @@ void LoadMusic()
     LockAudioDevice();
 
     if (streamFile[currentStreamIndex].fileSize > 0)
-        freeMusInfo();
+        FreeMusInfo();
 
     FileInfo info;
     if (LoadFile(musicTracks[currentMusicTrack].fileName, &info)) {
@@ -589,7 +589,7 @@ void LoadMusic()
             strmInfo->stream = SDL_NewAudioStream(AUDIO_S16, strmInfo->vorbisFile.vi->channels, (int)strmInfo->vorbisFile.vi->rate,
                                                   audioDeviceFormat.format, audioDeviceFormat.channels, audioDeviceFormat.freq);
             if (!strmInfo->stream) {
-                printLog("Failed to create stream: %s", SDL_GetError());
+                PrintLog("Failed to create stream: %s", SDL_GetError());
             }
 #endif
 
@@ -611,14 +611,14 @@ void LoadMusic()
         }
         else {
             musicStatus = MUSIC_STOPPED;
-            printLog("Failed to load vorbis! error: %d", error);
+            PrintLog("Failed to load vorbis! error: %d", error);
             switch (error) {
-                default: printLog("Vorbis open error: Unknown (%d)", error); break;
-                case OV_EREAD: printLog("Vorbis open error: A read from media returned an error"); break;
-                case OV_ENOTVORBIS: printLog("Vorbis open error: Bitstream does not contain any Vorbis data"); break;
-                case OV_EVERSION: printLog("Vorbis open error: Vorbis version mismatch"); break;
-                case OV_EBADHEADER: printLog("Vorbis open error: Invalid Vorbis bitstream header"); break;
-                case OV_EFAULT: printLog("Vorbis open error: Internal logic fault; indicates a bug or heap / stack corruption"); break;
+                default: PrintLog("Vorbis open error: Unknown (%d)", error); break;
+                case OV_EREAD: PrintLog("Vorbis open error: A read from media returned an error"); break;
+                case OV_ENOTVORBIS: PrintLog("Vorbis open error: Bitstream does not contain any Vorbis data"); break;
+                case OV_EVERSION: PrintLog("Vorbis open error: Vorbis version mismatch"); break;
+                case OV_EBADHEADER: PrintLog("Vorbis open error: Invalid Vorbis bitstream header"); break;
+                case OV_EFAULT: PrintLog("Vorbis open error: Internal logic fault; indicates a bug or heap / stack corruption"); break;
             }
         }
     }
@@ -651,7 +651,7 @@ bool PlayMusic(int track)
             return true;
         }
         else {
-            printLog("WARNING music tried to play while music was loading!");
+            PrintLog("WARNING music tried to play while music was loading!");
         }
     }
     else {
@@ -680,7 +680,7 @@ void LoadSfx(char *filePath, byte sfxID)
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
         SDL_RWops *src = SDL_RWFromMem(sfx, info.vFileSize);
         if (src == NULL) {
-            printLog("Unable to open sfx: %s", info.fileName);
+            PrintLog("Unable to open sfx: %s", info.fileName);
         }
         else {
             SDL_AudioSpec wav_spec;
@@ -691,7 +691,7 @@ void LoadSfx(char *filePath, byte sfxID)
             SDL_RWclose(src);
             delete[] sfx;
             if (wav == NULL) {
-                printLog("Unable to read sfx: %s", info.fileName);
+                PrintLog("Unable to read sfx: %s", info.fileName);
             }
             else {
                 SDL_AudioCVT convert;

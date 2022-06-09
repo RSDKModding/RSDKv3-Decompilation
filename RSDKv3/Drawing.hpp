@@ -134,7 +134,7 @@ void FlipScreenVideo();
 
 void ReleaseRenderDevice();
 
-void setFullScreen(bool fs);
+void SetFullScreen(bool fs);
 
 void GenerateBlendLookupTable();
 

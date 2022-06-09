@@ -155,14 +155,14 @@ int InitRenderDevice()
 #endif
 
     if (!Engine.window) {
-        printLog("ERROR: failed to create window!");
+        PrintLog("ERROR: failed to create window!");
         Engine.gameMode = ENGINE_EXITGAME;
         return 0;
     }
 
 #if !RETRO_USING_OPENGL
     if (!Engine.renderer) {
-        printLog("ERROR: failed to create renderer!");
+        PrintLog("ERROR: failed to create renderer!");
         Engine.gameMode = ENGINE_EXITGAME;
         return 0;
     }
@@ -175,7 +175,7 @@ int InitRenderDevice()
     Engine.screenBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE, SCREEN_YSIZE);
 
     if (!Engine.screenBuffer) {
-        printLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
+        PrintLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
         return 0;
     }
 
@@ -183,7 +183,7 @@ int InitRenderDevice()
         SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2);
 
     if (!Engine.screenBuffer2x) {
-        printLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
+        PrintLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
         return 0;
     }
 #endif
@@ -217,7 +217,7 @@ int InitRenderDevice()
 
     Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 32, SDL_SWSURFACE);
     if (!Engine.windowSurface) {
-        printLog("ERROR: failed to create window!\nerror msg: %s", SDL_GetError());
+        PrintLog("ERROR: failed to create window!\nerror msg: %s", SDL_GetError());
         return 0;
     }
     // Set the window caption
@@ -227,14 +227,14 @@ int InitRenderDevice()
         SDL_CreateRGBSurface(0, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, 0xF800, 0x7E0, 0x1F, 0x00);
 
     if (!Engine.screenBuffer) {
-        printLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
+        PrintLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
         return 0;
     }
 
     /*Engine.screenBuffer2x = SDL_SetVideoMode(SCREEN_XSIZE * 2, SCREEN_YSIZE * 2, 16, SDL_SWSURFACE);
 
     if (!Engine.screenBuffer2x) {
-        printLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
+        PrintLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
         return 0;
     }*/
 
@@ -267,8 +267,8 @@ int InitRenderDevice()
     // glew Setup
     GLenum err = glewInit();
     if (err != GLEW_OK) {
-        printLog("glew init error:");
-        printLog((const char *)glewGetErrorString(err));
+        PrintLog("glew init error:");
+        PrintLog((const char *)glewGetErrorString(err));
         return false;
     }
 #endif
@@ -361,7 +361,7 @@ int InitRenderDevice()
 
     if (Engine.startFullScreen) {
         Engine.isFullScreen = true;
-        setFullScreen(Engine.isFullScreen);
+        SetFullScreen(Engine.isFullScreen);
     }
 
     if (renderType == RENDER_SW) {
@@ -1057,7 +1057,7 @@ void ReleaseRenderDevice()
 #endif
 }
 
-void setFullScreen(bool fs)
+void SetFullScreen(bool fs)
 {
 
     if (fs) {

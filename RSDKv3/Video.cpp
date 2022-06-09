@@ -95,7 +95,7 @@ void PlayVideoFile(char *filePath)
 
     FileIO *file = fOpen(filepath, "rb");
     if (file) {
-        printLog("Loaded File '%s'!", filepath);
+        PrintLog("Loaded File '%s'!", filepath);
 
         callbacks.read     = videoRead;
         callbacks.close    = videoClose;
@@ -114,7 +114,7 @@ void PlayVideoFile(char *filePath)
 #endif
 
         if (!videoDecoder) {
-            printLog("Video Decoder Error!");
+            PrintLog("Video Decoder Error!");
             return;
         }
         while (!videoVidData) {
@@ -122,7 +122,7 @@ void PlayVideoFile(char *filePath)
                 videoVidData = THEORAPLAY_getVideo(videoDecoder);
         }
         if (!videoVidData) {
-            printLog("Video Error!");
+            PrintLog("Video Error!");
             return;
         }
 
@@ -141,7 +141,7 @@ void PlayVideoFile(char *filePath)
         Engine.gameMode = ENGINE_VIDEOWAIT;
     }
     else {
-        printLog("Couldn't find file '%s'!", filepath);
+        PrintLog("Couldn't find file '%s'!", filepath);
     }
 }
 
@@ -329,12 +329,12 @@ void SetupVideoBuffer(int width, int height)
     Engine.videoBuffer = SDL_CreateRGBSurface(0, width, height, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 
     if (!Engine.videoBuffer)
-        printLog("Failed to create video buffer!");
+        PrintLog("Failed to create video buffer!");
 #elif RETRO_USING_SDL2
     Engine.videoBuffer = SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, width, height);
 
     if (!Engine.videoBuffer)
-        printLog("Failed to create video buffer!");
+        PrintLog("Failed to create video buffer!");
 #endif
 }
 

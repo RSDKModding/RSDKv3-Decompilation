@@ -191,7 +191,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         if (!ParseVirtualFileSystem(fileInfo)) {
             fClose(cFileHandle);
             cFileHandle = NULL;
-            printLog("Couldn't load file '%s'", filePath);
+            PrintLog("Couldn't load file '%s'", filePath);
             return false;
         }
         fileInfo->readPos           = readPos;
@@ -209,7 +209,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         StrCopy(fileName, filePathBuf);
         cFileHandle = fOpen(fileInfo->fileName, "rb");
         if (!cFileHandle) {
-            printLog("Couldn't load file '%s'", filePathBuf);
+            PrintLog("Couldn't load file '%s'", filePathBuf);
             return false;
         }
 
@@ -234,7 +234,7 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     bufferPosition = 0;
     readSize       = 0;
 
-    printLog("Loaded File '%s'", filePathBuf);
+    PrintLog("Loaded File '%s'", filePathBuf);
 
     return true;
 }
