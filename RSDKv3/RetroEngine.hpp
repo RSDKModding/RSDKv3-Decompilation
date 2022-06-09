@@ -220,7 +220,33 @@ enum RetroEngineCallbacks {
     CALLBACK_FULL_VERSION_ONLY       = 14,
     CALLBACK_STAFF_CREDITS           = 15,
     CALLBACK_MOREGAMES               = 16,
+    CALLBACK_SHOWREMOVEADS           = 20,
     CALLBACK_AGEGATE                 = 100,
+
+    // Sega Forever stuff
+    // Mod CBs start at about 1000
+    CALLBACK_SHOWMENU_2                       = 997,
+    CALLBACK_SHOWHELPCENTER                   = 998,
+    CALLBACK_CHANGEADSTYPE                    = 999,
+    CALLBACK_NONE_1000                        = 1000,
+    CALLBACK_NONE_1001                        = 1001,
+    CALLBACK_NONE_1006                        = 1002,
+    CALLBACK_ONSHOWINTERSTITIAL               = 1003,
+    CALLBACK_ONSHOWBANNER                     = 1004,
+    CALLBACK_ONSHOWBANNER_PAUSESTART          = 1005,
+    CALLBACK_ONHIDEBANNER                     = 1006,
+    CALLBACK_REMOVEADSBUTTON_FADEOUT          = 1007,
+    CALLBACK_REMOVEADSBUTTON_FADEIN           = 1008,
+    CALLBACK_ONSHOWINTERSTITIAL_2             = 1009,
+    CALLBACK_ONSHOWINTERSTITIAL_3             = 1010,
+    CALLBACK_ONSHOWINTERSTITIAL_4             = 1011,
+    CALLBACK_ONVISIBLEGRIDBTN_1               = 1012,
+    CALLBACK_ONVISIBLEGRIDBTN_0               = 1013,
+    CALLBACK_ONSHOWINTERSTITIAL_PAUSEDURATION = 1014,
+    CALLBACK_SHOWCOUNTDOWNMENU                = 1015,
+    CALLBACK_ONVISIBLEMAINMENU_1              = 1016,
+    CALLBACK_ONVISIBLEMAINMENU_0              = 1017, 
+
 #if RETRO_USE_MOD_LOADER
     // Mod CBs start at 0x1000
     CALLBACK_SET1P = 0x1001,

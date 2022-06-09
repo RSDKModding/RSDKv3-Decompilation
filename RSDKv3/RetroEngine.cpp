@@ -1137,11 +1137,50 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_MOREGAMES: //, PC = ??? (only when online), Mobile = Show More Games
             PrintLog("Callback: Show More Games");
             break;
+
+        case CALLBACK_SHOWREMOVEADS: //, PC = ??? (only when online), Mobile = Remove Ads
+            PrintLog("Callback: Show Remove Ads");
+            break;
+
         case CALLBACK_AGEGATE:
+            PrintLog("Callback: Age Gate");
             // Newer versions of the game wont continue without this
             // Thanks to Sappharad for pointing this out
             SetGlobalVariableByName("HaveLoadAllGDPRValue", 1);
             break;
+
+        // Sega Forever stuff
+        case CALLBACK_SHOWMENU_2: PrintLog("Callback: showMenu(2)"); break;
+        case CALLBACK_SHOWHELPCENTER: PrintLog("Callback: Show Help Center"); break;
+        case CALLBACK_CHANGEADSTYPE: PrintLog("Callback: Change Ads Type"); break;
+        case CALLBACK_NONE_1000:
+        case CALLBACK_NONE_1001:
+        case CALLBACK_NONE_1006: PrintLog("Callback: Unknown - %d", callbackID); break;
+        case CALLBACK_ONSHOWINTERSTITIAL: PrintLog("Callback: onShowInterstitial(2, 0) - Pause_Duration"); break;
+        case CALLBACK_ONSHOWBANNER: PrintLog("Callback: onShowBanner()"); break;
+        case CALLBACK_ONSHOWBANNER_PAUSESTART: PrintLog("Callback: onShowBanner() - Pause_Start"); break;
+        case CALLBACK_ONHIDEBANNER: PrintLog("Callback: onHideBanner()"); break;
+        case CALLBACK_REMOVEADSBUTTON_FADEOUT: PrintLog("Callback: RemoveAdsButton_FadeOut()"); break;
+        case CALLBACK_REMOVEADSBUTTON_FADEIN: PrintLog("Callback: RemoveAdsButton_FadeIn()"); break;
+        case CALLBACK_ONSHOWINTERSTITIAL_2:
+        case CALLBACK_ONSHOWINTERSTITIAL_3: PrintLog("Callback: onShowInterstitial(0, 0)"); break;
+        case CALLBACK_ONSHOWINTERSTITIAL_4: PrintLog("Callback: onShowInterstitial(1, 0)"); break;
+        case CALLBACK_ONVISIBLEGRIDBTN_1: PrintLog("Callback: onVisibleGridBtn(1)"); break;
+        case CALLBACK_ONVISIBLEGRIDBTN_0:
+            PrintLog("Callback: onVisibleGridBtn(0)");
+
+            // small hack here since the game enables hiRes and forgets to disable it????
+            if (Engine.highResMode)
+                Engine.highResMode = false;
+            break;
+        case CALLBACK_ONSHOWINTERSTITIAL_PAUSEDURATION: PrintLog("Callback: onShowInterstitial(0, 0) - Pause_Duration"); break;
+        case CALLBACK_SHOWCOUNTDOWNMENU: PrintLog("Callback: showCountDownMenu(0)"); break;
+        case CALLBACK_ONVISIBLEMAINMENU_1: PrintLog("Callback: onVisibleMainMenu(1)"); break;
+        case CALLBACK_ONVISIBLEMAINMENU_0:
+            PrintLog("Callback: OnVisibleMainMenu(0)");
+            break;
+
+            // Mod loader Only
 #if RETRO_USE_MOD_LOADER
         case CALLBACK_SET1P: activePlayerCount = 1; break;
         case CALLBACK_SET2P: activePlayerCount = 2; break;
