@@ -362,7 +362,9 @@ public:
 
     bool trialMode      = false;
     bool onlineActive   = true;
+#if RETRO_USE_HAPTICS
     bool hapticsEnabled = true;
+#endif
 
     int frameSkipSetting = 0;
     int frameSkipTimer   = 0;

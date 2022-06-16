@@ -291,7 +291,9 @@ const char variableNames[][0x20] = {
     "Engine.PlatformID",
     "Engine.TrialMode",
     "KeyPress.AnyStart",
+#if RETRO_USE_HAPTICS
     "Engine.HapticsEnabled",
+#endif
 };
 #endif
 
@@ -429,7 +431,10 @@ const FunctionInfo functions[] = { FunctionInfo("End", 0),
                                    FunctionInfo("SetLeaderboard", 2),
                                    FunctionInfo("LoadOnlineMenu", 1),
                                    FunctionInfo("EngineCallback", 1),
-                                   FunctionInfo("HapticEffect", 4) };
+#if RETRO_USE_HAPTICS
+                                   FunctionInfo("HapticEffect", 4),
+#endif
+};
 
 #if RETRO_USE_COMPILER
 AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
@@ -713,7 +718,9 @@ enum ScrVariable {
     VAR_ENGINEPLATFORMID,
     VAR_ENGINETRIALMODE,
     VAR_KEYPRESSANYSTART,
+#if RETRO_USE_HAPTICS
     VAR_ENGINEHAPTICSENABLED,
+#endif
     VAR_MAX_CNT
 };
 
@@ -852,7 +859,9 @@ enum ScrFunction {
     FUNC_SETLEADERBOARD,
     FUNC_LOADONLINEMENU,
     FUNC_ENGINECALLBACK,
+#if RETRO_USE_HAPTICS
     FUNC_HAPTICEFFECT,
+#endif
     FUNC_MAX_CNT
 };
 

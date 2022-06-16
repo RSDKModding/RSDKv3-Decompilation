@@ -418,13 +418,15 @@ void RetroEngine::Run()
         frameStep      = false;
         Engine.message = MESSAGE_NONE;
 
+#if RETRO_USE_HAPTICS
         int hapticID = GetHapticEffectNum();
         if (hapticID >= 0) {
-            // playHaptics(hapticID);
+            // PlayHaptics(hapticID);
         }
         else if (hapticID == HAPTIC_STOP) {
-            // stopHaptics();
+            // StopHaptics();
         }
+#endif
     }
 
     ReleaseAudioDevice();
