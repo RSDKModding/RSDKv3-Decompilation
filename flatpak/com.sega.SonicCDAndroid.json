@@ -26,7 +26,7 @@
                 "BASE_PATH=/app/share/soniccd/"
             ],
             "post-install": [
-                "cp patch*.obb /app/share/soniccd/Data.rsdk",
+                "install -Dp -m 644 Data.rsdk /app/share/soniccd/Data.rsdk",
                 "install -Dp -m 644 com.sega.SonicCD.desktop /app/share/applications/com.sega.SonicCD.desktop",
                 "install -Dp -m 644 com.sega.SonicCD.svg /app/share/icons/hicolor/256x256/apps/com.sega.SonicCD.svg",
                 "install -Dp -m 644 com.sega.SonicCD.appdata.xml /app/share/appdata/com.sega.SonicCD.appdata.xml"
@@ -36,6 +36,10 @@
                     "type": "git",
                     "url": "https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git",
                     "branch": "master"
+                },
+                {
+                    "type": "file",
+                    "path": "Data.rsdk"
                 },
                 {
                     "type": "file",

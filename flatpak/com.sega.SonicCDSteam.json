@@ -27,7 +27,10 @@
             ],
             "post-install": [
                 "install -Dp -m 644 Data.rsdk /app/share/soniccd/Data.rsdk",
-                "cp -r ./videos /app/share/soniccd/videos",
+                "install -Dp -m 644 Bad_Ending.ogv /app/share/soniccd/videos/Bad_Ending.ogv",
+                "install -Dp -m 644 Good_Ending.ogv /app/share/soniccd/videos/Good_Ending.ogv",
+                "install -Dp -m 644 Opening.ogv /app/share/soniccd/videos/Opening.ogv",
+                "install -Dp -m 644 Pencil_Test.ogv /app/share/soniccd/videos/Pencil_Test.ogv",
                 "install -Dp -m 644 com.sega.SonicCD.desktop /app/share/applications/com.sega.SonicCD.desktop",
                 "install -Dp -m 644 com.sega.SonicCD.svg /app/share/icons/hicolor/256x256/apps/com.sega.SonicCD.svg",
                 "install -Dp -m 644 com.sega.SonicCD.appdata.xml /app/share/appdata/com.sega.SonicCD.appdata.xml"
@@ -41,6 +44,10 @@
                 {
                     "type": "file",
                     "path": "Data.rsdk"
+                },
+                {
+                    "type": "dir",
+                    "path": "videos"
                 },
                 {
                     "type": "file",

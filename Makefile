@@ -4,6 +4,7 @@ ifeq ($(STATIC),1)
 endif
 
 CXXFLAGS_ALL += -MMD -MP -MF objects/$*.d $(shell pkg-config --cflags $(PKG_CONFIG_STATIC_FLAG) vorbisfile vorbis theoradec sdl2 glew) $(CXXFLAGS) \
+   -DBASE_PATH='"$(BASE_PATH)"' \
    -Idependencies/all/filesystem/include \
    -Idependencies/all/theoraplay \
    -Idependencies/all/tinyxml2/
@@ -60,7 +61,6 @@ bin/RSDKv3: $(OBJECTS)
 
 install: bin/RSDKv3
 	install -Dp -m755 bin/RSDKv3 $(prefix)/bin/RSDKv3
-	chmod -x $(prefix)/bin/RSDKv3
 
 clean:
 	 rm -r -f bin && rm -r -f objects
