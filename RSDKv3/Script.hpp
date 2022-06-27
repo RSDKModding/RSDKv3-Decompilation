@@ -41,7 +41,7 @@ enum ScriptSubs { SUB_MAIN = 0, SUB_PLAYERINTERACTION = 1, SUB_DRAW = 2, SUB_SET
 extern ObjectScript objectScriptList[OBJECT_COUNT];
 extern ScriptPtr functionScriptList[FUNCTION_COUNT];
 
-extern int scriptData[SCRIPTDATA_COUNT];
+extern int scriptCode[SCRIPTDATA_COUNT];
 extern int jumpTableData[JUMPTABLE_COUNT];
 
 extern int jumpTableStack[JUMPSTACK_COUNT];

@@ -1769,7 +1769,7 @@ void DrawObjectList(int Layer)
 
         if (type) {
             activePlayer = 0;
-            if (scriptData[objectScriptList[type].subDraw.scriptCodePtr] > 0)
+            if (scriptCode[objectScriptList[type].subDraw.scriptCodePtr] > 0)
                 ProcessScript(objectScriptList[type].subDraw.scriptCodePtr, objectScriptList[type].subDraw.jumpTablePtr, SUB_DRAW);
         }
     }
@@ -1886,6 +1886,8 @@ void DrawStageGFX()
     }
 
     DrawObjectList(5);
+    // Extra Origins draw list
+    DrawObjectList(7);
     DrawObjectList(6);
 
 #if !RETRO_USE_ORIGINAL_CODE

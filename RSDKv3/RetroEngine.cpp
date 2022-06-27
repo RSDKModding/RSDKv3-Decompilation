@@ -999,6 +999,12 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
 
 void RetroEngine::Callback(int callbackID)
 {
+    // Sonic Origins Params
+    int notifyParam1 = GetGlobalVariableByName("game.callbackParam0");
+    // int notifyParam2 = GetGlobalVariableByName("game.callbackParam1");
+    // int notifyParam3 = GetGlobalVariableByName("game.callbackParam2");
+    // int notifyParam4 = GetGlobalVariableByName("game.callbackParam3");
+
     switch (callbackID) {
         default: PrintLog("Callback: Unknown (%d)", callbackID); break;
         case CALLBACK_DISPLAYLOGOS: // Display Logos, Called immediately
@@ -1150,6 +1156,49 @@ void RetroEngine::Callback(int callbackID)
             // Thanks to Sappharad for pointing this out
             SetGlobalVariableByName("HaveLoadAllGDPRValue", 1);
             break;
+
+        // Sonic Origins
+        case NOTIFY_DEATH_EVENT: PrintLog("NOTIFY: DeathEvent() -> %d", notifyParam1); break;
+        case NOTIFY_TOUCH_SIGNPOST: PrintLog("NOTIFY: TouchSignPost() -> %d", notifyParam1); break;
+        case NOTIFY_HUD_ENABLE: PrintLog("NOTIFY: HUDEnable() -> %d", notifyParam1); break;
+        case NOTIFY_ADD_COIN: PrintLog("NOTIFY: AddCoin() -> %d", notifyParam1); break;
+        case NOTIFY_KILL_ENEMY: PrintLog("NOTIFY: KillEnemy() -> %d", notifyParam1); break;
+        case NOTIFY_SAVESLOT_SELECT: PrintLog("NOTIFY: SaveSlotSelect() -> %d", notifyParam1); break;
+        case NOTIFY_FUTURE_PAST:
+            PrintLog("NOTIFY: FuturePast() -> %d", notifyParam1);
+            objectEntityList[objectLoop].state++;
+            break;
+        case NOTIFY_GOTO_FUTURE_PAST: PrintLog("NOTIFY: GotoFuturePast() -> %d", notifyParam1); break;
+        case NOTIFY_BOSS_END: PrintLog("NOTIFY: BossEnd() -> %d", notifyParam1); break;
+        case NOTIFY_SPECIAL_END: PrintLog("NOTIFY: SpecialEnd() -> %d", notifyParam1); break;
+        case NOTIFY_DEBUGPRINT: PrintLog("NOTIFY: DebugPrint() -> %d", notifyParam1); break;
+        case NOTIFY_KILL_BOSS: PrintLog("NOTIFY: KillBoss() -> %d", notifyParam1); break;
+        case NOTIFY_TOUCH_EMERALD: PrintLog("NOTIFY: TouchEmerald() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_ENEMY: PrintLog("NOTIFY: StatsEnemy() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_CHARA_ACTION: PrintLog("NOTIFY: StatsCharaAction() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_RING: PrintLog("NOTIFY: StatsRing() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_MOVIE: PrintLog("NOTIFY: StatsMovie() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_PARAM_1: PrintLog("NOTIFY: StatsParam1() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_PARAM_2: PrintLog("NOTIFY: StatsParam2() -> %d", notifyParam1); break;
+        case NOTIFY_CHARACTER_SELECT:
+            PrintLog("NOTIFY: CharacterSelect() -> %d", notifyParam1);
+            SetGlobalVariableByName("game.callbackResult", 1);
+            SetGlobalVariableByName("game.continueFlag", 0);
+            break;
+        case NOTIFY_SPECIAL_RETRY: SetGlobalVariableByName("game.callbackResult", 1); break;
+        case NOTIFY_TOUCH_CHECKPOINT: PrintLog("NOTIFY: TouchCheckpoint() -> %d", notifyParam1); break;
+        case NOTIFY_ACT_FINISH: PrintLog("NOTIFY: ActFinish() -> %d", notifyParam1); break;
+        case NOTIFY_1P_VS_SELECT: PrintLog("NOTIFY: 1PVSSelect() -> %d", notifyParam1); break;
+        case NOTIFY_CONTROLLER_SUPPORT: PrintLog("NOTIFY: ControllerSupport() -> %d", notifyParam1); break;
+        case NOTIFY_STAGE_RETRY: PrintLog("NOTIFY: StageRetry() -> %d", notifyParam1); break;
+        case NOTIFY_SOUND_TRACK: PrintLog("NOTIFY: SoundTrack() -> %d", notifyParam1); break;
+        case NOTIFY_GOOD_ENDING: PrintLog("NOTIFY: GoodEnding() -> %d", notifyParam1); break;
+        case NOTIFY_BACK_TO_MAINMENU: PrintLog("NOTIFY: BackToMainMenu() -> %d", notifyParam1); break;
+        case NOTIFY_LEVEL_SELECT_MENU: PrintLog("NOTIFY: LevelSelectMenu() -> %d", notifyParam1); break;
+        case NOTIFY_PLAYER_SET: PrintLog("NOTIFY: PlayerSet() -> %d", notifyParam1); break;
+        case NOTIFY_EXTRAS_MODE: PrintLog("NOTIFY: ExtrasMode() -> %d", notifyParam1); break;
+        case NOTIFY_SPIN_DASH_TYPE: PrintLog("NOTIFY: SpindashType() -> %d", notifyParam1); break;
+        case NOTIFY_TIME_OVER: PrintLog("NOTIFY: TimeOver() -> %d", notifyParam1); break;
 
         // Sega Forever stuff
         case CALLBACK_SHOWMENU_2: PrintLog("Callback: showMenu(2)"); break;

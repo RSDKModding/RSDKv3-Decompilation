@@ -39,7 +39,7 @@ void ProcessStartupObjects()
         scriptInfo->frameListOffset = scriptFrameCount;
         scriptInfo->spriteSheetID   = 0;
         entity->type                = i;
-        if (scriptData[scriptInfo->subStartup.scriptCodePtr] > 0)
+        if (scriptCode[scriptInfo->subStartup.scriptCodePtr] > 0)
             ProcessScript(scriptInfo->subStartup.scriptCodePtr, scriptInfo->subStartup.jumpTablePtr, SUB_SETUP);
         scriptInfo->frameCount = scriptFrameCount - scriptInfo->frameListOffset;
     }
@@ -92,9 +92,9 @@ void ProcessObjects()
         if (active && entity->type > OBJ_TYPE_BLANKOBJECT) {
             ObjectScript *scriptInfo = &objectScriptList[entity->type];
             activePlayer             = 0;
-            if (scriptData[scriptInfo->subMain.scriptCodePtr] > 0)
+            if (scriptCode[scriptInfo->subMain.scriptCodePtr] > 0)
                 ProcessScript(scriptInfo->subMain.scriptCodePtr, scriptInfo->subMain.jumpTablePtr, SUB_MAIN);
-            if (scriptData[scriptInfo->subPlayerInteraction.scriptCodePtr] > 0) {
+            if (scriptCode[scriptInfo->subPlayerInteraction.scriptCodePtr] > 0) {
                 while (activePlayer < activePlayerCount) {
                     if (playerList[activePlayer].objectInteractions)
                         ProcessScript(scriptInfo->subPlayerInteraction.scriptCodePtr, scriptInfo->subPlayerInteraction.jumpTablePtr,
@@ -119,9 +119,9 @@ void ProcessPausedObjects()
         if (entity->priority == PRIORITY_ACTIVE_PAUSED && entity->type > OBJ_TYPE_BLANKOBJECT) {
             ObjectScript *scriptInfo = &objectScriptList[entity->type];
             activePlayer             = 0;
-            if (scriptData[scriptInfo->subMain.scriptCodePtr] > 0)
+            if (scriptCode[scriptInfo->subMain.scriptCodePtr] > 0)
                 ProcessScript(scriptInfo->subMain.scriptCodePtr, scriptInfo->subMain.jumpTablePtr, SUB_MAIN);
-            if (scriptData[scriptInfo->subPlayerInteraction.scriptCodePtr] > 0) {
+            if (scriptCode[scriptInfo->subPlayerInteraction.scriptCodePtr] > 0) {
                 while (activePlayer < PLAYER_COUNT) {
                     if (playerList[activePlayer].objectInteractions)
                         ProcessScript(scriptInfo->subPlayerInteraction.scriptCodePtr, scriptInfo->subPlayerInteraction.jumpTablePtr,

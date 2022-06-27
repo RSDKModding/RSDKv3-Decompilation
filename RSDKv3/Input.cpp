@@ -531,6 +531,8 @@ void CheckKeyPress(InputData *input, byte flags)
                     anyPress = true;
             }
         }
+
+        SetGlobalVariableByName("input.pressButton", anyPress);
     }
 }
 
