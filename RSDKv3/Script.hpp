@@ -15,6 +15,13 @@ struct ScriptPtr {
     int jumpTablePtr;
 };
 
+struct ScriptFunction {
+#if RETRO_USE_COMPILER
+    char name[0x20];
+#endif
+    ScriptPtr ptr;
+};
+
 struct ObjectScript {
     int frameCount;
     int spriteSheetID;
@@ -39,7 +46,9 @@ struct ScriptEngine {
 enum ScriptSubs { SUB_MAIN = 0, SUB_PLAYERINTERACTION = 1, SUB_DRAW = 2, SUB_SETUP = 3 };
 
 extern ObjectScript objectScriptList[OBJECT_COUNT];
-extern ScriptPtr functionScriptList[FUNCTION_COUNT];
+
+extern ScriptFunction scriptFunctionList[FUNCTION_COUNT];
+extern int scriptFunctionCount;
 
 extern int scriptCode[SCRIPTDATA_COUNT];
 extern int jumpTableData[JUMPTABLE_COUNT];
@@ -47,8 +56,10 @@ extern int jumpTableData[JUMPTABLE_COUNT];
 extern int jumpTableStack[JUMPSTACK_COUNT];
 extern int functionStack[FUNCSTACK_COUNT];
 
-extern int scriptCodePos; // Bytecode file readpos
-extern int jumpTablePos;  // Bytecode file readpos
+extern int scriptCodePos;
+extern int scriptCodeOffset;
+extern int jumpTablePos;
+extern int jumpTableOffset;
 
 extern int jumpTableStackPos;
 extern int functionStackPos;
@@ -56,13 +67,6 @@ extern int functionStackPos;
 extern ScriptEngine scriptEng;
 extern char scriptText[0x100];
 
-extern int scriptDataPos;
-extern int scriptDataOffset;
-extern int jumpTableDataPos;
-extern int jumpTableDataOffset;
-
-extern int scriptFunctionCount;
-extern char scriptFunctionNames[FUNCTION_COUNT][0x20];
 
 extern int aliasCount;
 extern int lineID;
@@ -86,7 +90,7 @@ void ParseScriptFile(char *scriptName, int scriptID);
 #endif
 void LoadBytecode(int stageListID, int scriptID);
 
-void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub);
+void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub);
 
 void ClearScriptData();
 
