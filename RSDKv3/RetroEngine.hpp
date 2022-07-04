@@ -476,6 +476,9 @@ public:
     const char *gameHapticSetting = "No_Haptics";
 #endif
 
+    int gameTypeID          = 0;
+    const char *releaseType = "Use_Standalone";
+
     ushort *frameBuffer   = nullptr;
     ushort *frameBuffer2x = nullptr;
 

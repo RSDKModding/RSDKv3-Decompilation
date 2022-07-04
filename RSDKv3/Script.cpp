@@ -7,7 +7,7 @@ ScriptFunction scriptFunctionList[FUNCTION_COUNT];
 int scriptFunctionCount = 0;
 
 int scriptCode[SCRIPTDATA_COUNT];
-int jumpTableData[JUMPTABLE_COUNT];
+int jumpTable[JUMPTABLE_COUNT];
 int jumpTableStack[JUMPSTACK_COUNT];
 int functionStack[FUNCSTACK_COUNT];
 
@@ -967,8 +967,8 @@ void ConvertIfWhileStatement(char *text)
             StrCopy(text, dest);
 
             jumpTableStack[++jumpTableStackPos] = jumpTablePos;
-            jumpTableData[jumpTablePos++]       = -1;
-            jumpTableData[jumpTablePos++]       = 0;
+            jumpTable[jumpTablePos++]       = -1;
+            jumpTable[jumpTablePos++]       = 0;
         }
     }
     else if (FindStringToken(text, "while", 1) == 0) {
@@ -999,8 +999,8 @@ void ConvertIfWhileStatement(char *text)
             StrCopy(text, dest);
 
             jumpTableStack[++jumpTableStackPos] = jumpTablePos;
-            jumpTableData[jumpTablePos++]       = scriptCodePos - scriptCodeOffset;
-            jumpTableData[jumpTablePos++]       = 0;
+            jumpTable[jumpTablePos++]       = scriptCodePos - scriptCodeOffset;
+            jumpTable[jumpTablePos++]       = 0;
         }
     }
 }
@@ -1024,10 +1024,10 @@ bool ConvertSwitchStatement(char *text)
     StrCopy(text, switchText);
 
     jumpTableStack[++jumpTableStackPos] = jumpTablePos;
-    jumpTableData[jumpTablePos++]   = 0x10000;
-    jumpTableData[jumpTablePos++]   = -0x10000;
-    jumpTableData[jumpTablePos++]   = -1;
-    jumpTableData[jumpTablePos++]   = 0;
+    jumpTable[jumpTablePos++]   = 0x10000;
+    jumpTable[jumpTablePos++]   = -0x10000;
+    jumpTable[jumpTablePos++]   = -1;
+    jumpTable[jumpTablePos++]   = 0;
 
     return true;
 }
@@ -1068,34 +1068,34 @@ void ConvertFunctionText(char *text)
     else {
         scriptCode[scriptCodePos++] = opcode;
         if (StrComp("else", functions[opcode].name))
-            jumpTableData[jumpTableStack[jumpTableStackPos]] = scriptCodePos - scriptCodeOffset;
+            jumpTable[jumpTableStack[jumpTableStackPos]] = scriptCodePos - scriptCodeOffset;
 
         if (StrComp("endif", functions[opcode].name) == 1) {
             int jPos                = jumpTableStack[jumpTableStackPos];
-            jumpTableData[jPos + 1] = scriptCodePos - scriptCodeOffset;
-            if (jumpTableData[jPos] == -1)
-                jumpTableData[jPos] = (scriptCodePos - scriptCodeOffset) - 1;
+            jumpTable[jPos + 1] = scriptCodePos - scriptCodeOffset;
+            if (jumpTable[jPos] == -1)
+                jumpTable[jPos] = (scriptCodePos - scriptCodeOffset) - 1;
             --jumpTableStackPos;
         }
 
         if (StrComp("endswitch", functions[opcode].name)) {
             int jPos                = jumpTableStack[jumpTableStackPos];
-            jumpTableData[jPos + 3] = scriptCodePos - scriptCodeOffset;
-            if (jumpTableData[jPos + 2] == -1) {
-                jumpTableData[jPos + 2] = (scriptCodePos - scriptCodeOffset) - 1;
-                int caseCnt             = abs(jumpTableData[jPos + 1] - jumpTableData[jPos]) + 1;
+            jumpTable[jPos + 3] = scriptCodePos - scriptCodeOffset;
+            if (jumpTable[jPos + 2] == -1) {
+                jumpTable[jPos + 2] = (scriptCodePos - scriptCodeOffset) - 1;
+                int caseCnt             = abs(jumpTable[jPos + 1] - jumpTable[jPos]) + 1;
 
                 int jOffset = jPos + 4;
                 for (int c = 0; c < caseCnt; ++c) {
-                    if (jumpTableData[jOffset + c] < 0)
-                        jumpTableData[jOffset + c] = jumpTableData[jPos + 2];
+                    if (jumpTable[jOffset + c] < 0)
+                        jumpTable[jOffset + c] = jumpTable[jPos + 2];
                 }
             }
             --jumpTableStackPos;
         }
 
         if (StrComp("loop", functions[opcode].name)) {
-            jumpTableData[jumpTableStack[jumpTableStackPos--] + 1] = scriptCodePos - scriptCodeOffset;
+            jumpTable[jumpTableStack[jumpTableStackPos--] + 1] = scriptCodePos - scriptCodeOffset;
         }
 
         for (int i = 0; i < opcodeSize; ++i) {
@@ -1404,11 +1404,11 @@ CONV_VAL:
     if (ConvertStringToInteger(dest, &aliasVarID) != 1)
         return;
     int stackValue = jumpTableStack[jumpTableStackPos];
-    if (aliasVarID < jumpTableData[stackValue])
-        jumpTableData[stackValue] = aliasVarID;
+    if (aliasVarID < jumpTable[stackValue])
+        jumpTable[stackValue] = aliasVarID;
     stackValue++;
-    if (aliasVarID > jumpTableData[stackValue])
-        jumpTableData[stackValue] = aliasVarID;
+    if (aliasVarID > jumpTable[stackValue])
+        jumpTable[stackValue] = aliasVarID;
 }
 bool ReadSwitchCase(char *text)
 {
@@ -1432,18 +1432,18 @@ bool ReadSwitchCase(char *text)
         int jPos    = jumpTableStack[jumpTableStackPos];
         int jOffset = jPos + 4;
         if (ConvertStringToInteger(caseText, &val))
-            jumpTableData[val - jumpTableData[jPos] + jOffset] = scriptCodePos - scriptCodeOffset;
+            jumpTable[val - jumpTable[jPos] + jOffset] = scriptCodePos - scriptCodeOffset;
         return true;
     }
     else if (FindStringToken(text, "default", 1) == 0) {
         int jumpTablepos                = jumpTableStack[jumpTableStackPos];
-        jumpTableData[jumpTablepos + 2] = scriptCodePos - scriptCodeOffset;
-        int cnt                         = abs(jumpTableData[jumpTablepos + 1] - jumpTableData[jumpTablepos]) + 1;
+        jumpTable[jumpTablepos + 2] = scriptCodePos - scriptCodeOffset;
+        int cnt                         = abs(jumpTable[jumpTablepos + 1] - jumpTable[jumpTablepos]) + 1;
 
         int jOffset = jumpTablepos + 4;
         for (int i = 0; i < cnt; ++i) {
-            if (jumpTableData[jOffset + i] < 0)
-                jumpTableData[jOffset + i] = scriptCodePos - scriptCodeOffset;
+            if (jumpTable[jOffset + i] < 0)
+                jumpTable[jOffset + i] = scriptCodePos - scriptCodeOffset;
         }
         return true;
     }
@@ -1794,7 +1794,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                                 && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1
 #endif
 #if !RETRO_USE_ORIGINAL_CODE
-                                && FindStringToken(scriptText, "Use_Decomp", 1) == -1
+                                && FindStringToken(scriptText, Engine.releaseType, 1) == -1 && FindStringToken(scriptText, "Use_Decomp", 1) == -1
 #endif
 #if RETRO_USE_MOD_LOADER
                                 && FindStringToken(scriptText, "Use_Mod_Loader", 1) == -1
@@ -1840,8 +1840,8 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         SetFilePosition(info.readPos);
                         parseMode  = PARSEMODE_FUNCTION;
                         int jPos   = jumpTableStack[jumpTableStackPos];
-                        switchDeep = abs(jumpTableData[jPos + 1] - jumpTableData[jPos]) + 1;
-                        for (textPos = 0; textPos < switchDeep; ++textPos) jumpTableData[jumpTablePos++] = -1;
+                        switchDeep = abs(jumpTable[jPos + 1] - jumpTable[jPos]) + 1;
+                        for (textPos = 0; textPos < switchDeep; ++textPos) jumpTable[jumpTablePos++] = -1;
                     }
                     else {
                         CheckCaseNumber(scriptText);
@@ -1893,7 +1893,7 @@ void LoadBytecode(int stageListID, int scriptID)
     if (LoadFile(scriptPath, &info)) {
         byte fileBuffer = 0;
         int *scriptCodePtr = &scriptCode[scriptCodePos];
-        int *jumpTablePtr       = &jumpTableData[jumpTablePos];
+        int *jumpTablePtr       = &jumpTable[jumpTablePos];
 
         FileRead(&fileBuffer, 1);
         int scriptCodeSize = fileBuffer;
@@ -2106,7 +2106,7 @@ void LoadBytecode(int stageListID, int scriptID)
 void ClearScriptData()
 {
     memset(scriptCode, 0, SCRIPTDATA_COUNT * sizeof(int));
-    memset(jumpTableData, 0, JUMPTABLE_COUNT * sizeof(int));
+    memset(jumpTable, 0, JUMPTABLE_COUNT * sizeof(int));
 
     scriptFrameCount = 0;
 
@@ -2885,43 +2885,43 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                 break;
             case FUNC_IFEQUAL:
                 if (scriptEng.operands[1] != scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0]];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0]];
                 jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize                          = 0;
                 break;
             case FUNC_IFGREATER:
                 if (scriptEng.operands[1] <= scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0]];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0]];
                 jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize                          = 0;
                 break;
             case FUNC_IFGREATEROREQUAL:
                 if (scriptEng.operands[1] < scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0]];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0]];
                 jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize                          = 0;
                 break;
             case FUNC_IFLOWER:
                 if (scriptEng.operands[1] >= scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0]];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0]];
                 jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize                          = 0;
                 break;
             case FUNC_IFLOWEROREQUAL:
                 if (scriptEng.operands[1] > scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0]];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0]];
                 jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize                          = 0;
                 break;
             case FUNC_IFNOTEQUAL:
                 if (scriptEng.operands[1] == scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0]];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0]];
                 jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize                          = 0;
                 break;
             case FUNC_ELSE:
                 opcodeSize    = 0;
-                scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + jumpTableStack[jumpTableStackPos--] + 1];
+                scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + jumpTableStack[jumpTableStackPos--] + 1];
                 break;
             case FUNC_ENDIF:
                 opcodeSize = 0;
@@ -2929,64 +2929,64 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                 break;
             case FUNC_WEQUAL:
                 if (scriptEng.operands[1] != scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0] + 1];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0] + 1];
                 else
                     jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize = 0;
                 break;
             case FUNC_WGREATER:
                 if (scriptEng.operands[1] <= scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0] + 1];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0] + 1];
                 else
                     jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize = 0;
                 break;
             case FUNC_WGREATEROREQUAL:
                 if (scriptEng.operands[1] < scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0] + 1];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0] + 1];
                 else
                     jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize = 0;
                 break;
             case FUNC_WLOWER:
                 if (scriptEng.operands[1] >= scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0] + 1];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0] + 1];
                 else
                     jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize = 0;
                 break;
             case FUNC_WLOWEROREQUAL:
                 if (scriptEng.operands[1] > scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0] + 1];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0] + 1];
                 else
                     jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize = 0;
                 break;
             case FUNC_WNOTEQUAL:
                 if (scriptEng.operands[1] == scriptEng.operands[2])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0] + 1];
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0] + 1];
                 else
                     jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
                 opcodeSize = 0;
                 break;
             case FUNC_LOOP:
                 opcodeSize    = 0;
-                scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + jumpTableStack[jumpTableStackPos--]];
+                scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + jumpTableStack[jumpTableStackPos--]];
                 break;
             case FUNC_SWITCH:
                 jumpTableStack[++jumpTableStackPos] = scriptEng.operands[0];
-                if (scriptEng.operands[1] < jumpTableData[jumpTableStart + scriptEng.operands[0]]
-                    || scriptEng.operands[1] > jumpTableData[jumpTableStart + scriptEng.operands[0] + 1])
-                    scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + scriptEng.operands[0] + 2];
+                if (scriptEng.operands[1] < jumpTable[jumpTableStart + scriptEng.operands[0]]
+                    || scriptEng.operands[1] > jumpTable[jumpTableStart + scriptEng.operands[0] + 1])
+                    scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + scriptEng.operands[0] + 2];
                 else
                     scriptCodePtr = scriptCodeStart
-                                    + jumpTableData[jumpTableStart + scriptEng.operands[0] + 4
-                                                    + (scriptEng.operands[1] - jumpTableData[jumpTableStart + scriptEng.operands[0]])];
+                                    + jumpTable[jumpTableStart + scriptEng.operands[0] + 4
+                                                    + (scriptEng.operands[1] - jumpTable[jumpTableStart + scriptEng.operands[0]])];
                 opcodeSize = 0;
                 break;
             case FUNC_BREAK:
                 opcodeSize    = 0;
-                scriptCodePtr = scriptCodeStart + jumpTableData[jumpTableStart + jumpTableStack[jumpTableStackPos--] + 3];
+                scriptCodePtr = scriptCodeStart + jumpTable[jumpTableStart + jumpTableStack[jumpTableStackPos--] + 3];
                 break;
             case FUNC_ENDSWITCH:
                 opcodeSize = 0;
