@@ -4,7 +4,7 @@
 
 + You can get the official release of Sonic CD from:
   * Windows
-    * Via Steam, whether it's the original release or from [Sonic Origins](https://store.steampowered.com/app/1794960))
+    * Via Steam, whether it's the original release or from [Sonic Origins](https://store.steampowered.com/app/1794960)
     * Via the Epic Games Store, from [Sonic Origins](https://store.epicgames.com/en-US/p/sonic-origins)
   * [iOS (Via the App Store)](https://apps.apple.com/us/app/sonic-cd-classic/id454316134)
   * [Android (Via Google Play)](https://play.google.com/store/apps/details?id=com.sega.soniccd.classic&hl=en&gl=US)
