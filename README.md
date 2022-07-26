@@ -34,7 +34,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
   * `F5` will reload the current scene, as well as all assets and scripts.
   * `F8` and `F9` will visualize touch screen and object hitboxes.
   * `F10` will activate a palette overlay that shows the game's 8 internal palettes in real time.
-* If `useSteamDir` is set in the config, and the user is on Windows, the game will try to load savedata from Steam's `userdata` directory (where the Steam version saves to).
+* If `useSteamDir` is set in the config (Windows only), the game will try to load savedata from Steam's `userdata` directory (where the original Steam version saves to).
 * Added the idle screen dimming feature from Sonic Mania Plus, as well as allowing the user to disable it or set how long it takes for the screen to dim.
 
 # How to build
