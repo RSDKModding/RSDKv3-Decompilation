@@ -112,7 +112,7 @@ A: Unfortunately, it's an error with the scripts. If you wanna go into `TitleCar
 A: See above.
 
 ### Q: I'm using an RSDK file from Sonic Origins and there's no audio, what's wrong?
-A: Sonic Origins doesn't have any music or sound effects stored in the games' data files, instead storing and handling all in-game audio itself through Hedgehog Engine 2. You can fix this by simply inserting the audio files from another version of the game.
+A: Sonic Origins doesn't have any music or sound effects contained in the games' data files, instead storing and handling all in-game audio itself through Hedgehog Engine 2. You can fix this by simply inserting the audio files from another version of the game.
 
 ### Q: The screen is tearing, how do I fix it?
 A: Try turning on VSync in settings.ini.
