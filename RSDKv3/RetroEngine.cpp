@@ -344,7 +344,7 @@ void RetroEngine::Init()
         sprintf(textBuf, "- Place a data pack named '%s' in the asset directory\n", Engine.dataFile);
         fWrite(textBuf, 1, strlen(textBuf), f);
 
-        sprintf(textBuf, "- OR extract a data pack and place the \"Data\" folders in the asset directory\n");
+        sprintf(textBuf, "- OR extract a data pack and place the \"Data\" folder in the asset directory\n");
         fWrite(textBuf, 1, strlen(textBuf), f);
 
         fClose(f);
