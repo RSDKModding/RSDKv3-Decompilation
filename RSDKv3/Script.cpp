@@ -4481,7 +4481,11 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                     case VAR_STAGEACTIVELAYER: activeTileLayers[arrayVal] = scriptEng.operands[i]; break;
                     case VAR_STAGEMIDPOINT: tLayerMidPoint = scriptEng.operands[i]; break;
                     case VAR_STAGEPLAYERLISTPOS: playerListPos = scriptEng.operands[i]; break;
-                    case VAR_STAGEACTIVEPLAYER: activePlayer = scriptEng.operands[i]; break;
+                    case VAR_STAGEACTIVEPLAYER:
+                        activePlayer = scriptEng.operands[i];
+                        if (activePlayer > activePlayerCount)
+                            activePlayer = 0;
+                        break;
                     case VAR_SCREENCAMERAENABLED: cameraEnabled = scriptEng.operands[i]; break;
                     case VAR_SCREENCAMERATARGET: cameraTarget = scriptEng.operands[i]; break;
                     case VAR_SCREENCAMERASTYLE: cameraStyle = scriptEng.operands[i]; break;
