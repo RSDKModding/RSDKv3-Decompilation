@@ -344,7 +344,7 @@ void InitUserdata()
         ini.SetInteger("Dev", "StartingScene", Engine.startStage = 0);
         ini.SetInteger("Dev", "FastForwardSpeed", Engine.fastForwardSpeed = 8);
 #if RETRO_PLATFORM == RETRO_WINDOWS
-        ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir = true);
+        ini.SetBool("Dev", "UseSteamDir", Engine.useSteamDir = false);
 #endif
         ini.SetBool("Dev", "UseHQModes", Engine.useHQModes = true);
         sprintf(Engine.dataFile, "%s", "Data.rsdk");
