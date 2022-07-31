@@ -2,7 +2,7 @@
 # **SUPPORT THE OFFICIAL RELEASE OF SONIC CD**
 + Without assets from the official release, this decompilation will not run.
 
-+ You can get the official release of Sonic CD from:
++ You can get an official release of Sonic CD from:
   * Windows
     * Via Steam, whether it's the original release or from [Sonic Origins](https://store.steampowered.com/app/1794960)
     * Via the Epic Games Store, from [Sonic Origins](https://store.epicgames.com/en-US/p/sonic-origins)
