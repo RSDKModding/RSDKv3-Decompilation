@@ -32,15 +32,15 @@ enum ObjectTypes {
 
 enum ObjectPriority {
     // The entity is active if the entity is on screen or within 128 pixels of the screen borders on any axis
-    PRIORITY_ACTIVE_BOUNDS,
+    PRIORITY_BOUNDS,
     // The entity is always active, unless the stage state is PAUSED or FROZEN
     PRIORITY_ACTIVE,
     // Same as PRIORITY_ACTIVE, the entity even runs when the stage state is PAUSED or FROZEN
-    PRIORITY_ACTIVE_PAUSED,
-    // Same as PRIORITY_ACTIVE_BOUNDS, however it only does checks on the x-axis, so when in bounds on the x-axis, the y position doesn't matter
-    PRIORITY_ACTIVE_XBOUNDS,
-    // Same as PRIORITY_ACTIVE_BOUNDS, however the entity's type will be set to BLANK OBJECT when it becomes inactive
-    PRIORITY_ACTIVE_BOUNDS_REMOVE,
+    PRIORITY_ALWAYS,
+    // Same as PRIORITY_BOUNDS, however it only does checks on the x-axis, so when in bounds on the x-axis, the y position doesn't matter
+    PRIORITY_XBOUNDS,
+    // Same as PRIORITY_BOUNDS, however the entity's type will be set to BLANK OBJECT when it becomes inactive
+    PRIORITY_BOUNDS_DESTROY,
     // Never Active.
     PRIORITY_INACTIVE,
 };

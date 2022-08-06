@@ -1147,7 +1147,7 @@ void RetroEngine::Callback(int callbackID)
                 if (StrComp("PauseMenu", typeNames[o])) {
                     objectEntityList[9].type      = o;
                     objectEntityList[9].drawOrder = 6;
-                    objectEntityList[9].priority  = PRIORITY_ACTIVE_PAUSED;
+                    objectEntityList[9].priority  = PRIORITY_ALWAYS;
                     if (activeStageList == STAGELIST_SPECIAL)
                         stageLayouts[0].type = LAYER_3DFLOOR;
                     for (int s = 0; s < globalSFXCount + stageSFXCount; ++s) {

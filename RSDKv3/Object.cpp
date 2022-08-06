@@ -56,7 +56,7 @@ void ProcessObjects()
         int x = 0, y = 0;
         Entity *entity = &objectEntityList[objectLoop];
         switch (entity->priority) {
-            case PRIORITY_ACTIVE_BOUNDS:
+            case PRIORITY_BOUNDS:
                 x      = entity->XPos >> 16;
                 y      = entity->YPos >> 16;
                 active = x > xScrollOffset - OBJECT_BORDER_X1 && x < OBJECT_BORDER_X2 + xScrollOffset && y > yScrollOffset - OBJECT_BORDER_Y1
@@ -64,14 +64,14 @@ void ProcessObjects()
                 break;
 
             case PRIORITY_ACTIVE:
-            case PRIORITY_ACTIVE_PAUSED: active = true; break;
+            case PRIORITY_ALWAYS: active = true; break;
 
-            case PRIORITY_ACTIVE_XBOUNDS:
+            case PRIORITY_XBOUNDS:
                 x      = entity->XPos >> 16;
                 active = x > xScrollOffset - OBJECT_BORDER_X1 && x < OBJECT_BORDER_X2 + xScrollOffset;
                 break;
 
-            case PRIORITY_ACTIVE_BOUNDS_REMOVE:
+            case PRIORITY_BOUNDS_DESTROY:
                 x = entity->XPos >> 16;
                 y = entity->YPos >> 16;
                 if (x <= xScrollOffset - OBJECT_BORDER_X1 || x >= OBJECT_BORDER_X2 + xScrollOffset || y <= yScrollOffset - OBJECT_BORDER_Y1
@@ -116,7 +116,7 @@ void ProcessPausedObjects()
     for (objectLoop = 0; objectLoop < ENTITY_COUNT; ++objectLoop) {
         Entity *entity = &objectEntityList[objectLoop];
 
-        if (entity->priority == PRIORITY_ACTIVE_PAUSED && entity->type > OBJ_TYPE_BLANKOBJECT) {
+        if (entity->priority == PRIORITY_ALWAYS && entity->type > OBJ_TYPE_BLANKOBJECT) {
             ObjectScript *scriptInfo = &objectScriptList[entity->type];
             activePlayer             = 0;
             if (scriptCode[scriptInfo->subMain.scriptCodePtr] > 0)

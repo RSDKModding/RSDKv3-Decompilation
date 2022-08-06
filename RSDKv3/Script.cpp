@@ -1033,7 +1033,7 @@ bool ConvertSwitchStatement(char *text)
 }
 void ConvertFunctionText(char *text)
 {
-    char strBuffer[128];
+    char arrayStr[128];
     char funcName[132];
     int opcode     = 0;
     int opcodeSize = 0;
@@ -1049,6 +1049,7 @@ void ConvertFunctionText(char *text)
             i          = FUNC_MAX_CNT;
         }
     }
+
     if (opcode <= 0) {
         SetupTextMenu(&gameMenu[0], 0);
         AddTextMenuEntry(&gameMenu[0], "SCRIPT PARSING FAILED");
@@ -1109,7 +1110,7 @@ void ConvertFunctionText(char *text)
                     if (text[textPos] == ']')
                         parseMode = 0;
                     else
-                        strBuffer[arrayStrPos++] = text[textPos];
+                        arrayStr[arrayStrPos++] = text[textPos];
                     ++textPos;
                 }
                 else {
@@ -1121,14 +1122,14 @@ void ConvertFunctionText(char *text)
                 }
             }
             funcName[varNamePos]   = 0;
-            strBuffer[arrayStrPos] = 0;
+            arrayStr[arrayStrPos] = 0;
 
             // Eg: TempValue0 = FX_SCALE
             for (int a = 0; a < aliasCount; ++a) {
                 if (StrComp(funcName, aliases[a].name)) {
                     CopyAliasStr(funcName, aliases[a].value, 0);
                     if (FindStringToken(aliases[a].value, "[", 1) > -1)
-                        CopyAliasStr(strBuffer, aliases[a].value, 1);
+                        CopyAliasStr(arrayStr, aliases[a].value, 1);
                 }
             }
 
@@ -1136,8 +1137,8 @@ void ConvertFunctionText(char *text)
             for (int v = 0; v < globalVariablesCount; ++v) {
                 if (StrComp(funcName, globalVariableNames[v])) {
                     StrCopy(funcName, "Global");
-                    strBuffer[0] = 0;
-                    AppendIntegerToString(strBuffer, v);
+                    arrayStr[0] = 0;
+                    AppendIntegerToString(arrayStr, v);
                 }
             }
 
@@ -1151,10 +1152,10 @@ void ConvertFunctionText(char *text)
 
             // Eg: TempValue0 = TypeName[PlayerObject]
             if (StrComp(funcName, "TypeName")) {
-                funcName[0] = 0;
-                AppendIntegerToString(funcName, 0);
+                funcName[0] = '0';
+
                 for (int o = 0; o < OBJECT_COUNT; ++o) {
-                    if (StrComp(strBuffer, typeNames[o])) {
+                    if (StrComp(arrayStr, typeNames[o])) {
                         funcName[0] = 0;
                         AppendIntegerToString(funcName, o);
                     }
@@ -1164,11 +1165,11 @@ void ConvertFunctionText(char *text)
 #if RETRO_USE_MOD_LOADER
             // Eg: TempValue0 = SfxName[Jump]
             if (StrComp(funcName, "SfxName")) {
-                funcName[0] = 0;
-                AppendIntegerToString(funcName, 0);
+                funcName[0] = '0';
+
                 int s = 0;
                 for (; s < globalSFXCount; ++s) {
-                    if (StrComp(strBuffer, globalSfxNames[s])) {
+                    if (StrComp(arrayStr, globalSfxNames[s])) {
                         funcName[0] = 0;
                         AppendIntegerToString(funcName, s);
                         break;
@@ -1178,7 +1179,7 @@ void ConvertFunctionText(char *text)
                 if (s == globalSFXCount) {
                     s = 0;
                     for (; s < stageSFXCount; ++s) {
-                        if (StrComp(strBuffer, stageSfxNames[s])) {
+                        if (StrComp(arrayStr, stageSfxNames[s])) {
                             funcName[0] = 0;
                             AppendIntegerToString(funcName, s);
                             break;
@@ -1187,7 +1188,7 @@ void ConvertFunctionText(char *text)
 
                     if (s == stageSFXCount) {
                         char buf[0x40];
-                        sprintf(buf, "WARNING: Unknown SfxName \"%s\"", strBuffer);
+                        sprintf(buf, "WARNING: Unknown SfxName \"%s\"", arrayStr);
                         PrintLog(buf);
                     }
                 }
@@ -1195,11 +1196,11 @@ void ConvertFunctionText(char *text)
 
             // Eg: TempValue0 = AchievementName[88 Miles Per Hour]
             if (StrComp(funcName, "AchievementName")) {
-                funcName[0] = 0;
-                AppendIntegerToString(funcName, 0);
+                funcName[0] = '0';
+
                 int a = 0;
                 for (; a < ACHIEVEMENT_COUNT; ++a) {
-                    if (StrComp(strBuffer, achievements[a].name)) {
+                    if (StrComp(arrayStr, achievements[a].name)) {
                         funcName[0] = 0;
                         AppendIntegerToString(funcName, a);
                         break;
@@ -1208,18 +1209,18 @@ void ConvertFunctionText(char *text)
 
                 if (a == ACHIEVEMENT_COUNT) {
                     char buf[0x40];
-                    sprintf(buf, "WARNING: Unknown AchievementName \"%s\"", strBuffer);
+                    sprintf(buf, "WARNING: Unknown AchievementName \"%s\"", arrayStr);
                     PrintLog(buf);
                 }
             }
 
             // Eg: TempValue0 = PlayerName[SONIC]
             if (StrComp(funcName, "PlayerName")) {
-                funcName[0] = 0;
-                AppendIntegerToString(funcName, 0);
+                funcName[0] = '0';
+
                 int p = 0;
                 for (; p < PLAYERNAME_COUNT; ++p) {
-                    if (StrComp(strBuffer, playerNames[p])) {
+                    if (StrComp(arrayStr, playerNames[p])) {
                         funcName[0] = 0;
                         AppendIntegerToString(funcName, p);
                         break;
@@ -1228,29 +1229,30 @@ void ConvertFunctionText(char *text)
 
                 if (p == PLAYERNAME_COUNT) {
                     char buf[0x40];
-                    sprintf(buf, "WARNING: Unknown PlayerName \"%s\"", strBuffer);
+                    sprintf(buf, "WARNING: Unknown PlayerName \"%s\"", arrayStr);
                     PrintLog(buf);
                 }
             }
 
             // Eg: TempValue0 = StageName[R - PALMTREE PANIC ZONE 1 A]
             if (StrComp(funcName, "StageName")) {
-                funcName[0] = 0;
+                funcName[0] = '0';
+
                 int s       = -1;
-                if (StrLength(strBuffer) >= 2) {
-                    char list = strBuffer[0];
+                if (StrLength(arrayStr) >= 2) {
+                    char list = arrayStr[0];
                     switch (list) {
                         case 'P': list = STAGELIST_PRESENTATION; break;
                         case 'R': list = STAGELIST_REGULAR; break;
                         case 'S': list = STAGELIST_SPECIAL; break;
                         case 'B': list = STAGELIST_BONUS; break;
                     }
-                    s = GetSceneID(list, &strBuffer[2]);
+                    s = GetSceneID(list, &arrayStr[2]);
                 }
 
                 if (s == -1) {
                     char buf[0x40];
-                    sprintf(buf, "WARNING: Unknown StageName \"%s\", on line %d", strBuffer, lineID);
+                    sprintf(buf, "WARNING: Unknown StageName \"%s\", on line %d", arrayStr, lineID);
                     PrintLog(buf);
                     s = 0;
                 }
@@ -1307,31 +1309,31 @@ void ConvertFunctionText(char *text)
             }
             else {
                 scriptCode[scriptCodePos++] = SCRIPTVAR_VAR;
-                if (strBuffer[0]) {
+                if (arrayStr[0]) {
                     scriptCode[scriptCodePos] = VARARR_ARRAY;
 
-                    if (strBuffer[0] == '+')
+                    if (arrayStr[0] == '+')
                         scriptCode[scriptCodePos] = VARARR_ENTNOPLUS1;
 
-                    if (strBuffer[0] == '-')
+                    if (arrayStr[0] == '-')
                         scriptCode[scriptCodePos] = VARARR_ENTNOMINUS1;
 
                     ++scriptCodePos;
 
-                    if (strBuffer[0] == '-' || strBuffer[0] == '+') {
-                        for (int i = 0; i < StrLength(strBuffer); ++i) strBuffer[i] = strBuffer[i + 1];
+                    if (arrayStr[0] == '-' || arrayStr[0] == '+') {
+                        for (int i = 0; i < StrLength(arrayStr); ++i) arrayStr[i] = arrayStr[i + 1];
                     }
 
-                    if (ConvertStringToInteger(strBuffer, &constant)) {
+                    if (ConvertStringToInteger(arrayStr, &constant)) {
                         scriptCode[scriptCodePos++] = 0;
                         scriptCode[scriptCodePos++] = constant;
                     }
                     else {
-                        if (StrComp(strBuffer, "ArrayPos0"))
+                        if (StrComp(arrayStr, "ArrayPos0"))
                             constant = 0;
-                        if (StrComp(strBuffer, "ArrayPos1"))
+                        if (StrComp(arrayStr, "ArrayPos1"))
                             constant = 1;
-                        if (StrComp(strBuffer, "TempObjectPos"))
+                        if (StrComp(arrayStr, "TempObjectPos"))
                             constant = 2;
 
                         scriptCode[scriptCodePos++] = 1;
@@ -1370,45 +1372,37 @@ void ConvertFunctionText(char *text)
 }
 void CheckCaseNumber(char *text)
 {
-    if (FindStringToken(text, "case", 1))
+    if (FindStringToken(text, "case", 1) != 0)
         return;
 
-    char dest[128];
-    int destStrPos = 0;
+    char caseString[128];
     char caseChar  = text[4];
-    if (text[4]) {
-        int textPos = 5;
-        do {
-            if (caseChar != ':')
-                dest[destStrPos++] = caseChar;
-            caseChar = text[textPos++];
-        } while (caseChar);
+
+    int textPos    = 5;
+    int caseStrPos = 0;
+    while (caseChar) {
+        if (caseChar != ':')
+            caseString[caseStrPos++] = caseChar;
+        caseChar = text[textPos++];
     }
-    else {
-        destStrPos = 0;
-    }
-    dest[destStrPos] = 0;
-    int aliasVarID   = 0;
-    if (aliasCount) {
-        aliasVarID = 0;
-        do {
-            while (!StrComp(dest, aliases[aliasVarID].name)) {
-                if (aliasCount <= ++aliasVarID)
-                    goto CONV_VAL;
-            }
-            StrCopy(dest, aliases[aliasVarID++].value);
-        } while (aliasCount > aliasVarID);
+    caseString[caseStrPos] = 0;
+
+    for (int a = 0; a < aliasCount; ++a) {
+        if (StrComp(aliases[a].name, caseString)) {
+            StrCopy(caseString, aliases[a].value);
+            break;
+        }
     }
 
-CONV_VAL:
-    if (ConvertStringToInteger(dest, &aliasVarID) != 1)
-        return;
-    int stackValue = jumpTableStack[jumpTableStackPos];
-    if (aliasVarID < jumpTable[stackValue])
-        jumpTable[stackValue] = aliasVarID;
-    stackValue++;
-    if (aliasVarID > jumpTable[stackValue])
-        jumpTable[stackValue] = aliasVarID;
+    int caseID = 0;
+    if (ConvertStringToInteger(caseString, &caseID)) {
+        int stackValue = jumpTableStack[jumpTableStackPos];
+        if (caseID < jumpTable[stackValue])
+            jumpTable[stackValue] = caseID;
+        stackValue++;
+        if (caseID > jumpTable[stackValue])
+            jumpTable[stackValue] = caseID;
+    }
 }
 bool ReadSwitchCase(char *text)
 {
@@ -2821,22 +2815,14 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                 scriptText[strLen] = 0;
                 for (int c = 0; c < strLen; ++c) {
                     switch (c % 4) {
-                        case 0: {
-                            scriptText[c] = scriptCode[scriptCodePtr] >> 24;
-                            break;
-                        }
-                        case 1: {
-                            scriptText[c] = (0xFFFFFF & scriptCode[scriptCodePtr]) >> 16;
-                            break;
-                        }
-                        case 2: {
-                            scriptText[c] = (0xFFFF & scriptCode[scriptCodePtr]) >> 8;
-                            break;
-                        }
-                        case 3: {
-                            scriptText[c] = scriptCode[scriptCodePtr++];
-                            break;
-                        }
+                        case 0: scriptText[c] = scriptCode[scriptCodePtr] >> 24; break;
+
+                        case 1: scriptText[c] = (0xFFFFFF & scriptCode[scriptCodePtr]) >> 16; break;
+
+                        case 2: scriptText[c] = (0xFFFF & scriptCode[scriptCodePtr]) >> 8; break;
+
+                        case 3: scriptText[c] = scriptCode[scriptCodePtr++]; break;
+
                         default: break;
                     }
                 }
@@ -3505,11 +3491,11 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                 newEnt->YPos          = scriptEng.operands[4];
                 newEnt->direction     = FLIP_NONE;
                 newEnt->frame         = 0;
-                newEnt->priority      = PRIORITY_ACTIVE_BOUNDS;
+                newEnt->priority      = PRIORITY_BOUNDS;
                 newEnt->rotation      = 0;
                 newEnt->state         = 0;
                 newEnt->drawOrder     = 3;
-                newEnt->scale         = 512;
+                newEnt->scale         = 0x200;
                 newEnt->inkEffect     = INK_NONE;
                 newEnt->values[0]     = 0;
                 newEnt->values[1]     = 0;
