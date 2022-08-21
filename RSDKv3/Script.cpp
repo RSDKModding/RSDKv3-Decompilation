@@ -1152,7 +1152,8 @@ void ConvertFunctionText(char *text)
 
             // Eg: TempValue0 = TypeName[PlayerObject]
             if (StrComp(funcName, "TypeName")) {
-                funcName[0] = '0';
+                funcName[0]  = '0';
+                funcName[1] = 0;
 
                 for (int o = 0; o < OBJECT_COUNT; ++o) {
                     if (StrComp(arrayStr, typeNames[o])) {
@@ -1166,6 +1167,7 @@ void ConvertFunctionText(char *text)
             // Eg: TempValue0 = SfxName[Jump]
             if (StrComp(funcName, "SfxName")) {
                 funcName[0] = '0';
+                funcName[1] = 0;
 
                 int s = 0;
                 for (; s < globalSFXCount; ++s) {
@@ -1197,6 +1199,7 @@ void ConvertFunctionText(char *text)
             // Eg: TempValue0 = AchievementName[88 Miles Per Hour]
             if (StrComp(funcName, "AchievementName")) {
                 funcName[0] = '0';
+                funcName[1] = 0;
 
                 int a = 0;
                 for (; a < ACHIEVEMENT_COUNT; ++a) {
@@ -1217,6 +1220,7 @@ void ConvertFunctionText(char *text)
             // Eg: TempValue0 = PlayerName[SONIC]
             if (StrComp(funcName, "PlayerName")) {
                 funcName[0] = '0';
+                funcName[1] = 0;
 
                 int p = 0;
                 for (; p < PLAYERNAME_COUNT; ++p) {
@@ -1237,6 +1241,7 @@ void ConvertFunctionText(char *text)
             // Eg: TempValue0 = StageName[R - PALMTREE PANIC ZONE 1 A]
             if (StrComp(funcName, "StageName")) {
                 funcName[0] = '0';
+                funcName[1] = 0;
 
                 int s       = -1;
                 if (StrLength(arrayStr) >= 2) {
