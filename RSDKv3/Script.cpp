@@ -3671,7 +3671,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                     PlayVideoFile(scriptText); // not an rsv
                 else
                     scriptInfo->spriteSheetID = AddGraphicsFile(scriptText);
-                // ResumeSound();
+                ResumeSound();
                 break;
             case FUNC_NEXTVIDEOFRAME:
                 opcodeSize = 0;
