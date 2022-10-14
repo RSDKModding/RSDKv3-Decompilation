@@ -1,7 +1,8 @@
 #ifndef DRAWING_H
 #define DRAWING_H
 
-#define SURFACE_COUNT (24)
+// #define SURFACE_COUNT (24)
+#define SURFACE_COUNT (32) // originally 24, updated to 32 in sega forever vers
 #define GFXDATA_SIZE  (0x800 * 0x800)
 
 // usually 7, but origins has an extra one for some reason
@@ -17,7 +18,8 @@ struct DrawListEntry {
 };
 
 struct GFXSurface {
-    char fileName[0x40];
+    // char fileName[0x40];
+    char fileName[0x80]; // originally 0x40, updated to 0x80 in sega forever vers
     int height;
     int width;
     int widthShifted;

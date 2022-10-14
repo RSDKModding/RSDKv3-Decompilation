@@ -1486,13 +1486,13 @@ void SetupPolygonLists()
 
 void UpdateTextureBufferWithTiles()
 {
-    int cnt = 0;
+    int tileIndex = 0;
     if (texBufferMode == 0) {
+        // regular 1024 set of tiles
         for (int h = 0; h < 512; h += 16) {
             for (int w = 0; w < 512; w += 16) {
-                int dataPos = cnt << 8;
-                cnt++;
-                int bufPos = w + (h << 10);
+                int dataPos = tileIndex++ << 8;
+                int bufPos = w + (h * HW_TEXTURE_SIZE);
                 for (int y = 0; y < TILE_SIZE; y++) {
                     for (int x = 0; x < TILE_SIZE; x++) {
                         if (tilesetGFXData[dataPos] > 0)
@@ -1508,14 +1508,16 @@ void UpdateTextureBufferWithTiles()
         }
     }
     else {
+        // 3D Sky/HParallax version
         for (int h = 0; h < 504; h += 18) {
             for (int w = 0; w < 504; w += 18) {
-                int dataPos = cnt << 8;
-                cnt++;
-                if (cnt == 783)
-                    cnt = 1023;
+                int dataPos = tileIndex++ << 8;
 
-                int bufPos = w + (h << 10);
+                // odd... but sure alright
+                if (tileIndex == 783)
+                    tileIndex = HW_TEXTURE_SIZE - 1;
+
+                int bufPos = w + (h * HW_TEXTURE_SIZE);
                 if (tilesetGFXData[dataPos] > 0)
                     texBuffer[bufPos] = fullPalette[texPaletteNum][tilesetGFXData[dataPos]];
                 else
@@ -1618,11 +1620,12 @@ void UpdateTextureBufferWithTiles()
 }
 void UpdateTextureBufferWithSortedSprites()
 {
-    byte surfCnt = 0;
-    byte surfList[SURFACE_COUNT];
-    bool flag = true;
+    byte sortedSurfaceCount = 0;
+    byte sortedSurfaceList[SURFACE_COUNT];
+
     for (int i = 0; i < SURFACE_COUNT; i++) gfxSurface[i].texStartX = -1;
 
+    // sort surfaces
     for (int i = 0; i < SURFACE_COUNT; i++) {
         int gfxSize  = 0;
         sbyte surfID = -1;
@@ -1646,69 +1649,119 @@ void UpdateTextureBufferWithSortedSprites()
         }
         else {
             gfxSurface[surfID].texStartX = 0;
-            surfList[surfCnt++]          = surfID;
+            sortedSurfaceList[sortedSurfaceCount++]          = surfID;
         }
     }
 
     for (int i = 0; i < SURFACE_COUNT; i++) gfxSurface[i].texStartX = -1;
 
-    for (int i = 0; i < surfCnt; i++) {
-        GFXSurface *curSurface = &gfxSurface[surfList[i]];
-        curSurface->texStartX  = 0;
-        curSurface->texStartY  = 0;
-        bool loopFlag          = true;
-        while (loopFlag) {
-            loopFlag = false;
-            if (curSurface->height == HW_TEXTURE_SIZE)
+    bool flag = true;
+    for (int i = 0; i < sortedSurfaceCount; i++) {
+        GFXSurface *sortedSurface = &gfxSurface[sortedSurfaceList[i]];
+        sortedSurface->texStartX  = 0;
+        sortedSurface->texStartY  = 0;
+
+        int storeTexX = 0;
+        int storeTexY = 0;
+
+        bool inLoop          = true;
+        while (inLoop) {
+            inLoop = false;
+            if (sortedSurface->height == HW_TEXTURE_SIZE)
                 flag = false;
 
             if (flag) {
-                if (curSurface->texStartX < 512 && curSurface->texStartY < 512) {
-                    loopFlag = true;
-                    curSurface->texStartX += curSurface->width;
-                    if (curSurface->texStartX + curSurface->width > HW_TEXTURE_SIZE) {
-                        curSurface->texStartX = 0;
-                        curSurface->texStartY += curSurface->height;
+                bool checkSort = true;
+                if (sortedSurface->texStartX < 512 && sortedSurface->texStartY < 512) {
+                    inLoop = true;
+
+                    sortedSurface->texStartX += sortedSurface->width;
+                    if (sortedSurface->texStartX + sortedSurface->width > HW_TEXTURE_SIZE) {
+                        sortedSurface->texStartX = 0;
+                        sortedSurface->texStartY += sortedSurface->height;
+                    }
+
+                    checkSort = i > 0;
+                    if (i) {
+                        for (int s = 0; i > s; ++s) {
+                            GFXSurface *surface = &gfxSurface[sortedSurfaceList[s]];
+
+                            int width  = abs(sortedSurface->texStartX - surface->texStartX);
+                            int height = abs(sortedSurface->texStartY - surface->texStartY);
+                            if (sortedSurface->width > width && sortedSurface->height > height && surface->width > width && surface->height > height) {
+                                checkSort = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (checkSort) {
+                        storeTexX = sortedSurface->texStartX;
+                        storeTexY = sortedSurface->texStartY;
                     }
                 }
-                else {
+
+                if (checkSort) {
                     for (int s = 0; s < SURFACE_COUNT; s++) {
                         GFXSurface *surface = &gfxSurface[s];
-                        if (surface->texStartX > -1 && s != surfList[i] && curSurface->texStartX < surface->texStartX + surface->width
-                            && curSurface->texStartX >= surface->texStartX && curSurface->texStartY < surface->texStartY + surface->height) {
-                            loopFlag = true;
-                            curSurface->texStartX += curSurface->width;
-                            if (curSurface->texStartX + curSurface->width > HW_TEXTURE_SIZE) {
-                                curSurface->texStartX = 0;
-                                curSurface->texStartY += curSurface->height;
+                        if (surface->texStartX > -1 && s != sortedSurfaceList[i] && sortedSurface->texStartX < surface->texStartX + surface->width
+                            && sortedSurface->texStartX >= surface->texStartX && sortedSurface->texStartY < surface->texStartY + surface->height) {
+                            inLoop = true;
+
+                            sortedSurface->texStartX += sortedSurface->width;
+                            if (sortedSurface->texStartX + sortedSurface->width > HW_TEXTURE_SIZE) {
+                                sortedSurface->texStartX = 0;
+                                sortedSurface->texStartY += sortedSurface->height;
                             }
-                            s = SURFACE_COUNT;
+                            break;
                         }
                     }
                 }
             }
             else {
-                if (curSurface->width < HW_TEXTURE_SIZE) {
-                    if (curSurface->texStartX < 16 && curSurface->texStartY < 16) {
-                        loopFlag = true;
-                        curSurface->texStartX += curSurface->width;
-                        if (curSurface->texStartX + curSurface->width > HW_TEXTURE_SIZE) {
-                            curSurface->texStartX = 0;
-                            curSurface->texStartY += curSurface->height;
+                if (sortedSurface->width < HW_TEXTURE_SIZE) {
+                    bool checkSort = true;
+                    if (sortedSurface->texStartX < 16 && sortedSurface->texStartY < 16) {
+                        inLoop = true;
+
+                        sortedSurface->texStartX += sortedSurface->width;
+                        if (sortedSurface->texStartX + sortedSurface->width > HW_TEXTURE_SIZE) {
+                            sortedSurface->texStartX = 0;
+                            sortedSurface->texStartY += sortedSurface->height;
+                        }
+
+                        checkSort = i > 0;
+                        if (i) {
+                            for (int s = 0; i > s; ++s) {
+                                GFXSurface *surface = &gfxSurface[sortedSurfaceList[s]];
+
+                                int width  = abs(sortedSurface->texStartX - surface->texStartX);
+                                int height = abs(sortedSurface->texStartY - surface->texStartY);
+                                if (sortedSurface->width > width && sortedSurface->height > height && surface->width > width && surface->height > height) {
+                                    checkSort = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (checkSort) {
+                            storeTexX = sortedSurface->texStartX;
+                            storeTexY = sortedSurface->texStartY;
                         }
                     }
-                    else {
+
+                    if (checkSort) {
                         for (int s = 0; s < SURFACE_COUNT; s++) {
                             GFXSurface *surface = &gfxSurface[s];
-                            if (surface->texStartX > -1 && s != surfList[i] && curSurface->texStartX < surface->texStartX + surface->width
-                                && curSurface->texStartX >= surface->texStartX && curSurface->texStartY < surface->texStartY + surface->height) {
-                                loopFlag = true;
-                                curSurface->texStartX += curSurface->width;
-                                if (curSurface->texStartX + curSurface->width > HW_TEXTURE_SIZE) {
-                                    curSurface->texStartX = 0;
-                                    curSurface->texStartY += curSurface->height;
+                            if (surface->texStartX > -1 && s != sortedSurfaceList[i] && sortedSurface->texStartX < surface->texStartX + surface->width
+                                && sortedSurface->texStartX >= surface->texStartX && sortedSurface->texStartY < surface->texStartY + surface->height) {
+                                inLoop = true;
+                                sortedSurface->texStartX += sortedSurface->width;
+                                if (sortedSurface->texStartX + sortedSurface->width > HW_TEXTURE_SIZE) {
+                                    sortedSurface->texStartX = 0;
+                                    sortedSurface->texStartY += sortedSurface->height;
                                 }
-                                s = SURFACE_COUNT;
+                                break;
                             }
                         }
                     }
@@ -1716,11 +1769,17 @@ void UpdateTextureBufferWithSortedSprites()
             }
         }
 
-        if (curSurface->texStartY + curSurface->height <= HW_TEXTURE_SIZE) {
-            int gfxPos  = curSurface->dataPosition;
-            int dataPos = curSurface->texStartX + (curSurface->texStartY << 10);
-            for (int h = 0; h < curSurface->height; h++) {
-                for (int w = 0; w < curSurface->width; w++) {
+        // sega forever hack, basically panic prevention, will allow the game to override the tileset stuff to store more spritesheets (used in the menu)
+        if (sortedSurface->texStartX >= HW_TEXTURE_SIZE || sortedSurface->texStartY >= HW_TEXTURE_SIZE) {
+            sortedSurface->texStartX = storeTexX;
+            sortedSurface->texStartY = storeTexY;
+        }
+
+        if (sortedSurface->texStartY + sortedSurface->height <= HW_TEXTURE_SIZE) {
+            int gfxPos  = sortedSurface->dataPosition;
+            int dataPos = sortedSurface->texStartX + (sortedSurface->texStartY * HW_TEXTURE_SIZE);
+            for (int h = 0; h < sortedSurface->height; h++) {
+                for (int w = 0; w < sortedSurface->width; w++) {
                     if (graphicData[gfxPos] > 0)
                         texBuffer[dataPos] = fullPalette[texPaletteNum][graphicData[gfxPos]];
                     else
@@ -1728,7 +1787,7 @@ void UpdateTextureBufferWithSortedSprites()
                     dataPos++;
                     gfxPos++;
                 }
-                dataPos += HW_TEXTURE_SIZE - curSurface->width;
+                dataPos += HW_TEXTURE_SIZE - sortedSurface->width;
             }
         }
     }
@@ -1737,17 +1796,17 @@ void UpdateTextureBufferWithSprites()
 {
     for (int i = 0; i < SURFACE_COUNT; ++i) {
         if (gfxSurface[i].texStartY + gfxSurface[i].height <= HW_TEXTURE_SIZE && gfxSurface[i].texStartX > -1) {
-            int pos    = gfxSurface[i].dataPosition;
-            int texPos = gfxSurface[i].texStartX + (gfxSurface[i].texStartY << 10);
+            int gfxPos = gfxSurface[i].dataPosition;
+            int texPos = gfxSurface[i].texStartX + (gfxSurface[i].texStartY * HW_TEXTURE_SIZE);
             for (int y = 0; y < gfxSurface[i].height; y++) {
                 for (int x = 0; x < gfxSurface[i].width; x++) {
-                    if (graphicData[pos] > 0)
-                        texBuffer[texPos] = fullPalette[texPaletteNum][graphicData[pos]];
+                    if (graphicData[gfxPos] > 0)
+                        texBuffer[texPos] = fullPalette[texPaletteNum][graphicData[gfxPos]];
                     else
                         texBuffer[texPos] = 0;
 
                     texPos++;
-                    pos++;
+                    gfxPos++;
                 }
                 texPos += HW_TEXTURE_SIZE - gfxSurface[i].width;
             }

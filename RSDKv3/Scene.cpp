@@ -187,7 +187,7 @@ void ProcessStage(void)
                 if (tilesetGFXData[0x32002] > 0)
                     texBufferMode = 0;
 
-                if (texBufferMode) {
+                if (texBufferMode) {  // 3D Sky/HParallax version
                     for (int i = 0; i < TILEUV_SIZE; i += 4) {
                         tileUVArray[i + 0] = ((i >> 2) % 28) * 18 + 1;
                         tileUVArray[i + 1] = ((i >> 2) / 28) * 18 + 1;
@@ -199,7 +199,7 @@ void ProcessStage(void)
                     tileUVArray[TILEUV_SIZE - 2] = 503;
                     tileUVArray[TILEUV_SIZE - 1] = 503;
                 }
-                else {
+                else { // Regular tileset version
                     for (int i = 0; i < TILEUV_SIZE; i += 4) {
                         tileUVArray[i + 0] = (i >> 2 & 31) * 16;
                         tileUVArray[i + 1] = (i >> 2 >> 5) * 16;

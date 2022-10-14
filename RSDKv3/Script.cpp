@@ -3883,7 +3883,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                         if (renderType == RENDER_SW)
                             tiles128x128.gfxDataPos[scriptEng.operands[6]] = scriptEng.operands[0] << 8;
                         else if (renderType == RENDER_HW)
-                            tiles128x128.gfxDataPos[scriptEng.operands[6]] = scriptEng.operands[0] << 2;
+                            tiles128x128.gfxDataPos[scriptEng.operands[6]] = (scriptEng.operands[0] << 2) & 0x3FFFC;
                         break;
                     case TILEINFO_DIRECTION: tiles128x128.direction[scriptEng.operands[6]] = scriptEng.operands[0]; break;
                     case TILEINFO_VISUALPLANE: tiles128x128.visualPlane[scriptEng.operands[6]] = scriptEng.operands[0]; break;
