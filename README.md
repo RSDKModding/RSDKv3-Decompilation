@@ -90,6 +90,11 @@ Even if your platform isn't supported by the official releases, you **must** buy
 * Ensure you have Docker installed and run the script `build.sh` from `RSDKv3.vita`. If you are on Windows, WSL2 is recommended.
   * NOTE: You would need to copy Sonic CD game data into `ux0:data/RSDKv3` to boot the game.
 
+## Web
+* Clone the repo with the following command and CD into it.
+* Copy your "Data.rsdk" file into the repository folder, and libtheoradec.a
+* Ensure that you have emscripten installed, then run the command "make WEB=1"
+
 ## Unofficial Branches
 Follow the installation instructions in the readme of each branch.
 * For the **Nintendo Switch**, go to [heyjoeway's fork](https://github.com/heyjoeway/Sonic-CD-11-Decompilation).

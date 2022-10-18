@@ -78,6 +78,8 @@ bin/
 ![Dd]ependencies/windows-uwp/dependencies.txt
 ![Dd]ependencies/android/dependencies.txt
 ![Dd]ependencies/android/libogg/include/ogg/config_types.h
+libtheoradec.a
+settings.ini
 
 RSDKv3UWP/Generated Files
 RSDKv3UWP/BundleArtifacts
