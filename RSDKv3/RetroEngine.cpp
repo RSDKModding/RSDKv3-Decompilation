@@ -351,22 +351,24 @@ void RetroEngine::Init()
     }
 #endif
 }
-
-void RetroEngine::Run()
+void RetroEngine::Body()
 {
     unsigned long long targetFreq = SDL_GetPerformanceFrequency() / Engine.refreshRate;
     unsigned long long curTicks   = 0;
     unsigned long long prevTicks  = 0;
 
-    while (running) {
 #if !RETRO_USE_ORIGINAL_CODE
+#if RETRO_PLATFORM != RETRO_WEB // We need not worry about this in web builds because emscripten_set_main_loop already handles stuff like this
         if (!vsync) {
             curTicks = SDL_GetPerformanceCounter();
-            if (curTicks < prevTicks + targetFreq)
+            if (curTicks < prevTicks + targetFreq) {
                 continue;
+            }
             prevTicks = curTicks;
         }
 #endif
+#endif
+
         running = ProcessEvents();
 
         // Focus Checks
@@ -468,8 +470,22 @@ void RetroEngine::Run()
             // StopHaptics();
         }
 #endif
-    }
-
+}
+void Loop()
+{
+    RetroEngine Engine;
+    Engine.Body();
+}
+void RetroEngine::Run()
+{
+#if RETRO_PLATFORM != RETRO_WEB
+while (running)
+{
+    Loop();
+}
+#else
+emscripten_set_main_loop(Loop, 0, 1);
+#endif
     ReleaseAudioDevice();
     StopVideoPlayback();
     ReleaseRenderDevice();

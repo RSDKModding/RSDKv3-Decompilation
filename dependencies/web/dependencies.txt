@@ -1,0 +1,10 @@
+GL4ES: https://github.com/ptitSeb/gl4es
+Clone this repository with submodules and CD into dependencies/web/gl4es
+Build:
+-mkdir build; cd build; emcmake cmake .. -DNOX11=ON -DNOEGL=ON -DSTATICLIB=ON; cmake --build .
+
+libtheora: https://xiph.org/downloads/ (libtheora)
+Download the zip file, then unzip it in ./libtheora
+Build:
+emconfigure ./configure --disable-asm --enable-static
+make

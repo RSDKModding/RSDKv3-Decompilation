@@ -92,7 +92,8 @@ Even if your platform isn't supported by the official releases, you **must** buy
 
 ## Web
 * Clone the repo with the following command and CD into it.
-* Copy your "Data.rsdk" file into the repository folder, libtheoradec.a, and settings.ini
+* Follow the instructions in ./dependencies/web/dependencies.txt
+* Copy your "Data.rsdk" file into the repository folder.
 * Ensure that you have emscripten installed, then run the command "make WEB=1"
 
 ## Unofficial Branches

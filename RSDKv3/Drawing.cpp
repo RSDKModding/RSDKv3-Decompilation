@@ -260,8 +260,11 @@ int InitRenderDevice()
 #if RETRO_USING_OPENGL
     // Init GL
     Engine.glContext = SDL_GL_CreateContext(Engine.window);
-
-    SDL_GL_SetSwapInterval(Engine.vsync ? 1 : 0);
+    #if RETRO_PLATFORM == RETRO_WEB
+    initialize_gl4es(); // Init gl4es for web builds
+    #else
+    SDL_GL_SetSwapInterval(Engine.vsync ? 1 : 0); // This is handled in main loop function
+    #endif
 
 #if RETRO_PLATFORM != RETRO_ANDROID && RETRO_PLATFORM != RETRO_OSX
     // glew Setup
@@ -669,9 +672,7 @@ void FlipScreenFB()
     glRotatef(-90.0, 0.0, 0.0, 1.0);
     glOrtho(0, SCREEN_XSIZE << 4, 0.0, SCREEN_YSIZE << 4, -1.0, 1.0);
     glViewport(0, 0, SCREEN_YSIZE, SCREEN_XSIZE);
-
     glBindFramebuffer(GL_FRAMEBUFFER, framebufferHW);
-
     glBindTexture(GL_TEXTURE_2D, gfxTextureID[texPaletteNum]);
     glEnableClientState(GL_COLOR_ARRAY);
     glDisable(GL_BLEND);
