@@ -1,10 +1,11 @@
-CXXFLAGS_ALL += -g -sUSE_SDL=2 -sUSE_OGG=1 -sUSE_VORBIS=1 -Idependencies/web/gl4es/include \
-	-Idependencies/all/theoraplay \
-	-Idependencies/all/tinyxml2
-LDFLAGS_ALL += -g -sUSE_SDL=2 -sUSE_OGG=1 -sUSE_VORBIS=1 -sFULL_ES2 -sMIN_WEBGL_VERSION=2 -sTOTAL_MEMORY=96MB --preload-file settings.ini --preload-file Data.rsdk \
+CXXFLAGS_ALL += -g -sUSE_SDL=2 -sUSE_OGG -sUSE_VORBIS -Idependencies/web/gl4es/include \
 	-Idependencies/all/theoraplay \
 	-Idependencies/all/tinyxml2 \
-    -Idependencies/web/gl4es/include
+	-Idependencies/web/libtheora/include
+LDFLAGS_ALL += -g -sUSE_SDL=2 -sUSE_OGG -sUSE_VORBIS -sFULL_ES3 -sTOTAL_MEMORY=96MB --preload-file Data.rsdk -Idependencies/web/gl4es/include \
+	-Idependencies/all/theoraplay \
+	-Idependencies/all/tinyxml2 \
+	-Idependencies/web/libtheora/include
 CXX = em++
 DEPS = ./dependencies/web/libtheora/lib/.libs/libtheoradec.a ./dependencies/web/gl4es/lib/libGL.a
 
