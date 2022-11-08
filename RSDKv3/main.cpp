@@ -60,9 +60,7 @@ int main(int argc, char *argv[])
     #if RETRO_PLATFORM == RETRO_WEB
     emscripten_set_main_loop(Run, 0, 1);
     #else
-    while (Engine.running) {
-        Run();
-    }
+    Engine.Run();
     #endif
     Engine.Quit();
 
