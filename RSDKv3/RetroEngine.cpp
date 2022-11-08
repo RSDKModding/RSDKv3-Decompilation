@@ -351,7 +351,7 @@ void RetroEngine::Init()
     }
 #endif
 }
-void RetroEngine::Body()
+void RetroEngine::Run()
 {
     unsigned long long targetFreq = SDL_GetPerformanceFrequency() / Engine.refreshRate;
     unsigned long long curTicks   = 0;
@@ -471,21 +471,8 @@ void RetroEngine::Body()
         }
 #endif
 }
-void Loop()
+void RetroEngine::Quit()
 {
-    RetroEngine Engine;
-    Engine.Body();
-}
-void RetroEngine::Run()
-{
-#if RETRO_PLATFORM != RETRO_WEB
-while (running)
-{
-    Loop();
-}
-#else
-emscripten_set_main_loop(Loop, 0, 1);
-#endif
     ReleaseAudioDevice();
     StopVideoPlayback();
     ReleaseRenderDevice();

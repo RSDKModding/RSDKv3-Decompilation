@@ -5,7 +5,9 @@
 #if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
 #include "Windows.h"
 #endif
-
+void Run() {
+    Engine.Run();
+}
 void parseArguments(int argc, char *argv[])
 {
     for (int a = 0; a < argc; ++a) {
@@ -55,7 +57,14 @@ int main(int argc, char *argv[])
 #endif
 
     Engine.Init();
-    Engine.Run();
+    #if RETRO_PLATFORM == RETRO_WEB
+    emscripten_set_main_loop(Run, 0, 1);
+    #else
+    while (Engine.running) {
+        Run();
+    }
+    #endif
+    Engine.Quit();
 
 #if !RETRO_USE_ORIGINAL_CODE
     if (Engine.consoleEnabled) {

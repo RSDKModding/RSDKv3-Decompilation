@@ -165,11 +165,12 @@ typedef unsigned int uint;
 #define GL_FRAMEBUFFER         GL_FRAMEBUFFER_EXT
 #define GL_COLOR_ATTACHMENT0   GL_COLOR_ATTACHMENT0_EXT
 #define GL_FRAMEBUFFER_BINDING GL_FRAMEBUFFER_BINDING_EXT
-#elif RETRO_PLATFORM == RETRO_WEB
-#include <gl4esinit.h>
-#include <GL/glew.h>
+
 #else
 #include <GL/glew.h>
+#endif
+#if RETRO_PLATFORM == RETRO_WEB
+#include <gl4esinit.h>
 #endif
 #endif
 
@@ -450,8 +451,8 @@ public:
 #endif
 
     void Init();
-    void Body();
     void Run();
+    void Quit();
 
     bool LoadGameConfig(const char *filepath);
 #if RETRO_USE_MOD_LOADER
