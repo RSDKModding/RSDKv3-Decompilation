@@ -356,9 +356,12 @@ void RetroEngine::Run()
     unsigned long long targetFreq = SDL_GetPerformanceFrequency() / Engine.refreshRate;
     unsigned long long curTicks   = 0;
     unsigned long long prevTicks  = 0;
-
+#if RETRO_PLATFORM != RETRO_WEB
+    while (running)
+#endif
+    {
 #if !RETRO_USE_ORIGINAL_CODE
-#if RETRO_PLATFORM != RETRO_WEB // We need not worry about this in web builds because emscripten_set_main_loop already handles stuff like this
+#if RETRO_PLATFORM != RETRO_WEB
         if (!vsync) {
             curTicks = SDL_GetPerformanceCounter();
             if (curTicks < prevTicks + targetFreq) {
@@ -470,6 +473,7 @@ void RetroEngine::Run()
             // StopHaptics();
         }
 #endif
+    }
 }
 void RetroEngine::Quit()
 {
