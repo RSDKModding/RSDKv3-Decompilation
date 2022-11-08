@@ -33,7 +33,7 @@ x86/
 bld/
 bin/
 [Bb]in/
-[Oo]bj/
+[Oo]bjects/
 
 #safety
 *.rsdk

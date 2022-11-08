@@ -36,19 +36,13 @@ SOURCES = \
 		RSDKv3/Userdata.cpp \
 		RSDKv3/Video.cpp
 
-
-OBJECTS = $(SOURCES:%=objects/%.o)
-DEPENDENCIES = $(SOURCES:%=objects/%.d)
-
 all: bin/RSDKv3
-
-include $(wildcard $(DEPENDENCIES))
 
 objects/%.o: %
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_ALL) -std=c++17 $< -o $@ -c
 
-bin/RSDKv3: $(OBJECTS)
+bin/RSDKv3: $(SOURCES:%=objects/%.o)
 	mkdir -p $(@D)
 	$(CXX) -std=c++17 $^ $(DEPS) -o $@.html $(LDFLAGS_ALL)
 
