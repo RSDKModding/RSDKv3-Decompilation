@@ -263,7 +263,7 @@ int InitRenderDevice()
     #if RETRO_PLATFORM == RETRO_WEB
     initialize_gl4es(); // Init gl4es for web builds
     #else
-    SDL_GL_SetSwapInterval(Engine.vsync ? 1 : 0); // This is handled in main loop function
+    SDL_GL_SetSwapInterval(Engine.vsync ? 1 : 0);
     #endif
 
 #if RETRO_PLATFORM != RETRO_ANDROID && RETRO_PLATFORM != RETRO_OSX
