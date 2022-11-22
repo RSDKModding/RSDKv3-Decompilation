@@ -93,7 +93,7 @@ bool useSGame = false;
  //   path += "/RSDKv3";
   //  return path;
 //}
-#endif
+//#endif
 
 bool ReadSaveRAMData()
 {
