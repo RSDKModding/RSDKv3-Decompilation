@@ -3964,8 +3964,8 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                 opcodeSize = 0;
                 switch (scriptEng.operands[0]) {
                     default: break;
-                    case ONLINEMENU_ACHIEVEMENTS: LoadLeaderboardsMenu(); break;
-                    case ONLINEMENU_LEADERBOARDS: LoadAchievementsMenu(); break;
+                    case ONLINEMENU_ACHIEVEMENTS: LoadAchievementsMenu(); break;
+                    case ONLINEMENU_LEADERBOARDS: LoadLeaderboardsMenu(); break;
                 }
                 break;
             case FUNC_ENGINECALLBACK:
