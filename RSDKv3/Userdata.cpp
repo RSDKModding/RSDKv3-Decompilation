@@ -624,7 +624,6 @@ void InitUserdata()
             RTRIGGER_DEADZONE = 0.3;
 #endif
     }
-    SetScreenSize(SCREEN_XSIZE, SCREEN_YSIZE);
 
     // Loaded here so it can be disabled
 #if RETRO_PLATFORM == RETRO_WIN && _MSC_VER
