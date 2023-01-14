@@ -357,6 +357,8 @@ int InitRenderDevice()
     }
     SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, vw, vh);
 #endif
+#elif RETRO_USING_SDL2
+    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
 #endif
 
     if (Engine.startFullScreen) {
