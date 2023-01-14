@@ -179,12 +179,14 @@ int InitRenderDevice()
         return 0;
     }
 
-    Engine.screenBuffer2x =
+    if(Engine.useHQModes) {
+        Engine.screenBuffer2x =
         SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2);
 
-    if (!Engine.screenBuffer2x) {
-        PrintLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
-        return 0;
+        if (!Engine.screenBuffer2x) {
+            PrintLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
+            return 0;
+        }
     }
 #endif
 
