@@ -370,9 +370,12 @@ int InitRenderDevice()
 
     if (renderType == RENDER_SW) {
         Engine.frameBuffer   = new ushort[GFX_LINESIZE * SCREEN_YSIZE];
-        Engine.frameBuffer2x = new ushort[GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2)];
         memset(Engine.frameBuffer, 0, (GFX_LINESIZE * SCREEN_YSIZE) * sizeof(ushort));
-        memset(Engine.frameBuffer2x, 0, GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2) * sizeof(ushort));
+        if (Engine.useHQModes) {
+            Engine.frameBuffer2x = new ushort[GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2)];
+            memset(Engine.frameBuffer2x, 0, GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2) * sizeof(ushort));
+        }
+        
 
         Engine.texBuffer   = new uint[SCREEN_XSIZE * SCREEN_YSIZE];
         Engine.texBuffer2x = new uint[(SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2)];
