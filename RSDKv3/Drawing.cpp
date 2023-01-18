@@ -531,39 +531,30 @@ void FlipScreen()
                 SDL_QueryTexture(Engine.screenBuffer2x, NULL, NULL, &w, &h);
                 SDL_LockTexture(Engine.screenBuffer2x, NULL, (void **)&pixels, &pitch);
 
+                // Width of the SDL texture in 16bit pixels
+                const int lineWidth = pitch / sizeof(ushort);
+
+                // 2x nearest neighbor scaling of the upper lines
                 ushort *framebufferPtr = Engine.frameBuffer;
                 for (int y = 0; y < (SCREEN_YSIZE / 2) + 12; ++y) {
                     for (int x = 0; x < SCREEN_XSIZE; ++x) {
                         *pixels = *framebufferPtr;
-                        pixels++;
-                        *pixels = *framebufferPtr;
-                        pixels++;
+                        *(pixels + 1) = *framebufferPtr;
+                        *(pixels + lineWidth) = *framebufferPtr;
+                        *(pixels + lineWidth + 1) = *framebufferPtr;
+                        pixels += 2;
                         framebufferPtr++;
                     }
                     framebufferPtr += GFX_LINESIZE - SCREEN_XSIZE;
-
-                    framebufferPtr -= GFX_LINESIZE;
-                    for (int x = 0; x < GFX_LINESIZE; ++x) {
-                        *pixels = *framebufferPtr;
-                        pixels++;
-                        *pixels = *framebufferPtr;
-                        pixels++;
-                        framebufferPtr++;
-                    }
+                    pixels += lineWidth;
                 }
 
+                // Simple copy of the lower lines from the pre-scaled framebuffer
                 framebufferPtr = Engine.frameBuffer2x;
                 for (int y = 0; y < ((SCREEN_YSIZE / 2) - 12) * 2; ++y) {
-                    for (int x = 0; x < SCREEN_XSIZE; ++x) {
-                        *pixels = *framebufferPtr;
-                        framebufferPtr++;
-                        pixels++;
-
-                        *pixels = *framebufferPtr;
-                        framebufferPtr++;
-                        pixels++;
-                    }
-                    framebufferPtr += GFX_LINESIZE - SCREEN_XSIZE;
+                    memcpy(pixels, framebufferPtr, (SCREEN_XSIZE * 2) * sizeof(ushort));
+                    framebufferPtr += GFX_LINESIZE_DOUBLE;
+                    pixels += lineWidth;
                 }
                 SDL_UnlockTexture(Engine.screenBuffer2x);
                 SDL_RenderCopy(Engine.renderer, Engine.screenBuffer2x, NULL, destScreenPos);
