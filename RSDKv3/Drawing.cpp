@@ -523,16 +523,7 @@ void FlipScreen()
         ushort *pixels = NULL;
         if (Engine.gameMode != ENGINE_VIDEOWAIT) {
             if (!drawStageGFXHQ) {
-                SDL_LockTexture(Engine.screenBuffer, NULL, (void **)&pixels, &pitch);
-                ushort *frameBufferPtr = Engine.frameBuffer;
-                for (int y = 0; y < SCREEN_YSIZE; ++y) {
-                    memcpy(pixels, frameBufferPtr, SCREEN_XSIZE * sizeof(ushort));
-                    frameBufferPtr += GFX_LINESIZE;
-                    pixels += pitch / sizeof(ushort);
-                }
-                // memcpy(pixels, Engine.frameBuffer, pitch * SCREEN_YSIZE); //faster but produces issues with odd numbered screen sizes
-                SDL_UnlockTexture(Engine.screenBuffer);
-
+                SDL_UpdateTexture(Engine.screenBuffer, NULL, (void *)Engine.frameBuffer, GFX_LINESIZE * sizeof(ushort));
                 SDL_RenderCopy(Engine.renderer, Engine.screenBuffer, NULL, destScreenPos);
             }
             else {
