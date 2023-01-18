@@ -372,10 +372,12 @@ int InitRenderDevice()
         memset(Engine.frameBuffer, 0, (GFX_LINESIZE * SCREEN_YSIZE) * sizeof(ushort));
         memset(Engine.frameBuffer2x, 0, GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2) * sizeof(ushort));
 
+#if RETRO_USING_OPENGL
         Engine.texBuffer   = new uint[SCREEN_XSIZE * SCREEN_YSIZE];
         Engine.texBuffer2x = new uint[(SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2)];
         memset(Engine.texBuffer, 0, (SCREEN_XSIZE * SCREEN_YSIZE) * sizeof(uint));
         memset(Engine.texBuffer2x, 0, (SCREEN_XSIZE * 2) * (SCREEN_YSIZE * 2) * sizeof(uint));
+#endif
     }
 
     OBJECT_BORDER_X2 = SCREEN_XSIZE + 0x80;
@@ -1026,10 +1028,12 @@ void ReleaseRenderDevice()
     if (Engine.frameBuffer2x)
         delete[] Engine.frameBuffer2x;
 
+#if RETRO_USING_OPENGL
     if (Engine.texBuffer)
         delete[] Engine.texBuffer;
     if (Engine.texBuffer2x)
         delete[] Engine.texBuffer2x;
+#endif
 
     if (renderType == RENDER_SW) {
 #if RETRO_USING_SDL2 && !RETRO_USING_OPENGL
