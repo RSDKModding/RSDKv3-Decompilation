@@ -179,12 +179,14 @@ int InitRenderDevice()
         return 0;
     }
 
-    Engine.screenBuffer2x =
+    if(Engine.useHQModes) {
+        Engine.screenBuffer2x =
         SDL_CreateTexture(Engine.renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, SCREEN_XSIZE * 2, SCREEN_YSIZE * 2);
 
-    if (!Engine.screenBuffer2x) {
-        PrintLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
-        return 0;
+        if (!Engine.screenBuffer2x) {
+            PrintLog("ERROR: failed to create screen buffer HQ!\nerror msg: %s", SDL_GetError());
+            return 0;
+        }
     }
 #endif
 
@@ -368,9 +370,12 @@ int InitRenderDevice()
 
     if (renderType == RENDER_SW) {
         Engine.frameBuffer   = new ushort[GFX_LINESIZE * SCREEN_YSIZE];
-        Engine.frameBuffer2x = new ushort[GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2)];
         memset(Engine.frameBuffer, 0, (GFX_LINESIZE * SCREEN_YSIZE) * sizeof(ushort));
-        memset(Engine.frameBuffer2x, 0, GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2) * sizeof(ushort));
+        if (Engine.useHQModes) {
+            Engine.frameBuffer2x = new ushort[GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2)];
+            memset(Engine.frameBuffer2x, 0, GFX_LINESIZE_DOUBLE * (SCREEN_YSIZE * 2) * sizeof(ushort));
+        }
+        
 
 #if RETRO_USING_OPENGL
         Engine.texBuffer   = new uint[SCREEN_XSIZE * SCREEN_YSIZE];
