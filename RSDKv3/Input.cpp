@@ -354,8 +354,7 @@ void ControllerClose(byte controllerID)
 void ProcessInput()
 {
 #if RETRO_USING_SDL2
-    int length           = 0;
-    const byte *keyState = SDL_GetKeyboardState(&length);
+    const byte *keyState = SDL_GetKeyboardState(NULL);
 
     if (inputType == 0) {
         for (int i = 0; i < INPUT_ANY; i++) {
