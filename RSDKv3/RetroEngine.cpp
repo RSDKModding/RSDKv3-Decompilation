@@ -683,6 +683,9 @@ void RetroEngine::LoadXMLObjects()
                     }
                 }
             }
+            else {
+                PrintLog("Failed to parse game.xml File!");
+            }
 
             delete[] xmlData;
             delete doc;
@@ -734,6 +737,9 @@ void RetroEngine::LoadXMLSoundFX()
                     }
                 }
             }
+            else {
+                PrintLog("Failed to parse game.xml File!");
+            }
 
             delete[] xmlData;
             delete doc;
@@ -781,6 +787,9 @@ void RetroEngine::LoadXMLPlayers(TextMenu *menu)
                         } while ((plrElement = NextXMLSiblingElement(doc, plrElement, "player")));
                     }
                 }
+            }
+            else {
+                PrintLog("Failed to parse game.xml File!");
             }
 
             delete[] xmlData;
@@ -864,6 +873,9 @@ void RetroEngine::LoadXMLStages(TextMenu *menu, int listNo)
                         }
                     }
                 }
+            }
+            else {
+                PrintLog("Failed to parse game.xml File!");
             }
 
             delete[] xmlData;
