@@ -8,4 +8,4 @@ libvorbis: https://xiph.org/downloads/ (libvorbis)
 Download libvorbis and unzip it in "./libvorbis/".
 
 libtheora: https://xiph.org/downloads/ (libtheora)
-Download libvorbis and unzip it in "./libtheora/".
+Download libtheora and unzip it in "./libtheora/".
