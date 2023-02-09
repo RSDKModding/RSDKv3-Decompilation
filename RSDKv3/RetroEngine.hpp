@@ -397,7 +397,7 @@ public:
     bool initialised = false;
     bool running     = false;
 
-    int gameMode      = 1;
+    int gameMode      = ENGINE_MAINGAME;
     int language      = RETRO_EN;
     int message       = 0;
     bool highResMode  = false;
