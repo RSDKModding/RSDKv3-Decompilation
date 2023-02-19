@@ -685,7 +685,7 @@ void FlipScreenFB()
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glScalef(1.0f, 1.0f, -1.0f);
+        glScalef(1.20f, 0.98f, -1.0f);
         glRotatef(floor3DAngle + 180.0f, 0, 1.0f, 0);
         glTranslatef(floor3DXPos, floor3DYPos, floor3DZPos);
 
