@@ -677,7 +677,7 @@ void FlipScreenFB()
         glEnable(GL_BLEND);
 
         // Init 3D Plane
-        glViewport(floor3DTop, -16.0f, floor3DBottom, SCREEN_XSIZE + 32.0f);
+        glViewport(floor3DTop, 0, floor3DBottom, SCREEN_XSIZE);
         glPushMatrix();
         glLoadIdentity();
         CalcPerspective(1.8326f, viewAspect, 0.1f, 2000.0f);
@@ -752,14 +752,14 @@ void FlipScreenNoFB()
         glEnable(GL_BLEND);
 
         // Init 3D Plane
-        glViewport(viewOffsetX - 256.0f, floor3DTop, viewWidth + 512.0f, floor3DBottom);
+        glViewport(viewOffsetX, floor3DTop, viewWidth, floor3DBottom);
         glPushMatrix();
         glLoadIdentity();
         CalcPerspective(1.8326f, viewAspect, 0.1f, 2000.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glScalef(1.0f, -1.0f, -1.0f);
+        glScalef(1.35f, -0.9f, -1.0f);
         glRotatef(floor3DAngle + 180.0f, 0, 1.0f, 0);
         glTranslatef(floor3DXPos, floor3DYPos, floor3DZPos);
 
@@ -1412,7 +1412,6 @@ void ScaleViewport(int width, int height)
     virtualHeight = height;
     virtualX      = 0;
     virtualY      = 0;
-
     float virtualAspect = (float)width / height;
     float realAspect    = (float)viewWidth / viewHeight;
     if (virtualAspect < realAspect) {
