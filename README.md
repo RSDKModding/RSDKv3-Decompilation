@@ -1,4 +1,7 @@
 ![](header.png?raw=true)
+
+A complete decompilation of Retro Engine v3.
+
 # **SUPPORT THE OFFICIAL RELEASE OF SONIC CD**
 + Without assets from the official release, this decompilation will not run.
 
@@ -7,6 +10,7 @@
     * Via Steam, whether it's the original release or from [Sonic Origins](https://store.steampowered.com/app/1794960)
     * Via the Epic Games Store, from [Sonic Origins](https://store.epicgames.com/en-US/p/sonic-origins)
   * [iOS (Via the App Store)](https://apps.apple.com/us/app/sonic-cd-classic/id454316134)
+    * A tutorial for finding the game assets from the iOS version can be found [here](https://gamebanana.com/tuts/14491).
   * Android
     * [Via Google Play](https://play.google.com/store/apps/details?id=com.sega.soniccd.classic)
     * [Via Amazon](https://www.amazon.com/Sega-of-America-Sonic-CD/dp/B008K9UZY4/)
@@ -103,36 +107,14 @@ Currently the only supported platforms are the ones listed above, however the ba
 If you're able to, you can clone this repo and port it to a platform not on the list.
 
 # FAQ
-### Q: Why don't some buttons in the menu work?
-A: Buttons like leaderboards & achievements require code to be added to support online functionality & menus (though they are saved anyways), and other buttons like the controls button on PC or privacy button on mobile have no game code and are instead hardcoded through callback. I just didn't feel like going through the effort to decompile all that, since it's not really worth it.
-
-### Q: Is the titlecard text slightly offset when using a PC datafile?
-A: Unfortunately, it's an error with the scripts. If you wanna go into `TitleCards/R[X]\_TitleCard.txt` and fix it, be my guest, but the best fix is to set `screenWidth` to 400, instead of 424 in the settings.ini file to match the PC version's resolution.
-
-### Q: There's a weird spot on the title screen, how do I fix it?
-A: See above.
-
-### Q: I'm using an RSDK file from Sonic Origins and there's no audio, what's wrong?
-A: Sonic Origins doesn't have any music or sound effects contained in the games' data files, instead storing and handling all in-game audio itself through Hedgehog Engine 2. You can fix this by simply inserting the audio files from another version of the game.
-
-### Q: The screen is tearing, how do I fix it?
-A: Try turning on VSync in settings.ini.
-
-### Q: I found a bug!
-A: Submit an issue in the issues tab and we _might_ fix it in the master branch. Don't expect any future releases, however.
-
-### Q: Will you do a decompilation for Sonic 1/Sonic 2?
-A: I already have! You can find it [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation).
-
-### Q: Will you do a decompilation for Sonic Mania?
-A: I already have! You can find the source code for Sonic Mania [here](https://github.com/Rubberduckycooly/Sonic-Mania-Decompilation) and RSDKv5 which is used to run it [here](https://github.com/Rubberduckycooly/RSDKv5-Decompilation).
+You can find the FAQ [here](./FAQ.md).
 
 # Special Thanks
 * [Xeeynamo](https://github.com/Xeeynamo): for creating the RSDK Animation editor & an early version of the script unpacker, both of which got me into RSDK modding.
 * [Sappharad](https://github.com/Sappharad): for making a decompilation of the Windows Phone 7 version of Sonic CD (found [here](https://github.com/Sappharad/rvm_soniccd)) which gave me the idea & motivation to decompile the PC/iOS/Android versions.
 * [SuperSonic16](https://github.com/TheSuperSonic16): for creating & adding some stuff to the Sonic CD mod loader that I asked for.
-* The Weigman for creating the header you see up here along with similar assets.
-* Everyone in the [Retro Engine Modding Server](https://dc.railgun.works/retroengine): for being supportive of me and for giving me a place to show off these things that I've found.
+* [The Weigman](https://github.com/TheWeigman) for creating the header you see up here along with similar assets.
+* Everyone in the [Retro Engine Modding Server](https://dc.railgun.works/retroengine) for being supportive of me and for giving me a place to show off these things that I've found.
 
 # Contact:
 Join the [Retro Engine Modding Discord Server](https://dc.railgun.works/retroengine) for any extra questions you may need to know about the decompilation or modding it.
