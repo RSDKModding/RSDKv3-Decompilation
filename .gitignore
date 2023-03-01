@@ -35,10 +35,21 @@ bin/
 [Bb]in/
 [Oo]bjects/
 
-#safety
+#Safety
 *.rsdk
 *.ogv
 *.ini
+
+# Visual Studio Debugging
+RSDKv3/[Dd]ata/
+RSDKv3/[Mm]ods/
+RSDKv3/[Ss]cripts/
+RSDKv3/log.txt
+RSDKv3/usage.txt
+RSDKv3/[Ss]ettings.ini
+RSDKv3/[Ss][Dd]ata.bin
+RSDKv3/[Ss][Gg]ame.bin
+RSDKv3/[Uu][Dd]ata.bin
 
 #OSX files
 *.DS_Store
