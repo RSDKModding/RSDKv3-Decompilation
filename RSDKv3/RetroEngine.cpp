@@ -527,7 +527,7 @@ void RetroEngine::LoadXMLVariables()
             continue;
 
         SetActiveMod(m);
-        if (LoadFile("Data/Game/game.xml", &info)) {
+        if (LoadFile("Data/Game/Game.xml", &info)) {
             tinyxml2::XMLDocument *doc = new tinyxml2::XMLDocument;
 
             char *xmlData = new char[info.fileSize + 1];
@@ -578,7 +578,7 @@ void RetroEngine::LoadXMLPalettes()
             continue;
 
         SetActiveMod(m);
-        if (LoadFile("Data/Game/game.xml", &info)) {
+        if (LoadFile("Data/Game/Game.xml", &info)) {
             tinyxml2::XMLDocument *doc = new tinyxml2::XMLDocument;
 
             char *xmlData = new char[info.fileSize + 1];
@@ -644,7 +644,7 @@ void RetroEngine::LoadXMLObjects()
             continue;
 
         SetActiveMod(m);
-        if (LoadFile("Data/Game/game.xml", &info)) {
+        if (LoadFile("Data/Game/Game.xml", &info)) {
             tinyxml2::XMLDocument *doc = new tinyxml2::XMLDocument;
 
             char *xmlData = new char[info.fileSize + 1];
@@ -711,7 +711,7 @@ void RetroEngine::LoadXMLSoundFX()
             continue;
 
         SetActiveMod(m);
-        if (LoadFile("Data/Game/game.xml", &info)) {
+        if (LoadFile("Data/Game/Game.xml", &info)) {
             tinyxml2::XMLDocument *doc = new tinyxml2::XMLDocument;
 
             char *xmlData = new char[info.fileSize + 1];
@@ -765,7 +765,7 @@ void RetroEngine::LoadXMLPlayers(TextMenu *menu)
             continue;
 
         SetActiveMod(m);
-        if (LoadFile("Data/Game/game.xml", &info)) {
+        if (LoadFile("Data/Game/Game.xml", &info)) {
             tinyxml2::XMLDocument *doc = new tinyxml2::XMLDocument;
 
             char *xmlData = new char[info.fileSize + 1];
@@ -815,7 +815,7 @@ void RetroEngine::LoadXMLStages(TextMenu *menu, int listNo)
             continue;
 
         SetActiveMod(m);
-        if (LoadFile("Data/Game/game.xml", &info)) {
+        if (LoadFile("Data/Game/Game.xml", &info)) {
             tinyxml2::XMLDocument *doc = new tinyxml2::XMLDocument;
 
             char *xmlData = new char[info.fileSize + 1];

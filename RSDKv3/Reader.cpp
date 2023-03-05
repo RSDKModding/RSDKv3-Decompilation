@@ -124,29 +124,19 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
     }
 
 #if RETRO_USE_MOD_LOADER
-    if (activeMod != -1) {
-        char buf[0x100];
-        sprintf(buf, "%s", filePathBuf);
-        sprintf(filePathBuf, "%smods/%s/%s", modsPath, modList[activeMod].folder.c_str(), buf);
-        Engine.forceFolder   = true;
-        Engine.usingDataFile = false;
-        fileInfo->isMod      = true;
-        isModdedFile         = true;
-        addPath              = false;
-    }
-    else {
-        for (int m = 0; m < modList.size(); ++m) {
-            if (modList[m].active) {
-                std::map<std::string, std::string>::const_iterator iter = modList[m].fileMap.find(pathLower);
-                if (iter != modList[m].fileMap.cend()) {
-                    StrCopy(filePathBuf, iter->second.c_str());
-                    Engine.forceFolder   = true;
-                    Engine.usingDataFile = false;
-                    fileInfo->isMod      = true;
-                    isModdedFile         = true;
-                    addPath              = false;
-                    break;
-                }
+    int m = activeMod != -1 ? activeMod : 0;
+ 
+    for (; m < modList.size(); ++m) {
+        if (modList[m].active) {
+            std::map<std::string, std::string>::const_iterator iter = modList[m].fileMap.find(pathLower);
+            if (iter != modList[m].fileMap.cend()) {
+                StrCopy(filePathBuf, iter->second.c_str());
+                Engine.forceFolder   = true;
+                Engine.usingDataFile = false;
+                fileInfo->isMod      = true;
+                isModdedFile         = true;
+                addPath              = false;
+                break;
             }
         }
     }
