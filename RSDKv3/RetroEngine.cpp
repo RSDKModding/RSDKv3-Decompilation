@@ -953,6 +953,9 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         if (devMenu) {
             SetGlobalVariableByName("Options.DevMenuFlag", true);
         }
+#if RETRO_USE_MOD_LOADER
+        SetGlobalVariableByName("Engine.Standalone", true);
+#endif
 
         SetGlobalVariableByName("Engine.PlatformId", RETRO_GAMEPLATFORMID);
         SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
