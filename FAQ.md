@@ -9,18 +9,18 @@ A: Buttons like Leaderboards & Achievements require code to be added to support 
 A: Try turning on VSync in settings.ini.
 
 ### Q: I found a bug!
-A: Submit an issue in the issues tab and we _might_ fix it in the master branch. Don't expect any future releases, however.
+A: Submit an issue in the issues tab and we _might_ fix it in the master branch. Don't expect any major future releases, however.
 
 # Using Blit/Steam RSDK Files
 ### Q: Why is the titlecard text slightly offset when playing in widescreen?
-A: This is a known issue that is caused by the scripts from this version of the game. You can either use a mod that modifies `TitleCards/R[X]\_TitleCard.txt` to fix it, or simply set the `screenWidth` option in settings.ini to 400 to match the intended value used in the original release.
+A: This is a known issue that is caused by the scripts from this version of the game. You can either use a mod that modifies `TitleCards/R[X]_TitleCard.txt` to fix it, or simply set the `screenWidth` option in settings.ini to 400 to match the intended value used in the original release.
 
 ### Q: Why is there a weird spot on the title screen when playing in widescreen?
 A: Similar to above, this is a script issue. You can fix it via a mod or by changing the screen width.
 
 # Using Mobile RSDK Files
 ### Q: Why does pressing B pause the game during gameplay?
-A: This is a known script issue with most Sega Forever versions of the game. Using mods or the [decompiled scripts](https://github.com/Rubberduckycooly/Sonic-CD-2011-Script-Decompilation) should fix it.
+A: This is a known script issue with most Sega Forever versions of the game. Using the [decompiled scripts](https://github.com/Rubberduckycooly/Sonic-CD-2011-Script-Decompilation) should fix it.
 
 ### Q: Why are the SEGA and Christian Whitehead logos in the title screen so low resolution? 
 A: This happens when using the Software Renderer, you can fix this by setting `HardwareRenderer` in settings.ini to true.
@@ -30,7 +30,7 @@ A: The decompilation only supports the OGV video files from the Blit/Steam versi
 
 # Using Origins RSDK Files
 ### Q: Why doesn't using the datafile work?
-A: The RSDK file from Sonic Origins is formatted in the RSDKv5 datapack format, not the RSDKv3 format. Repacking the files in the correct format or using Data Folder Mode will fix the issue.
+A: The RSDK file from Sonic Origins is encrypted in the RSDKv5 datapack format, not the RSDKv3 format. Repacking the files in the correct format or using Data Folder Mode will fix the issue.
 
 ### Q: Why is there no audio?
 A: Sonic Origins doesn't have any music or sound effects contained in the game's data file, instead storing and handling all in-game audio itself through Hedgehog Engine 2. You can fix this by simply inserting the audio files from another version of the game.
