@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\RSDKv3\Scene3D.cpp" />
+    <ClCompile Include="..\RSDKv3\Script.cpp" />
+    <ClCompile Include="..\RSDKv3\Sprite.cpp" />
+    <ClCompile Include="..\RSDKv3\String.cpp" />
+    <ClCompile Include="..\RSDKv3\Text.cpp" />
+    <ClCompile Include="..\RSDKv3\Userdata.cpp" />
+    <ClCompile Include="..\RSDKv3\Video.cpp" />
+    <ClCompile Include="..\RSDKv3\Animation.cpp" />
+    <ClCompile Include="..\RSDKv3\Audio.cpp" />
+    <ClCompile Include="..\RSDKv3\Collision.cpp" />
+    <ClCompile Include="..\RSDKv3\Debug.cpp" />
+    <ClCompile Include="..\RSDKv3\Drawing.cpp" />
+    <ClCompile Include="..\RSDKv3\Ini.cpp" />
+    <ClCompile Include="..\RSDKv3\Input.cpp" />
+    <ClCompile Include="..\RSDKv3\Math.cpp" />
+    <ClCompile Include="..\RSDKv3\Object.cpp" />
+    <ClCompile Include="..\RSDKv3\Palette.cpp" />
+    <ClCompile Include="..\RSDKv3\Player.cpp" />
+    <ClCompile Include="..\RSDKv3\Reader.cpp" />
+    <ClCompile Include="..\RSDKv3\RetroEngine.cpp" />
+    <ClCompile Include="..\RSDKv3\Scene.cpp" />
+    <ClCompile Include="..\dependencies\all\theoraplay\theoraplay.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\RSDKv3\Scene.hpp" />
+    <ClInclude Include="..\RSDKv3\Scene3D.hpp" />
+    <ClInclude Include="..\RSDKv3\Script.hpp" />
+    <ClInclude Include="..\RSDKv3\Sprite.hpp" />
+    <ClInclude Include="..\RSDKv3\String.hpp" />
+    <ClInclude Include="..\RSDKv3\Text.hpp" />
+    <ClInclude Include="..\RSDKv3\Userdata.hpp" />
+    <ClInclude Include="..\RSDKv3\Video.hpp" />
+    <ClInclude Include="..\RSDKv3\Animation.hpp" />
+    <ClInclude Include="..\RSDKv3\Audio.hpp" />
+    <ClInclude Include="..\RSDKv3\Collision.hpp" />
+    <ClInclude Include="..\RSDKv3\Debug.hpp" />
+    <ClInclude Include="..\RSDKv3\Drawing.hpp" />
+    <ClInclude Include="..\RSDKv3\Ini.hpp" />
+    <ClInclude Include="..\RSDKv3\Input.hpp" />
+    <ClInclude Include="..\RSDKv3\Math.hpp" />
+    <ClInclude Include="..\RSDKv3\Palette.hpp" />
+    <ClInclude Include="..\RSDKv3\Player.hpp" />
+    <ClInclude Include="..\RSDKv3\Reader.hpp" />
+    <ClInclude Include="..\RSDKv3\resource.h" />
+    <ClInclude Include="..\RSDKv3\RetroEngine.hpp" />
+    <ClInclude Include="WinRTIncludes.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Wide310x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LockScreenLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SmallTile.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SmallTile.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SmallTile.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SmallTile.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LargeTile.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LargeTile.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LargeTile.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LargeTile.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-16.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-24.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-32.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-48.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-16.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-32.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-48.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Wide310x150Logo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Wide310x150Logo.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Wide310x150Logo.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{e48dc53e-40b1-40cb-970a-f89935452892}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PropertySheet.props" />
+    <None Include="packages.config" />
+    <None Include="..\RSDKv3\settings.ini" />
+    <None Include="Data.rsdk" />
+  </ItemGroup>
+</Project>
