@@ -63,11 +63,16 @@ body:
         - Mobile (Pre-Sega Forever)
         - Mobile (Sega Forever)
         - Sonic Origins
-        - This bug is not version-specific
+  - type: input
+    validations:
+      required: false
+    attributes:
+      label: Game Revision
+      description: If you know the specific version number of the game, provide it here.
   - type: dropdown
     id: scriptplatform
     validations:
-      required: false
+      required: true
     attributes:
       label: "Script Platform Type"
       description: What is the Platform setting in settings.ini set to?
@@ -78,7 +83,7 @@ body:
   - type: dropdown
     id: renderer
     validations:
-      required: false
+      required: true
     attributes:
       label: "Renderer Type"
       description: Are you using the Software Renderer or the Hardware Renderer? (If unsure, check the HardwareRenderer setting in settings.ini.)
@@ -86,12 +91,6 @@ body:
       options:
         - Software Renderer
         - Hardware Renderer
-  - type: input
-    validations:
-      required: false
-    attributes:
-      label: Game Version
-      description: If you know the specific version number of the game, provide it here.
   - type: input
     validations:
       required: true
