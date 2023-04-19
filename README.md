@@ -79,7 +79,12 @@ Even if your platform isn't supported by the official releases, you **must** buy
   * If your distro is using gcc 8.x.x, then add the argument `LIBS=-lstdc++fs`.
   * The `CXXFLAGS` option can be removed if you do not want optimizations.
   * -j switch is optional, but will make building faster by running it parallel on multiple cores (8 cores would be -j9).
- 
+* Alternatively you can build the project with the [Meson](https://mesonbuild.org) build system:
+  1. `meson setup --buildtype release build` (or `--buildtype debug` to enable default debugging options).
+  2. `meson compile -C build`
+  3. The resulting binary will be located in `build/RSDKv3`
+  * You can change build options with `meson configure build -D<name>=<value>`, such as `meson build configure -Dcpp_std=c++20 -Dc_std=c11 -Doptimization=0` to change the build to target C++20, C11 and disable optimizations.
+
 ## iOS
 * Clone the repo, follow the instructions in the [dependencies readme for iOS](./dependencies/ios/dependencies.txt) to setup dependencies, then build via the Xcode project.
 
@@ -99,7 +104,7 @@ Follow the installation instructions in the readme of each branch.
 * For the **Nintendo Switch**, go to [heyjoeway's fork](https://github.com/heyjoeway/Sonic-CD-11-Decompilation).
 * For the **Nintendo 3DS**, go to [SaturnSH2x2's fork](https://github.com/SaturnSH2x2/Sonic-CD-11-3DS).
   * A New Nintendo 3DS is required for the game to run smoothly.
-  
+
 Because these branches are unofficial, we can't provide support for them and they may not be up-to-date.
 
 ## Other Platforms
