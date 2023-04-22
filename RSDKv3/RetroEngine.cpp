@@ -1017,7 +1017,10 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         if (!disableSaveIniOverride) {
 #endif
             if (controlMode >= 0) {
-                saveRAM[35] = controlMode;
+                if (ReadSaveRAMData()) {
+                    saveRAM[35] = controlMode;
+                    WriteSaveRAMData();
+                }
                 SetGlobalVariableByName("Options.OriginalControls", controlMode);
             }
 #if RETRO_USE_MOD_LOADER
