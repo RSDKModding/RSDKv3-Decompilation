@@ -958,7 +958,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
 #endif
 
-        SetGlobalVariableByName("Engine.PlatformId", RETRO_GAMEPLATFORMID);
+        SetGlobalVariableByName("Engine.PlatformID", RETRO_GAMEPLATFORMID);
 
         // Read SFX
         byte sfxCount = 0;
