@@ -27,6 +27,7 @@ enum ObjectCollisionTypes {
     C_BOX      = 1,
     C_BOX2     = 2,
     C_PLATFORM = 3,
+    C_ENEMY    = 5, // Introduced in Origins Plus
 };
 
 struct CollisionSensor {

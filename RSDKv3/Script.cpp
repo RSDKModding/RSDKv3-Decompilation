@@ -3517,6 +3517,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                 switch (scriptEng.operands[0]) {
                     default: break;
                     case C_TOUCH:
+                    case C_ENEMY:
                         scriptEng.operands[5] = entity->XPos >> 16;
                         scriptEng.operands[6] = entity->YPos >> 16;
                         TouchCollision(scriptEng.operands[5] + scriptEng.operands[1], scriptEng.operands[6] + scriptEng.operands[2],
