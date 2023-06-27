@@ -1265,9 +1265,9 @@ void RetroEngine::Callback(int callbackID)
         case NOTIFY_SPIN_DASH_TYPE: PrintLog("NOTIFY: SpindashType() -> %d", notifyParam1); break;
         case NOTIFY_TIME_OVER: PrintLog("NOTIFY: TimeOver() -> %d", notifyParam1); break;
         case NOTIFY_TIMEATTACK_MODE: PrintLog("NOTIFY: TimeAttackMode() -> %d", notifyParam1); break;
-        case NOTIFY_STATS_BREAK_OBJECT: PrintLog("NOTIFY: StatsBreakObject() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_BREAK_OBJECT: PrintLog("NOTIFY: StatsBreakObject() -> %d, %d", notifyParam1, notifyParam2); break;
         case NOTIFY_STATS_SAVE_FUTURE: PrintLog("NOTIFY: StatsSaveFuture() -> %d", notifyParam1); break;
-        case NOTIFY_STATS_CHARA_ACTION2: PrintLog("NOTIFY: StatsCharaAction2() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_CHARA_ACTION2: PrintLog("NOTIFY: StatsCharaAction2() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
 
         // Sega Forever stuff
         case CALLBACK_SHOWMENU_2: PrintLog("Callback: showMenu(2)"); break;
