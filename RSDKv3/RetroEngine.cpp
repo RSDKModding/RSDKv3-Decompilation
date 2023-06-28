@@ -1280,7 +1280,8 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_REMOVEADSBUTTON_FADEOUT: PrintLog("Callback: RemoveAdsButton_FadeOut()"); break;
         case CALLBACK_REMOVEADSBUTTON_FADEIN: PrintLog("Callback: RemoveAdsButton_FadeIn()"); break;
         case CALLBACK_ONSHOWINTERSTITIAL_2:
-        case CALLBACK_ONSHOWINTERSTITIAL_3: PrintLog("Callback: onShowInterstitial(0, 0)"); break;
+        case CALLBACK_ONSHOWINTERSTITIAL_3:
+        case CALLBACK_ONSHOWINTERSTITIAL_5: PrintLog("Callback: onShowInterstitial(0, 0)"); break;
         case CALLBACK_ONSHOWINTERSTITIAL_4: PrintLog("Callback: onShowInterstitial(1, 0)"); break;
         case CALLBACK_ONVISIBLEGRIDBTN_1: PrintLog("Callback: onVisibleGridBtn(1)"); break;
         case CALLBACK_ONVISIBLEGRIDBTN_0:
@@ -1293,9 +1294,14 @@ void RetroEngine::Callback(int callbackID)
         case CALLBACK_ONSHOWINTERSTITIAL_PAUSEDURATION: PrintLog("Callback: onShowInterstitial(0, 0) - Pause_Duration"); break;
         case CALLBACK_SHOWCOUNTDOWNMENU: PrintLog("Callback: showCountDownMenu(0)"); break;
         case CALLBACK_ONVISIBLEMAINMENU_1: PrintLog("Callback: onVisibleMainMenu(1)"); break;
-        case CALLBACK_ONVISIBLEMAINMENU_0:
-            PrintLog("Callback: OnVisibleMainMenu(0)");
+        case CALLBACK_ONVISIBLEMAINMENU_0: PrintLog("Callback: OnVisibleMainMenu(0)"); break;
+        case CALLBACK_ONSHOWREWARDADS:
+            PrintLog("Callback: onShowRewardAds(0)");
+
+            // small hack to prevent a softlock
+            SetGlobalVariableByName("RewardAdCallback", 1);
             break;
+        case CALLBACK_ONSHOWBANNER_2: PrintLog("Callback: onShowBanner(4, 0)"); break;
 
             // Mod loader Only
 #if RETRO_USE_MOD_LOADER
