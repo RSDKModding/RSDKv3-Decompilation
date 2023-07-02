@@ -16,6 +16,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <cmath>
+#if RETRO_USE_MOD_LOADER
+#include <regex>
+#endif
 
 // ================
 // STANDARD TYPES
