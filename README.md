@@ -14,7 +14,7 @@ A complete decompilation of Retro Engine v3.
   * Android
     * [Via Google Play](https://play.google.com/store/apps/details?id=com.sega.soniccd.classic)
     * [Via Amazon](https://www.amazon.com/Sega-of-America-Sonic-CD/dp/B008K9UZY4/)
-    * A tutorial for finding the game assets from the Android version can be found [here](https://gamebanana.com/tuts/14492).
+    * A tutorial for finding the game assets from the Android version can be found [here](https://gamebanana.com/tuts/14942).
 
 Even if your platform isn't supported by the official releases, you **must** buy or officially download it for the assets (you don't need to run the official release, you just need the game assets). Note that only FMV files from the original Steam release of the game are supported; mobile and Origins video files do not work.
 
