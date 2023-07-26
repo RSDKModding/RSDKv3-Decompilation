@@ -65,7 +65,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 
 ## Mac
 * Clone the repo, follow the instructions in the [dependencies readme for Mac](./dependencies/mac/dependencies.txt) to setup dependencies, then build via the Xcode project.
-* A Mac build of v1.3.0 by [Sappharad](https://github.com/Sappharad) can be found [here](https://github.com/Sappharad/Sonic-CD-11-Decompilation/releases/tag/1.3.0_mac).
+* A Mac build by [Sappharad](https://github.com/Sappharad) can be found [here](https://github.com/Sappharad/Sonic-CD-11-Decompilation/releases/latest).
 
 ## Linux
 * To setup your build enviroment and library dependecies, run the following commands:
