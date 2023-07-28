@@ -2968,6 +2968,6 @@ void EnemyCollision(int left, int top, int right, int bottom)
 {
     TouchCollision(left, top, right, bottom);
     if (scriptEng.checkResult == 0) {
-        // insert something about amy's hammer hitboxes here
+        // TODO: insert something about Amy's hammer hitboxes here
     }
 }

@@ -29,6 +29,7 @@ enum ObjectCollisionTypes {
     C_BOX      = 1,
     C_BOX2     = 2,
     C_PLATFORM = 3,
+    C_BOX3     = 4, // Introduced in Origins Plus
     C_ENEMY    = 5, // Introduced in Origins Plus
 };
 
@@ -101,7 +102,7 @@ void BoxCollision(int left, int top, int right, int bottom);  // Standard
 void BoxCollision2(int left, int top, int right, int bottom); // Updated (?)
 void PlatformCollision(int left, int top, int right, int bottom);
 void BoxCollision3(int left, int top, int right, int bottom); // Added in Origins Plus
-void EnemyCollision(int left, int top, int right, int bottom);        // Added in Origins Plus
+void EnemyCollision(int left, int top, int right, int bottom); // Added in Origins Plus
 
 void ObjectFloorCollision(int xOffset, int yOffset, int cPath);
 void ObjectLWallCollision(int xOffset, int yOffset, int cPath);

@@ -3537,7 +3537,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                                      entity->XPos + (scriptEng.operands[3] << 16), entity->YPos + (scriptEng.operands[4] << 16));
                         break;
                     case C_BOX2:
-                        // case C_PLATFORM: // if pc ver, there's no box2
+                        // C_PLATFORM if pc ver, as there's no box2 there
                         if (!scriptInfo->mobile) {
                             PlatformCollision(entity->XPos + (scriptEng.operands[1] << 16), entity->YPos + (scriptEng.operands[2] << 16),
                                               entity->XPos + (scriptEng.operands[3] << 16), entity->YPos + (scriptEng.operands[4] << 16));
@@ -3553,7 +3553,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                                               entity->XPos + (scriptEng.operands[3] << 16), entity->YPos + (scriptEng.operands[4] << 16));
                         }
                         break;
-                    case 4:
+                    case C_BOX3:
                         BoxCollision3(entity->XPos + (scriptEng.operands[1] << 16), entity->YPos + (scriptEng.operands[2] << 16),
                                       entity->XPos + (scriptEng.operands[3] << 16), entity->YPos + (scriptEng.operands[4] << 16));
                         break;
