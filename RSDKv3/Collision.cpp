@@ -2927,14 +2927,14 @@ void BoxCollision3(int left, int top, int right, int bottom)
                         entSlot = 1;
                 }
             }
-            CollisionStore *otherEntity         = &collisionStorage[entSlot];
-            Entity *entity                      = &objectEntityList[objectLoop];
-            otherEntity->entityNo               = objectLoop;
-            otherEntity->type                   = entity->type;
-            otherEntity->left                   = scriptEng.operands[1];
-            otherEntity->top                    = scriptEng.operands[2];
-            otherEntity->right                  = scriptEng.operands[3];
-            otherEntity->bottom                 = scriptEng.operands[4];
+            CollisionStore *entityHitbox         = &collisionStorage[entSlot];
+            Entity *entity                       = &objectEntityList[objectLoop];
+            entityHitbox->entityNo               = objectLoop;
+            entityHitbox->type                   = entity->type;
+            entityHitbox->left                   = scriptEng.operands[1];
+            entityHitbox->top                    = scriptEng.operands[2];
+            entityHitbox->right                  = scriptEng.operands[3];
+            entityHitbox->bottom                 = scriptEng.operands[4];
         }
     }
 
