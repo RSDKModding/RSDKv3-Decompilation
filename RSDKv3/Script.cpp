@@ -3682,7 +3682,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                     case CSIDE_LWALL: ObjectLWallGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                     case CSIDE_RWALL: ObjectRWallGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                     case CSIDE_ROOF: ObjectRoofGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
-                    case 4: ObjectEntityGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case CSIDE_ENTITY: ObjectEntityGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                 }
                 break;
             case FUNC_LOADVIDEO:
