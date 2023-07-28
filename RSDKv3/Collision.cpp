@@ -8,6 +8,8 @@ int collisionBottom = 0;
 
 CollisionSensor sensors[6];
 
+CollisionStore collisionStorage[2];
+
 #if !RETRO_USE_ORIGINAL_CODE
 byte showHitboxes = 0;
 
@@ -2113,6 +2115,103 @@ void ObjectRWallGrip(int xOffset, int yOffset, int cPath)
     }
 }
 
+void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
+{
+    // i accept suggestions for the names lol
+    // effects:
+    // 0 - nothing
+    // 1 - reset collisionStorage
+    // 2 - use BoxCollision3
+    Player *player              = &playerList[activePlayer];
+    Hitbox *playerHitbox        = getPlayerHitbox(player);
+
+    collisionLeft   = playerHitbox->left[0];
+    collisionTop    = playerHitbox->top[0];
+    collisionRight  = playerHitbox->right[0];
+    collisionBottom = playerHitbox->bottom[0];
+
+    int p                 =  0;
+    int count             =  0;
+
+    scriptEng.checkResult = false;
+    if (collisionStorage[0].entityNo != -1) {
+        count++;
+        scriptEng.checkResult = true;
+    }
+    if (collisionStorage[1].entityNo != -1) {
+        p = 1;
+        count++;
+        scriptEng.checkResult = true;
+    }
+    switch (effect) {
+        case 0:
+        case 1: {
+            if (count) {
+                scriptEng.checkResult = false;
+                int extendedBottomCol = (extendBottomCol != 0) ? collisionBottom + 5 : -5;
+                Entity *entity        = &objectEntityList[collisionStorage[p].entityNo];
+                int yCheck1    = ((collisionStorage[p].top + extendedBottomCol) << 16) + entity->YPos;
+                int yCheck2           = ((collisionStorage[p].bottom + extendedBottomCol) << 16) + entity->YPos;
+                int xCheck1           = (collisionStorage[p].left << 16) + entity->XPos;
+                int xCheck2 = (collisionStorage[p].right << 16) + entity->XPos;
+
+                if (direction) {
+                    if ((((collisionLeft << 16) + player->XPos) <= xCheck2) && xCheck2 < (player->XPos - player->XVelocity)) {
+                        player->XPos = xCheck2 - (collisionLeft << 16);
+                        if (yCheck1 < player->YPos + (collisionBottom << 16) && player->YPos + (collisionTop << 16) < yCheck2)
+                            scriptEng.checkResult = true;
+                        else {
+                            if (effect == 1) {
+                                for (int i = 0; i < 2; i++) {
+                                    collisionStorage[i].entityNo = -1;
+                                    collisionStorage[i].type     = -1;
+                                    collisionStorage[i].left     = 0;
+                                    collisionStorage[i].top      = 0;
+                                    collisionStorage[i].right    = 0;
+                                    collisionStorage[i].bottom   = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (((collisionRight << 16) + player->XPos) >= xCheck1 && xCheck1 > (player->XPos - player->XVelocity)) {
+                        player->XPos = xCheck1 - (collisionRight << 16);
+                        if (yCheck1 < player->YPos + (collisionBottom << 16) && player->YPos + (collisionTop << 16) < yCheck2)
+                            scriptEng.checkResult = true;
+                        else {
+                            if (effect == 1) {
+                                for (int i = 0; i < 2; i++) {
+                                    collisionStorage[i].entityNo = -1;
+                                    collisionStorage[i].type     = -1;
+                                    collisionStorage[i].left     = 0;
+                                    collisionStorage[i].top      = 0;
+                                    collisionStorage[i].right    = 0;
+                                    collisionStorage[i].bottom   = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        case 2: {
+            for (int o = 0; o < ENTITY_COUNT; o++) {
+                Entity *entity = &objectEntityList[o];
+                if (collisionStorage[p].type == entity->type) {
+                    BoxCollision3(entity->XPos + (collisionStorage[p].left << 16), entity->YPos + (collisionStorage[p].top << 16),
+                                         entity->XPos + (collisionStorage[p].right << 16), entity->YPos + (collisionStorage[p].bottom << 16));
+                }
+            }
+            break;
+        }
+        default: break;
+    }
+
+}
+
+
 void TouchCollision(int left, int top, int right, int bottom)
 {
     Player *player       = &playerList[activePlayer];
@@ -2152,6 +2251,7 @@ void TouchCollision(int left, int top, int right, int bottom)
     }
 #endif
 }
+
 void BoxCollision(int left, int top, int right, int bottom)
 {
     Player *player       = &playerList[activePlayer];
@@ -2727,4 +2827,147 @@ void PlatformCollision(int left, int top, int right, int bottom)
         }
     }
 #endif
+}
+
+void BoxCollision3(int left, int top, int right, int bottom)
+{
+    Player *player              = &playerList[activePlayer];
+    Hitbox *playerHitbox        = getPlayerHitbox(player);
+
+    collisionLeft         = playerHitbox->left[0];
+    collisionTop          = playerHitbox->top[0];
+    collisionRight        = playerHitbox->right[0];
+    collisionBottom       = playerHitbox->bottom[0];
+
+    scriptEng.checkResult = false;
+    int entSlot           = 0;
+
+    sensors[0].collided = false;
+    sensors[1].collided = false;
+    sensors[2].collided = false;
+    sensors[0].XPos     = player->XPos + ((collisionLeft + 2) << 16);
+    sensors[1].XPos     = player->XPos;
+    sensors[2].XPos     = player->XPos + ((collisionRight - 2) << 16);
+    sensors[0].YPos     = (collisionBottom << 16) + player->YPos;
+    sensors[1].YPos     = sensors[0].YPos;
+    sensors[2].YPos     = sensors[0].YPos;
+    if (player->YVelocity > -1) {
+        for (int i = 0; i < 3; ++i) {
+            if (((left < sensors[i].XPos) && (sensors[i].XPos < right)) && ((top <= sensors[i].YPos && (player->YPos - player->YVelocity < top)))) {
+                sensors[i].collided = 1;
+                player->flailing[i] = 1;
+            }
+        }
+    }
+    if (((sensors[0].collided) || (sensors[1].collided)) || (sensors[2].collided)) {
+        if ((!player->gravity) && (player->collisionMode == CMODE_RWALL || player->collisionMode == CMODE_LWALL)) {
+            player->XVelocity = 0;
+            player->speed     = 0;
+        }
+        player->gravity               = 0;
+        player->YPos                  = top - (collisionBottom << 16);
+        player->YVelocity             = 0;
+        player->angle                 = 0;
+        player->boundEntity->rotation = 0;
+        player->controlLock           = 0;
+        scriptEng.checkResult         = true;
+    }
+    else {
+        sensors[0].collided = false;
+        sensors[1].collided = false;
+        sensors[0].XPos     = player->XPos + ((collisionLeft + 2) << 16);
+        sensors[1].XPos     = player->XPos + ((collisionRight - 2) << 16);
+        sensors[0].YPos     = (collisionTop << 16) + player->YPos;
+        sensors[1].YPos     = sensors[0].YPos;
+        for (int i = 0; i < 2; ++i) {
+            if (((left < sensors[i].XPos) && (sensors[i].XPos < right))
+                && ((sensors[i].YPos <= bottom && (bottom < player->YPos - player->YVelocity)))) {
+                sensors[i].collided = true;
+            }
+        }
+        if ((sensors[0].collided) || (sensors[1].collided)) {
+            if (player->gravity == 1) {
+                player->YPos = bottom - (collisionTop << 16);
+            }
+            if (player->YVelocity < 1) {
+                player->YVelocity = 0;
+            }
+            scriptEng.checkResult = 4;
+        }
+        else {
+            sensors[0].collided = false;
+            sensors[1].collided = false;
+            if ((left <= (collisionRight << 16) + player->XPos) && (player->XPos - player->XVelocity < left)) {
+                for (int i = 0; i < 2; ++i) {
+                    if ((top < (collisionBottom << 16) + player->YPos) && (sensors[i].YPos < bottom)) {
+                        sensors[i].collided = true;
+                    }
+                }
+            }
+            if (sensors[0].collided || sensors[1].collided) {
+                scriptEng.checkResult = 2;
+                player->XPos          = left - (collisionRight << 16);
+                if (collisionStorage[0].entityNo != -1)
+                    entSlot = 1;
+            }
+            else {
+                sensors[0].collided = false;
+                sensors[1].collided = false;
+                if (((collisionLeft << 16) + player->XPos <= right) && (right < player->XPos - player->XVelocity)) {
+                    for (int i = 0; i < 2; ++i) {
+                        if ((top < (collisionBottom << 16) + player->YPos) && sensors[i].YPos < bottom) {
+                            sensors[i].collided = true;
+                        }
+                    }
+                }
+                if (sensors[0].collided || sensors[1].collided) {
+                    scriptEng.checkResult = 3;
+                    player->XPos          = right - (collisionLeft << 16);
+                    if (collisionStorage[0].entityNo != -1)
+                        entSlot = 1;
+                }
+            }
+            CollisionStore *otherEntity         = &collisionStorage[entSlot];
+            Entity *entity                      = &objectEntityList[objectLoop];
+            otherEntity->entityNo               = objectLoop;
+            otherEntity->type                   = entity->type;
+            otherEntity->left                   = scriptEng.operands[1];
+            otherEntity->top                    = scriptEng.operands[2];
+            otherEntity->right                  = scriptEng.operands[3];
+            otherEntity->bottom                 = scriptEng.operands[4];
+        }
+    }
+
+#if !RETRO_USE_ORIGINAL_CODE
+    int thisHitboxID = 0;
+    if (showHitboxes) {
+        Entity *entity = &objectEntityList[objectLoop];
+        left -= entity->XPos;
+        top -= entity->YPos;
+        right -= entity->XPos;
+        bottom -= entity->YPos;
+
+        thisHitboxID = AddDebugHitbox(H_TYPE_BOX, &objectEntityList[objectLoop], left >> 16, top >> 16, right >> 16, bottom >> 16);
+        if (thisHitboxID >= 0 && scriptEng.checkResult)
+            debugHitboxList[thisHitboxID].collision |= 1 << 0;
+
+        int otherHitboxID =
+            AddDebugHitbox(H_TYPE_BOX, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
+        if (otherHitboxID >= 0) {
+            debugHitboxList[otherHitboxID].XPos = player->XPos;
+            debugHitboxList[otherHitboxID].YPos = player->YPos;
+
+            if (scriptEng.checkResult)
+                debugHitboxList[otherHitboxID].collision |= 1 << 3;
+        }
+    }
+#endif
+}
+
+void EnemyCollision(int left, int top, int right, int bottom)
+{
+    TouchCollision(left, top, right, bottom);
+    if (scriptEng.checkResult == 0) {
+        // insert something about amy's hammer hitboxes here
+    }
 }

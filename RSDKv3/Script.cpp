@@ -2114,10 +2114,10 @@ void ClearScriptData()
     jumpTableStackPos = 0;
     functionStackPos  = 0;
 
-    scriptCodePos       = 0;
-    scriptCodeOffset    = 0;
-    jumpTablePos    = 0;
-    jumpTableOffset = 0;
+    scriptCodePos    = 0;
+    scriptCodeOffset = 0;
+    jumpTablePos     = 0;
+    jumpTableOffset  = 0;
 
 #if RETRO_USE_COMPILER
     scriptFunctionCount = 0;
@@ -2157,6 +2157,16 @@ void ClearScriptData()
     }
 
     SetObjectTypeName((char *)"Blank Object", 0);
+
+    for (int s = 0; s < 2; s++) {
+        collisionStorage[s].entityNo = -1;
+        collisionStorage[s].type     = -1;
+        collisionStorage[s].left     = 0;
+        collisionStorage[s].top      = 0;
+        collisionStorage[s].right    = 0;
+        collisionStorage[s].bottom   = 0;
+    }
+
 }
 
 void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
@@ -3513,11 +3523,10 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                 break;
             }
             case FUNC_PLAYEROBJECTCOLLISION:
-                opcodeSize = 0;
+                opcodeSize              = 0;
                 switch (scriptEng.operands[0]) {
                     default: break;
                     case C_TOUCH:
-                    case C_ENEMY:
                         scriptEng.operands[5] = entity->XPos >> 16;
                         scriptEng.operands[6] = entity->YPos >> 16;
                         TouchCollision(scriptEng.operands[5] + scriptEng.operands[1], scriptEng.operands[6] + scriptEng.operands[2],
@@ -3543,6 +3552,16 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                             PlatformCollision(entity->XPos + (scriptEng.operands[1] << 16), entity->YPos + (scriptEng.operands[2] << 16),
                                               entity->XPos + (scriptEng.operands[3] << 16), entity->YPos + (scriptEng.operands[4] << 16));
                         }
+                        break;
+                    case 4:
+                        BoxCollision3(entity->XPos + (scriptEng.operands[1] << 16), entity->YPos + (scriptEng.operands[2] << 16),
+                                      entity->XPos + (scriptEng.operands[3] << 16), entity->YPos + (scriptEng.operands[4] << 16));
+                        break;
+                    case C_ENEMY:
+                        scriptEng.operands[5] = entity->XPos >> 16;
+                        scriptEng.operands[6] = entity->YPos >> 16;
+                        EnemyCollision(scriptEng.operands[5] + scriptEng.operands[1], scriptEng.operands[6] + scriptEng.operands[2],
+                                      scriptEng.operands[5] + scriptEng.operands[3], scriptEng.operands[6] + scriptEng.operands[4]);
                         break;
                 }
                 break;
@@ -3663,6 +3682,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                     case CSIDE_LWALL: ObjectLWallGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                     case CSIDE_RWALL: ObjectRWallGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                     case CSIDE_ROOF: ObjectRoofGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
+                    case 4: ObjectEntityGrip(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]); break;
                 }
                 break;
             case FUNC_LOADVIDEO:
