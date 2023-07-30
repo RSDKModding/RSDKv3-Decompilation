@@ -8,6 +8,9 @@ A: Buttons like Leaderboards & Achievements require code to be added to support 
 ### Q: The screen is tearing, how do I fix it?
 A: Try turning on VSync in settings.ini.
 
+### Q: I'm on Windows and experiencing issues such as mods not appearing in the mod menu, what's wrong?
+A: A likely reason for this is that you put the decomp in a directory that's managed by OneDrive (Desktop, Downloads, etc). These directories are known to cause issues, so move your decomp installation elsewhere, such as the root of the C drive or another drive.
+
 ### Q: I found a bug!
 A: Submit an issue in the issues tab and we _might_ fix it in the master branch. Don't expect any major future releases, however.
 
@@ -33,10 +36,13 @@ A: The decompilation only supports the OGV video files from the Blit/Steam versi
 A: The RSDK file from Sonic Origins is encrypted in the RSDKv5 datapack format, not the RSDKv3 format. Repacking the files in the correct format or using Data Folder Mode will fix the issue.
 
 ### Q: Why is there no audio?
-A: Sonic Origins doesn't have any music or sound effects contained in the game's data file, instead storing and handling all in-game audio itself through Hedgehog Engine 2. You can fix this by simply inserting the audio files from another version of the game.
+A: Sonic Origins doesn't have any music or sound effects contained in the game's data file, instead storing and handling all in-game audio itself through Hedgehog Engine 2. You can fix this by simply inserting the audio files from another version of the game. Sound effects added in Origins will have to be inserted manually.
 
 ### Q: Why is the Drop Dash disabled by default? How do I turn it on?
 A: By default, the game mode is set to Classic Mode, which disables the Drop Dash. The only way to change this is through a mod, either by changing the default value of the `game.playMode` global variable in `GameConfig.bin` or by setting the variable to another value via scripts.
+
+### Q: How do I play as Knuckles or Amy?
+A: Sonic Team implemented Knuckles and Amy in a way where they aren't playable on the decomp out of the box. This can be fixed via mods. **Do not ask about this in an issue, as we will not be able to help you.**
 
 # Miscellaneous
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?
