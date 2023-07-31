@@ -1036,12 +1036,12 @@ void ReleaseRenderDevice()
     }
 
 #if RETRO_USING_OPENGL
-    for (int i = 0; i < HW_TEXTURE_COUNT; i++) glDeleteTextures(1, &gfxTextureID[i]);
-
+	if (Engine.glContext) {
+		for (int i = 0; i < HW_TEXTURE_COUNT; i++) glDeleteTextures(1, &gfxTextureID[i]);
 #if RETRO_USING_SDL2
-    if (Engine.glContext)
-        SDL_GL_DeleteContext(Engine.glContext);
+		SDL_GL_DeleteContext(Engine.glContext);
 #endif
+	}
 #endif
 
 #if RETRO_USING_SDL2
