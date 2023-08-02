@@ -438,38 +438,38 @@ const FunctionInfo functions[] = {
 };
 
 #if RETRO_USE_COMPILER
-AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
-                            AliasInfo("false", "0"),
-                            AliasInfo("FX_SCALE", "0"),
-                            AliasInfo("FX_ROTATE", "1"),
-                            AliasInfo("FX_ROTOZOOM", "2"),
-                            AliasInfo("FX_INK", "3"),
-                            AliasInfo("PRESENTATION_STAGE", "0"),
-                            AliasInfo("REGULAR_STAGE", "1"),
-                            AliasInfo("BONUS_STAGE", "2"),
-                            AliasInfo("SPECIAL_STAGE", "3"),
-                            AliasInfo("MENU_1", "0"),
-                            AliasInfo("MENU_2", "1"),
-                            AliasInfo("C_TOUCH", "0"),
-                            AliasInfo("C_BOX", "1"),
-                            AliasInfo("C_BOX2", "2"),
-                            AliasInfo("C_PLATFORM", "3"),
-                            AliasInfo("MAT_WORLD", "0"),
-                            AliasInfo("MAT_VIEW", "1"),
-                            AliasInfo("MAT_TEMP", "2"),
-                            AliasInfo("FX_FLIP", "5"),
-                            AliasInfo("FACING_LEFT", "1"),
-                            AliasInfo("FACING_RIGHT", "0"),
-                            AliasInfo("STAGE_PAUSED", "2"),
-                            AliasInfo("STAGE_RUNNING", "1"),
-                            AliasInfo("RESET_GAME", "2"),
-                            AliasInfo("RETRO_WIN", "0"),
-                            AliasInfo("RETRO_OSX", "1"),
-                            AliasInfo("RETRO_XBOX_360", "2"),
-                            AliasInfo("RETRO_PS3", "3"),
-                            AliasInfo("RETRO_iOS", "4"),
-                            AliasInfo("RETRO_ANDROID", "5"),
-                            AliasInfo("RETRO_WP7", "6") };
+AliasInfo aliases[ALIAS_COUNT] = { AliasInfo("true", "1"),
+                                   AliasInfo("false", "0"),
+                                   AliasInfo("FX_SCALE", "0"),
+                                   AliasInfo("FX_ROTATE", "1"),
+                                   AliasInfo("FX_ROTOZOOM", "2"),
+                                   AliasInfo("FX_INK", "3"),
+                                   AliasInfo("PRESENTATION_STAGE", "0"),
+                                   AliasInfo("REGULAR_STAGE", "1"),
+                                   AliasInfo("BONUS_STAGE", "2"),
+                                   AliasInfo("SPECIAL_STAGE", "3"),
+                                   AliasInfo("MENU_1", "0"),
+                                   AliasInfo("MENU_2", "1"),
+                                   AliasInfo("C_TOUCH", "0"),
+                                   AliasInfo("C_BOX", "1"),
+                                   AliasInfo("C_BOX2", "2"),
+                                   AliasInfo("C_PLATFORM", "3"),
+                                   AliasInfo("MAT_WORLD", "0"),
+                                   AliasInfo("MAT_VIEW", "1"),
+                                   AliasInfo("MAT_TEMP", "2"),
+                                   AliasInfo("FX_FLIP", "5"),
+                                   AliasInfo("FACING_LEFT", "1"),
+                                   AliasInfo("FACING_RIGHT", "0"),
+                                   AliasInfo("STAGE_PAUSED", "2"),
+                                   AliasInfo("STAGE_RUNNING", "1"),
+                                   AliasInfo("RESET_GAME", "2"),
+                                   AliasInfo("RETRO_WIN", "0"),
+                                   AliasInfo("RETRO_OSX", "1"),
+                                   AliasInfo("RETRO_XBOX_360", "2"),
+                                   AliasInfo("RETRO_PS3", "3"),
+                                   AliasInfo("RETRO_iOS", "4"),
+                                   AliasInfo("RETRO_ANDROID", "5"),
+                                   AliasInfo("RETRO_WP7", "6") };
 
 const char scriptEvaluationTokens[][0x4] = { "=",  "+=", "-=", "++", "--", "*=", "/=", ">>=", "<<=", "&=",
                                              "|=", "^=", "%=", "==", ">",  ">=", "<",  "<=",  "!=" };
@@ -869,6 +869,17 @@ void CheckAliasText(char *text)
 {
     if (FindStringToken(text, "#alias", 1) != 0)
         return;
+
+#if !RETRO_USE_ORIGINAL_CODE
+    if (aliasCount >= ALIAS_COUNT) {
+        SetupTextMenu(&gameMenu[0], 0);
+        AddTextMenuEntry(&gameMenu[0], "SCRIPT PARSING FAILED");
+        AddTextMenuEntry(&gameMenu[0], " ");
+        AddTextMenuEntry(&gameMenu[0], "TOO MANY ALIASES");
+        Engine.gameMode = ENGINE_SCRIPTERROR;
+        return;
+    }
+#endif
 
     int textPos     = 6;
     int aliasStrPos = 0;
