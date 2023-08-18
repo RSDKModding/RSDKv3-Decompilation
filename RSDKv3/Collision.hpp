@@ -43,7 +43,7 @@ struct CollisionSensor {
 
 struct CollisionStore {
     int entityNo;
-    byte type;
+    sbyte type;
     int left;
     int right;
     int top;
