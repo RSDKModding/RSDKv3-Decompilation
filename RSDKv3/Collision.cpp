@@ -10,7 +10,12 @@ CollisionSensor sensors[6];
 
 CollisionStore collisionStorage[2];
 
-sbyte hammerHitbox[] = { 
+// Should be noted that these values are guesstimates
+// In Origins Plus, the hitbox values are not stored in the RSDK side of the game, instead being pulled from somewhere in Hedgehog Engine 2
+// It proved to be too difficult to figure out what these values were, so we decided to guess instead (normal hitboxes are taken from S1/2, chibi is custom)
+// TODO: Get the actual values
+
+sbyte hammerDashHitbox[] = { 
      0,  0, 13, 0,
    -13,  0,  0, 0,
     -8, -7,  0, 0,
@@ -21,7 +26,7 @@ sbyte hammerHitbox[] = {
      0, -9, 15, 0
 };
 
-sbyte chibiHammerHitbox[] = {
+sbyte chibiHammerDashHitbox[] = {
     -5, 0, 0, 0,
     -2, 0, 0, 0,
     -2, 0, 8, 0
@@ -2845,7 +2850,6 @@ void PlatformCollision(int left, int top, int right, int bottom)
     }
 #endif
 }
-
 void BoxCollision3(int left, int top, int right, int bottom)
 {
     Player *player              = &playerList[activePlayer];
@@ -2980,7 +2984,9 @@ void BoxCollision3(int left, int top, int right, int bottom)
     }
 #endif
 }
-
+// Note for those that care: This is not a direct decomp of this function
+// We did try to make one, but the original function was too much of a mess to comprehend fully, so we opted to instead take what we could understand from it and make a new one that replicates the behavior the best we could
+// If anyone out there wants to take a shot at fully decompiling the original function, feel free to do so and send a PR, but this should be good enough as is
 void EnemyCollision(int left, int top, int right, int bottom)
 {
     Player *player       = &playerList[activePlayer];
@@ -3002,9 +3008,9 @@ void EnemyCollision(int left, int top, int right, int bottom)
 
 #if !RETRO_USE_ORIGINAL_CODE
     bool miniPlayerFlag = GetGlobalVariableByName("Mini_PlayerFlag");
-    sbyte playerAmy     = GetGlobalVariableByName("PLAYER_AMY") != 0 ? GetGlobalVariableByName("PLAYER_AMY") : -1;
-    sbyte aniHammerJump = GetGlobalVariableByName("ANI_HAMMER_JUMP") != 0 ? GetGlobalVariableByName("ANI_HAMMER_JUMP") : -1;
-    sbyte aniHammerDash = GetGlobalVariableByName("ANI_HAMMER_DASH") != 0 ? GetGlobalVariableByName("ANI_HAMMER_DASH") : -1;
+    sbyte playerAmy     = GetGlobalVariableByName("PLAYER_AMY") ? GetGlobalVariableByName("PLAYER_AMY") : 5;
+    sbyte aniHammerJump = GetGlobalVariableByName("ANI_HAMMER_JUMP") ? GetGlobalVariableByName("ANI_HAMMER_JUMP") : 45;
+    sbyte aniHammerDash = GetGlobalVariableByName("ANI_HAMMER_DASH") ? GetGlobalVariableByName("ANI_HAMMER_DASH") : 46;
 #else
     bool mini_PlayerFlag = globalVariables[62];
     sbyte playerAmy      = 5;
@@ -3014,23 +3020,22 @@ void EnemyCollision(int left, int top, int right, int bottom)
 
     scriptEng.checkResult = collisionRight > left && collisionLeft < right && collisionBottom > top && collisionTop < bottom;
 
-    if (scriptEng.checkResult == false) {
+    if (!scriptEng.checkResult) {
         if (playerListPos == playerAmy) {
             if (player->boundEntity->animation == aniHammerDash) {
                 int frame        = player->boundEntity->frame * 4;
-                hammerHitboxLeft   = miniPlayerFlag ? chibiHammerHitbox[frame] : hammerHitbox[frame];
-                hammerHitboxTop    = miniPlayerFlag ? chibiHammerHitbox[frame + 1] : hammerHitbox[frame + 1];
-                hammerHitboxRight  = miniPlayerFlag ? chibiHammerHitbox[frame + 2] : hammerHitbox[frame + 2];
-                hammerHitboxBottom = miniPlayerFlag ? chibiHammerHitbox[frame + 3] : hammerHitbox[frame + 3];
+                hammerHitboxLeft   = miniPlayerFlag ? chibiHammerDashHitbox[frame] : hammerDashHitbox[frame];
+                hammerHitboxTop    = miniPlayerFlag ? chibiHammerDashHitbox[frame + 1] : hammerDashHitbox[frame + 1];
+                hammerHitboxRight  = miniPlayerFlag ? chibiHammerDashHitbox[frame + 2] : hammerDashHitbox[frame + 2];
+                hammerHitboxBottom = miniPlayerFlag ? chibiHammerDashHitbox[frame + 3] : hammerDashHitbox[frame + 3];
                 if (player->boundEntity->direction) {
-                    int s              = hammerHitboxLeft;
-                    hammerHitboxLeft   = hammerHitboxRight;
-                    hammerHitboxRight  = s;
-                    hammerHitboxLeft  *= -1;
-                    hammerHitboxRight *= -1;
+                    int storeHitboxLeft = hammerHitboxLeft;
+                    hammerHitboxLeft    = -hammerHitboxRight;
+                    hammerHitboxRight   = -storeHitboxLeft;
                 }
             }
             if (player->boundEntity->animation == aniHammerJump) {
+                // These values are guesstimates, see above for more info 
                 if (miniPlayerFlag) {
                     hammerHitboxLeft   = -6;
                     hammerHitboxTop    = -6;
@@ -3048,6 +3053,7 @@ void EnemyCollision(int left, int top, int right, int bottom)
                                     && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
         }
     }
+
 #if !RETRO_USE_ORIGINAL_CODE
     if (showHitboxes) {
         Entity *entity = &objectEntityList[objectLoop];
