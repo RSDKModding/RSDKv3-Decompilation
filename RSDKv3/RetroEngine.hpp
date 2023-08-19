@@ -454,6 +454,7 @@ public:
 
     bool LoadGameConfig(const char *filepath);
 #if RETRO_USE_MOD_LOADER
+    void LoadXMLWindowText();
     void LoadXMLVariables();
     void LoadXMLPalettes();
     void LoadXMLObjects();
