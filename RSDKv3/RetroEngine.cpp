@@ -1318,7 +1318,7 @@ void RetroEngine::Callback(int callbackID)
             stageMode         = STAGEMODE_LOAD;
             Engine.gameMode   = ENGINE_MAINGAME;
             stageListPosition = 0;
-			break;
+            break;
         case NOTIFY_STATS_PARAM_1: PrintLog("NOTIFY: StatsParam1() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
         case NOTIFY_STATS_PARAM_2: PrintLog("NOTIFY: StatsParam2() -> %d", notifyParam1); break;
         case NOTIFY_CHARACTER_SELECT:
