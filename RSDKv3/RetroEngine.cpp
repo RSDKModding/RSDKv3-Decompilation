@@ -1023,17 +1023,10 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
             FileRead(&fileBuffer2, 1);
             globalVariables[v] += fileBuffer2;
         }
-
-        SetGlobalVariableByName("Options.DevMenuFlag", false);
-        if (devMenu) {
-            SetGlobalVariableByName("Options.DevMenuFlag", true);
-        }
-#if RETRO_USE_MOD_LOADER
-        SetGlobalVariableByName("Engine.Standalone", true);
-        SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
-#endif
-
+        
+        SetGlobalVariableByName("Options.DevMenuFlag", devMenu ? 1 : 0);
         SetGlobalVariableByName("Engine.PlatformID", RETRO_GAMEPLATFORMID);
+        SetGlobalVariableByName("game.hasPlusDLC", 0); // Just force to false for now. TODO: Add a proper check
 
         // Read SFX
         byte sfxCount = 0;
@@ -1104,6 +1097,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
 #endif
 
         CloseFile();
+
 #if RETRO_USE_MOD_LOADER
         LoadXMLWindowText();
         LoadXMLVariables();
@@ -1111,6 +1105,9 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         LoadXMLObjects();
         LoadXMLPlayers(NULL);
         LoadXMLStages(NULL, 0);
+
+        SetGlobalVariableByName("Engine.Standalone", 1);
+        SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
 #endif
 
 #if !RETRO_USE_ORIGINAL_CODE
