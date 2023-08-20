@@ -1306,7 +1306,19 @@ void RetroEngine::Callback(int callbackID)
         case NOTIFY_STATS_ENEMY: PrintLog("NOTIFY: StatsEnemy() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
         case NOTIFY_STATS_CHARA_ACTION: PrintLog("NOTIFY: StatsCharaAction() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
         case NOTIFY_STATS_RING: PrintLog("NOTIFY: StatsRing() -> %d", notifyParam1); break;
-        case NOTIFY_STATS_MOVIE: PrintLog("NOTIFY: StatsMovie() -> %d", notifyParam1); break;
+        case NOTIFY_STATS_MOVIE:
+            PrintLog("NOTIFY: StatsMovie() -> %d", notifyParam1);
+            ClearGraphicsData();
+            ClearAnimationData();
+            LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+#if RETRO_USE_MOD_LOADER
+            Engine.LoadXMLPalettes();
+#endif
+            activeStageList   = 0;
+            stageMode         = STAGEMODE_LOAD;
+            Engine.gameMode   = ENGINE_MAINGAME;
+            stageListPosition = 0;
+			break;
         case NOTIFY_STATS_PARAM_1: PrintLog("NOTIFY: StatsParam1() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
         case NOTIFY_STATS_PARAM_2: PrintLog("NOTIFY: StatsParam2() -> %d", notifyParam1); break;
         case NOTIFY_CHARACTER_SELECT:
