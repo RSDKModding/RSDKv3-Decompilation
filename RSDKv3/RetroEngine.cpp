@@ -1025,7 +1025,8 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         }
         
         SetGlobalVariableByName("Options.DevMenuFlag", devMenu ? 1 : 0);
-        SetGlobalVariableByName("Engine.PlatformID", RETRO_GAMEPLATFORMID);
+        SetGlobalVariableByName("Engine.PlatformId", RETRO_GAMEPLATFORMID);
+        SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
         SetGlobalVariableByName("game.hasPlusDLC", 0); // Just force to false for now. TODO: Add a proper check
 
         // Read SFX
@@ -1107,7 +1108,6 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         LoadXMLStages(NULL, 0);
 
         SetGlobalVariableByName("Engine.Standalone", 1);
-        SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
 #endif
 
 #if !RETRO_USE_ORIGINAL_CODE
