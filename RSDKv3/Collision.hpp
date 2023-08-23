@@ -41,6 +41,7 @@ struct CollisionSensor {
     bool collided;
 };
 
+// Introduced in Origins Plus
 struct CollisionStore {
     int entityNo;
     sbyte type;
