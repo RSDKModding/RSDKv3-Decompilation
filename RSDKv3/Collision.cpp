@@ -3036,18 +3036,10 @@ void EnemyCollision(int left, int top, int right, int bottom)
             }
             if (player->boundEntity->animation == aniHammerJump) {
                 // These values are guesstimates, see above for more info 
-                if (miniPlayerFlag) {
-                    hammerHitboxLeft   = -6;
-                    hammerHitboxTop    = -6;
-                    hammerHitboxRight  =  6;
-                    hammerHitboxBottom =  6;
-                }
-                else {
-                    hammerHitboxLeft   = -15;
-                    hammerHitboxTop    = -12;
-                    hammerHitboxRight  =  15;
-                    hammerHitboxBottom =  12;
-                }
+                hammerHitboxLeft   = miniPlayerFlag ? - 6 : -15;
+                hammerHitboxTop    = miniPlayerFlag ? - 6 : -12;
+                hammerHitboxRight  = miniPlayerFlag ? 6 : 15;
+                hammerHitboxBottom = miniPlayerFlag ? 6 : 12;
             }
             scriptEng.checkResult = collisionRight + hammerHitboxRight > left && collisionLeft + hammerHitboxLeft < right
                                     && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
