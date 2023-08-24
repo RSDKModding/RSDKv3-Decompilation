@@ -3019,7 +3019,6 @@ void EnemyCollision(int left, int top, int right, int bottom)
     sbyte aniHammerDash  = 46;
 #endif
 
-
     collisionLeft         = player->XPos >> 16;
     collisionTop          = player->YPos >> 16;
     collisionRight        = collisionLeft;
@@ -3028,33 +3027,26 @@ void EnemyCollision(int left, int top, int right, int bottom)
     if (!scriptEng.checkResult) {
         if (playerListPos == playerAmy) {
             if (player->boundEntity->animation == aniHammerDash) {
-                int frame          = miniPlayerFlag ? (player->boundEntity->frame % 3) * 4 : (player->boundEntity->frame % 8) * 4;
+                int frame          = (miniPlayerFlag ? player->boundEntity->frame % 3 : player->boundEntity->frame % 8) * 4;
                 hammerHitboxLeft   = miniPlayerFlag ? chibiHammerDashHitbox[frame] : hammerDashHitbox[frame];
                 hammerHitboxTop    = miniPlayerFlag ? chibiHammerDashHitbox[frame + 1] : hammerDashHitbox[frame + 1];
                 hammerHitboxRight  = miniPlayerFlag ? chibiHammerDashHitbox[frame + 2] : hammerDashHitbox[frame + 2];
                 hammerHitboxBottom = miniPlayerFlag ? chibiHammerDashHitbox[frame + 3] : hammerDashHitbox[frame + 3];
-                if (player->boundEntity->direction) {
-                    int storeHitboxLeft = hammerHitboxLeft;
-                    hammerHitboxLeft    = -hammerHitboxRight;
-                    hammerHitboxRight   = -storeHitboxLeft;
-                }
-                scriptEng.checkResult = collisionRight + hammerHitboxRight > left && collisionLeft + hammerHitboxLeft < right
-                                        && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
             }
             if (player->boundEntity->animation == aniHammerJump) {
-                int frame          = miniPlayerFlag ? (player->boundEntity->frame % 2) * 4 : (player->boundEntity->frame % 4) * 4;
+                int frame          = (miniPlayerFlag ? player->boundEntity->frame % 2 : player->boundEntity->frame % 4) * 4;
                 hammerHitboxLeft   = miniPlayerFlag ? chibiHammerJumpHitbox[frame]     : hammerJumpHitbox[frame];
                 hammerHitboxTop    = miniPlayerFlag ? chibiHammerJumpHitbox[frame + 1] : hammerJumpHitbox[frame + 1];
                 hammerHitboxRight  = miniPlayerFlag ? chibiHammerJumpHitbox[frame + 2] : hammerJumpHitbox[frame + 2];
                 hammerHitboxBottom = miniPlayerFlag ? chibiHammerJumpHitbox[frame + 3] : hammerJumpHitbox[frame + 3];
-                if (player->boundEntity->direction) {
-                    int storeHitboxLeft = hammerHitboxLeft;
-                    hammerHitboxLeft    = -hammerHitboxRight;
-                    hammerHitboxRight   = -storeHitboxLeft;
-                }
-                scriptEng.checkResult = collisionRight + hammerHitboxRight > left && collisionLeft + hammerHitboxLeft < right
-                                        && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
             }
+            if (player->boundEntity->direction) {
+                int storeHitboxLeft =  hammerHitboxLeft;
+                hammerHitboxLeft    = -hammerHitboxRight;
+                hammerHitboxRight   = -storeHitboxLeft;
+            }
+            scriptEng.checkResult = collisionRight + hammerHitboxRight > left && collisionLeft + hammerHitboxLeft < right
+                                    && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
         }
     }
 
