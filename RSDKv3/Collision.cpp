@@ -10,27 +10,36 @@ CollisionSensor sensors[6];
 
 CollisionStore collisionStorage[2];
 
-// Should be noted that these values are guesstimates
-// In Origins Plus, the hitbox values are not stored in the RSDK side of the game, instead being pulled from somewhere in Hedgehog Engine 2
-// It proved to be too difficult to figure out what these values were, so we decided to guess instead (normal hitboxes are taken from S1/2, chibi is custom)
-// TODO: Get the actual values
 
-sbyte hammerDashHitbox[] = { 
-     0,  0, 13, 0,
-   -13,  0,  0, 0,
-    -8, -7,  0, 0,
-     0, -9, 15, 0,
-     0,  0, 13, 0,
-   -13,  0,  0, 0,
-    -8, -7,  0, 0,
-     0, -9, 15, 0
+const sbyte hammerJumpHitbox[] = {
+    -25, -25,  25,  25,
+    -25, -25,  25,  25,
+    -25, -25,  25,  25,
+    -25, -25,  25,  25
 };
 
-sbyte chibiHammerDashHitbox[] = {
-    -5, 0, 0, 0,
-    -2, 0, 0, 0,
-    -2, 0, 8, 0
+const sbyte hammerDashHitbox[] = { 
+     -10, -17, 23, 17,
+     -23, -17, 10, 17,
+     -18, -24, 10, 17,
+     -10, -26, 25, 17,
+     -10, -17, 23, 17,
+     -23, -17, 10, 17,
+     -18, -24, 10, 17,
+     -10, -26, 25, 17
 };
+
+const sbyte chibiHammerJumpHitbox[] = {
+    -15, -11, 15, 20,
+    -15, -11, 15, 20,
+};
+
+const sbyte chibiHammerDashHitbox[] = {
+    -14, -12, 8, 12,
+    -10, -12, 8, 12,
+     -8, -12,16, 12
+};
+
 
 #if !RETRO_USE_ORIGINAL_CODE
 byte showHitboxes = 0;
@@ -2989,17 +2998,9 @@ void BoxCollision3(int left, int top, int right, int bottom)
 // If anyone out there wants to take a shot at fully decompiling the original function, feel free to do so and send a PR, but this should be good enough as is
 void EnemyCollision(int left, int top, int right, int bottom)
 {
-    Player *player       = &playerList[activePlayer];
-    Hitbox *playerHitbox = getPlayerHitbox(player);
-    collisionLeft        = player->XPos >> 16;
-    collisionTop         = player->YPos >> 16;
-    collisionRight       = collisionLeft;
-    collisionBottom      = collisionTop;
+    TouchCollision(left, top, right, bottom);
 
-    collisionLeft   += playerHitbox->left[0];
-    collisionTop    += playerHitbox->top[0];
-    collisionRight  += playerHitbox->right[0];
-    collisionBottom += playerHitbox->bottom[0];
+    Player *player       = &playerList[activePlayer];
 
     int hammerHitboxLeft   = 0;
     int hammerHitboxRight  = 0;
@@ -3018,12 +3019,16 @@ void EnemyCollision(int left, int top, int right, int bottom)
     sbyte aniHammerDash  = 46;
 #endif
 
-    scriptEng.checkResult = collisionRight > left && collisionLeft < right && collisionBottom > top && collisionTop < bottom;
+
+    collisionLeft         = player->XPos >> 16;
+    collisionTop          = player->YPos >> 16;
+    collisionRight        = collisionLeft;
+    collisionBottom       = collisionTop;
 
     if (!scriptEng.checkResult) {
         if (playerListPos == playerAmy) {
             if (player->boundEntity->animation == aniHammerDash) {
-                int frame        = player->boundEntity->frame * 4;
+                int frame          = miniPlayerFlag ? (player->boundEntity->frame % 3) * 4 : (player->boundEntity->frame % 8) * 4;
                 hammerHitboxLeft   = miniPlayerFlag ? chibiHammerDashHitbox[frame] : hammerDashHitbox[frame];
                 hammerHitboxTop    = miniPlayerFlag ? chibiHammerDashHitbox[frame + 1] : hammerDashHitbox[frame + 1];
                 hammerHitboxRight  = miniPlayerFlag ? chibiHammerDashHitbox[frame + 2] : hammerDashHitbox[frame + 2];
@@ -3033,16 +3038,23 @@ void EnemyCollision(int left, int top, int right, int bottom)
                     hammerHitboxLeft    = -hammerHitboxRight;
                     hammerHitboxRight   = -storeHitboxLeft;
                 }
+                scriptEng.checkResult = collisionRight + hammerHitboxRight > left && collisionLeft + hammerHitboxLeft < right
+                                        && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
             }
             if (player->boundEntity->animation == aniHammerJump) {
-                // These values are guesstimates, see above for more info 
-                hammerHitboxLeft   = miniPlayerFlag ? -6 : -15;
-                hammerHitboxTop    = miniPlayerFlag ? -6 : -12;
-                hammerHitboxRight  = miniPlayerFlag ?  6 :  15;
-                hammerHitboxBottom = miniPlayerFlag ?  6 :  12;
+                int frame          = miniPlayerFlag ? (player->boundEntity->frame % 2) * 4 : (player->boundEntity->frame % 4) * 4;
+                hammerHitboxLeft   = miniPlayerFlag ? chibiHammerJumpHitbox[frame]     : hammerJumpHitbox[frame];
+                hammerHitboxTop    = miniPlayerFlag ? chibiHammerJumpHitbox[frame + 1] : hammerJumpHitbox[frame + 1];
+                hammerHitboxRight  = miniPlayerFlag ? chibiHammerJumpHitbox[frame + 2] : hammerJumpHitbox[frame + 2];
+                hammerHitboxBottom = miniPlayerFlag ? chibiHammerJumpHitbox[frame + 3] : hammerJumpHitbox[frame + 3];
+                if (player->boundEntity->direction) {
+                    int storeHitboxLeft = hammerHitboxLeft;
+                    hammerHitboxLeft    = -hammerHitboxRight;
+                    hammerHitboxRight   = -storeHitboxLeft;
+                }
+                scriptEng.checkResult = collisionRight + hammerHitboxRight > left && collisionLeft + hammerHitboxLeft < right
+                                        && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
             }
-            scriptEng.checkResult = collisionRight + hammerHitboxRight > left && collisionLeft + hammerHitboxLeft < right
-                                    && collisionBottom + hammerHitboxBottom > top && collisionTop + hammerHitboxTop < bottom;
         }
     }
 
@@ -3054,12 +3066,12 @@ void EnemyCollision(int left, int top, int right, int bottom)
         right -= entity->XPos >> 16;
         bottom -= entity->YPos >> 16;
 
+        Hitbox *playerHitbox = getPlayerHitbox(player);
+
         int thisHitboxID = AddDebugHitbox(H_TYPE_TOUCH, entity, left, top, right, bottom);
         if (thisHitboxID >= 0 && scriptEng.checkResult)
             debugHitboxList[thisHitboxID].collision |= 1;
-
-        int otherHitboxID = AddDebugHitbox(H_TYPE_TOUCH, NULL, hammerHitboxLeft + playerHitbox->left[0], hammerHitboxTop + playerHitbox->top[0],
-                                           hammerHitboxRight + playerHitbox->right[0], hammerHitboxBottom + playerHitbox->bottom[0]);
+        int otherHitboxID    = AddDebugHitbox(H_TYPE_HAMMER, NULL, hammerHitboxLeft, hammerHitboxTop, hammerHitboxRight, hammerHitboxBottom);
             AddDebugHitbox(H_TYPE_TOUCH, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
         if (otherHitboxID >= 0) {
             debugHitboxList[otherHitboxID].XPos = player->XPos;

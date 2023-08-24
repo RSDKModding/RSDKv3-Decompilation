@@ -2040,6 +2040,11 @@ void DrawDebugOverlays()
                     if (showHitboxes & 2)
                         DrawRectangle(x + xScrollOffset, y + yScrollOffset, w, h, 0xF0, 0x00, 0xF0, 0x60);
                     break;
+
+                case H_TYPE_HAMMER:
+                    if (showHitboxes & 1)
+                        DrawRectangle(x, y, w, h, info->collision ? 0xA0 : 0xFF, info->collision ? 0xA0 : 0xFF, 0x00, 0x60);
+                    break;
             }
         }
     }
