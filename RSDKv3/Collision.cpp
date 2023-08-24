@@ -11,14 +11,14 @@ CollisionSensor sensors[6];
 CollisionStore collisionStorage[2];
 
 
-const sbyte hammerJumpHitbox[] = {
+const int hammerJumpHitbox[] = {
     -25, -25,  25,  25,
     -25, -25,  25,  25,
     -25, -25,  25,  25,
     -25, -25,  25,  25
 };
 
-const sbyte hammerDashHitbox[] = { 
+const int hammerDashHitbox[] = { 
      -10, -17, 23, 17,
      -23, -17, 10, 17,
      -18, -24, 10, 17,
@@ -29,12 +29,12 @@ const sbyte hammerDashHitbox[] = {
      -10, -26, 25, 17
 };
 
-const sbyte chibiHammerJumpHitbox[] = {
+const int chibiHammerJumpHitbox[] = {
     -15, -11, 15, 20,
     -15, -11, 15, 20,
 };
 
-const sbyte chibiHammerDashHitbox[] = {
+const int chibiHammerDashHitbox[] = {
     -14, -12, 8, 12,
     -10, -12, 8, 12,
      -8, -12,16, 12
