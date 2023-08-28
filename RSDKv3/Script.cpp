@@ -2169,7 +2169,7 @@ void ClearScriptData()
 
     SetObjectTypeName((char *)"Blank Object", 0);
 
-    for (int s = 0; s < 2; s++) {
+    for (int s = 0; s < COLSTORE_COUNT; s++) {
         collisionStorage[s].entityNo = -1;
         collisionStorage[s].type     = -1;
         collisionStorage[s].left     = 0;
