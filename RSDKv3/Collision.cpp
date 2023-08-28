@@ -88,7 +88,6 @@ int AddDebugHitbox(byte type, Entity *entity, int left, int top, int right, int 
     return -1;
 }
 #endif
-
 inline Hitbox *getPlayerHitbox(Player *player)
 {
     AnimationFile *animFile = player->animationFile;
@@ -96,7 +95,6 @@ inline Hitbox *getPlayerHitbox(Player *player)
         [animFrames[animationList[animFile->aniListOffset + player->boundEntity->animation].frameListOffset + player->boundEntity->frame].hitboxID
          + animFile->hitboxListOffset];
 }
-
 void FindFloorPosition(Player *player, CollisionSensor *sensor, int startY)
 {
     int c     = 0;
@@ -459,7 +457,6 @@ void FindRWallPosition(Player *player, CollisionSensor *sensor, int startX)
         }
     }
 }
-
 void FloorCollision(Player *player, CollisionSensor *sensor)
 {
     int c;
@@ -776,7 +773,6 @@ void RWallCollision(Player *player, CollisionSensor *sensor)
         }
     }
 }
-
 void ProcessAirCollision(Player *player)
 {
     Hitbox *playerHitbox = getPlayerHitbox(player);
@@ -1532,7 +1528,6 @@ void ProcessPathGrip(Player *player)
         default: return;
     }
 }
-
 void SetPathGripSensors(Player *player)
 {
     Hitbox *playerHitbox = getPlayerHitbox(player);
@@ -1616,7 +1611,6 @@ void SetPathGripSensors(Player *player)
         default: return;
     }
 }
-
 void ProcessPlayerTileCollisions(Player *player)
 {
     player->flailing[0]   = 0;
@@ -1868,7 +1862,6 @@ void ObjectRWallCollision(int xOffset, int yOffset, int cPath)
         }
     }
 }
-
 void ObjectFloorGrip(int xOffset, int yOffset, int cPath)
 {
     int c;
@@ -2145,16 +2138,10 @@ void ObjectRWallGrip(int xOffset, int yOffset, int cPath)
         scriptEng.checkResult = false;
     }
 }
-
 void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
 {
-    // effects:
-    // 0 - nothing
-    // 1 - reset collisionStorage
-    // 2 - use BoxCollision3
-
-    Player *player              = &playerList[activePlayer];
-    Hitbox *playerHitbox        = getPlayerHitbox(player);
+    Player *player       = &playerList[activePlayer];
+    Hitbox *playerHitbox = getPlayerHitbox(player);
 
     collisionLeft   = playerHitbox->left[0];
     collisionTop    = playerHitbox->top[0];
@@ -2175,11 +2162,11 @@ void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
     }
 
     switch (effect) {
-        case 0:
-        case 1: {
+        case ECEFFECT_NONE:
+        case ECEFFECT_RESETSTORAGE: {
             if (storeCount == 1) {
                 scriptEng.checkResult = false;
-                int extendedBottomCol = (extendBottomCol) ? collisionBottom + 5 : -5;
+                int extendedBottomCol = extendBottomCol ? collisionBottom + 5 : -5;
                 Entity *entity        = &objectEntityList[collisionStorage[storePos].entityNo];
 
                 int xCheck1 = (collisionStorage[storePos].left << 16) + entity->XPos;
@@ -2194,7 +2181,7 @@ void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
                             scriptEng.checkResult = true;
                         }
                         else {
-                            if (effect == 1) {
+                            if (effect == ECEFFECT_RESETSTORAGE) {
                                 for (int i = 0; i < COLSTORE_COUNT; i++) {
                                     CollisionStore *entityHitbox = &collisionStorage[i];
                                     entityHitbox->entityNo = -1;
@@ -2216,7 +2203,7 @@ void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
                             player->XPos          = xCheck1 - (collisionRight << 16);
                         }
                         else {
-                            if (effect == 1) {
+                            if (effect == ECEFFECT_RESETSTORAGE) {
                                 for (int i = 0; i < COLSTORE_COUNT; i++) {
                                     CollisionStore *entityHitbox = &collisionStorage[i];
                                     entityHitbox->entityNo = -1;
@@ -2246,7 +2233,7 @@ void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
             }
             break;
         }
-        case 2: {
+        case ECEFFECT_BOXCOL3: {
             CollisionStore *entityHitbox = &collisionStorage[storePos];
             for (int o = 0; o < ENTITY_COUNT; o++) {
                 Entity *entity = &objectEntityList[o];
@@ -2261,8 +2248,6 @@ void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
     }
 
 }
-
-
 void TouchCollision(int left, int top, int right, int bottom)
 {
     Player *player       = &playerList[activePlayer];
@@ -2302,7 +2287,6 @@ void TouchCollision(int left, int top, int right, int bottom)
     }
 #endif
 }
-
 void BoxCollision(int left, int top, int right, int bottom)
 {
     Player *player       = &playerList[activePlayer];
@@ -2881,13 +2865,13 @@ void PlatformCollision(int left, int top, int right, int bottom)
 }
 void BoxCollision3(int left, int top, int right, int bottom)
 {
-    Player *player        = &playerList[activePlayer];
-    Hitbox *playerHitbox  = getPlayerHitbox(player);
+    Player *player       = &playerList[activePlayer];
+    Hitbox *playerHitbox = getPlayerHitbox(player);
 
-    collisionLeft         = playerHitbox->left[0];
-    collisionTop          = playerHitbox->top[0];
-    collisionRight        = playerHitbox->right[0];
-    collisionBottom       = playerHitbox->bottom[0];
+    collisionLeft   = playerHitbox->left[0];
+    collisionTop    = playerHitbox->top[0];
+    collisionRight  = playerHitbox->right[0];
+    collisionBottom = playerHitbox->bottom[0];
 
     scriptEng.checkResult = false;
 
@@ -3039,7 +3023,7 @@ void EnemyCollision(int left, int top, int right, int bottom)
 {
     TouchCollision(left, top, right, bottom);
 
-    Player *player       = &playerList[activePlayer];
+    Player *player = &playerList[activePlayer];
 
     int hammerHitboxLeft   = 0;
     int hammerHitboxRight  = 0;
@@ -3058,10 +3042,10 @@ void EnemyCollision(int left, int top, int right, int bottom)
     sbyte aniHammerDash  = 46;
 #endif
 
-    collisionLeft         = player->XPos >> 16;
-    collisionTop          = player->YPos >> 16;
-    collisionRight        = collisionLeft;
-    collisionBottom       = collisionTop;
+    collisionLeft   = player->XPos >> 16;
+    collisionTop    = player->YPos >> 16;
+    collisionRight  = collisionLeft;
+    collisionBottom = collisionTop;
 
     if (!scriptEng.checkResult) {
         if (playerListPos == playerAmy) {
@@ -3099,11 +3083,11 @@ void EnemyCollision(int left, int top, int right, int bottom)
 
         Hitbox *playerHitbox = getPlayerHitbox(player);
 
-        int thisHitboxID = AddDebugHitbox(H_TYPE_TOUCH, entity, left, top, right, bottom);
+        int thisHitboxID = AddDebugHitbox(H_TYPE_HAMMER, entity, left, top, right, bottom);
         if (thisHitboxID >= 0 && scriptEng.checkResult)
             debugHitboxList[thisHitboxID].collision |= 1;
+
         int otherHitboxID    = AddDebugHitbox(H_TYPE_HAMMER, NULL, hammerHitboxLeft, hammerHitboxTop, hammerHitboxRight, hammerHitboxBottom);
-            AddDebugHitbox(H_TYPE_TOUCH, NULL, playerHitbox->left[0], playerHitbox->top[0], playerHitbox->right[0], playerHitbox->bottom[0]);
         if (otherHitboxID >= 0) {
             debugHitboxList[otherHitboxID].XPos = player->XPos;
             debugHitboxList[otherHitboxID].YPos = player->YPos;

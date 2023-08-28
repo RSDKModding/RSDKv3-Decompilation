@@ -52,6 +52,12 @@ struct CollisionStore {
 };
 extern CollisionStore collisionStorage[2];
 
+enum EntityCollisionEffects {
+    ECEFFECT_NONE         = 0,
+    ECEFFECT_RESETSTORAGE = 1,
+    ECEFFECT_BOXCOL3      = 2,
+};
+
 #if !RETRO_USE_ORIGINAL_CODE
 #define DEBUG_HITBOX_COUNT (0x400)
 
