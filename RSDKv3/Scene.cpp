@@ -685,7 +685,7 @@ void LoadActLayout()
             object->type = fileBuffer;
 
 #if RETRO_USE_MOD_LOADER
-            if (loadGlobalScripts && offsetCount && object->type >= globalObjCount)
+            if (loadGlobalScripts && offsetCount && object->type > globalObjCount)
                 object->type += offsetCount; // offset it by our mod count
 #endif
 
