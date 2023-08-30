@@ -44,12 +44,9 @@ RSDKv3/[Dd]ata/
 RSDKv3/[Mm]ods/
 RSDKv3/[Ss]cripts/
 RSDKv3/[Vv]ideos/
-RSDKv3/log.txt
-RSDKv3/usage.txt
-RSDKv3/[Ss]ettings.ini
-RSDKv3/[Ss][Dd]ata.bin
-RSDKv3/[Ss][Gg]ame.bin
-RSDKv3/[Uu][Dd]ata.bin
+RSDKv3/*.txt
+RSDKv3/*.ini
+RSDKv3/*.bin
 
 #OSX files
 *.DS_Store
