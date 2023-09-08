@@ -2219,7 +2219,7 @@ void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
                 }
             }
             else {
-                if (effect == 1) {
+                if (effect == ECEFFECT_RESETSTORAGE) {
                     for (int i = 0; i < COLSTORE_COUNT; i++) {
                         CollisionStore *entityHitbox = &collisionStorage[i];
                         entityHitbox->entityNo       = -1;
