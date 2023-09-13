@@ -11,9 +11,9 @@
 
 * libtheora: [Download](https://xiph.org/downloads/) and unzip it in `dependencies/android/libtheora`.
 
-* Ensure the symbolic links in `[root]/android/app/jni` are correct: 
-  * `SDL` -> root of the android SDL dependency
-  * `src` -> root of the RSDKv3 repository
+* Ensure the symbolic links in `[root]/android/app/jni` are correct:
+  * `SDL` -> Root of the Android SDL dependency
+  * `src` -> Root of the RSDKv3 repository
   
     To add symbolic links, do the following:
       * Windows: `mklink /d "[name-of-symlink]" "[path]"`
