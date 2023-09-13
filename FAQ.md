@@ -2,6 +2,9 @@
 ### Q: How do I set this up?
 A: You can find a tutorial for setting up both the game and mods [here](https://gamebanana.com/tuts/14111). Alternatively, opening the decompilation without any game assets present will generate a TXT file containing a brief guide to setting them up.
 
+### Q: Why is the DLC disabled in release builds and autobuilds?
+A: Long story short, it's to minimize piracy and ensure an extra layer of legal protection for Sonic Mania Plus and Sonic Origins Plus. Giving players paid content for free is not the goal of this project.
+
 ### Q: Why don't some buttons in the menu work?
 A: Buttons like Leaderboards & Achievements require code to be added to support online functionality & menus (though they are still saved in the Udata.bin file), and other buttons like the Controls button in the Blit versions or the Privacy button in the mobile version have no scripts and are instead hardcoded. I just didn't feel like going through the effort to decompile all that, since it's not really worth it.
 
@@ -43,6 +46,7 @@ A: By default, the game mode is set to Classic Mode, which disables the Drop Das
 
 ### Q: How do I play as Knuckles or Amy?
 A: Sonic Team implemented Knuckles and Amy in a way where they aren't playable on the decomp out of the box. This can be fixed via mods. **Do not ask about this in an issue, as we will not be able to help you.**
+There are also checks implemented in the engine to prevent playing as these characters on release builds and autobuilds.
 
 # Miscellaneous
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?

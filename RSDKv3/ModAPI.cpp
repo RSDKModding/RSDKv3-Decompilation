@@ -31,11 +31,11 @@ int OpenModMenu()
     return 1;
 }
 
-//#if RETRO_PLATFORM == RETRO_ANDROID
-// namespace fs = std::__fs::filesystem;
-//#else
+#if RETRO_PLATFORM == RETRO_ANDROID
+namespace fs = std::__fs::filesystem;
+#else
 namespace fs = std::filesystem;
-//#endif
+#endif
 
 fs::path ResolvePath(fs::path given)
 {

@@ -85,7 +85,7 @@ RSDKv3/*.bin
 ![Dd]ependencies/ios/dependencies.txt
 ![Dd]ependencies/mac/dependencies.txt
 ![Dd]ependencies/windows-uwp/dependencies.txt
-![Dd]ependencies/android/dependencies.txt
+![Dd]ependencies/android/README.md
 ![Dd]ependencies/android/libogg/include/ogg/config_types.h
 
 RSDKv3UWP/Generated Files

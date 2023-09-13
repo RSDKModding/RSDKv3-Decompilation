@@ -1104,7 +1104,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         LoadXMLStages(NULL, 0);
 
         SetGlobalVariableByName("Engine.Standalone", 1);
-        SetGlobalVariableByName("game.hasPlusDLC", 0); // Just force to false for now. TODO: Add a proper check
+        SetGlobalVariableByName("game.hasPlusDLC", !RSDK_AUTOBUILD);
 #endif
 
 #if !RETRO_USE_ORIGINAL_CODE

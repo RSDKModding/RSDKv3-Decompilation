@@ -10,7 +10,6 @@ CollisionSensor sensors[6];
 
 CollisionStore collisionStorage[2];
 
-
 const int hammerJumpHitbox[] = {
     -25, -25,  25,  25,
     -25, -25,  25,  25,
@@ -39,7 +38,6 @@ const int chibiHammerDashHitbox[] = {
     -10, -12, 8, 12,
      -8, -12,16, 12
 };
-
 
 #if !RETRO_USE_ORIGINAL_CODE
 byte showHitboxes = 0;
@@ -88,6 +86,7 @@ int AddDebugHitbox(byte type, Entity *entity, int left, int top, int right, int 
     return -1;
 }
 #endif
+
 inline Hitbox *getPlayerHitbox(Player *player)
 {
     AnimationFile *animFile = player->animationFile;
@@ -2219,7 +2218,7 @@ void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
                 }
             }
             else {
-                if (effect == ECEFFECT_RESETSTORAGE) {
+                if (effect == 1) {
                     for (int i = 0; i < COLSTORE_COUNT; i++) {
                         CollisionStore *entityHitbox = &collisionStorage[i];
                         entityHitbox->entityNo       = -1;
@@ -3022,6 +3021,11 @@ void BoxCollision3(int left, int top, int right, int bottom)
 void EnemyCollision(int left, int top, int right, int bottom)
 {
     TouchCollision(left, top, right, bottom);
+
+#if RSDK_AUTOBUILD
+    // Skip the hammer hitboxes on autobuilds, just in case
+    return;
+#endif
 
     Player *player = &playerList[activePlayer];
 

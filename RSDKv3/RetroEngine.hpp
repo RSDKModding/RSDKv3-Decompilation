@@ -6,9 +6,18 @@
 
 // Setting this to true removes (almost) ALL changes from the original code, the trade off is that a playable game cannot be built, it is advised to
 // be set to true only for preservation purposes
+#ifndef RETRO_USE_ORIGINAL_CODE
 #define RETRO_USE_ORIGINAL_CODE (0)
+#endif
 
+#ifndef RETRO_USE_MOD_LOADER
 #define RETRO_USE_MOD_LOADER (!RETRO_USE_ORIGINAL_CODE && 1)
+#endif
+
+// Forces all DLC flags to be disabled, this should be enabled in any public releases
+#ifndef RSDK_AUTOBUILD
+#define RSDK_AUTOBUILD (0)
+#endif
 
 // ================
 // STANDARD LIBS
@@ -98,10 +107,19 @@ typedef unsigned int uint;
 #define DEFAULT_FULLSCREEN   false
 #endif
 
+#if !defined(RETRO_USE_SDL2) && !defined(RETRO_USE_SDL1)
+#define RETRO_USE_SDL2 (1)
+#endif
+
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
     || RETRO_PLATFORM == RETRO_UWP || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_LINUX
+#ifdef RETRO_USE_SDL2
 #define RETRO_USING_SDL1 (0)
 #define RETRO_USING_SDL2 (1)
+#elif defined(RETRO_USE_SDL1)
+#define RETRO_USING_SDL1 (1)
+#define RETRO_USING_SDL2 (0)
+#endif
 #else // Since its an else & not an elif these platforms probably aren't supported yet
 #define RETRO_USING_SDL1 (0)
 #define RETRO_USING_SDL2 (0)
@@ -115,7 +133,9 @@ typedef unsigned int uint;
 #define RETRO_GAMEPLATFORM (RETRO_STANDARD)
 #endif
 
+#ifndef RETRO_USING_OPENGL
 #define RETRO_USING_OPENGL (1)
+#endif
 
 #if RETRO_USING_OPENGL
 #if RETRO_PLATFORM == RETRO_ANDROID
@@ -473,7 +493,11 @@ public:
 
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
+#ifdef DECOMP_VERSION
+    const char *gameVersion = DECOMP_VERSION;
+#else
     const char *gameVersion = "1.3.1";
+#endif
     const char *gamePlatform;
 
     const char *gameRenderTypes[2] = { "SW_Rendering", "HW_Rendering" };
