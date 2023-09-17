@@ -1939,13 +1939,14 @@ void ObjectLWallGrip(int xOffset, int yOffset, int cPath)
     int YPos              = (entity->YPos >> 16) + yOffset;
     int startX            = XPos;
     XPos                  = XPos - 16;
+    int chunk             = xOffset;
     for (int i = 3; i > 0; i--) {
         if (XPos > 0 && XPos < stageLayouts[0].xsize << 7 && YPos > 0 && YPos < stageLayouts[0].ysize << 7 && !scriptEng.checkResult) {
             int chunkX    = XPos >> 7;
             int tileX     = (XPos & 0x7F) >> 4;
             int chunkY    = YPos >> 7;
             int tileY     = (YPos & 0x7F) >> 4;
-            int chunk     = (stageLayouts[0].tiles[chunkX + (chunkY << 8)] << 6) + tileX + (tileY << 3);
+            chunk         = (stageLayouts[0].tiles[chunkX + (chunkY << 8)] << 6) + tileX + (tileY << 3);
             int tileIndex = tiles128x128.tileIndex[chunk];
             if (tiles128x128.collisionFlags[cPath][chunk] < SOLID_NONE) {
                 switch (tiles128x128.direction[chunk]) {
@@ -1996,7 +1997,7 @@ void ObjectLWallGrip(int xOffset, int yOffset, int cPath)
             return;
         }
         entity->XPos          = (startX - xOffset) << 16;
-        scriptEng.checkResult = false;
+        scriptEng.checkResult = tiles128x128.collisionFlags[cPath][chunk] == 1;
     }
 }
 void ObjectRoofGrip(int xOffset, int yOffset, int cPath)
@@ -2077,13 +2078,14 @@ void ObjectRWallGrip(int xOffset, int yOffset, int cPath)
     int YPos              = (entity->YPos >> 16) + yOffset;
     int startX            = XPos;
     XPos                  = XPos + 16;
+    int chunk             = xOffset;
     for (int i = 3; i > 0; i--) {
         if (XPos > 0 && XPos < stageLayouts[0].xsize << 7 && YPos > 0 && YPos < stageLayouts[0].ysize << 7 && !scriptEng.checkResult) {
             int chunkX    = XPos >> 7;
             int tileX     = (XPos & 0x7F) >> 4;
             int chunkY    = YPos >> 7;
             int tileY     = (YPos & 0x7F) >> 4;
-            int chunk     = (stageLayouts[0].tiles[chunkX + (chunkY << 8)] << 6) + tileX + (tileY << 3);
+            chunk         = (stageLayouts[0].tiles[chunkX + (chunkY << 8)] << 6) + tileX + (tileY << 3);
             int tileIndex = tiles128x128.tileIndex[chunk];
             if (tiles128x128.collisionFlags[cPath][chunk] < SOLID_NONE) {
                 switch (tiles128x128.direction[chunk]) {
@@ -2134,7 +2136,7 @@ void ObjectRWallGrip(int xOffset, int yOffset, int cPath)
             return;
         }
         entity->XPos          = (startX - xOffset) << 16;
-        scriptEng.checkResult = false;
+        scriptEng.checkResult = tiles128x128.collisionFlags[cPath][chunk] == 1;
     }
 }
 void ObjectEntityGrip(int direction, int extendBottomCol, int effect)
