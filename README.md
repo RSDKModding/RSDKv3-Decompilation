@@ -44,7 +44,7 @@ Even if your platform isn't supported by the official releases, you **must** buy
 
 # How to Build
 
-This project uses [CMake](https://cmake.org/), a versatile building system that supports many different compilers and platforms. You can download CMake [here](https://cmake.org/download/).
+This project uses [CMake](https://cmake.org/), a versatile building system that supports many different compilers and platforms. You can download CMake [here](https://cmake.org/download/). **(Make sure to enable the feature to add CMake to the system PATH during the installation!)**
 
 ## Get the source code
 
@@ -62,7 +62,7 @@ If you've already cloned the repo, run this command inside of the repository:
 [Install vcpkg](https://github.com/microsoft/vcpkg#quick-start-windows), then run the following in Command Prompt:
 - `[vcpkg root]\vcpkg.exe install glew sdl2 libogg libtheora libvorbis --triplet=x64-windows-static` (the triplet can be whatever preferred)
 
-Finally, follow the [compilation steps below](#compiling) using `-DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=[chosen triplet] -DCMAKE_PREFIX_PATH=[vcpkg root]/installed/[chosen triplet]/` as arguments for `cmake -Bbuild`.
+Finally, follow the [compilation steps below](#compiling) using `-DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=[chosen triplet] -DCMAKE_PREFIX_PATH=[vcpkg root]/installed/[chosen triplet]/` as arguments for `cmake -B build`.
 
 ### Linux
 Install the following dependencies: then follow the [compilation steps below](#compiling):
@@ -78,14 +78,14 @@ Follow the android build instructions [here.](./dependencies/android/README.md)
 
 Compiling is as simple as typing the following in the root repository directory:
 ```
-cmake -Bbuild # add additional flags here
+cmake -B build
 cmake --build build --config release
 ```
 
 The resulting build will be located somewhere in `build/` depending on your system.
 
 The following cmake arguments are available when compiling:
-- Use these on the first `cmake -Bbuild` step like so: `cmake -Bbuild -DRETRO_DISABLE_PLUS=on`
+- Use these on the first `cmake -B build` step like so: `cmake -B build -DRETRO_DISABLE_PLUS=on`
 
 ### RSDKv3 flags
 - `RETRO_DISABLE_PLUS`: Whether or not to disable the Plus DLC. Takes a boolean (on/off): build with `on` when compiling for distribution. Defaults to `off`.
