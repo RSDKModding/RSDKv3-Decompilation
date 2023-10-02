@@ -27,7 +27,7 @@ set(VITA_APP_NAME "Sonic CD")
 # unique string of developer and Y = a unique number for this app
 set(VITA_TITLEID  "RSDK00001")
 # Optional version string to show in LiveArea's more info screen
-set(VITA_VERSION  "1.3.0")
+set(VITA_VERSION  "1.3.2")
 
 ## Flags and includes for building
 # Note that we make sure not to overwrite previous flags
