@@ -2108,7 +2108,6 @@ void DrawHLineScrollLayer(int layerID)
                 int fullLayerwidth = layerwidth << 7;
                 for (int i = 0; i < hParallax.entryCount; ++i) {
                     hParallax.linePos[i] = xScrollOffset * hParallax.parallaxFactor[i] >> 8;
-                    hParallax.scrollPos[i] += hParallax.scrollSpeed[i];
                     if (hParallax.scrollPos[i] > fullLayerwidth << 16)
                         hParallax.scrollPos[i] -= fullLayerwidth << 16;
                     if (hParallax.scrollPos[i] < 0)
@@ -2649,7 +2648,6 @@ void DrawHLineScrollLayer(int layerID)
                 layerWidth = layerWidth << 7;
                 for (int i = 0; i < hParallax.entryCount; i++) {
                     hParallax.linePos[i]   = hParallax.parallaxFactor[i] * xScrollOffset >> 8;
-                    hParallax.scrollPos[i] = hParallax.scrollPos[i] + hParallax.scrollSpeed[i];
                     if (hParallax.scrollPos[i] > layerWidth << 16) {
                         hParallax.scrollPos[i] = hParallax.scrollPos[i] - (layerWidth << 16);
                     }

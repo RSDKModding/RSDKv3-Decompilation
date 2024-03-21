@@ -755,7 +755,7 @@ void LoadStageBackground()
             FileRead(&fileBuffer, 1);
             hParallax.parallaxFactor[i] = fileBuffer << 8;
             FileRead(&fileBuffer, 1);
-            hParallax.parallaxFactor[i] += fileBuffer;
+            hParallax.parallaxFactor[i] |= fileBuffer;
 
             FileRead(&fileBuffer, 1);
             hParallax.scrollSpeed[i] = fileBuffer << 10;
@@ -770,7 +770,7 @@ void LoadStageBackground()
             FileRead(&fileBuffer, 1);
             vParallax.parallaxFactor[i] = fileBuffer << 8;
             FileRead(&fileBuffer, 1);
-            vParallax.parallaxFactor[i] += fileBuffer;
+            vParallax.parallaxFactor[i] |= fileBuffer;
 
             FileRead(&fileBuffer, 1);
             vParallax.scrollSpeed[i] = fileBuffer << 10;
