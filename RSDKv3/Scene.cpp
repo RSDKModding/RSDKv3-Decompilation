@@ -268,7 +268,6 @@ void ProcessStage(void)
 
             // Update
             ProcessObjects();
-            ProcessParallaxAutoScroll();
 
             if (cameraTarget > -1) {
                 if (cameraEnabled == 1) {
@@ -337,12 +336,6 @@ void ProcessStage(void)
             break;
     }
     Engine.frameCount++;
-}
-
-void ProcessParallaxAutoScroll()
-{
-    for (int i = 0; i < hParallax.entryCount; ++i) hParallax.scrollPos[i] += hParallax.scrollSpeed[i];
-    for (int i = 0; i < vParallax.entryCount; ++i) vParallax.scrollPos[i] += vParallax.scrollSpeed[i];
 }
 
 void LoadStageFiles(void)
@@ -755,7 +748,7 @@ void LoadStageBackground()
             FileRead(&fileBuffer, 1);
             hParallax.parallaxFactor[i] = fileBuffer << 8;
             FileRead(&fileBuffer, 1);
-            hParallax.parallaxFactor[i] |= fileBuffer;
+            hParallax.parallaxFactor[i] += fileBuffer;
 
             FileRead(&fileBuffer, 1);
             hParallax.scrollSpeed[i] = fileBuffer << 10;
@@ -770,7 +763,7 @@ void LoadStageBackground()
             FileRead(&fileBuffer, 1);
             vParallax.parallaxFactor[i] = fileBuffer << 8;
             FileRead(&fileBuffer, 1);
-            vParallax.parallaxFactor[i] |= fileBuffer;
+            vParallax.parallaxFactor[i] += fileBuffer;
 
             FileRead(&fileBuffer, 1);
             vParallax.scrollSpeed[i] = fileBuffer << 10;

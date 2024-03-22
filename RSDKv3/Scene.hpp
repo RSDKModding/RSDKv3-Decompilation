@@ -201,7 +201,6 @@ extern bool drawStageGFXHQ;
 
 void InitFirstStage();
 void ProcessStage();
-void ProcessParallaxAutoScroll();
 
 void ResetBackgroundSettings();
 inline void ResetCurrentStageFolder() { strcpy(currentStageFolder, ""); }
