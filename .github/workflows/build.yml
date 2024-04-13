@@ -14,7 +14,7 @@ jobs:
         with:
           submodules: recursive
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v2
       - name: Download libogg, libvorbis, and libtheora for easier includes
         run: |
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-1.3.5.zip" -OutFile "libogg.zip"
@@ -61,7 +61,7 @@ jobs:
         with:
           submodules: recursive
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v2
       - name: Download libogg, libvorbis, and libtheora for easier includes
         run: |
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-1.3.5.zip" -OutFile "libogg.zip"
@@ -104,11 +104,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository Android
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v2
       - name: Download libogg, libvorbis, and libtheora for easier includes
         run: |
           Invoke-WebRequest -Uri "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.7.zip" -OutFile "libvorbis.zip"
@@ -154,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Install dependencies
