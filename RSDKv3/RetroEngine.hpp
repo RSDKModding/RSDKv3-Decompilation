@@ -95,7 +95,7 @@ typedef unsigned int uint;
 #define DEFAULT_FULLSCREEN   true
 #elif RETRO_PLATFORM == RETRO_UWP
 #define BASE_PATH            ""
-#define DEFAULT_SCREEN_XSIZE 424
+#define DEFAULT_SCREEN_XSIZE 426
 #define DEFAULT_FULLSCREEN   false
 #else
 #ifndef BASE_PATH
@@ -103,7 +103,7 @@ typedef unsigned int uint;
 #endif
 #define RETRO_USING_MOUSE
 #define RETRO_USING_TOUCH
-#define DEFAULT_SCREEN_XSIZE 424
+#define DEFAULT_SCREEN_XSIZE 426
 #define DEFAULT_FULLSCREEN   false
 #endif
 
@@ -466,7 +466,7 @@ public:
     char startSceneID[0x10];
 
     bool showPaletteOverlay = false;
-    bool useHQModes         = true;
+    bool useHQModes         = false;
 #endif
 
     void Init();
@@ -493,11 +493,9 @@ public:
 
     char gameWindowText[0x40];
     char gameDescriptionText[0x100];
-#ifdef DECOMP_VERSION
-    const char *gameVersion = DECOMP_VERSION;
-#else
-    const char *gameVersion = "1.3.2";
-#endif
+
+    const char *gameVersion = "Restored";
+	
     const char *gamePlatform;
 
     const char *gameRenderTypes[2] = { "SW_Rendering", "HW_Rendering" };
@@ -512,7 +510,7 @@ public:
 #endif
 
     int gameTypeID          = 0;
-    const char *releaseType = "Use_Standalone";
+    const char *releaseType = "Use_Restored";
 
     ushort *frameBuffer   = nullptr;
     ushort *frameBuffer2x = nullptr;

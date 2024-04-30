@@ -23,9 +23,9 @@ ushort tintLookupTable[0x10000];
 #define maxVal(a, b) (a >= b ? a : b)
 #define minVal(a, b) (a <= b ? a : b)
 
-int SCREEN_XSIZE        = 424;
-int SCREEN_CENTERX      = 424 / 2;
-int SCREEN_XSIZE_CONFIG = 424;
+int SCREEN_XSIZE        = 426;
+int SCREEN_CENTERX      = 426 / 2;
+int SCREEN_XSIZE_CONFIG = 426;
 
 int touchWidth  = SCREEN_XSIZE;
 int touchHeight = SCREEN_YSIZE;
@@ -100,7 +100,7 @@ int InitRenderDevice()
 {
     char gameTitle[0x40];
 
-    sprintf(gameTitle, "%s%s", Engine.gameWindowText, Engine.usingDataFile_Config ? "" : " (Using Data Folder)");
+    sprintf(gameTitle, "%s%s", Engine.gameWindowText, Engine.usingDataFile_Config ? "" : "");
 
 #if RETRO_USING_SDL2
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -126,24 +126,13 @@ int InitRenderDevice()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 #endif
 #endif
-
+    
 #if RETRO_GAMEPLATFORM == RETRO_MOBILE
     Engine.startFullScreen = true;
-
-    SDL_DisplayMode dm;
-    SDL_GetDesktopDisplayMode(0, &dm);
-
-    bool landscape = dm.h < dm.w;
-    int h          = landscape ? dm.w : dm.h;
-    int w          = landscape ? dm.h : dm.w;
-
-    SCREEN_XSIZE = ((float)SCREEN_YSIZE * h / w);
-    if (SCREEN_XSIZE % 1)
-        ++SCREEN_XSIZE;
-
-    if (SCREEN_XSIZE >= 500)
-        SCREEN_XSIZE = 500;
 #endif
+
+    if (SCREEN_XSIZE >= 426)
+        SCREEN_XSIZE = 426;
 
     SCREEN_CENTERX = SCREEN_XSIZE / 2;
     viewOffsetX    = 0;
@@ -1079,7 +1068,6 @@ void SetFullScreen(bool fs)
         Engine.useFBTexture = ((float)scaleH - (int)scaleH) != 0 || Engine.scalingMode;
 
         float width = w;
-#if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID
         float aspect = SCREEN_XSIZE_CONFIG / (float)SCREEN_YSIZE;
         width        = aspect * h;
         viewOffsetX  = abs(w - width) / 2;
@@ -1099,10 +1087,7 @@ void SetFullScreen(bool fs)
             width -= SCREEN_XSIZE;
             viewOffsetX = abs(w - width) / 2;
         }
-#else
         viewOffsetX = 0;
-#endif
-
         SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, width, h);
     }
     else {

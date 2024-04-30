@@ -4,7 +4,6 @@
 #if RETRO_PLATFORM == RETRO_ANDROID
 #include <android/log.h>
 #endif
-
 inline void PrintLog(const char *msg, ...)
 {
     if (engineDebugMode) {
@@ -36,7 +35,6 @@ inline void PrintLog(const char *msg, ...)
         }
     }
 }
-
 enum DevMenuMenus {
     DEVMENU_MAIN,
     DEVMENU_PLAYERSEL,

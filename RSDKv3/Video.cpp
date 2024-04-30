@@ -205,18 +205,16 @@ int ProcessVideo()
     if (videoPlaying == 1) {
         CheckKeyPress(&keyPress, 0xFF);
 
-        if (videoSkipped && fadeMode < 0xFF) {
-            fadeMode += 8;
+        if (videoSkipped) {
         }
 
-        if (anyPress || touches > 0) {
+        if (keyPress.start || touches > 0) {
             if (!videoSkipped)
                 fadeMode = 0;
-
             videoSkipped = true;
         }
 
-        if (!THEORAPLAY_isDecoding(videoDecoder) || (videoSkipped && fadeMode >= 0xFF)) {
+        if (!THEORAPLAY_isDecoding(videoDecoder) || (videoSkipped)) {
             StopVideoPlayback();
             ResumeSound();
             return 1; // video finished
@@ -291,7 +289,7 @@ void StopVideoPlayback()
 
         if (videoSkipped && fadeMode >= 0xFF)
             fadeMode = 0;
-
+            
         if (videoVidData) {
             THEORAPLAY_freeVideo(videoVidData);
             videoVidData = NULL;

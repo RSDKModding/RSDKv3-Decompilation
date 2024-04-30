@@ -387,7 +387,7 @@ void LoadStageFiles(void)
                 SetObjectTypeName(strBuffer, i + scriptID);
             }
 
-#if RETRO_USE_MOD_LOADER && RETRO_USE_COMPILER
+#if RETRO_USE_MOD_LOADER
             for (byte i = 0; i < modObjCount && loadGlobalScripts; ++i) {
                 SetObjectTypeName(modTypeNames[i], globalObjectCount + i + 1);
             }
@@ -1497,21 +1497,50 @@ void SetPlayerScreenPositionCDStyle(Player *player)
         cameraLag += cameraLag < 0 ? 2 : 0;
         if (cameraLag > 0)
             cameraLag -= 2;
+    }    
+	int xscrollA     = xScrollA;
+    int xscrollB     = xScrollB;
+    int scrollAmount = playerXPos - (SCREEN_CENTERX + xScrollA + cameraLag);
+    if (abs(playerXPos - (SCREEN_CENTERX + xScrollA) - cameraLag) >= 25) {
+        if (scrollAmount <= 0)
+            xscrollA -= 16;
+        else
+            xscrollA += 16;
+        xscrollB = SCREEN_XSIZE + xscrollA;
     }
-    if (playerXPos <= cameraLag + SCREEN_CENTERX + xBoundary1) {
-        player->screenXPos = cameraShakeX + playerXPos - xBoundary1;
-        xScrollOffset      = xBoundary1 - cameraShakeX;
+    else {
+        if (playerXPos - cameraLag > SCREEN_SCROLL_RIGHT + xscrollA) {
+            xscrollA = playerXPos - SCREEN_SCROLL_RIGHT - cameraLag;
+            xscrollB = SCREEN_XSIZE + playerXPos - SCREEN_SCROLL_RIGHT - cameraLag;
+        }
+        if (playerXPos < cameraLag + SCREEN_SCROLL_LEFT + xscrollA) {
+            xscrollA = playerXPos - SCREEN_SCROLL_LEFT - cameraLag;
+            xscrollB = SCREEN_XSIZE + playerXPos - SCREEN_SCROLL_LEFT - cameraLag;
+        }
+    }
+    if (xscrollA < xBoundary1) {
+        xscrollA = xBoundary1;
+        xscrollB = xBoundary1 + SCREEN_XSIZE;
+    }
+    if (xscrollB > xBoundary2) {
+        xscrollB = xBoundary2;
+        xscrollA = xBoundary2 - SCREEN_XSIZE;
+    }
+
+    xScrollA = xscrollA;
+    xScrollB = xscrollB;
+    if (playerXPos <= cameraLag + SCREEN_CENTERX + xScrollA) {
+        player->screenXPos = cameraShakeX + playerXPos - xScrollA;
+        xScrollOffset      = xScrollA - cameraShakeX;
     }
     else {
         xScrollOffset      = cameraShakeX + playerXPos - SCREEN_CENTERX - cameraLag;
         player->screenXPos = cameraLag + SCREEN_CENTERX - cameraShakeX;
-        if (playerXPos - cameraLag > xBoundary2 - SCREEN_CENTERX) {
-            player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xBoundary2 - SCREEN_CENTERX);
-            xScrollOffset      = xBoundary2 - SCREEN_XSIZE - cameraShakeX;
+        if (playerXPos - cameraLag > xScrollB - SCREEN_CENTERX) {
+            player->screenXPos = cameraShakeX + SCREEN_CENTERX + playerXPos - (xScrollB - SCREEN_CENTERX);
+            xScrollOffset      = xScrollB - SCREEN_XSIZE - cameraShakeX;
         }
     }
-    xScrollA         = xScrollOffset;
-    xScrollB         = SCREEN_XSIZE + xScrollOffset;
     int yscrollA     = yScrollA;
     int yscrollB     = yScrollB;
     int adjustY      = cameraAdjustY + playerYPos;

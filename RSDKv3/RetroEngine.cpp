@@ -1,4 +1,8 @@
 #include "RetroEngine.hpp"
+#if WINAPI_FAMILY
+#include <windows.h>
+#include <shellapi.h>
+#endif
 #if RETRO_PLATFORM == RETRO_UWP
 #include <winrt/base.h>
 #include <winrt/Windows.Storage.h>
@@ -66,39 +70,6 @@ bool ProcessEvents()
 
 #endif
 
-#if defined(RETRO_USING_MOUSE) && RETRO_USING_SDL2
-            case SDL_MOUSEMOTION:
-                if (touches <= 1) { // Touch always takes priority over mouse
-                    uint state = SDL_GetMouseState(&touchX[0], &touchY[0]);
-
-                    int width = 0, height = 0;
-                    SDL_GetWindowSize(Engine.window, &width, &height);
-                    touchX[0] = ((touchX[0] - viewOffsetX) / (float)width) * SCREEN_XSIZE;
-                    touchY[0] = (touchY[0] / (float)height) * SCREEN_YSIZE;
-
-                    touchDown[0] = state & SDL_BUTTON_LMASK;
-                    if (touchDown[0])
-                        touches = 1;
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                if (touches <= 1) { // Touch always takes priority over mouse
-                    switch (Engine.sdlEvents.button.button) {
-                        case SDL_BUTTON_LEFT: touchDown[0] = true; break;
-                    }
-                    touches = 1;
-                }
-                break;
-            case SDL_MOUSEBUTTONUP:
-                if (touches <= 1) { // Touch always takes priority over mouse
-                    switch (Engine.sdlEvents.button.button) {
-                        case SDL_BUTTON_LEFT: touchDown[0] = false; break;
-                    }
-                    touches = 0;
-                }
-                break;
-#endif
-
 #if RETRO_USING_SDL2 && defined(RETRO_USING_TOUCH)
             case SDL_FINGERMOTION:
             case SDL_FINGERDOWN:
@@ -136,15 +107,24 @@ bool ProcessEvents()
 
                     case SDLK_F1:
                         if (Engine.devMenu) {
+							PauseSound();
+                            Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+                            currentStageFolder[0] = 0; // reload all assets & scripts
                             activeStageList   = 0;
-                            stageListPosition = 0;
+                            stageListPosition = 3;
+							debugMode         = 0;
                             stageMode         = STAGEMODE_LOAD;
                             Engine.gameMode   = ENGINE_MAINGAME;
+                            SetGlobalVariableByName("LampPost.Check", 0);
+                            SetGlobalVariableByName("Warp.XPos", 0);
                         }
                         break;
 
                     case SDLK_F2:
                         if (Engine.devMenu) {
+							PauseSound();
+                            Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+                            currentStageFolder[0] = 0; // reload all assets & scripts
                             stageListPosition--;
                             if (stageListPosition < 0) {
                                 activeStageList--;
@@ -163,6 +143,9 @@ bool ProcessEvents()
 
                     case SDLK_F3:
                         if (Engine.devMenu) {
+							PauseSound();
+                            Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+                            currentStageFolder[0] = 0; // reload all assets & scripts
                             stageListPosition++;
                             if (stageListPosition >= stageListCount[activeStageList]) {
                                 activeStageList++;
@@ -187,8 +170,27 @@ bool ProcessEvents()
 
                     case SDLK_F5:
                         if (Engine.devMenu) {
+							PauseSound();
+                            Engine.LoadGameConfig("Data/Game/GameConfig.bin");
                             currentStageFolder[0] = 0; // reload all assets & scripts
                             stageMode             = STAGEMODE_LOAD;
+                            SetGlobalVariableByName("LampPost.Check", 0);
+                            SetGlobalVariableByName("Warp.XPos", 0);
+                        }
+                        break;
+
+                    case SDLK_F7:
+                        if (Engine.devMenu) {
+							PauseSound();
+                            Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+                            currentStageFolder[0] = 0; // reload all assets & scripts
+                            activeStageList   = 0;
+                            stageListPosition = 3;
+							debugMode         = 1;
+                            stageMode         = STAGEMODE_LOAD;
+                            Engine.gameMode   = ENGINE_MAINGAME;
+                            SetGlobalVariableByName("LampPost.Check", 0);
+                            SetGlobalVariableByName("Warp.XPos", 0);
                         }
                         break;
 
@@ -1022,6 +1024,9 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         }
         
         SetGlobalVariableByName("Options.DevMenuFlag", devMenu ? 1 : 0);
+#if RETRO_USE_MOD_LOADER
+        SetGlobalVariableByName("Engine.Restored", true);
+#endif
         SetGlobalVariableByName("Engine.PlatformId", RETRO_GAMEPLATFORMID);
         SetGlobalVariableByName("Engine.DeviceType", RETRO_GAMEPLATFORM);
 
@@ -1102,12 +1107,12 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         LoadXMLObjects();
         LoadXMLPlayers(NULL);
         LoadXMLStages(NULL, 0);
-
-        SetGlobalVariableByName("Engine.Standalone", 1);
 #endif
 
-        SetGlobalVariableByName("game.hasPlusDLC", !RSDK_AUTOBUILD);
-
+#if !RSDK_AUTOBUILD
+        SetGlobalVariableByName("game.hasPlusDLC", 1);
+#endif
+	    
 #if !RETRO_USE_ORIGINAL_CODE
         if (strlen(Engine.startSceneFolder) && strlen(Engine.startSceneID)) {
             SceneInfo *scene = &stageList[STAGELIST_BONUS][0xFE]; // slot 0xFF is used for "none" startStage
@@ -1201,7 +1206,12 @@ void RetroEngine::Callback(int callbackID)
             break;
         case CALLBACK_TRIAL_ENDED:
             if (bytecodeMode == BYTECODE_PC) {
-                PrintLog("Callback: ???");
+#if WINAPI_FAMILY
+                std::string Leaderboards_URL = "https://www.speedrun.com/scd_restored";
+                ShellExecuteA(0, 0, Leaderboards_URL.c_str(), 0, 0 , SW_SHOW);
+				
+				SDL_MinimizeWindow(Engine.window);
+#endif
             }
             else {
                 if (Engine.trialMode) {

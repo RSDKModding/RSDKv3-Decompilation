@@ -77,12 +77,12 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "CompanyName", "RSDKv3/Sonic CD (2011) By Christian 'The Taxman' Whitehead, Decompilation by Rubberduckycooly"
-            VALUE "FileDescription", "RSDKv3"
+			VALUE "CompanyName", "RSDKv3/Sonic CD (2011) By Christian Whitehead, Decompilation by Rubberduckycooly, Sonic CD Restored fork by PimpUigi"
+            VALUE "FileDescription", "Sonic CD Restored"
             VALUE "FileVersion", "1.0.0"
-            VALUE "InternalName", "RSDKv3.exe"
-            VALUE "OriginalFilename", "RSDKv3.exe"
-            VALUE "ProductName", "RSDKv3"
+            VALUE "InternalName", "Restored.exe"
+            VALUE "OriginalFilename", "Restored.exe"
+            VALUE "ProductName", "Sonic CD Restored"
             VALUE "ProductVersion", "1.0.0"
         END
     END
@@ -100,7 +100,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON                    "RSDKv3 Decomp Icon.ico"
+IDI_ICON1               ICON                    "Sonic CD Restored.ico"
 
 #endif    // English (Australia) resources
 /////////////////////////////////////////////////////////////////////////////
