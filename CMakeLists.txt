@@ -183,6 +183,5 @@ target_compile_definitions(RetroEngine PRIVATE
     
     RSDK_AUTOBUILD=$<BOOL:${RETRO_DISABLE_PLUS}>
     
-    RETRO_DEV_EXTRA="${PLATFORM} - ${CMAKE_CXX_COMPILER_ID}"
     DECOMP_VERSION="${DECOMP_VERSION}"
 )
