@@ -1087,7 +1087,7 @@ void SetFullScreen(bool fs)
             width -= SCREEN_XSIZE;
             viewOffsetX = abs(w - width) / 2;
         }
-        viewOffsetX = 0;
+	    
         SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, width, h);
     }
     else {
