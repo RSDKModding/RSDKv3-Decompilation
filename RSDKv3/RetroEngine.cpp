@@ -45,10 +45,8 @@ bool ProcessEvents()
                 switch (Engine.sdlEvents.window.event) {
                     case SDL_WINDOWEVENT_MAXIMIZED: {
                         SDL_RestoreWindow(Engine.window);
-		        Engine.wind_rect = sdl_get_window_rect(Engine.window);
-			SDL_SetWindowResizable(Engine.window, SDL_FALSE);
-			SDL_SetWindowBordered(Engine.window, SDL_TRUE);
-			SDL_Set_Window_Rect(Engine.window, sdl_get_display_rect(sdl_get_window_cur_display()));
+                        SDL_SetWindowFullscreen(Engine.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+			SDL_SetWindowBordered(Engine->window, SDL_TRUE);
                         Engine.isFullScreen = true;
                         break;
                     }
