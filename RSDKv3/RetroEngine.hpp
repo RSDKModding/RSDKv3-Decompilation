@@ -525,8 +525,8 @@ public:
     bool vsync            = false;
     int scalingMode       = 0;
     int windowScale       = 2;
-    int refreshRate       = 30; // user-picked screen update rate
-    int screenRefreshRate = 30; // hardware screen update rate
+    int refreshRate       = 60; // user-picked screen update rate
+    int screenRefreshRate = 60; // hardware screen update rate
     int targetRefreshRate = 60; // game logic update rate
 
     uint frameCount      = 0; // frames since scene load
