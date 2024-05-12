@@ -45,6 +45,11 @@ bool ProcessEvents()
                 switch (Engine.sdlEvents.window.event) {
                     case SDL_WINDOWEVENT_MAXIMIZED: {
                         SDL_RestoreWindow(Engine.window);
+		        Engine.wind_rect = sdl_get_window_rect(Engine.window);
+			SDL_SetWindowResizable(Engine.window, SDL_FALSE);
+			SDL_SetWindowBordered(Engine.window, SDL_TRUE);
+			SDL_Set_Window_Rect(Engine.window, sdl_get_display_rect(sdl_get_window_cur_display()));
+                        Engine.isFullScreen = true;
                         break;
                     }
                     case SDL_WINDOWEVENT_CLOSE: Engine.gameMode = ENGINE_EXITGAME; return false;
@@ -162,30 +167,8 @@ bool ProcessEvents()
                         break;
 
                     case SDLK_F4:
-			int sdl_toggle_borderless_fullscreen()
-			{
-				fb.fullscreen_on ^= 1;
-			
-				if (fb.fullscreen_on)
-				{
-					fb.wind_rect = sdl_get_window_rect(fb.window);
-			
-					SDL_SetWindowResizable(fb.window, SDL_FALSE);
-					SDL_SetWindowBordered(fb.window, SDL_TRUE);
-					sdl_set_window_rect(fb.window, sdl_get_display_rect(sdl_get_window_cur_display()));
-				}
-				else
-				{
-					sdl_set_window_rect(fb.window, fb.wind_rect);
-			
-					SDL_SetWindowResizable(fb.window, SDL_TRUE);
-					SDL_SetWindowBordered(fb.window, SDL_TRUE);
-				}
-			
-				sdl_handle_window_resize(&fb, &zc);
-			
-				return fb.fullscreen_on;
-			}
+                        Engine.isFullScreen ^= 1;
+                        SetFullScreen(Engine.isFullScreen);
                         break;
 
                     case SDLK_F5:
