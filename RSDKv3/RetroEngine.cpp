@@ -356,7 +356,7 @@ void RetroEngine::Init()
 
 void RetroEngine::Run()
 {
-    unsigned long long targetFreq = SDL_GetPerformanceFrequency() / 30;
+    unsigned long long targetFreq = SDL_GetPerformanceFrequency() / Engine.refreshRate;
     unsigned long long curTicks   = 0;
     unsigned long long prevTicks  = 0;
 
