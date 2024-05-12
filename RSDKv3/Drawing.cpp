@@ -137,8 +137,8 @@ int InitRenderDevice()
     SCREEN_CENTERX = SCREEN_XSIZE / 2;
     viewOffsetX    = 0;
 
-    Engine.window = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE * Engine.windowScale,
-                                     SCREEN_YSIZE * Engine.windowScale, SDL_WINDOW_ALLOW_HIGHDPI | flags);
+    Engine.window = SDL_CreateWindow(gameTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_XSIZE * 4.51,
+                                     SCREEN_YSIZE * 4.51, SDL_WINDOW_ALLOW_HIGHDPI | flags);
 #if !RETRO_USING_OPENGL
     Engine.renderer = SDL_CreateRenderer(Engine.window, -1, SDL_RENDERER_ACCELERATED);
 #endif
@@ -206,7 +206,7 @@ int InitRenderDevice()
     // SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
     // SDL_SetHint(SDL_HINT_WINRT_HANDLE_BACK_BUTTON, "1");
 
-    Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 32, SDL_SWSURFACE);
+    Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * 4.51, SCREEN_YSIZE * 4.51, 32, SDL_SWSURFACE);
     if (!Engine.windowSurface) {
         PrintLog("ERROR: failed to create window!\nerror msg: %s", SDL_GetError());
         return 0;
@@ -215,7 +215,7 @@ int InitRenderDevice()
     SDL_WM_SetCaption(gameTitle, NULL);
 
     Engine.screenBuffer =
-        SDL_CreateRGBSurface(0, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, 0xF800, 0x7E0, 0x1F, 0x00);
+        SDL_CreateRGBSurface(0, SCREEN_XSIZE * 4.51, SCREEN_YSIZE * 4.51, 16, 0xF800, 0x7E0, 0x1F, 0x00);
 
     if (!Engine.screenBuffer) {
         PrintLog("ERROR: failed to create screen buffer!\nerror msg: %s", SDL_GetError());
@@ -231,7 +231,7 @@ int InitRenderDevice()
 
     if (Engine.startFullScreen) {
         Engine.windowSurface =
-            SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE | SDL_FULLSCREEN);
+            SDL_SetVideoMode(SCREEN_XSIZE * 4.51, SCREEN_YSIZE * 4.51, 16, SDL_SWSURFACE | SDL_FULLSCREEN);
         SDL_ShowCursor(SDL_FALSE);
         Engine.isFullScreen = true;
     }
@@ -334,7 +334,7 @@ int InitRenderDevice()
         int b               = (c & 0b0000000000011111) << 3;
         gfxPalette16to32[c] = (0xFF << 24) | (b << 16) | (g << 8) | (r << 0);
     }
-    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * 4.51, SCREEN_YSIZE * 4.51);
 #endif
 
 #if RETRO_USING_SDL2 && (RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7)
@@ -352,7 +352,7 @@ int InitRenderDevice()
     SDL_GL_GetDrawableSize(Engine.window, &drawableWidth, &drawableHeight);
     SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, drawableWidth, drawableHeight);
 #elif RETRO_USING_SDL2
-    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+    SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * 4.51, SCREEN_YSIZE * 4.51);
 #endif
 
     if (renderType == RENDER_SW) {
@@ -584,12 +584,12 @@ void FlipScreen()
         }
 #elif RETRO_USING_SDL1
         ushort *px = (ushort *)Engine.screenBuffer->pixels;
-        int w      = SCREEN_XSIZE * Engine.windowScale;
-        int h      = SCREEN_YSIZE * Engine.windowScale;
+        int w      = SCREEN_XSIZE * 4.51;
+        int h      = SCREEN_YSIZE * 4.51;
 
         // TODO: there's gotta be a way to have SDL1.2 fill the window with the surface... right?
         if (Engine.gameMode != ENGINE_VIDEOWAIT) {
-            if (Engine.windowScale == 1) {
+            if (4.51 == 1) {
                 ushort *frameBufferPtr = Engine.frameBuffer;
                 for (int y = 0; y < SCREEN_YSIZE; ++y) {
                     for (int x = 0; x < SCREEN_XSIZE; ++x) {
@@ -605,8 +605,8 @@ void FlipScreen()
                 int dx = 0, dy = 0;
                 do {
                     do {
-                        int x = (int)(dx * (1.0f / Engine.windowScale));
-                        int y = (int)(dy * (1.0f / Engine.windowScale));
+                        int x = (int)(dx * (1.0f / 4.51));
+                        int y = (int)(dy * (1.0f / 4.51));
 
                         px[dx + (dy * w)] = Engine.frameBuffer[x + (y * GFX_LINESIZE)];
 
@@ -1047,7 +1047,7 @@ void SetFullScreen(bool fs)
     if (fs) {
 #if RETRO_USING_SDL1
         Engine.windowSurface =
-            SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE | SDL_FULLSCREEN);
+            SDL_SetVideoMode(SCREEN_XSIZE * 4.51, SCREEN_YSIZE * 4.51, 16, SDL_SWSURFACE | SDL_FULLSCREEN);
         SDL_ShowCursor(SDL_FALSE);
 #endif
 #if RETRO_USING_SDL2
@@ -1093,14 +1093,14 @@ void SetFullScreen(bool fs)
     else {
         viewOffsetX = 0;
 #if RETRO_USING_SDL1
-        Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale, 16, SDL_SWSURFACE);
+        Engine.windowSurface = SDL_SetVideoMode(SCREEN_XSIZE * 4.51, SCREEN_YSIZE * 4.51, 16, SDL_SWSURFACE);
         SDL_ShowCursor(SDL_TRUE);
 #endif
         Engine.useFBTexture = Engine.scalingMode;
-        SetScreenDimensions(SCREEN_XSIZE_CONFIG, SCREEN_YSIZE, SCREEN_XSIZE_CONFIG * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+        SetScreenDimensions(SCREEN_XSIZE_CONFIG, SCREEN_YSIZE, SCREEN_XSIZE_CONFIG * 4.51, SCREEN_YSIZE * 4.51);
 #if RETRO_USING_SDL2
         SDL_SetWindowFullscreen(Engine.window, SDL_FALSE);
-        SDL_SetWindowSize(Engine.window, SCREEN_XSIZE_CONFIG * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
+        SDL_SetWindowSize(Engine.window, SCREEN_XSIZE_CONFIG * 4.51, SCREEN_YSIZE * 4.51);
         SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
         SDL_RestoreWindow(Engine.window);
 #endif
