@@ -1,70 +1,26 @@
-def buildAsLibrary = project.hasProperty('BUILD_AS_LIBRARY')
-def buildAsApplication = !buildAsLibrary
-if (buildAsApplication) {
-    apply plugin: 'com.android.application'
-}
-else {
-    apply plugin: 'com.android.library'
-}
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-def autobuildFlag = true
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.3'
 
-android {
-    ndkVersion "22.1.7171670"
-    compileSdkVersion 29
-    defaultConfig {
-        if (buildAsApplication) {
-            applicationId "com.decomp.cdr"
-        }
-        minSdkVersion 23
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.3.2"
-        if(project.hasProperty("RETRO_DISABLE_PLUS"))
-            autobuildFlag = true
-        externalNativeBuild {
-            cmake {
-                arguments "-DAPP_PLATFORM=android-16", "-DANDROID_STL=c++_static", "-DPLATFORM=Android", "-DRETRO_DISABLE_PLUS=$autobuildFlag"
-                abiFilters 'armeabi-v7a', 'arm64-v8a'
-            }
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    if (!project.hasProperty('EXCLUDE_NATIVE_LIBS')) {
-        sourceSets.main {
-            jniLibs.srcDir 'libs'
-        }
-        externalNativeBuild {
-            cmake {
-                path 'jni/CMakeLists.txt'
-            }
-        }
-       
-    }
-    lintOptions {
-        abortOnError false
-    }
-    buildToolsVersion '35.0.0 rc3'
-    namespace 'com.decomp.cdr'
-
-    if (buildAsLibrary) {
-        libraryVariants.all { variant ->
-            variant.outputs.each { output ->
-                def outputFile = output.outputFile
-                if (outputFile != null && outputFile.name.endsWith(".aar")) {
-                    def fileName = "com.decomp.rsdkv3.aar"
-                    output.outputFile = new File(outputFile.parent, fileName)
-                }
-            }
-        }
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
     }
 }
 
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
+}
+
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
