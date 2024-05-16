@@ -14,7 +14,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         if (buildAsApplication) {
-            applicationId "com.decomp.rsdkv3"
+            applicationId "com.decomp.cdr"
         }
         minSdkVersion 23
         targetSdkVersion 29
@@ -49,7 +49,9 @@ android {
     lintOptions {
         abortOnError false
     }
-    
+    buildToolsVersion '35.0.0 rc3'
+    namespace 'com.decomp.cdr'
+
     if (buildAsLibrary) {
         libraryVariants.all { variant ->
             variant.outputs.each { output ->
