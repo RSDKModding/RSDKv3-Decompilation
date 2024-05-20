@@ -1,4 +1,4 @@
-package com.decomp.cdr;
+package com.decomp.rsdkv3;
 
 import android.Manifest;
 import android.content.Context;
