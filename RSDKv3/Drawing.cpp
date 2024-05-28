@@ -4810,7 +4810,7 @@ void SetFadeHQ(int R, int G, int B, int A)
     // Not Avaliable in HW mode
 }
 
-void DrawTintRectangle(uint XPos, uint YPos, int width, int height)
+void DrawTintRectangle(int XPos, int YPos, int width, int height)
 {
     if (renderType == RENDER_SW) {
         if (width + XPos > GFX_LINESIZE)
