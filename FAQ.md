@@ -35,6 +35,8 @@ A: This happens when using the Software Renderer, you can fix this by setting `H
 A: The decompilation only supports the OGV video files from the Blit/Steam version of the game.
 
 # Using Origins RSDK Files
+You can find a guide for fixing most of these issues [here](https://gamebanana.com/tuts/16686).
+
 ### Q: Why doesn't using the datafile work?
 A: The RSDK file from Sonic Origins is encrypted in the RSDKv5 datapack format, not the RSDKv3 format. Repacking the files in the correct format or using Data Folder Mode will fix the issue.
 
