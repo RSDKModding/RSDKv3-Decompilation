@@ -47,7 +47,7 @@ A: Sonic Origins doesn't have any music or sound effects contained in the game's
 A: By default, the game mode is set to Classic Mode, which disables the Drop Dash. The only way to change this is through a mod.
 
 ### Q: How do I play as Knuckles or Amy?
-A: Sonic Team implemented Knuckles and Amy in a way where they aren't playable on the decomp out of the box. This can be fixed via mods. There are also checks implemented in the engine to prevent playing as Amy on release builds and autobuilds.
+A: Sonic Team implemented Knuckles and Amy in a way where they aren't playable on the decomp out of the box. This can be fixed via mods. There are also checks implemented in the engine to prevent playing as these characters on release builds and autobuilds.
 
 # Miscellaneous
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?
