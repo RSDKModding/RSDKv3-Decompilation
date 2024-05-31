@@ -2,20 +2,20 @@
 ### Q: How do I set this up?
 A: You can find a tutorial for setting up both the game and mods [here](https://gamebanana.com/tuts/14111). Alternatively, opening the decompilation without any game assets present will generate a TXT file containing a brief guide to setting them up.
 
-### Q: Why is the DLC disabled in release builds and autobuilds?
-A: Long story short, it's to minimize piracy and ensure an extra layer of legal protection for Sonic Mania Plus and Sonic Origins Plus. Giving players paid content for free is not the goal of this project.
-
 ### Q: Why don't some buttons in the menu work?
-A: Buttons like Leaderboards & Achievements require code to be added to support online functionality & menus (though they are still saved in the Udata.bin file), and other buttons like the Controls button in the Blit versions or the Privacy button in the mobile version have no scripts and are instead hardcoded. I just didn't feel like going through the effort to decompile all that, since it's not really worth it.
+A: Buttons like Leaderboards & Achievements require code to be added to support online functionality & menus (though they are still saved in the Udata.bin file), and other things like the Controls and Settings menus in the Blit versions or the Privacy button in the mobile version have no scripts and are instead hardcoded. It's just not worth decompiling any of that, so just use mods to restore/add menus for them.
 
 ### Q: The screen is tearing, how do I fix it?
 A: Try turning on VSync in settings.ini.
 
-### Q: I'm on Windows and experiencing issues such as mods not appearing in the mod menu, what's wrong?
-A: A likely reason for this is that you put the decomp in a directory that's managed by OneDrive (Desktop, Downloads, etc). These directories are known to cause issues, so move your decomp installation elsewhere, such as the root of the C drive or another drive. If it's still not working, try redownloading and reinstalling the decomp.
+### Q: Why is my game is running faster than it's supposed to?
+A: The Retro Engine has all of its engine and game logic tied to the framerate, meaning the faster your refresh rate is, the faster the game runs. You can fix this by turning off VSync in settings.ini or by changing your device's refresh rate.
+
+### Q: I'm on Windows and experiencing issues such as crashes or mods not appearing in the mod menu, what's wrong?
+A: A likely reason for this is that you put the decomp in a directory in your user folder (Desktop, Downloads, Documents, etc). These directories are known to cause issues, so move your decomp installation elsewhere, such as the root of the C drive or another drive. If it's still not working, try redownloading and reinstalling the decomp.
 
 ### Q: I found a bug!
-A: Submit an issue in the issues tab and we _might_ fix it in the master branch. Don't expect any major future releases, however.
+A: Submit an issue in the Issues tab and we might fix it. Keep in mind that this is a decompilation, so bugs that exist in official releases will most likely not be fixed here.
 
 # Using Blit/Steam RSDK Files
 ### Q: Why is the titlecard text slightly offset when playing in widescreen?
@@ -29,10 +29,10 @@ A: Similar to above, this is a script issue. You can fix it via a mod or by chan
 A: This is a known script issue with most Sega Forever versions of the game. Using the [decompiled scripts](https://github.com/Rubberduckycooly/Sonic-CD-2011-Script-Decompilation) should fix it.
 
 ### Q: Why are the SEGA and Christian Whitehead logos in the title screen so low resolution? 
-A: This happens when using the Software Renderer, you can fix this by setting `HardwareRenderer` in settings.ini to true.
+A: This happens when using the Software Renderer, you can fix this by setting `HardwareRenderer` to true in settings.ini.
 
 ### Q: Why don't the video files from the mobile version of the game work?
-A: The decompilation only supports the OGV video files from the Blit/Steam versions of the game.
+A: The decompilation only supports the OGV video files from the Blit/Steam version of the game.
 
 # Using Origins RSDK Files
 ### Q: Why doesn't using the datafile work?
@@ -42,11 +42,10 @@ A: The RSDK file from Sonic Origins is encrypted in the RSDKv5 datapack format, 
 A: Sonic Origins doesn't have any music or sound effects contained in the game's data file, instead storing and handling all in-game audio itself through Hedgehog Engine 2. You can fix this by simply inserting the audio files from another version of the game. Sound effects added in Origins will have to be inserted manually.
 
 ### Q: Why is the Drop Dash disabled by default? How do I turn it on?
-A: By default, the game mode is set to Classic Mode, which disables the Drop Dash. The only way to change this is through a mod, either by changing the default value of the `game.playMode` global variable in `GameConfig.bin` or by setting the variable to another value via scripts.
+A: By default, the game mode is set to Classic Mode, which disables the Drop Dash. The only way to change this is through a mod.
 
 ### Q: How do I play as Knuckles or Amy?
-A: Sonic Team implemented Knuckles and Amy in a way where they aren't playable on the decomp out of the box. This can be fixed via mods. **Do not ask about this in an issue, as we will not be able to help you.**
-There are also checks implemented in the engine to prevent playing as these characters on release builds and autobuilds.
+A: Sonic Team implemented Knuckles and Amy in a way where they aren't playable on the decomp out of the box. This can be fixed via mods. There are also checks implemented in the engine to prevent playing as Amy on release builds and autobuilds.
 
 # Miscellaneous
 ### Q: Will you do a decompilation for Sonic 1/Sonic 2?
