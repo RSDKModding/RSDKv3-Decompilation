@@ -1104,9 +1104,8 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         LoadXMLStages(NULL, 0);
 
         SetGlobalVariableByName("Engine.Standalone", 1);
-#endif
-
         SetGlobalVariableByName("game.hasPlusDLC", !RSDK_AUTOBUILD);
+#endif
 
 #if !RETRO_USE_ORIGINAL_CODE
         if (strlen(Engine.startSceneFolder) && strlen(Engine.startSceneID)) {
@@ -1117,6 +1116,8 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
             startList_Game  = STAGELIST_BONUS;
             startStage_Game = 0xFE;
         }
+
+        Engine.usingOrigins = GetGlobalVariableByName("NOTIFY_1P_VS_SELECT") != 0;
 #endif
 
         return true;
