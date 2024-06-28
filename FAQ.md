@@ -15,7 +15,7 @@ A: The Retro Engine has all of its engine and game logic tied to the framerate, 
 A: A likely reason for this is that you put the decomp in a directory in your user folder (Desktop, Downloads, Documents, etc). These directories are known to cause issues, so move your decomp installation elsewhere, such as the root of the C drive or another drive. If it's still not working, try redownloading and reinstalling the decomp.
 
 ### Q: I found a bug!
-A: Submit an issue in the Issues tab and we might fix it. Keep in mind that this is a decompilation, so bugs that exist in official releases will most likely not be fixed here.
+A: Submit an issue in the Issues tab and we might look into it. Keep in mind that this is a decompilation, so bugs that exist in official releases will most likely not be fixed here.
 
 
 # Using Blit/Steam RSDK Files
@@ -28,7 +28,7 @@ A: Similar to above, this is a script issue. You can fix it via a mod or by chan
 
 # Using Mobile RSDK Files
 ### Q: Why does pressing B pause the game during gameplay?
-A: This is a known script issue with most Sega Forever versions of the game. Using the [decompiled scripts](https://github.com/Rubberduckycooly/Sonic-CD-2011-Script-Decompilation) should fix it.
+A: This is a known script issue with most Sega Forever versions of the game. Using the [decompiled scripts](https://github.com/RSDKModding/RSDKv3-Script-Decompilation) should fix it.
 
 ### Q: Why are the SEGA and Christian Whitehead logos in the title screen so low resolution? 
 A: This happens when using the Software Renderer, you can fix this by setting `HardwareRenderer` to true in settings.ini.
@@ -57,8 +57,8 @@ A: Long story short, it's to minimize piracy and ensure an extra layer of legal 
 
 
 # Miscellaneous
-### Q: Will you do a decompilation for Sonic 1/Sonic 2?
+### Q: Will you do a decompilation for RSDKv4?
 A: I already have! You can find it [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation).
 
-### Q: Will you do a decompilation for Sonic Mania?
-A: I already have! You can find the source code for Sonic Mania [here](https://github.com/Rubberduckycooly/Sonic-Mania-Decompilation) and RSDKv5 which is used to run it [here](https://github.com/Rubberduckycooly/RSDKv5-Decompilation).
+### Q: Will you do a decompilation for RSDKv5/Sonic Mania?
+A: I already have! You can find Sonic Mania [here](https://github.com/Rubberduckycooly/Sonic-Mania-Decompilation) and RSDKv5 [here](https://github.com/Rubberduckycooly/RSDKv5-Decompilation).
