@@ -34,7 +34,7 @@
             "sources": [
                 {
                     "type": "git",
-                    "url": "https://github.com/Rubberduckycooly/Sonic-CD-11-Decompilation.git",
+                    "url": "https://github.com/RSDKModding/RSDKv3-Decompilation.git",
                     "branch": "master"
                 },
                 {

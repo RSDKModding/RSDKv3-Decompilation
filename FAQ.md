@@ -58,7 +58,7 @@ A: Long story short, it's to minimize piracy and ensure an extra layer of legal 
 
 # Miscellaneous
 ### Q: Will you do a decompilation for RSDKv4?
-A: I already have! You can find it [here](https://github.com/Rubberduckycooly/Sonic-1-2-2013-Decompilation).
+A: I already have! You can find it [here](https://github.com/RSDKModding/RSDKv4-Decompilation).
 
 ### Q: Will you do a decompilation for RSDKv5/Sonic Mania?
-A: I already have! You can find Sonic Mania [here](https://github.com/Rubberduckycooly/Sonic-Mania-Decompilation) and RSDKv5 [here](https://github.com/Rubberduckycooly/RSDKv5-Decompilation).
+A: I already have! You can find Sonic Mania [here](https://github.com/RSDKModding/Sonic-Mania-Decompilation) and RSDKv5 [here](https://github.com/RSDKModding/RSDKv5-Decompilation).
