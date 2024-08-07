@@ -90,7 +90,7 @@ cmake --build build --config release
 The resulting build will be located somewhere in `build/` depending on your system.
 
 The following cmake arguments are available when compiling:
-- Use these on the first `cmake -B build` step like so: `cmake -B build -DRETRO_DISABLE_PLUS=on`
+- Use these by adding `-D[flag-name]=[value]` to the end of the `cmake -B build` command. For example, to build with `RETRO_DISABLE_PLUS` set to on, add `-DRETRO_DISABLE_PLUS=on` to the command.
 
 ### RSDKv3 flags
 - `RETRO_DISABLE_PLUS`: Whether or not to disable the Plus DLC. Takes a boolean (on/off): build with `on` when compiling for distribution. Defaults to `off`.
