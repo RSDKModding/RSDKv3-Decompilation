@@ -3112,6 +3112,40 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
 
                 switch (scriptEng.operands[3]) {
                     default: break;
+                    case 0:                      // Draw Word 1 (but aligned from the right instead of left)
+                        charID = 0;
+                        for (charID = 0;; ++charID) {
+                            int nextChar = titleCardText[charID + 1];
+                            if (nextChar == '-' || !nextChar)
+                                break;
+                        }
+
+                        while (charID >= 0) {
+                            int character = titleCardText[charID];
+                            if (character == ' ')
+                                character = -1; // special space char
+                            if (character == '-')
+                                character = 0;
+                            if (character >= '0' && character <= '9')
+                                character -= 22;
+                            if (character > '9' && character < 'f')
+                                character -= 'A';
+
+                            if (character <= -1) {
+                                scriptEng.operands[1] -= scriptEng.operands[5] + scriptEng.operands[6]; // spaceWidth + spacing
+                            }
+                            else {
+                                character += scriptEng.operands[0];
+                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
+
+                                scriptEng.operands[1] -= spriteFrame->width + scriptEng.operands[6];
+
+                                DrawSprite(scriptEng.operands[1] + spriteFrame->pivotX, scriptEng.operands[2] + spriteFrame->pivotY,
+                                           spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, scriptInfo->spriteSheetID);
+                            }
+                            charID--;
+                        }
+                        break;
 
                     case 1: // Draw Word 1
                         charID = 0;
@@ -3121,7 +3155,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                         if (scriptEng.operands[4] == 1 && titleCardText[charID] != 0) {
                             int character = titleCardText[charID];
                             if (character == ' ')
-                                character = 0;
+                                character = -1;
                             if (character == '-')
                                 character = 0;
                             if (character >= '0' && character <= '9')
@@ -3147,7 +3181,7 @@ void ProcessScript(int scriptCodeStart, int jumpTableStart, byte scriptSub)
                         while (titleCardText[charID] != 0 && titleCardText[charID] != '-') {
                             int character = titleCardText[charID];
                             if (character == ' ')
-                                character = 0;
+                                character = -1;
                             if (character == '-')
                                 character = 0;
                             if (character > '/' && character < ':')
