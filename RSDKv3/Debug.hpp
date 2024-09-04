@@ -20,7 +20,14 @@ inline void PrintLog(const char *msg, ...)
         char pathBuffer[0x100];
 #if RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_UWP
         if (!usingCWD)
+#if RETRO_PLATFORM == RETRO_OSX
+        {
+            getResourcesPath(pathBuffer, sizeof(pathBuffer));
+            sprintf(pathBuffer, "%s/log.txt", pathBuffer);
+        }
+#else
             sprintf(pathBuffer, "%s/log.txt", getResourcesPath());
+#endif
         else
             sprintf(pathBuffer, "log.txt");
 #elif RETRO_PLATFORM == RETRO_ANDROID
