@@ -165,7 +165,7 @@ jobs:
             ./configure
         - name: Build RSDKv3
           run: |
-            xcodebuild -project RSDKv3.xcodeproj -scheme RSDKv3 DSTROOT="./build" archive ${{env.GENERAL_MACOS_FLAGS}}
+            xcodebuild -project RSDKv3.xcodeproj -scheme RSDKv3 DSTROOT="./build" -configuration Release DEPLOYMENT_LOCATION=YES ${{env.GENERAL_MACOS_FLAGS}}
         - name: Zip the app ourselves (Important step to retain symlinks)
           run: |
             cd ./build/Applications/
