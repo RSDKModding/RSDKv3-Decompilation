@@ -3,10 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		852B66EB2C861FB900D69DFC /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852B66E72C861FB800D69DFC /* AppKit.framework */; };
+		852B66EF2C861FF600D69DFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852B66EE2C861FF600D69DFC /* Foundation.framework */; };
+		85A59A142C8ACD43009B9572 /* fcaseopen.c in Sources */ = {isa = PBXBuildFile; fileRef = 85A59A132C8ACD43009B9572 /* fcaseopen.c */; };
 		C92834D22615E66D00D51CCE /* Ini.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C92834BC2615E66C00D51CCE /* Ini.cpp */; };
 		C92834D32615E66D00D51CCE /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C92834BD2615E66C00D51CCE /* Scene.cpp */; };
 		C92834D42615E66D00D51CCE /* Scene3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C92834BE2615E66C00D51CCE /* Scene3D.cpp */; };
@@ -45,6 +48,30 @@
 		C975E72C26E3303E00F09AD4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C975E72B26E3303E00F09AD4 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		85D15D302C83DF3200C38EF2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85D15D2A2C83DF3200C38EF2 /* Dependencies.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9EA087D229FA013200163B50;
+			remoteInfo = Ogg;
+		};
+		85D15D322C83DF3200C38EF2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85D15D2A2C83DF3200C38EF2 /* Dependencies.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9EA087E629FA099200163B50;
+			remoteInfo = Vorbis;
+		};
+		85D15D342C83DF3200C38EF2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85D15D2A2C83DF3200C38EF2 /* Dependencies.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 850738AB2C0AA96A00D3468A;
+			remoteInfo = Theora;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		C96219862589B10600B47AB3 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -63,6 +90,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		852B66E72C861FB800D69DFC /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		852B66EE2C861FF600D69DFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		85A59A122C8ACD39009B9572 /* fcaseopen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fcaseopen.h; sourceTree = "<group>"; };
+		85A59A132C8ACD43009B9572 /* fcaseopen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fcaseopen.c; sourceTree = "<group>"; };
+		85D15D2A2C83DF3200C38EF2 /* Dependencies.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Dependencies.xcodeproj; path = dependencies/mac/Dependencies.xcodeproj; sourceTree = "<group>"; };
 		C92834A72615E64C00D51CCE /* String.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = String.hpp; sourceTree = "<group>"; };
 		C92834A82615E64C00D51CCE /* Player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Player.hpp; sourceTree = "<group>"; };
 		C92834A92615E64C00D51CCE /* Input.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Input.hpp; sourceTree = "<group>"; };
@@ -109,11 +141,9 @@
 		C962191925898A9300B47AB3 /* RSDKv3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RSDKv3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C962193625898B0A00B47AB3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = dependencies/mac/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		C96219832589B10600B47AB3 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = dependencies/mac/SDL2.framework; sourceTree = "<group>"; };
-		C96219892589B3D900B47AB3 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = dependencies/mac/ogg/macosx/Ogg.framework; sourceTree = "<group>"; };
-		C962198C2589B3EF00B47AB3 /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = "dependencies/mac/libvorbis-1.3.7/macosx/Vorbis.framework"; sourceTree = "<group>"; };
-		C96219902589B50100B47AB3 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = dependencies/mac/libogg/macosx/Ogg.framework; sourceTree = "<group>"; };
-		C96219932589B51000B47AB3 /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = dependencies/mac/libvorbis/macosx/Vorbis.framework; sourceTree = "<group>"; };
-		C96219962589B51E00B47AB3 /* Theora.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Theora.framework; path = dependencies/mac/libtheora/macosx/Theora.framework; sourceTree = "<group>"; };
+		C96219902589B50100B47AB3 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Ogg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C96219932589B51000B47AB3 /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Vorbis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C96219962589B51E00B47AB3 /* Theora.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Theora.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C962199A2589B57300B47AB3 /* theoraplay_cvtrgb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoraplay_cvtrgb.h; path = dependencies/all/theoraplay/theoraplay_cvtrgb.h; sourceTree = SOURCE_ROOT; };
 		C962199B2589B57300B47AB3 /* theoraplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoraplay.h; path = dependencies/all/theoraplay/theoraplay.h; sourceTree = SOURCE_ROOT; };
 		C962199F2589B7AB00B47AB3 /* theoraplay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = theoraplay.c; path = dependencies/all/theoraplay/theoraplay.c; sourceTree = SOURCE_ROOT; };
@@ -134,17 +164,30 @@
 				C96219912589B50100B47AB3 /* Ogg.framework in Frameworks */,
 				C96219842589B10600B47AB3 /* SDL2.framework in Frameworks */,
 				C96219942589B51000B47AB3 /* Vorbis.framework in Frameworks */,
+				852B66EB2C861FB900D69DFC /* AppKit.framework in Frameworks */,
 				C975E72C26E3303E00F09AD4 /* OpenGL.framework in Frameworks */,
 				C96219972589B51E00B47AB3 /* Theora.framework in Frameworks */,
+				852B66EF2C861FF600D69DFC /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		85D15D2B2C83DF3200C38EF2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				85D15D312C83DF3200C38EF2 /* Ogg.framework */,
+				85D15D332C83DF3200C38EF2 /* Vorbis.framework */,
+				85D15D352C83DF3200C38EF2 /* Theora.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		C962191025898A9300B47AB3 = {
 			isa = PBXGroup;
 			children = (
+				85D15D2A2C83DF3200C38EF2 /* Dependencies.xcodeproj */,
 				C962191B25898A9300B47AB3 /* RSDKv3 */,
 				C962191A25898A9300B47AB3 /* Products */,
 				C96219822589B10600B47AB3 /* Frameworks */,
@@ -235,12 +278,12 @@
 		C96219822589B10600B47AB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				852B66E72C861FB800D69DFC /* AppKit.framework */,
+				852B66EE2C861FF600D69DFC /* Foundation.framework */,
 				C975E72B26E3303E00F09AD4 /* OpenGL.framework */,
 				C96219962589B51E00B47AB3 /* Theora.framework */,
 				C96219932589B51000B47AB3 /* Vorbis.framework */,
 				C96219902589B50100B47AB3 /* Ogg.framework */,
-				C962198C2589B3EF00B47AB3 /* Vorbis.framework */,
-				C96219892589B3D900B47AB3 /* Ogg.framework */,
 				C96219832589B10600B47AB3 /* SDL2.framework */,
 			);
 			name = Frameworks;
@@ -267,6 +310,7 @@
 			isa = PBXGroup;
 			children = (
 				C975E72526E32FA300F09AD4 /* tinyxml2.h */,
+				85A59A122C8ACD39009B9572 /* fcaseopen.h */,
 				C96219A3258C632200B47AB3 /* cocoaHelpers.hpp */,
 			);
 			name = helpers;
@@ -276,6 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				C975E72926E32FC600F09AD4 /* tinyxml2.cpp */,
+				85A59A132C8ACD43009B9572 /* fcaseopen.c */,
 				C96219A4258C632A00B47AB3 /* cocoaHelpers.mm */,
 			);
 			name = helpers;
@@ -308,7 +353,8 @@
 		C962191125898A9300B47AB3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1230;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1540;
 				ORGANIZATIONNAME = Rubberduckycooly;
 				TargetAttributes = {
 					C962191825898A9300B47AB3 = {
@@ -327,12 +373,42 @@
 			mainGroup = C962191025898A9300B47AB3;
 			productRefGroup = C962191A25898A9300B47AB3 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 85D15D2B2C83DF3200C38EF2 /* Products */;
+					ProjectRef = 85D15D2A2C83DF3200C38EF2 /* Dependencies.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				C962191825898A9300B47AB3 /* RSDKv3 */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		85D15D312C83DF3200C38EF2 /* Ogg.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Ogg.framework;
+			remoteRef = 85D15D302C83DF3200C38EF2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		85D15D332C83DF3200C38EF2 /* Vorbis.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Vorbis.framework;
+			remoteRef = 85D15D322C83DF3200C38EF2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		85D15D352C83DF3200C38EF2 /* Theora.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Theora.framework;
+			remoteRef = 85D15D342C83DF3200C38EF2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C962191725898A9300B47AB3 /* Resources */ = {
@@ -371,6 +447,7 @@
 				C92834E72615E66D00D51CCE /* Video.cpp in Sources */,
 				C92834DB2615E66D00D51CCE /* String.cpp in Sources */,
 				C92834DD2615E66D00D51CCE /* Userdata.cpp in Sources */,
+				85A59A142C8ACD43009B9572 /* fcaseopen.c in Sources */,
 				C92834DE2615E66D00D51CCE /* Reader.cpp in Sources */,
 				C975E72A26E32FC600F09AD4 /* tinyxml2.cpp in Sources */,
 				C92834DF2615E66D00D51CCE /* Text.cpp in Sources */,
@@ -416,9 +493,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -476,9 +555,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -503,15 +584,11 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/dependencies/mac",
-					"$(PROJECT_DIR)/dependencies/mac/ogg/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libvorbis-1.3.7/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libogg/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libvorbis/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libtheora/macosx",
 				);
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/all/tinyxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/dependencies/mac/Info.plist";
@@ -534,15 +611,11 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/dependencies/mac",
-					"$(PROJECT_DIR)/dependencies/mac/ogg/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libvorbis-1.3.7/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libogg/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libvorbis/macosx",
-					"$(PROJECT_DIR)/dependencies/mac/libtheora/macosx",
 				);
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/all/tinyxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/dependencies/mac/Info.plist";
