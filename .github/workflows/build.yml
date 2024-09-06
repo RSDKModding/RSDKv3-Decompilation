@@ -158,7 +158,7 @@ jobs:
           run: |
             curl "https://libsdl.org/release/SDL2-2.30.7.dmg" --output "SDL2.dmg"
             hdiutil attach SDL2.dmg
-            mv /Volumes/SDL2/SDL2.framework ./dependencies/mac
+            cp -r /Volumes/SDL2/SDL2.framework ./dependencies/mac
         - name: Generate Vorbis headers
           working-directory: ./dependencies/mac/libogg/
           run: |
