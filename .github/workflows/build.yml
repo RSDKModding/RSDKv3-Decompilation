@@ -12,7 +12,7 @@ env:
   WIN64_FLAGS: "-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_PREFIX_PATH=C:/vcpkg/installed/x64-windows-static/"
   # FIXME: For some reason ubuntu enables _FORTIFY_SOURCE by default, so let's override it to prevent IO bugs
   GENERAL_LINUX_FLAGS: "-DCMAKE_CXX_FLAGS='-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0'"
-  GENERAL_MACOS_FLAGS: "OTHER_CFLAGS='-DRSDK_AUTOBUILD=1 -DRETRO_DEV_EXTRA=\"Darwin\ -\ AppleClang\"'"
+  GENERAL_MACOS_FLAGS: "OTHER_CFLAGS='-DRSDK_AUTOBUILD=1 -DRETRO_DEV_EXTRA=\\\"Darwin\\ -\\ AppleClang\\\"'"
 
 jobs:
   v3-windows:
