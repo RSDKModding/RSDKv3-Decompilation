@@ -164,7 +164,6 @@
 		850739412C0AB68C00D3468A /* decint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = decint.h; path = libtheora/lib/decint.h; sourceTree = "<group>"; };
 		850739442C0AB68D00D3468A /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = internal.h; path = libtheora/lib/internal.h; sourceTree = "<group>"; };
 		854102DB3CD04DB0B2C143E3 /* envelope.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = envelope.c; path = libvorbis/lib/envelope.c; sourceTree = SOURCE_ROOT; };
-		854A8B182C8A13A500AD895E /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.dylib; path = ../../../../../../../usr/local/Cellar/libogg/1.3.5/lib/libogg.dylib; sourceTree = "<group>"; };
 		8590AEA12C0ABB5B00F58600 /* decinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = decinfo.c; path = libtheora/lib/decinfo.c; sourceTree = "<group>"; };
 		8590AEA22C0ABB5C00F58600 /* dequant.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dequant.c; path = libtheora/lib/dequant.c; sourceTree = "<group>"; };
 		8590AEA32C0ABB5C00F58600 /* enquant.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = enquant.c; path = libtheora/lib/enquant.c; sourceTree = "<group>"; };
@@ -391,7 +390,6 @@
 		854A8B172C8A13A500AD895E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				854A8B182C8A13A500AD895E /* libogg.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
