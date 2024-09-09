@@ -169,7 +169,8 @@ jobs:
         - name: Zip the app ourselves (Important step to retain symlinks)
           run: |
             cd ./build/Applications/
-            zip -r RSDKv3.zip ./RSDKv3.app/
+            echo 'From this folder, run `xattr -cr RSDKv3.app` in Terminal to allow MacOS to open it.' > README.txt
+            zip -r RSDKv3.zip .
         - name: Upload artifacts
           uses: actions/upload-artifact@v4
           with:
