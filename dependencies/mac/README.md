@@ -16,7 +16,7 @@ Most of the Xcode project work has been done for you. Once you've set up the fol
 
 ## Customization
 
-If you're debugging the engine, best to just open the XCode project directly and run it through the debugging process.However, if you have the Command Line Tools and want to play games using it, run `xcodebuild -project RSDKv3.xcodeproj -scheme RSDKv3 DSTROOT="./build" archive` to create the app.
+If you're debugging the engine, best to just open the XCode project directly and run it through the debugging process.However, if you have the Command Line Tools and want to play games using it, run `xcodebuild -project RSDKv3.xcodeproj -scheme RSDKv3 DSTROOT="./build" -configuration Release DEPLOYMENT_LOCATION=YES` to create the app.
 
 * You can still apply flags for compiling by appending the line `OTHER_CFLAGS=` and then the list of flags. All of the flags except for the last two represent bools where `0` is false and `1` is true. The last two flags take string arguments.
 
@@ -30,10 +30,17 @@ If you're debugging the engine, best to just open the XCode project directly and
 
   * `RETRO_USE_ORIGINAL_CODE` is used for `RETRO_ORIGINAL_CODE`. Default is `-RETRO_USE_ORIGINAL_CODE=0`.
 
-  * `RSDK_AUTOBUILD` is used for `RETRO_DISABLE_PLUS`. Default is `-DRSDK_AUTOBUILD=1`.
+  * `RSDK_AUTOBUILD` is used for `RETRO_DISABLE_PLUS`. Default is `-DRSDK_AUTOBUILD=0`.
+    * You **MUST** have this set to `1` if you plan on distributing RSDKv3 builds. And for MacOS builds specifically, you should inform users to use the command `xattr -cr /path/to/RSDKv3.app` in order to be able to open the app, or `xattr -cr /path/to/RSDKv3.zip` if said zip contains the app. This also applies to the autobuilds.
 
-  * `RETRO_DEV_EXTRA` is an argument used in autobuilds to state the `CMAKE_SYSTEM_NAME` and the `CMAKE_CXX_COMPILER_ID` in the Dev Menu, such as `Darwin - AppleClang`. You need to have a backslash escape for every special character, so the end result may look like `OTHER_CFLAGS='-DRETRO_DEV_EXTRA=\"Darwin\ -\ AppleClang\"'`.
+  * `RETRO_DEV_EXTRA` is an argument used in autobuilds to state the `CMAKE_SYSTEM_NAME` and the `CMAKE_CXX_COMPILER_ID` in the Dev Menu, such as `Darwin - AppleClang`.
+    * You need to have a backslash escape for every special character since this is a string.
+    * It may be better to edit [Other C++ Flags](https://developer.apple.com/documentation/xcode/build-settings-reference#Other-C++-Flags) using the XCode app so you can have a better sense of what goes wrong.
 
-  * `DECOMP_VERSION` is an argument used in autobuilds to display the decomp's version number in the Dev Menu. In this case, it would be `1.3.2`.
+  * `DECOMP_VERSION` is an argument used in autobuilds to display the decomp's version number in the Dev Menu. In this case, it would be `1.3.2` already, and may not need changing.
+    * You need to have a backslash escape for every special character since this is a string.
+    * It may be better to edit [Other C++ Flags](https://developer.apple.com/documentation/xcode/build-settings-reference#Other-C++-Flags) using the XCode app so you can have a better sense of what goes wrong.
 
-* An example of these [Other C++ Flags](https://developer.apple.com/documentation/xcode/build-settings-reference#Other-C++-Flags) put together could be `OTHER_CFLAGS="-DRSDK_AUTOBUILD=1 -DRETRO_USING_OPENGL=0"`
+* The default for `OTHER_CPLUSPLUSFLAGS` contains the same flags in `OTHER_CFLAGS`. You could use `OTHER_CPLUSPLUSFLAGS` to be more specific, especially if you have a major difference between the two.
+
+* The resulting command could look something like `xcodebuild -project RSDKv3.xcodeproj -scheme RSDKv3 DSTROOT="./build" -configuration Release DEPLOYMENT_LOCATION=YES OTHER_CFLAGS="-DRSDK_AUTOBUILD=1 -DRETRO_DEV_EXTRA=\\\"Darwin\\ -\\ AppleClang\\\""`
