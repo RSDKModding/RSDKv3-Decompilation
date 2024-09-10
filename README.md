@@ -76,6 +76,10 @@ Install the following dependencies: then follow the [compilation steps below](#c
 - **apk (Alpine/PostmarketOS)** `sudo apk add build-base cmake glew-dev glfw-dev sdl2-dev libogg-dev libtheora-dev libvorbis-dev`
 - Your favorite package manager here, [make a pull request](https://github.com/RSDKModding/RSDKv3-Decompilation/fork)
 
+## Mac
+The macOS build doesn't currently use CMake.
+Follow the build instructions [here.](./dependencies/mac/README.md)
+
 ## Android
 Follow the android build instructions [here.](./dependencies/android/README.md)
 

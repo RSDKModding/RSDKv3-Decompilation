@@ -1,0 +1,1570 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		850738D72C0AAFE900D3468A /* ogg.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E0381E729EE345100629FE3 /* ogg.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850738D82C0AAFEB00D3468A /* config_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E0381E629EE345100629FE3 /* config_types.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850738D92C0AAFED00D3468A /* os_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E0381E529EE345100629FE3 /* os_types.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850739122C0AB24700D3468A /* theoradec.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739112C0AB24600D3468A /* theoradec.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850739192C0AB2B400D3468A /* codec.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739152C0AB27400D3468A /* codec.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8507391A2C0AB4D200D3468A /* theora.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739142C0AB27400D3468A /* theora.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850739482C0AB68F00D3468A /* enquant.h in Headers */ = {isa = PBXBuildFile; fileRef = 8507391D2C0AB68100D3468A /* enquant.h */; };
+		850739492C0AB69000D3468A /* mathops.h in Headers */ = {isa = PBXBuildFile; fileRef = 8507391E2C0AB68100D3468A /* mathops.h */; };
+		8507394A2C0AB69100D3468A /* huffenc.h in Headers */ = {isa = PBXBuildFile; fileRef = 8507391F2C0AB68200D3468A /* huffenc.h */; };
+		8507394E2C0AB69300D3468A /* dct.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739232C0AB68300D3468A /* dct.h */; };
+		850739512C0AB69400D3468A /* apiwrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739262C0AB68400D3468A /* apiwrapper.h */; };
+		850739522C0AB69500D3468A /* huffman.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739272C0AB68400D3468A /* huffman.h */; };
+		850739542C0AB69700D3468A /* cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739292C0AB68500D3468A /* cpu.h */; };
+		850739592C0AB69A00D3468A /* modedec.h in Headers */ = {isa = PBXBuildFile; fileRef = 8507392E2C0AB68600D3468A /* modedec.h */; };
+		8507395E2C0AB69D00D3468A /* dequant.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739332C0AB68800D3468A /* dequant.h */; };
+		8507395F2C0AB69E00D3468A /* encint.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739342C0AB68800D3468A /* encint.h */; };
+		850739602C0AB69F00D3468A /* bitpack.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739352C0AB68900D3468A /* bitpack.h */; };
+		850739612C0AB6A000D3468A /* huffdec.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739362C0AB68900D3468A /* huffdec.h */; };
+		850739622C0AB6A100D3468A /* ocintrin.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739372C0AB68900D3468A /* ocintrin.h */; };
+		850739652C0AB6A300D3468A /* quant.h in Headers */ = {isa = PBXBuildFile; fileRef = 8507393A2C0AB68A00D3468A /* quant.h */; };
+		8507396C2C0AB6A700D3468A /* decint.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739412C0AB68C00D3468A /* decint.h */; };
+		8507396F2C0AB6A800D3468A /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739442C0AB68D00D3468A /* internal.h */; };
+		850739712C0AB6D300D3468A /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EA087D229FA013200163B50 /* Ogg.framework */; };
+		850739742C0AB97B00D3468A /* theoraenc.h in Headers */ = {isa = PBXBuildFile; fileRef = 850739132C0AB27400D3468A /* theoraenc.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8590AEBC2C0ABB6100F58600 /* decinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA12C0ABB5B00F58600 /* decinfo.c */; };
+		8590AEBD2C0ABB6100F58600 /* dequant.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA22C0ABB5C00F58600 /* dequant.c */; };
+		8590AEBE2C0ABB6100F58600 /* enquant.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA32C0ABB5C00F58600 /* enquant.c */; };
+		8590AEBF2C0ABB6100F58600 /* fragment.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA42C0ABB5C00F58600 /* fragment.c */; };
+		8590AEC02C0ABB6100F58600 /* analyze.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA52C0ABB5C00F58600 /* analyze.c */; };
+		8590AEC12C0ABB6100F58600 /* state.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA62C0ABB5C00F58600 /* state.c */; };
+		8590AEC22C0ABB6100F58600 /* bitpack.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA72C0ABB5D00F58600 /* bitpack.c */; };
+		8590AEC42C0ABB6100F58600 /* encfrag.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEA92C0ABB5D00F58600 /* encfrag.c */; };
+		8590AEC52C0ABB6100F58600 /* huffenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEAA2C0ABB5D00F58600 /* huffenc.c */; };
+		8590AEC62C0ABB6100F58600 /* cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEAB2C0ABB5D00F58600 /* cpu.c */; };
+		8590AEC72C0ABB6100F58600 /* encinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEAC2C0ABB5E00F58600 /* encinfo.c */; };
+		8590AEC82C0ABB6100F58600 /* mcenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEAD2C0ABB5E00F58600 /* mcenc.c */; };
+		8590AEC92C0ABB6100F58600 /* apiwrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEAE2C0ABB5E00F58600 /* apiwrapper.c */; };
+		8590AECA2C0ABB6100F58600 /* info.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEAF2C0ABB5E00F58600 /* info.c */; };
+		8590AECB2C0ABB6200F58600 /* idct.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB02C0ABB5E00F58600 /* idct.c */; };
+		8590AECC2C0ABB6200F58600 /* rate.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB12C0ABB5F00F58600 /* rate.c */; };
+		8590AECD2C0ABB6200F58600 /* decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB22C0ABB5F00F58600 /* decode.c */; };
+		8590AECE2C0ABB6200F58600 /* encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB32C0ABB5F00F58600 /* encode.c */; };
+		8590AECF2C0ABB6200F58600 /* tokenize.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB42C0ABB5F00F58600 /* tokenize.c */; };
+		8590AED02C0ABB6200F58600 /* huffdec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB52C0ABB5F00F58600 /* huffdec.c */; };
+		8590AED12C0ABB6200F58600 /* fdct.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB62C0ABB6000F58600 /* fdct.c */; };
+		8590AED22C0ABB6200F58600 /* internal.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB72C0ABB6000F58600 /* internal.c */; };
+		8590AED32C0ABB6200F58600 /* decapiwrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB82C0ABB6000F58600 /* decapiwrapper.c */; };
+		8590AED42C0ABB6200F58600 /* quant.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEB92C0ABB6100F58600 /* quant.c */; };
+		8590AED52C0ABB6200F58600 /* encapiwrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEBA2C0ABB6100F58600 /* encapiwrapper.c */; };
+		8590AED62C0ABB6200F58600 /* mathops.c in Sources */ = {isa = PBXBuildFile; fileRef = 8590AEBB2C0ABB6100F58600 /* mathops.c */; };
+		9EA087DF29FA017700163B50 /* bitwise.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E0381EC29EE346200629FE3 /* bitwise.c */; };
+		9EA087E029FA017B00163B50 /* framing.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E0381ED29EE346200629FE3 /* framing.c */; };
+		9EA0880529FA0A2200163B50 /* floor0.c in Sources */ = {isa = PBXBuildFile; fileRef = 0CB78C70565B4C7B800A6264 /* floor0.c */; };
+		9EA0880629FA0A2200163B50 /* res0.c in Sources */ = {isa = PBXBuildFile; fileRef = A0CD691FE3C9470C837007FE /* res0.c */; };
+		9EA0880729FA0A2200163B50 /* sharedbook.c in Sources */ = {isa = PBXBuildFile; fileRef = CF6A16A4420C4891B7F5B0C6 /* sharedbook.c */; };
+		9EA0880829FA0A2200163B50 /* lsp.c in Sources */ = {isa = PBXBuildFile; fileRef = EF9D3394239D406291F7A6F6 /* lsp.c */; };
+		9EA0880929FA0A2200163B50 /* info.c in Sources */ = {isa = PBXBuildFile; fileRef = 086BD2A3B6C045B5A1EAB75C /* info.c */; };
+		9EA0880A29FA0A2200163B50 /* synthesis.c in Sources */ = {isa = PBXBuildFile; fileRef = C78ECAC262314A8D96288D34 /* synthesis.c */; };
+		9EA0880B29FA0A2200163B50 /* vorbisfile.c in Sources */ = {isa = PBXBuildFile; fileRef = A0FD3AB5C25C446BBDA3A17F /* vorbisfile.c */; };
+		9EA0880C29FA0A2200163B50 /* analysis.c in Sources */ = {isa = PBXBuildFile; fileRef = 2AE4B9484AAD4C87B8EB584D /* analysis.c */; };
+		9EA0880D29FA0A2200163B50 /* lpc.c in Sources */ = {isa = PBXBuildFile; fileRef = 88B560F82D684765ADEDA6D4 /* lpc.c */; };
+		9EA0880E29FA0A2200163B50 /* floor1.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3ECE5E971F457FAEC9EAEE /* floor1.c */; };
+		9EA0880F29FA0A2200163B50 /* mapping0.c in Sources */ = {isa = PBXBuildFile; fileRef = C0D4F501565046199373A7F6 /* mapping0.c */; };
+		9EA0881029FA0A2200163B50 /* lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = 810EB1D140EB47C0BC3A3297 /* lookup.c */; };
+		9EA0881129FA0A2200163B50 /* psy.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D0AAAADF4A74F479D699116 /* psy.c */; };
+		9EA0881229FA0A2200163B50 /* registry.c in Sources */ = {isa = PBXBuildFile; fileRef = E9697839815644C48E4C086E /* registry.c */; };
+		9EA0881329FA0A2200163B50 /* vorbisenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4854E6939F6340E8BF748851 /* vorbisenc.c */; };
+		9EA0881429FA0A2200163B50 /* block.c in Sources */ = {isa = PBXBuildFile; fileRef = 55ED18DF9CC740F992EC2B7B /* block.c */; };
+		9EA0881529FA0A2200163B50 /* smallft.c in Sources */ = {isa = PBXBuildFile; fileRef = 7DD7A63E53514EA6A554A6D5 /* smallft.c */; };
+		9EA0881629FA0A2200163B50 /* mdct.c in Sources */ = {isa = PBXBuildFile; fileRef = 3699942A604A4DD09C325E2C /* mdct.c */; };
+		9EA0881729FA0A2200163B50 /* codebook.c in Sources */ = {isa = PBXBuildFile; fileRef = E4221639FE124A52BA52DC3E /* codebook.c */; };
+		9EA0881829FA0A2200163B50 /* envelope.c in Sources */ = {isa = PBXBuildFile; fileRef = 854102DB3CD04DB0B2C143E3 /* envelope.c */; };
+		9EA0881929FA0A2200163B50 /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CC43347F87C4541B6B5F372 /* window.c */; };
+		9EA0881A29FA0A2200163B50 /* bitrate.c in Sources */ = {isa = PBXBuildFile; fileRef = AA2A103AE7F347C1A5B7A1AC /* bitrate.c */; };
+		9EA0881C29FA0A3C00163B50 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EA087D229FA013200163B50 /* Ogg.framework */; };
+		9EA0882229FA0B1F00163B50 /* codec.h in Headers */ = {isa = PBXBuildFile; fileRef = 90E372C85A08409F839D5926 /* codec.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9EA0882329FA0B1F00163B50 /* vorbisenc.h in Headers */ = {isa = PBXBuildFile; fileRef = BE1B582AA1C640BF83D48F27 /* vorbisenc.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9EA0882429FA0B1F00163B50 /* vorbisfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F154C5295A9406184827D73 /* vorbisfile.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9EA0882529FA0B2500163B50 /* lpc.h in Headers */ = {isa = PBXBuildFile; fileRef = 90314A1A8106424788B35E55 /* lpc.h */; };
+		9EA0882629FA0B2500163B50 /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = A7DF9009CE33444B9A196BB9 /* window.h */; };
+		9EA0882729FA0B2500163B50 /* highlevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 76950002236646A584DA4D57 /* highlevel.h */; };
+		9EA0882829FA0B2500163B50 /* misc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A32891221F94CB998A24461 /* misc.h */; };
+		9EA0882929FA0B2500163B50 /* envelope.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EA4DC48C2EE458F9469A8C8 /* envelope.h */; };
+		9EA0882A29FA0B2500163B50 /* codebook.h in Headers */ = {isa = PBXBuildFile; fileRef = F83EF03564E4430188AD7FF8 /* codebook.h */; };
+		9EA0882B29FA0B2500163B50 /* lookup_data.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AF2CD97F8D84E5DA772E73D /* lookup_data.h */; };
+		9EA0882C29FA0B2500163B50 /* registry.h in Headers */ = {isa = PBXBuildFile; fileRef = C9D2890F9C504954B71FA6A5 /* registry.h */; };
+		9EA0882D29FA0B2500163B50 /* lsp.h in Headers */ = {isa = PBXBuildFile; fileRef = B5FA6BA728AC4570B67DF8ED /* lsp.h */; };
+		9EA0882E29FA0B2500163B50 /* psy.h in Headers */ = {isa = PBXBuildFile; fileRef = B64F09461A7E4976B1519D1E /* psy.h */; };
+		9EA0882F29FA0B2500163B50 /* scales.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AAF3051B37745DEA89A4930 /* scales.h */; };
+		9EA0883029FA0B2500163B50 /* smallft.c in Headers */ = {isa = PBXBuildFile; fileRef = 882D377E302845829F49227E /* smallft.c */; };
+		9EA0883129FA0B2500163B50 /* os.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C7D5E965B5648E78C3174F8 /* os.h */; };
+		9EA0883229FA0B2500163B50 /* codec_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A25504B2D3D4F5691771F40 /* codec_internal.h */; };
+		9EA0883329FA0B2500163B50 /* backends.h in Headers */ = {isa = PBXBuildFile; fileRef = 71ECC15B71084786851EAE8B /* backends.h */; };
+		9EA0883429FA0B2500163B50 /* lookup.h in Headers */ = {isa = PBXBuildFile; fileRef = 037D181648C04ECB990EA712 /* lookup.h */; };
+		9EA0883529FA0B2500163B50 /* bitrate.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E7D88764104C2E81EF1E62 /* bitrate.h */; };
+		9EA0883629FA0B2500163B50 /* masking.h in Headers */ = {isa = PBXBuildFile; fileRef = 90DAD3A7242F4F78B79890D3 /* masking.h */; };
+		9EA0883729FA0B2500163B50 /* mdct.h in Headers */ = {isa = PBXBuildFile; fileRef = 324253E5D4864B488E063DC9 /* mdct.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		850739722C0AB7E300D3468A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5A12D27682F14DA88F232777 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9EA087D129FA013200163B50;
+			remoteInfo = Ogg;
+		};
+		9EA0881E29FA0A3D00163B50 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5A12D27682F14DA88F232777 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9EA087D129FA013200163B50;
+			remoteInfo = Ogg;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		037D181648C04ECB990EA712 /* lookup.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = lookup.h; path = libvorbis/lib/lookup.h; sourceTree = SOURCE_ROOT; };
+		086BD2A3B6C045B5A1EAB75C /* info.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = info.c; path = libvorbis/lib/info.c; sourceTree = SOURCE_ROOT; };
+		0A25504B2D3D4F5691771F40 /* codec_internal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = codec_internal.h; path = libvorbis/lib/codec_internal.h; sourceTree = SOURCE_ROOT; };
+		0CB78C70565B4C7B800A6264 /* floor0.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = floor0.c; path = libvorbis/lib/floor0.c; sourceTree = SOURCE_ROOT; };
+		2AE4B9484AAD4C87B8EB584D /* analysis.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = analysis.c; path = libvorbis/lib/analysis.c; sourceTree = SOURCE_ROOT; };
+		324253E5D4864B488E063DC9 /* mdct.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = mdct.h; path = libvorbis/lib/mdct.h; sourceTree = SOURCE_ROOT; };
+		3699942A604A4DD09C325E2C /* mdct.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = mdct.c; path = libvorbis/lib/mdct.c; sourceTree = SOURCE_ROOT; };
+		3A32891221F94CB998A24461 /* misc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = misc.h; path = libvorbis/lib/misc.h; sourceTree = SOURCE_ROOT; };
+		4854E6939F6340E8BF748851 /* vorbisenc.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = vorbisenc.c; path = libvorbis/lib/vorbisenc.c; sourceTree = SOURCE_ROOT; };
+		4AF2CD97F8D84E5DA772E73D /* lookup_data.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = lookup_data.h; path = libvorbis/lib/lookup_data.h; sourceTree = SOURCE_ROOT; };
+		4D0AAAADF4A74F479D699116 /* psy.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = psy.c; path = libvorbis/lib/psy.c; sourceTree = SOURCE_ROOT; };
+		55ED18DF9CC740F992EC2B7B /* block.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = block.c; path = libvorbis/lib/block.c; sourceTree = SOURCE_ROOT; };
+		5F154C5295A9406184827D73 /* vorbisfile.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = vorbisfile.h; path = libvorbis/include/vorbis/vorbisfile.h; sourceTree = SOURCE_ROOT; };
+		71ECC15B71084786851EAE8B /* backends.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = backends.h; path = libvorbis/lib/backends.h; sourceTree = SOURCE_ROOT; };
+		76950002236646A584DA4D57 /* highlevel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = highlevel.h; path = libvorbis/lib/highlevel.h; sourceTree = SOURCE_ROOT; };
+		7AAF3051B37745DEA89A4930 /* scales.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = scales.h; path = libvorbis/lib/scales.h; sourceTree = SOURCE_ROOT; };
+		7DD7A63E53514EA6A554A6D5 /* smallft.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = smallft.c; path = libvorbis/lib/smallft.c; sourceTree = SOURCE_ROOT; };
+		810EB1D140EB47C0BC3A3297 /* lookup.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = lookup.c; path = libvorbis/lib/lookup.c; sourceTree = SOURCE_ROOT; };
+		850738AB2C0AA96A00D3468A /* Theora.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Theora.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		850739112C0AB24600D3468A /* theoradec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoradec.h; path = libtheora/include/theora/theoradec.h; sourceTree = "<group>"; };
+		850739132C0AB27400D3468A /* theoraenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theoraenc.h; path = libtheora/include/theora/theoraenc.h; sourceTree = "<group>"; };
+		850739142C0AB27400D3468A /* theora.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theora.h; path = libtheora/include/theora/theora.h; sourceTree = "<group>"; };
+		850739152C0AB27400D3468A /* codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = codec.h; path = libtheora/include/theora/codec.h; sourceTree = "<group>"; };
+		8507391D2C0AB68100D3468A /* enquant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = enquant.h; path = libtheora/lib/enquant.h; sourceTree = "<group>"; };
+		8507391E2C0AB68100D3468A /* mathops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mathops.h; path = libtheora/lib/mathops.h; sourceTree = "<group>"; };
+		8507391F2C0AB68200D3468A /* huffenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = huffenc.h; path = libtheora/lib/huffenc.h; sourceTree = "<group>"; };
+		850739232C0AB68300D3468A /* dct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dct.h; path = libtheora/lib/dct.h; sourceTree = "<group>"; };
+		850739262C0AB68400D3468A /* apiwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = apiwrapper.h; path = libtheora/lib/apiwrapper.h; sourceTree = "<group>"; };
+		850739272C0AB68400D3468A /* huffman.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = huffman.h; path = libtheora/lib/huffman.h; sourceTree = "<group>"; };
+		850739292C0AB68500D3468A /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpu.h; path = libtheora/lib/cpu.h; sourceTree = "<group>"; };
+		8507392E2C0AB68600D3468A /* modedec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = modedec.h; path = libtheora/lib/modedec.h; sourceTree = "<group>"; };
+		850739332C0AB68800D3468A /* dequant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dequant.h; path = libtheora/lib/dequant.h; sourceTree = "<group>"; };
+		850739342C0AB68800D3468A /* encint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encint.h; path = libtheora/lib/encint.h; sourceTree = "<group>"; };
+		850739352C0AB68900D3468A /* bitpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitpack.h; path = libtheora/lib/bitpack.h; sourceTree = "<group>"; };
+		850739362C0AB68900D3468A /* huffdec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = huffdec.h; path = libtheora/lib/huffdec.h; sourceTree = "<group>"; };
+		850739372C0AB68900D3468A /* ocintrin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ocintrin.h; path = libtheora/lib/ocintrin.h; sourceTree = "<group>"; };
+		8507393A2C0AB68A00D3468A /* quant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quant.h; path = libtheora/lib/quant.h; sourceTree = "<group>"; };
+		850739412C0AB68C00D3468A /* decint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = decint.h; path = libtheora/lib/decint.h; sourceTree = "<group>"; };
+		850739442C0AB68D00D3468A /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = internal.h; path = libtheora/lib/internal.h; sourceTree = "<group>"; };
+		854102DB3CD04DB0B2C143E3 /* envelope.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = envelope.c; path = libvorbis/lib/envelope.c; sourceTree = SOURCE_ROOT; };
+		8590AEA12C0ABB5B00F58600 /* decinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = decinfo.c; path = libtheora/lib/decinfo.c; sourceTree = "<group>"; };
+		8590AEA22C0ABB5C00F58600 /* dequant.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dequant.c; path = libtheora/lib/dequant.c; sourceTree = "<group>"; };
+		8590AEA32C0ABB5C00F58600 /* enquant.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = enquant.c; path = libtheora/lib/enquant.c; sourceTree = "<group>"; };
+		8590AEA42C0ABB5C00F58600 /* fragment.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fragment.c; path = libtheora/lib/fragment.c; sourceTree = "<group>"; };
+		8590AEA52C0ABB5C00F58600 /* analyze.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = analyze.c; path = libtheora/lib/analyze.c; sourceTree = "<group>"; };
+		8590AEA62C0ABB5C00F58600 /* state.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = state.c; path = libtheora/lib/state.c; sourceTree = "<group>"; };
+		8590AEA72C0ABB5D00F58600 /* bitpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitpack.c; path = libtheora/lib/bitpack.c; sourceTree = "<group>"; };
+		8590AEA92C0ABB5D00F58600 /* encfrag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encfrag.c; path = libtheora/lib/encfrag.c; sourceTree = "<group>"; };
+		8590AEAA2C0ABB5D00F58600 /* huffenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = huffenc.c; path = libtheora/lib/huffenc.c; sourceTree = "<group>"; };
+		8590AEAB2C0ABB5D00F58600 /* cpu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cpu.c; path = libtheora/lib/cpu.c; sourceTree = "<group>"; };
+		8590AEAC2C0ABB5E00F58600 /* encinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encinfo.c; path = libtheora/lib/encinfo.c; sourceTree = "<group>"; };
+		8590AEAD2C0ABB5E00F58600 /* mcenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mcenc.c; path = libtheora/lib/mcenc.c; sourceTree = "<group>"; };
+		8590AEAE2C0ABB5E00F58600 /* apiwrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = apiwrapper.c; path = libtheora/lib/apiwrapper.c; sourceTree = "<group>"; };
+		8590AEAF2C0ABB5E00F58600 /* info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = info.c; path = libtheora/lib/info.c; sourceTree = "<group>"; };
+		8590AEB02C0ABB5E00F58600 /* idct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = idct.c; path = libtheora/lib/idct.c; sourceTree = "<group>"; };
+		8590AEB12C0ABB5F00F58600 /* rate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rate.c; path = libtheora/lib/rate.c; sourceTree = "<group>"; };
+		8590AEB22C0ABB5F00F58600 /* decode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = decode.c; path = libtheora/lib/decode.c; sourceTree = "<group>"; };
+		8590AEB32C0ABB5F00F58600 /* encode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encode.c; path = libtheora/lib/encode.c; sourceTree = "<group>"; };
+		8590AEB42C0ABB5F00F58600 /* tokenize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tokenize.c; path = libtheora/lib/tokenize.c; sourceTree = "<group>"; };
+		8590AEB52C0ABB5F00F58600 /* huffdec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = huffdec.c; path = libtheora/lib/huffdec.c; sourceTree = "<group>"; };
+		8590AEB62C0ABB6000F58600 /* fdct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fdct.c; path = libtheora/lib/fdct.c; sourceTree = "<group>"; };
+		8590AEB72C0ABB6000F58600 /* internal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = internal.c; path = libtheora/lib/internal.c; sourceTree = "<group>"; };
+		8590AEB82C0ABB6000F58600 /* decapiwrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = decapiwrapper.c; path = libtheora/lib/decapiwrapper.c; sourceTree = "<group>"; };
+		8590AEB92C0ABB6100F58600 /* quant.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quant.c; path = libtheora/lib/quant.c; sourceTree = "<group>"; };
+		8590AEBA2C0ABB6100F58600 /* encapiwrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encapiwrapper.c; path = libtheora/lib/encapiwrapper.c; sourceTree = "<group>"; };
+		8590AEBB2C0ABB6100F58600 /* mathops.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mathops.c; path = libtheora/lib/mathops.c; sourceTree = "<group>"; };
+		882D377E302845829F49227E /* smallft.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = smallft.c; path = libvorbis/lib/smallft.c; sourceTree = SOURCE_ROOT; };
+		88B560F82D684765ADEDA6D4 /* lpc.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = lpc.c; path = libvorbis/lib/lpc.c; sourceTree = SOURCE_ROOT; };
+		8C7D5E965B5648E78C3174F8 /* os.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = os.h; path = libvorbis/lib/os.h; sourceTree = SOURCE_ROOT; };
+		8CC43347F87C4541B6B5F372 /* window.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = window.c; path = libvorbis/lib/window.c; sourceTree = SOURCE_ROOT; };
+		90314A1A8106424788B35E55 /* lpc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = lpc.h; path = libvorbis/lib/lpc.h; sourceTree = SOURCE_ROOT; };
+		90DAD3A7242F4F78B79890D3 /* masking.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = masking.h; path = libvorbis/lib/masking.h; sourceTree = SOURCE_ROOT; };
+		90E372C85A08409F839D5926 /* codec.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = codec.h; path = libvorbis/include/vorbis/codec.h; sourceTree = SOURCE_ROOT; };
+		9E0381E529EE345100629FE3 /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_types.h; path = libogg/include/ogg/os_types.h; sourceTree = "<group>"; };
+		9E0381E629EE345100629FE3 /* config_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config_types.h; path = libogg/include/ogg/config_types.h; sourceTree = "<group>"; };
+		9E0381E729EE345100629FE3 /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogg.h; path = libogg/include/ogg/ogg.h; sourceTree = "<group>"; };
+		9E0381EC29EE346200629FE3 /* bitwise.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitwise.c; path = libogg/src/bitwise.c; sourceTree = "<group>"; };
+		9E0381ED29EE346200629FE3 /* framing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = framing.c; path = libogg/src/framing.c; sourceTree = "<group>"; };
+		9EA087D229FA013200163B50 /* Ogg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ogg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EA087E629FA099200163B50 /* Vorbis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Vorbis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EA4DC48C2EE458F9469A8C8 /* envelope.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = envelope.h; path = libvorbis/lib/envelope.h; sourceTree = SOURCE_ROOT; };
+		A0CD691FE3C9470C837007FE /* res0.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = res0.c; path = libvorbis/lib/res0.c; sourceTree = SOURCE_ROOT; };
+		A0FD3AB5C25C446BBDA3A17F /* vorbisfile.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = vorbisfile.c; path = libvorbis/lib/vorbisfile.c; sourceTree = SOURCE_ROOT; };
+		A7DF9009CE33444B9A196BB9 /* window.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = window.h; path = libvorbis/lib/window.h; sourceTree = SOURCE_ROOT; };
+		AA2A103AE7F347C1A5B7A1AC /* bitrate.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = bitrate.c; path = libvorbis/lib/bitrate.c; sourceTree = SOURCE_ROOT; };
+		B5FA6BA728AC4570B67DF8ED /* lsp.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = lsp.h; path = libvorbis/lib/lsp.h; sourceTree = SOURCE_ROOT; };
+		B64F09461A7E4976B1519D1E /* psy.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = psy.h; path = libvorbis/lib/psy.h; sourceTree = SOURCE_ROOT; };
+		B6E7D88764104C2E81EF1E62 /* bitrate.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = bitrate.h; path = libvorbis/lib/bitrate.h; sourceTree = SOURCE_ROOT; };
+		BE1B582AA1C640BF83D48F27 /* vorbisenc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = vorbisenc.h; path = libvorbis/include/vorbis/vorbisenc.h; sourceTree = SOURCE_ROOT; };
+		C0D4F501565046199373A7F6 /* mapping0.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = mapping0.c; path = libvorbis/lib/mapping0.c; sourceTree = SOURCE_ROOT; };
+		C78ECAC262314A8D96288D34 /* synthesis.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = synthesis.c; path = libvorbis/lib/synthesis.c; sourceTree = SOURCE_ROOT; };
+		C9D2890F9C504954B71FA6A5 /* registry.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = registry.h; path = libvorbis/lib/registry.h; sourceTree = SOURCE_ROOT; };
+		CF6A16A4420C4891B7F5B0C6 /* sharedbook.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = sharedbook.c; path = libvorbis/lib/sharedbook.c; sourceTree = SOURCE_ROOT; };
+		E4221639FE124A52BA52DC3E /* codebook.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = codebook.c; path = libvorbis/lib/codebook.c; sourceTree = SOURCE_ROOT; };
+		E9697839815644C48E4C086E /* registry.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = registry.c; path = libvorbis/lib/registry.c; sourceTree = SOURCE_ROOT; };
+		EF9D3394239D406291F7A6F6 /* lsp.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = lsp.c; path = libvorbis/lib/lsp.c; sourceTree = SOURCE_ROOT; };
+		F83EF03564E4430188AD7FF8 /* codebook.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = codebook.h; path = libvorbis/lib/codebook.h; sourceTree = SOURCE_ROOT; };
+		FD3ECE5E971F457FAEC9EAEE /* floor1.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = floor1.c; path = libvorbis/lib/floor1.c; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		850738A42C0AA96A00D3468A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				850739712C0AB6D300D3468A /* Ogg.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA087CF29FA013200163B50 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA087E329FA099200163B50 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EA0881C29FA0A3C00163B50 /* Ogg.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		261D26DBBE504DE08C18ED46 /* Header Files */ = {
+			isa = PBXGroup;
+			children = (
+				90E372C85A08409F839D5926 /* codec.h */,
+				BE1B582AA1C640BF83D48F27 /* vorbisenc.h */,
+				5F154C5295A9406184827D73 /* vorbisfile.h */,
+				71ECC15B71084786851EAE8B /* backends.h */,
+				B6E7D88764104C2E81EF1E62 /* bitrate.h */,
+				F83EF03564E4430188AD7FF8 /* codebook.h */,
+				0A25504B2D3D4F5691771F40 /* codec_internal.h */,
+				9EA4DC48C2EE458F9469A8C8 /* envelope.h */,
+				76950002236646A584DA4D57 /* highlevel.h */,
+				037D181648C04ECB990EA712 /* lookup.h */,
+				4AF2CD97F8D84E5DA772E73D /* lookup_data.h */,
+				90314A1A8106424788B35E55 /* lpc.h */,
+				B5FA6BA728AC4570B67DF8ED /* lsp.h */,
+				90DAD3A7242F4F78B79890D3 /* masking.h */,
+				324253E5D4864B488E063DC9 /* mdct.h */,
+				3A32891221F94CB998A24461 /* misc.h */,
+				8C7D5E965B5648E78C3174F8 /* os.h */,
+				B64F09461A7E4976B1519D1E /* psy.h */,
+				C9D2890F9C504954B71FA6A5 /* registry.h */,
+				7AAF3051B37745DEA89A4930 /* scales.h */,
+				882D377E302845829F49227E /* smallft.c */,
+				A7DF9009CE33444B9A196BB9 /* window.h */,
+			);
+			name = "Header Files";
+			sourceTree = "<group>";
+		};
+		40FC5FADC1C64C008FE4B4B9 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				2AE4B9484AAD4C87B8EB584D /* analysis.c */,
+				AA2A103AE7F347C1A5B7A1AC /* bitrate.c */,
+				55ED18DF9CC740F992EC2B7B /* block.c */,
+				E4221639FE124A52BA52DC3E /* codebook.c */,
+				854102DB3CD04DB0B2C143E3 /* envelope.c */,
+				0CB78C70565B4C7B800A6264 /* floor0.c */,
+				FD3ECE5E971F457FAEC9EAEE /* floor1.c */,
+				086BD2A3B6C045B5A1EAB75C /* info.c */,
+				810EB1D140EB47C0BC3A3297 /* lookup.c */,
+				88B560F82D684765ADEDA6D4 /* lpc.c */,
+				EF9D3394239D406291F7A6F6 /* lsp.c */,
+				C0D4F501565046199373A7F6 /* mapping0.c */,
+				3699942A604A4DD09C325E2C /* mdct.c */,
+				4D0AAAADF4A74F479D699116 /* psy.c */,
+				E9697839815644C48E4C086E /* registry.c */,
+				A0CD691FE3C9470C837007FE /* res0.c */,
+				CF6A16A4420C4891B7F5B0C6 /* sharedbook.c */,
+				7DD7A63E53514EA6A554A6D5 /* smallft.c */,
+				C78ECAC262314A8D96288D34 /* synthesis.c */,
+				4854E6939F6340E8BF748851 /* vorbisenc.c */,
+				A0FD3AB5C25C446BBDA3A17F /* vorbisfile.c */,
+				8CC43347F87C4541B6B5F372 /* window.c */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		7EE025ECC3D444E392246BF4 /* vorbis */ = {
+			isa = PBXGroup;
+			children = (
+				261D26DBBE504DE08C18ED46 /* Header Files */,
+				40FC5FADC1C64C008FE4B4B9 /* Source Files */,
+			);
+			name = vorbis;
+			sourceTree = "<group>";
+		};
+		850738DD2C0AB13300D3468A /* theora */ = {
+			isa = PBXGroup;
+			children = (
+				850738DF2C0AB15400D3468A /* Header Files */,
+				850738E02C0AB16600D3468A /* Source Files */,
+			);
+			name = theora;
+			sourceTree = "<group>";
+		};
+		850738DF2C0AB15400D3468A /* Header Files */ = {
+			isa = PBXGroup;
+			children = (
+				850739152C0AB27400D3468A /* codec.h */,
+				850739142C0AB27400D3468A /* theora.h */,
+				850739112C0AB24600D3468A /* theoradec.h */,
+				850739132C0AB27400D3468A /* theoraenc.h */,
+				850739262C0AB68400D3468A /* apiwrapper.h */,
+				850739352C0AB68900D3468A /* bitpack.h */,
+				850739292C0AB68500D3468A /* cpu.h */,
+				850739232C0AB68300D3468A /* dct.h */,
+				850739412C0AB68C00D3468A /* decint.h */,
+				850739332C0AB68800D3468A /* dequant.h */,
+				850739342C0AB68800D3468A /* encint.h */,
+				8507391D2C0AB68100D3468A /* enquant.h */,
+				850739362C0AB68900D3468A /* huffdec.h */,
+				8507391F2C0AB68200D3468A /* huffenc.h */,
+				850739272C0AB68400D3468A /* huffman.h */,
+				850739442C0AB68D00D3468A /* internal.h */,
+				8507391E2C0AB68100D3468A /* mathops.h */,
+				8507392E2C0AB68600D3468A /* modedec.h */,
+				850739372C0AB68900D3468A /* ocintrin.h */,
+				8507393A2C0AB68A00D3468A /* quant.h */,
+			);
+			name = "Header Files";
+			sourceTree = "<group>";
+		};
+		850738E02C0AB16600D3468A /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				8590AEA52C0ABB5C00F58600 /* analyze.c */,
+				8590AEAE2C0ABB5E00F58600 /* apiwrapper.c */,
+				8590AEA72C0ABB5D00F58600 /* bitpack.c */,
+				8590AEAB2C0ABB5D00F58600 /* cpu.c */,
+				8590AEB82C0ABB6000F58600 /* decapiwrapper.c */,
+				8590AEA12C0ABB5B00F58600 /* decinfo.c */,
+				8590AEB22C0ABB5F00F58600 /* decode.c */,
+				8590AEA22C0ABB5C00F58600 /* dequant.c */,
+				8590AEBA2C0ABB6100F58600 /* encapiwrapper.c */,
+				8590AEA92C0ABB5D00F58600 /* encfrag.c */,
+				8590AEAC2C0ABB5E00F58600 /* encinfo.c */,
+				8590AEB32C0ABB5F00F58600 /* encode.c */,
+				8590AEA32C0ABB5C00F58600 /* enquant.c */,
+				8590AEB62C0ABB6000F58600 /* fdct.c */,
+				8590AEA42C0ABB5C00F58600 /* fragment.c */,
+				8590AEB52C0ABB5F00F58600 /* huffdec.c */,
+				8590AEAA2C0ABB5D00F58600 /* huffenc.c */,
+				8590AEB02C0ABB5E00F58600 /* idct.c */,
+				8590AEAF2C0ABB5E00F58600 /* info.c */,
+				8590AEB72C0ABB6000F58600 /* internal.c */,
+				8590AEBB2C0ABB6100F58600 /* mathops.c */,
+				8590AEAD2C0ABB5E00F58600 /* mcenc.c */,
+				8590AEB92C0ABB6100F58600 /* quant.c */,
+				8590AEB12C0ABB5F00F58600 /* rate.c */,
+				8590AEA62C0ABB5C00F58600 /* state.c */,
+				8590AEB42C0ABB5F00F58600 /* tokenize.c */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		854A8B172C8A13A500AD895E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9E0381E129EE342300629FE3 /* ogg */ = {
+			isa = PBXGroup;
+			children = (
+				9E0381E229EE343200629FE3 /* Header Files */,
+				9E0381E329EE343D00629FE3 /* Source Files */,
+			);
+			name = ogg;
+			sourceTree = "<group>";
+		};
+		9E0381E229EE343200629FE3 /* Header Files */ = {
+			isa = PBXGroup;
+			children = (
+				9E0381E629EE345100629FE3 /* config_types.h */,
+				9E0381E729EE345100629FE3 /* ogg.h */,
+				9E0381E529EE345100629FE3 /* os_types.h */,
+			);
+			name = "Header Files";
+			sourceTree = "<group>";
+		};
+		9E0381E329EE343D00629FE3 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				9E0381EC29EE346200629FE3 /* bitwise.c */,
+				9E0381ED29EE346200629FE3 /* framing.c */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		C23D7853D36844589EB3FA30 = {
+			isa = PBXGroup;
+			children = (
+				9E0381E129EE342300629FE3 /* ogg */,
+				7EE025ECC3D444E392246BF4 /* vorbis */,
+				850738DD2C0AB13300D3468A /* theora */,
+				D922F32129F24C88A7AA5561 /* Products */,
+				854A8B172C8A13A500AD895E /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D922F32129F24C88A7AA5561 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9EA087D229FA013200163B50 /* Ogg.framework */,
+				9EA087E629FA099200163B50 /* Vorbis.framework */,
+				850738AB2C0AA96A00D3468A /* Theora.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8507389C2C0AA96A00D3468A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				850739592C0AB69A00D3468A /* modedec.h in Headers */,
+				850739602C0AB69F00D3468A /* bitpack.h in Headers */,
+				8507395E2C0AB69D00D3468A /* dequant.h in Headers */,
+				850739742C0AB97B00D3468A /* theoraenc.h in Headers */,
+				850739192C0AB2B400D3468A /* codec.h in Headers */,
+				850739522C0AB69500D3468A /* huffman.h in Headers */,
+				850739492C0AB69000D3468A /* mathops.h in Headers */,
+				850739622C0AB6A100D3468A /* ocintrin.h in Headers */,
+				850739652C0AB6A300D3468A /* quant.h in Headers */,
+				8507391A2C0AB4D200D3468A /* theora.h in Headers */,
+				8507396C2C0AB6A700D3468A /* decint.h in Headers */,
+				850739612C0AB6A000D3468A /* huffdec.h in Headers */,
+				8507395F2C0AB69E00D3468A /* encint.h in Headers */,
+				8507396F2C0AB6A800D3468A /* internal.h in Headers */,
+				8507394E2C0AB69300D3468A /* dct.h in Headers */,
+				850739122C0AB24700D3468A /* theoradec.h in Headers */,
+				850739512C0AB69400D3468A /* apiwrapper.h in Headers */,
+				850739542C0AB69700D3468A /* cpu.h in Headers */,
+				8507394A2C0AB69100D3468A /* huffenc.h in Headers */,
+				850739482C0AB68F00D3468A /* enquant.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA087CD29FA013200163B50 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				850738D72C0AAFE900D3468A /* ogg.h in Headers */,
+				850738D82C0AAFEB00D3468A /* config_types.h in Headers */,
+				850738D92C0AAFED00D3468A /* os_types.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA0882129FA0B0600163B50 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EA0883629FA0B2500163B50 /* masking.h in Headers */,
+				9EA0882B29FA0B2500163B50 /* lookup_data.h in Headers */,
+				9EA0882329FA0B1F00163B50 /* vorbisenc.h in Headers */,
+				9EA0882729FA0B2500163B50 /* highlevel.h in Headers */,
+				9EA0882A29FA0B2500163B50 /* codebook.h in Headers */,
+				9EA0883029FA0B2500163B50 /* smallft.c in Headers */,
+				9EA0882229FA0B1F00163B50 /* codec.h in Headers */,
+				9EA0883529FA0B2500163B50 /* bitrate.h in Headers */,
+				9EA0882F29FA0B2500163B50 /* scales.h in Headers */,
+				9EA0882829FA0B2500163B50 /* misc.h in Headers */,
+				9EA0882D29FA0B2500163B50 /* lsp.h in Headers */,
+				9EA0882E29FA0B2500163B50 /* psy.h in Headers */,
+				9EA0882529FA0B2500163B50 /* lpc.h in Headers */,
+				9EA0883329FA0B2500163B50 /* backends.h in Headers */,
+				9EA0883229FA0B2500163B50 /* codec_internal.h in Headers */,
+				9EA0882C29FA0B2500163B50 /* registry.h in Headers */,
+				9EA0883429FA0B2500163B50 /* lookup.h in Headers */,
+				9EA0883129FA0B2500163B50 /* os.h in Headers */,
+				9EA0883729FA0B2500163B50 /* mdct.h in Headers */,
+				9EA0882629FA0B2500163B50 /* window.h in Headers */,
+				9EA0882929FA0B2500163B50 /* envelope.h in Headers */,
+				9EA0882429FA0B1F00163B50 /* vorbisfile.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8507389B2C0AA96A00D3468A /* Theora */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 850738A62C0AA96A00D3468A /* Build configuration list for PBXNativeTarget "Theora" */;
+			buildPhases = (
+				8507389C2C0AA96A00D3468A /* Headers */,
+				850738A12C0AA96A00D3468A /* Sources */,
+				850738A42C0AA96A00D3468A /* Frameworks */,
+				850738A52C0AA96A00D3468A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				850739732C0AB7E300D3468A /* PBXTargetDependency */,
+			);
+			name = Theora;
+			productName = ogg;
+			productReference = 850738AB2C0AA96A00D3468A /* Theora.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		9EA087D129FA013200163B50 /* Ogg */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9EA087DA29FA013300163B50 /* Build configuration list for PBXNativeTarget "Ogg" */;
+			buildPhases = (
+				9EA087CD29FA013200163B50 /* Headers */,
+				9EA087CE29FA013200163B50 /* Sources */,
+				9EA087CF29FA013200163B50 /* Frameworks */,
+				9EA087D029FA013200163B50 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Ogg;
+			productName = ogg;
+			productReference = 9EA087D229FA013200163B50 /* Ogg.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		9EA087E529FA099200163B50 /* Vorbis */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9EA087EA29FA099200163B50 /* Build configuration list for PBXNativeTarget "Vorbis" */;
+			buildPhases = (
+				9EA0882129FA0B0600163B50 /* Headers */,
+				9EA087E229FA099200163B50 /* Sources */,
+				9EA087E329FA099200163B50 /* Frameworks */,
+				9EA087E429FA099200163B50 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9EA0881F29FA0A3D00163B50 /* PBXTargetDependency */,
+			);
+			name = Vorbis;
+			productName = vorbis;
+			productReference = 9EA087E629FA099200163B50 /* Vorbis.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5A12D27682F14DA88F232777 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				DefaultBuildSystemTypeForWorkspace = Latest;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					9EA087D129FA013200163B50 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					9EA087E529FA099200163B50 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+				};
+			};
+			buildConfigurationList = 47A70380EE924A0E967818E0 /* Build configuration list for PBXProject "Dependencies" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C23D7853D36844589EB3FA30;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9EA087D129FA013200163B50 /* Ogg */,
+				9EA087E529FA099200163B50 /* Vorbis */,
+				8507389B2C0AA96A00D3468A /* Theora */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		850738A52C0AA96A00D3468A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA087D029FA013200163B50 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA087E429FA099200163B50 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		850738A12C0AA96A00D3468A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8590AED62C0ABB6200F58600 /* mathops.c in Sources */,
+				8590AECF2C0ABB6200F58600 /* tokenize.c in Sources */,
+				8590AED52C0ABB6200F58600 /* encapiwrapper.c in Sources */,
+				8590AEC62C0ABB6100F58600 /* cpu.c in Sources */,
+				8590AECC2C0ABB6200F58600 /* rate.c in Sources */,
+				8590AEBD2C0ABB6100F58600 /* dequant.c in Sources */,
+				8590AEC92C0ABB6100F58600 /* apiwrapper.c in Sources */,
+				8590AEC52C0ABB6100F58600 /* huffenc.c in Sources */,
+				8590AEC02C0ABB6100F58600 /* analyze.c in Sources */,
+				8590AECA2C0ABB6100F58600 /* info.c in Sources */,
+				8590AED12C0ABB6200F58600 /* fdct.c in Sources */,
+				8590AEBC2C0ABB6100F58600 /* decinfo.c in Sources */,
+				8590AEC12C0ABB6100F58600 /* state.c in Sources */,
+				8590AED22C0ABB6200F58600 /* internal.c in Sources */,
+				8590AEC82C0ABB6100F58600 /* mcenc.c in Sources */,
+				8590AEC42C0ABB6100F58600 /* encfrag.c in Sources */,
+				8590AECB2C0ABB6200F58600 /* idct.c in Sources */,
+				8590AECD2C0ABB6200F58600 /* decode.c in Sources */,
+				8590AEC72C0ABB6100F58600 /* encinfo.c in Sources */,
+				8590AED02C0ABB6200F58600 /* huffdec.c in Sources */,
+				8590AECE2C0ABB6200F58600 /* encode.c in Sources */,
+				8590AEBE2C0ABB6100F58600 /* enquant.c in Sources */,
+				8590AEC22C0ABB6100F58600 /* bitpack.c in Sources */,
+				8590AED42C0ABB6200F58600 /* quant.c in Sources */,
+				8590AEBF2C0ABB6100F58600 /* fragment.c in Sources */,
+				8590AED32C0ABB6200F58600 /* decapiwrapper.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA087CE29FA013200163B50 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EA087E029FA017B00163B50 /* framing.c in Sources */,
+				9EA087DF29FA017700163B50 /* bitwise.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA087E229FA099200163B50 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EA0880929FA0A2200163B50 /* info.c in Sources */,
+				9EA0881529FA0A2200163B50 /* smallft.c in Sources */,
+				9EA0880729FA0A2200163B50 /* sharedbook.c in Sources */,
+				9EA0881929FA0A2200163B50 /* window.c in Sources */,
+				9EA0880B29FA0A2200163B50 /* vorbisfile.c in Sources */,
+				9EA0881729FA0A2200163B50 /* codebook.c in Sources */,
+				9EA0881829FA0A2200163B50 /* envelope.c in Sources */,
+				9EA0881A29FA0A2200163B50 /* bitrate.c in Sources */,
+				9EA0881429FA0A2200163B50 /* block.c in Sources */,
+				9EA0880829FA0A2200163B50 /* lsp.c in Sources */,
+				9EA0880529FA0A2200163B50 /* floor0.c in Sources */,
+				9EA0880A29FA0A2200163B50 /* synthesis.c in Sources */,
+				9EA0880F29FA0A2200163B50 /* mapping0.c in Sources */,
+				9EA0881029FA0A2200163B50 /* lookup.c in Sources */,
+				9EA0880E29FA0A2200163B50 /* floor1.c in Sources */,
+				9EA0880D29FA0A2200163B50 /* lpc.c in Sources */,
+				9EA0881229FA0A2200163B50 /* registry.c in Sources */,
+				9EA0880629FA0A2200163B50 /* res0.c in Sources */,
+				9EA0881129FA0A2200163B50 /* psy.c in Sources */,
+				9EA0881329FA0A2200163B50 /* vorbisenc.c in Sources */,
+				9EA0880C29FA0A2200163B50 /* analysis.c in Sources */,
+				9EA0881629FA0A2200163B50 /* mdct.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		850739732C0AB7E300D3468A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9EA087D129FA013200163B50 /* Ogg */;
+			targetProxy = 850739722C0AB7E300D3468A /* PBXContainerItemProxy */;
+		};
+		9EA0881F29FA0A3D00163B50 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9EA087D129FA013200163B50 /* Ogg */;
+			targetProxy = 9EA0881E29FA0A3D00163B50 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		36802AFC97014F8884616270 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		44946A7D9BEE4247A128AE58 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				SDKROOT = macosx;
+			};
+			name = RelWithDebInfo;
+		};
+		850738A72C0AA96A00D3468A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					theora_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include/",
+					"$(PROJECT_DIR)/libtheora/include",
+					"$(PROJECT_DIR)/libtheora/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.theora;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		850738A82C0AA96A00D3468A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = theora_EXPORTS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include/",
+					"$(PROJECT_DIR)/libtheora/include",
+					"$(PROJECT_DIR)/libtheora/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.theora;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		850738A92C0AA96A00D3468A /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					theora_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include/",
+					"$(PROJECT_DIR)/libtheora/include",
+					"$(PROJECT_DIR)/libtheora/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.theora;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = MinSizeRel;
+		};
+		850738AA2C0AA96A00D3468A /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					theora_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include/",
+					"$(PROJECT_DIR)/libtheora/include",
+					"$(PROJECT_DIR)/libtheora/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.theora;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = RelWithDebInfo;
+		};
+		9EA087D629FA013300163B50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_MODULE_VERIFIER = YES;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					ogg_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libogg/include/";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fPIC";
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.ogg;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		9EA087D729FA013300163B50 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = ogg_EXPORTS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libogg/include/";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_CFLAGS = (
+					"-fPIC",
+					"-DNDEBUG",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.ogg;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		9EA087D829FA013300163B50 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = ogg_EXPORTS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libogg/include/";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_CFLAGS = (
+					"-fPIC",
+					"-DNDEBUG",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.ogg;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = MinSizeRel;
+		};
+		9EA087D929FA013300163B50 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = ogg_EXPORTS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libogg/include/";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_CFLAGS = (
+					"-fPIC",
+					"-DNDEBUG",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.ogg;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = RelWithDebInfo;
+		};
+		9EA087EB29FA099200163B50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					vorbis_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include",
+					"$(PROJECT_DIR)/libvorbis/include",
+					"$(PROJECT_DIR)/libvorbis/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.vorbis;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		9EA087EC29FA099200163B50 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					vorbis_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include",
+					"$(PROJECT_DIR)/libvorbis/include",
+					"$(PROJECT_DIR)/libvorbis/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.vorbis;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		9EA087ED29FA099200163B50 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					vorbis_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include",
+					"$(PROJECT_DIR)/libvorbis/include",
+					"$(PROJECT_DIR)/libvorbis/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.vorbis;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = MinSizeRel;
+		};
+		9EA087EE29FA099200163B50 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					vorbis_EXPORTS,
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libogg/include",
+					"$(PROJECT_DIR)/libvorbis/include",
+					"$(PROJECT_DIR)/libvorbis/lib",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.xiph.vorbis;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = RelWithDebInfo;
+		};
+		DE249FCC3D0445878C48D460 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				SDKROOT = macosx;
+			};
+			name = MinSizeRel;
+		};
+		F708B10D00E8453887E9425A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		47A70380EE924A0E967818E0 /* Build configuration list for PBXProject "Dependencies" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F708B10D00E8453887E9425A /* Debug */,
+				36802AFC97014F8884616270 /* Release */,
+				DE249FCC3D0445878C48D460 /* MinSizeRel */,
+				44946A7D9BEE4247A128AE58 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		850738A62C0AA96A00D3468A /* Build configuration list for PBXNativeTarget "Theora" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				850738A72C0AA96A00D3468A /* Debug */,
+				850738A82C0AA96A00D3468A /* Release */,
+				850738A92C0AA96A00D3468A /* MinSizeRel */,
+				850738AA2C0AA96A00D3468A /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9EA087DA29FA013300163B50 /* Build configuration list for PBXNativeTarget "Ogg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9EA087D629FA013300163B50 /* Debug */,
+				9EA087D729FA013300163B50 /* Release */,
+				9EA087D829FA013300163B50 /* MinSizeRel */,
+				9EA087D929FA013300163B50 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9EA087EA29FA099200163B50 /* Build configuration list for PBXNativeTarget "Vorbis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9EA087EB29FA099200163B50 /* Debug */,
+				9EA087EC29FA099200163B50 /* Release */,
+				9EA087ED29FA099200163B50 /* MinSizeRel */,
+				9EA087EE29FA099200163B50 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5A12D27682F14DA88F232777 /* Project object */;
+}

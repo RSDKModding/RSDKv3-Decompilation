@@ -287,8 +287,10 @@ void InitUserdata()
 #endif
 
 #if RETRO_PLATFORM == RETRO_OSX
-    sprintf(gamePath, "%s/RSDKv3", getResourcesPath());
-    sprintf(modsPath, "%s/RSDKv3/", getResourcesPath());
+    getResourcesPath(gamePath, sizeof(gamePath));
+#if RETRO_USE_MOD_LOADER
+    sprintf(modsPath, "%s/", gamePath);
+#endif
 
     mkdir(gamePath, 0777);
 //#elif RETRO_PLATFORM == RETRO_LINUX

@@ -12,6 +12,7 @@ env:
   WIN64_FLAGS: "-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_PREFIX_PATH=C:/vcpkg/installed/x64-windows-static/"
   # FIXME: For some reason ubuntu enables _FORTIFY_SOURCE by default, so let's override it to prevent IO bugs
   GENERAL_LINUX_FLAGS: "-DCMAKE_CXX_FLAGS='-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0'"
+  GENERAL_MACOS_FLAGS: "OTHER_CFLAGS='-DRSDK_AUTOBUILD=1 -DRETRO_DEV_EXTRA=\\\"Darwin\\ -\\ AppleClang\\\"'"
 
 jobs:
   v3-windows:
@@ -135,3 +136,43 @@ jobs:
         with:
           name: v3-linux
           path: linux.tar.gz
+  v3-macOS:
+      runs-on: macos-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            submodules: recursive
+        - name: Download libogg, libvorbis, and libtheora for easier includes
+          run: |
+            curl "https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-1.3.5.zip" --output "libogg.zip"
+            unzip libogg.zip -d ./dependencies/mac/
+            mv ./dependencies/mac/libogg-1.3.5 ./dependencies/mac/libogg
+            curl "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.7.zip" --output "libvorbis.zip"
+            unzip libvorbis.zip -d ./dependencies/mac/
+            mv ./dependencies/mac/libvorbis-1.3.7 ./dependencies/mac/libvorbis
+            curl "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" --output "libtheora.zip"
+            unzip libtheora.zip -d ./dependencies/mac/
+            mv ./dependencies/mac/libtheora-1.1.1 ./dependencies/mac/libtheora
+        - name: Download SDL2
+          run: |
+            curl "https://libsdl.org/release/SDL2-2.30.7.dmg" --output "SDL2.dmg"
+            hdiutil attach SDL2.dmg
+            cp -r /Volumes/SDL2/SDL2.framework ./dependencies/mac
+        - name: Generate Vorbis headers
+          working-directory: ./dependencies/mac/libogg/
+          run: |
+            ./configure
+        - name: Build RSDKv3
+          run: |
+            xcodebuild -project RSDKv3.xcodeproj -scheme RSDKv3 DSTROOT="./build" -configuration Release DEPLOYMENT_LOCATION=YES ${{env.GENERAL_MACOS_FLAGS}}
+        - name: Zip the app ourselves (Important step to retain symlinks)
+          run: |
+            cd ./build/Applications/
+            echo 'From this folder, run `xattr -cr RSDKv3.app` in Terminal to allow MacOS to open it.' > README.txt
+            zip -r RSDKv3.zip .
+        - name: Upload artifacts
+          uses: actions/upload-artifact@v4
+          with:
+            name: v3-mac
+            path: build/Applications/RSDKv3.zip
