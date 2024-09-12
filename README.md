@@ -56,10 +56,10 @@ Clone the repo **recursively**, using:
 If you've already cloned the repo, run this command inside of the repository:
 ```git submodule update --init --recursive```
 
-## Follow the build steps
+## Getting dependencies
 
 ### Windows
-To handle dependencies, you'll need to install [Visual Studio Community](https://visualstudio.microsoft.com/downloads/) (make sure to install the `Desktop development with C++` package during the installation) and [vcpkg](https://github.com/microsoft/vcpkg#quick-start-windows).
+To handle dependencies, you'll need to install [Visual Studio Community](https://visualstudio.microsoft.com/downloads/) (make sure to install the `Desktop development with C++` package during the installation) and [vcpkg](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started).
 
 After installing those, run the following in Command Prompt (make sure to replace `[vcpkg root]` with the path to the vcpkg installation!):
 - `[vcpkg root]\vcpkg.exe install glew sdl2 libogg libtheora libvorbis --triplet=x64-windows-static` (If you're compiling a 32-bit build, replace `x64-windows-static` with `x86-windows-static`.)
@@ -76,14 +76,13 @@ Install the following dependencies: then follow the [compilation steps below](#c
 - **apk (Alpine/PostmarketOS)** `sudo apk add build-base cmake glew-dev glfw-dev sdl2-dev libogg-dev libtheora-dev libvorbis-dev`
 - Your favorite package manager here, [make a pull request](https://github.com/RSDKModding/RSDKv3-Decompilation/fork)
 
-## Mac
-The macOS build doesn't currently use CMake.
+### Mac
 Follow the build instructions [here.](./dependencies/mac/README.md)
 
-## Android
+### Android
 Follow the android build instructions [here.](./dependencies/android/README.md)
 
-### Compiling
+## Compiling
 
 Compiling is as simple as typing the following in the root repository directory:
 ```
