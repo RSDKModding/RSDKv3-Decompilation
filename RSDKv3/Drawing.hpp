@@ -101,6 +101,7 @@ extern byte texBufferMode;
 
 #if !RETRO_USE_ORIGINAL_CODE
 extern int viewOffsetX;
+extern int viewOffsetY;
 #endif
 extern int viewWidth;
 extern int viewHeight;

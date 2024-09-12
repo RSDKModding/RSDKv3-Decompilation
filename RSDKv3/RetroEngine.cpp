@@ -71,10 +71,19 @@ bool ProcessEvents()
                 if (touches <= 1) { // Touch always takes priority over mouse
                     uint state = SDL_GetMouseState(&touchX[0], &touchY[0]);
 
-                    int width = 0, height = 0;
+                    int width = 0, height = 0, pixW = 0, pixH = 0;
                     SDL_GetWindowSize(Engine.window, &width, &height);
-                    touchX[0] = ((touchX[0] - viewOffsetX) / (float)width) * SCREEN_XSIZE;
-                    touchY[0] = (touchY[0] / (float)height) * SCREEN_YSIZE;
+#if RETRO_USING_OPENGL
+                    SDL_GL_GetDrawableSize(Engine.window, &pixW, &pixH);
+#else
+                    SDL_GetRendererOutputSize(Engine.renderer, &pixW, &pixH);
+#endif
+
+                    float scaleX = (float)pixW / (float)width;
+                    float scaleY = (float)pixH / (float)height;
+
+                    touchX[0] = ((touchX[0] - viewOffsetX / scaleX) / ((float)width - viewOffsetX)) * SCREEN_XSIZE;
+                    touchY[0] = ((touchY[0] - viewOffsetY / scaleY) / ((float)height - viewOffsetY)) * SCREEN_YSIZE;
 
                     touchDown[0] = state & SDL_BUTTON_LMASK;
                     if (touchDown[0])
