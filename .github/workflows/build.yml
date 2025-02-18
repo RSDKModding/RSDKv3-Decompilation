@@ -13,6 +13,7 @@ env:
   # FIXME: For some reason ubuntu enables _FORTIFY_SOURCE by default, so let's override it to prevent IO bugs
   GENERAL_LINUX_FLAGS: "-DCMAKE_CXX_FLAGS='-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0'"
   GENERAL_MACOS_FLAGS: "OTHER_CFLAGS='-DRSDK_AUTOBUILD=1 -DRETRO_DEV_EXTRA=\\\"Darwin\\ -\\ AppleClang\\\"'"
+  GENERAL_SWITCH_FLAGS: "-DCMAKE_TOOLCHAIN_FILE=\"$DEVKITPRO/cmake/Switch.cmake\""
 
 jobs:
   v3-windows:
@@ -176,3 +177,27 @@ jobs:
           with:
             name: v3-mac
             path: build/Applications/RSDKv3.zip
+  v3-switch:
+      runs-on: ubuntu-latest
+      container: devkitpro/devkita64:latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            submodules: recursive
+        - name: Verify devkitPro environment
+          run: |
+            echo "DEVKITPRO path: $DEVKITPRO"
+            ls -l $DEVKITPRO/cmake/Switch.cmake
+        - name: Build RSDKv3
+          run: cmake -B build ${{env.GENERAL_FLAGS}} ${{env.GENERAL_SWITCH_FLAGS}}
+               cmake --build build --parallel
+        - name: Move artifacts
+          run: mkdir artifacts
+               mv ./build/bin/* ./artifacts
+               zip -r RSDKv3-switch.zip
+        - name: Upload artifacts
+          uses: actions/upload-artifact@v4
+          with:
+            name: v3-switch
+            path: RSDK-v3-switch.zip

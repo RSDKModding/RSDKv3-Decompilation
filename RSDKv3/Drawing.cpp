@@ -115,7 +115,7 @@ int InitRenderDevice()
     flags |= SDL_WINDOW_OPENGL;
 
 #if RETRO_PLATFORM != RETRO_OSX // dude idk either you just gotta trust that this works
-#if RETRO_PLATFORM != RETRO_ANDROID
+#if RETRO_PLATFORM != RETRO_ANDROID || RETRO_PLATFORM != RETRO_SWITCH
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #else
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
@@ -265,7 +265,17 @@ int InitRenderDevice()
 
     SDL_GL_SetSwapInterval(Engine.vsync ? 1 : 0);
 
-#if RETRO_PLATFORM != RETRO_ANDROID && RETRO_PLATFORM != RETRO_OSX
+#if RETRO_PLATFORM == RETRO_SWITCH
+    // glad Setup for switch
+    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+    {
+        PrintLog("glad init error:");
+        PrintLog((const char *)SDL_GetError());
+        return false;
+    }
+#endif
+
+#if RETRO_PLATFORM != RETRO_ANDROID && RETRO_PLATFORM != RETRO_OSX && RETRO_PLATFORM != RETRO_SWITCH
     // glew Setup
     GLenum err = glewInit();
     if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY) {
@@ -274,6 +284,7 @@ int InitRenderDevice()
         return false;
     }
 #endif
+
     Engine.highResMode = false;
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glDisable(GL_LIGHTING);
@@ -1079,7 +1090,7 @@ void SetFullScreen(bool fs)
         Engine.useFBTexture = ((float)scaleH - (int)scaleH) != 0 || Engine.scalingMode;
 
         float width = w;
-#if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID
+#if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID 
         float aspect = SCREEN_XSIZE_CONFIG / (float)SCREEN_YSIZE;
         width        = aspect * h;
         viewOffsetX  = abs(w - width) / 2;

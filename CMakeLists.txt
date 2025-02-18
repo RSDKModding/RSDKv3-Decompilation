@@ -54,10 +54,14 @@ if(NOT PLATFORM)
         set(PLATFORM "Windows" CACHE STRING "The platform to compile for.")
     elseif(ANDROID)
         set(PLATFORM "Android" CACHE STRING "The platform to compile for.")
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "NintendoSwitch")
+        set(PLATFORM "Switch" CACHE STRING "The platform to compile for.")
     else()
         set(PLATFORM ${CMAKE_SYSTEM_NAME} CACHE STRING "The platform to compile for.")
     endif()
 endif()
+
+message(STATUS "Building ${RETRO_NAME} for Platform: ${PLATFORM}")
 
 include(platforms/${PLATFORM}.cmake)
 

@@ -49,6 +49,7 @@ typedef unsigned int uint;
 #define RETRO_VITA (7)
 #define RETRO_UWP  (8)
 #define RETRO_LINUX (9)
+#define RETRO_SWITCH (10)
 
 // Platform types (Game manages platform-specific code such as HUD position using this rather than the above)
 #define RETRO_STANDARD (0)
@@ -85,6 +86,8 @@ typedef unsigned int uint;
 #define RETRO_PLATFORM (RETRO_VITA)
 #elif defined __linux__
 #define RETRO_PLATFORM (RETRO_LINUX)
+#elif defined __SWITCH__
+#define RETRO_PLATFORM (RETRO_SWITCH)
 #else
 #define RETRO_PLATFORM (RETRO_WIN) // Default
 #endif
@@ -112,7 +115,7 @@ typedef unsigned int uint;
 #endif
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
-    || RETRO_PLATFORM == RETRO_UWP || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_LINUX
+    || RETRO_PLATFORM == RETRO_UWP || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_LINUX || RETRO_PLATFORM == RETRO_SWITCH
 #ifdef RETRO_USE_SDL2
 #define RETRO_USING_SDL1 (0)
 #define RETRO_USING_SDL2 (1)
@@ -185,6 +188,13 @@ typedef unsigned int uint;
 #define GL_FRAMEBUFFER         GL_FRAMEBUFFER_EXT
 #define GL_COLOR_ATTACHMENT0   GL_COLOR_ATTACHMENT0_EXT
 #define GL_FRAMEBUFFER_BINDING GL_FRAMEBUFFER_BINDING_EXT
+#elif RETRO_PLATFORM == RETRO_SWITCH
+#include <GLES/gl.h>
+#include <GLES/glext.h>
+#include <glad/glad.h>
+
+#define glOrtho                glOrthof
+
 #else
 #include <GL/glew.h>
 #endif
@@ -203,6 +213,8 @@ typedef unsigned int uint;
 #define RETRO_GAMEPLATFORMID (UAP_GetRetroGamePlatformId())
 #elif RETRO_PLATFORM == RETRO_LINUX
 #define RETRO_GAMEPLATFORMID (RETRO_STANDARD)
+#elif RETRO_PLATFORM == RETRO_SWITCH
+#define RETRO_GAMEPLATFORMID (RETRO_WIN)
 #else
 #error Unspecified RETRO_GAMEPLATFORMID
 #endif
@@ -365,6 +377,11 @@ enum RetroBytecodeFormat {
 
 #include "cocoaHelpers.hpp"
 #elif RETRO_PLATFORM == RETRO_VITA
+#include <SDL2/SDL.h>
+#include <vorbis/vorbisfile.h>
+#include <theora/theora.h>
+#include <theoraplay.h>
+#elif RETRO_PLATFORM == RETRO_SWITCH
 #include <SDL2/SDL.h>
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>

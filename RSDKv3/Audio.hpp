@@ -5,7 +5,7 @@
 
 #include <vorbis/vorbisfile.h>
 
-#if RETRO_PLATFORM != RETRO_VITA && RETRO_PLATFORM != RETRO_OSX
+#if RETRO_PLATFORM != RETRO_VITA && RETRO_PLATFORM != RETRO_OSX && RETRO_PLATFORM != RETRO_SWITCH
 #include "SDL.h"
 #endif
 
