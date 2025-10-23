@@ -644,8 +644,10 @@ bool PlayMusic(int track)
         return false;
 
 #if !RETRO_USE_ORIGINAL_CODE
-	if (StrComp(musicTracks[track].fileName, "Data/Music/"))
-		return false;
+    if (StrComp(musicTracks[track].fileName, "Data/Music/")) {
+        StopMusic();
+        return false;
+    }
 #endif
 
     if (musicTracks[track].fileName[0]) {
