@@ -243,9 +243,9 @@ void ProcessStageSelect()
 #if RETRO_USE_MOD_LOADER
                 Engine.LoadXMLPalettes();
 #endif
-                activeStageList = 0;
-                stageMode = STAGEMODE_LOAD;
-                Engine.gameMode = ENGINE_MAINGAME;
+                activeStageList   = 0;
+                stageMode         = STAGEMODE_LOAD;
+                Engine.gameMode   = ENGINE_MAINGAME;
                 stageListPosition = 0;
             }
             break;
