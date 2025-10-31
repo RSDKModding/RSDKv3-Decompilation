@@ -1235,9 +1235,9 @@ void RetroEngine::Callback(int callbackID)
                 running = false;
             }
             else {
-                activeStageList = 0;
+                activeStageList   = 0;
                 stageListPosition = 0;
-                stageMode = STAGEMODE_LOAD;
+                stageMode         = STAGEMODE_LOAD;
             }
             break;
         case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
@@ -1294,9 +1294,9 @@ void RetroEngine::Callback(int callbackID)
             PauseSound();
             for (int o = 0; o < OBJECT_COUNT; ++o) {
                 if (StrComp("PauseMenu", typeNames[o])) {
-                    objectEntityList[9].type = o;
+                    objectEntityList[9].type      = o;
                     objectEntityList[9].drawOrder = 6;
-                    objectEntityList[9].priority = PRIORITY_ALWAYS;
+                    objectEntityList[9].priority  = PRIORITY_ALWAYS;
                     if (activeStageList == STAGELIST_SPECIAL)
                         stageLayouts[0].type = LAYER_3DFLOOR;
                     for (int s = 0; s < globalSFXCount + stageSFXCount; ++s) {
@@ -1318,9 +1318,9 @@ void RetroEngine::Callback(int callbackID)
             if (bytecodeMode == BYTECODE_PC) {
                 for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
                     if (StrComp("CREDITS", stageList[STAGELIST_PRESENTATION][s].name)) {
-                        activeStageList = STAGELIST_PRESENTATION;
+                        activeStageList   = STAGELIST_PRESENTATION;
                         stageListPosition = s;
-                        stageMode = STAGEMODE_LOAD;
+                        stageMode         = STAGEMODE_LOAD;
                     }
                 }
                 PrintLog("Callback: Staff Credits Requested");
@@ -1345,7 +1345,7 @@ void RetroEngine::Callback(int callbackID)
             SetGlobalVariableByName("HaveLoadAllGDPRValue", 1);
             break;
 
-            // Sonic Origins
+        // Sonic Origins
         case NOTIFY_DEATH_EVENT: PrintLog("NOTIFY: DeathEvent() -> %d", notifyParam1); break;
         case NOTIFY_TOUCH_SIGNPOST: PrintLog("NOTIFY: TouchSignPost() -> %d", notifyParam1); break;
         case NOTIFY_HUD_ENABLE: PrintLog("NOTIFY: HUDEnable() -> %d", notifyParam1); break;
@@ -1373,12 +1373,12 @@ void RetroEngine::Callback(int callbackID)
             ClearGraphicsData();
             ClearAnimationData();
             LoadPalette("MasterPalette.act", 0, 0, 0, 256);
-    #if RETRO_USE_MOD_LOADER
+#if RETRO_USE_MOD_LOADER
             Engine.LoadXMLPalettes();
-    #endif
-            activeStageList = 0;
-            stageMode = STAGEMODE_LOAD;
-            Engine.gameMode = ENGINE_MAINGAME;
+#endif
+            activeStageList   = 0;
+            stageMode         = STAGEMODE_LOAD;
+            Engine.gameMode   = ENGINE_MAINGAME;
             stageListPosition = 0;
             break;
         case NOTIFY_STATS_PARAM_1: PrintLog("NOTIFY: StatsParam1() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
@@ -1413,7 +1413,7 @@ void RetroEngine::Callback(int callbackID)
         case NOTIFY_STATS_SAVE_FUTURE: PrintLog("NOTIFY: StatsSaveFuture() -> %d", notifyParam1); break;
         case NOTIFY_STATS_CHARA_ACTION2: PrintLog("NOTIFY: StatsCharaAction2() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
 
-            // Sega Forever stuff
+        // Sega Forever stuff
         case CALLBACK_STARTGAME:
             PrintLog("Callback: startGame()");
 
