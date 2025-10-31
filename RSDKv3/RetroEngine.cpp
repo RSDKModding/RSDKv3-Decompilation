@@ -1460,7 +1460,7 @@ void RetroEngine::Callback(int callbackID)
     case CALLBACK_SET1P: activePlayerCount = 1; break;
     case CALLBACK_SET2P: activePlayerCount = 2; break;
     case CALLBACK_GETWINDOWINFO:
-        SetGlobalVariableByName("Engine.Fullscreen", Engine.startFullScreen);
+        SetGlobalVariableByName("Engine.Fullscreen", Engine.isFullScreen);
         SetGlobalVariableByName("Engine.Borderless", Engine.borderless);
         SetGlobalVariableByName("Engine.VSync", Engine.vsync);
         SetGlobalVariableByName("Engine.ScalingMode", Engine.scalingMode);
@@ -1469,6 +1469,7 @@ void RetroEngine::Callback(int callbackID)
         SetGlobalVariableByName("Engine.HardwareRenderer", Engine.gameRenderType == "HW_Rendering");            
         break;
     case CALLBACK_SETWINDOWCHANGES:
+        Engine.startFullScreen = Engine.isFullScreen; // Account for f4 toggle
         for (int v = 0; v < globalVariablesCount; ++v) {
             if (StrComp("Engine.Fullscreen", globalVariableNames[v])){
                 Engine.startFullScreen = globalVariables[v];
