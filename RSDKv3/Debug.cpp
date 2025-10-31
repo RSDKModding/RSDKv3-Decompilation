@@ -243,9 +243,9 @@ void ProcessStageSelect()
 #if RETRO_USE_MOD_LOADER
                 Engine.LoadXMLPalettes();
 #endif
-                activeStageList   = 0;
-                stageMode         = STAGEMODE_LOAD;
-                Engine.gameMode   = ENGINE_MAINGAME;
+                activeStageList = 0;
+                stageMode = STAGEMODE_LOAD;
+                Engine.gameMode = ENGINE_MAINGAME;
                 stageListPosition = 0;
             }
             break;
@@ -626,38 +626,50 @@ void ProcessStageSelect()
             }
             else if (keyPress.B) {
                 RefreshEngine();
+                
+                if (Engine.modMenuCalled) {
+                    stageMode            = STAGEMODE_LOAD;
+                    Engine.gameMode      = ENGINE_MAINGAME;
+                    Engine.modMenuCalled = false;
 
-                stageMode = DEVMENU_MAIN;
-                SetupTextMenu(&gameMenu[0], 0);
-                AddTextMenuEntry(&gameMenu[0], "RETRO ENGINE DEV MENU");
-                AddTextMenuEntry(&gameMenu[0], " ");
-                char version[0x80];
-                StrCopy(version, Engine.gameWindowText);
-                StrAdd(version, " Version");
-                AddTextMenuEntry(&gameMenu[0], version);
-                AddTextMenuEntry(&gameMenu[0], Engine.gameVersion);
+                    if (stageListPosition >= stageListCount[activeStageList]) {
+                        activeStageList   = 0;
+                        stageListPosition = 0;
+                    }
+                }
+                else {
+                    stageMode = DEVMENU_MAIN;
+                    SetupTextMenu(&gameMenu[0], 0);
+                    AddTextMenuEntry(&gameMenu[0], "RETRO ENGINE DEV MENU");
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    char version[0x80];
+                    StrCopy(version, Engine.gameWindowText);
+                    StrAdd(version, " Version");
+                    AddTextMenuEntry(&gameMenu[0], version);
+                    AddTextMenuEntry(&gameMenu[0], Engine.gameVersion);
 #ifdef RETRO_DEV_EXTRA
-                AddTextMenuEntry(&gameMenu[0], RETRO_DEV_EXTRA);
+                    AddTextMenuEntry(&gameMenu[0], RETRO_DEV_EXTRA);
 #else
-                AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], " ");
 #endif
-                AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], "START GAME");
-                AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], "STAGE SELECT");
-                AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], "MODS");
-                AddTextMenuEntry(&gameMenu[0], " ");
-                AddTextMenuEntry(&gameMenu[0], "EXIT GAME");
-                gameMenu[0].alignment        = 2;
-                gameMenu[0].selectionCount   = 2;
-                gameMenu[0].selection1       = 0;
-                gameMenu[0].selection2       = 9;
-                gameMenu[1].visibleRowCount  = 0;
-                gameMenu[1].visibleRowOffset = 0;
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], "START GAME");
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], "STAGE SELECT");
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], "MODS");
+                    AddTextMenuEntry(&gameMenu[0], " ");
+                    AddTextMenuEntry(&gameMenu[0], "EXIT GAME");
+                    gameMenu[0].alignment = 2;
+                    gameMenu[0].selectionCount = 2;
+                    gameMenu[0].selection1 = 0;
+                    gameMenu[0].selection2 = 9;
+                    gameMenu[1].visibleRowCount = 0;
+                    gameMenu[1].visibleRowOffset = 0;
+                }
             }
 
             DrawTextMenu(&gameMenu[0], SCREEN_CENTERX - 4, 40);

@@ -459,7 +459,43 @@ void RetroEngine::Run()
                             if (ProcessVideo() == 1)
                                 gameMode = ENGINE_MAINGAME;
                             break;
+                            
+#if RETRO_USE_MOD_LOADER
+                        case ENGINE_INITMODMENU:
+                            Engine.LoadGameConfig("Data/Game/GameConfig.bin");
+                            InitDevMenu();
 
+                            ResetCurrentStageFolder();
+                            
+                            SetupTextMenu(&gameMenu[0], 0);
+                            AddTextMenuEntry(&gameMenu[0], "MOD LIST");
+                            SetupTextMenu(&gameMenu[1], 0);
+                            InitMods();
+
+                            char buffer[0x100];
+                            for (int m = 0; m < modList.size(); ++m) {
+                                StrCopy(buffer, modList[m].name.c_str());
+                                StrAdd(buffer, ": ");
+                                StrAdd(buffer, modList[m].active ? "  Active" : "Inactive");
+                                AddTextMenuEntry(&gameMenu[1], buffer);
+                                gameMenu[1].entryHighlight[m] = false;
+                            }
+
+                            gameMenu[1].alignment      = 1;
+                            gameMenu[1].selectionCount = 3;
+                            gameMenu[1].selection1     = 0;
+                            if (gameMenu[1].rowCount > 18)
+                                gameMenu[1].visibleRowCount = 18;
+                            else
+                                gameMenu[1].visibleRowCount = 0;
+
+                            gameMenu[0].alignment        = 2;
+                            gameMenu[0].selectionCount   = 1;
+                            gameMenu[1].timer            = 0;
+                            gameMenu[1].visibleRowOffset = 0;
+                            stageMode                    = DEVMENU_MODMENU;
+                            break;
+#endif
                         default: break;
                     }
                 }
@@ -1158,271 +1194,313 @@ void RetroEngine::Callback(int callbackID)
     int notifyParam3 = GetGlobalVariableByName("game.callbackParam2");
 
     switch (callbackID) {
-        default: PrintLog("Callback: Unknown (%d)", callbackID); break;
-        case CALLBACK_DISPLAYLOGOS: // Display Logos, Called immediately
-            /*if (ActiveStageList) {
-                callbackMessage = 1;
-                GameMode        = 7;
-            }
-            else {
-                callbackMessage = 10;
-            }*/
-            PrintLog("Callback: Display Logos");
-            break;
-        case CALLBACK_PRESS_START: // Called when "Press Start" is activated, PC = NONE
-            /*if (ActiveStageList) {
-                callbackMessage = 2;
-                GameMode        = 7;
-            }
-            else {
-                callbackMessage = 10;
-            }*/
-            PrintLog("Callback: Press Start");
-            break;
-        case CALLBACK_TIMEATTACK_NOTIFY_ENTER: PrintLog("Callback: Time Attack Notify Enter"); break;
-        case CALLBACK_TIMEATTACK_NOTIFY_EXIT: PrintLog("Callback: Time Attack Notify Exit"); break;
-        case CALLBACK_FINISHGAME_NOTIFY: // PC = NONE
-            PrintLog("Callback: Finish Game Notify");
-            break;
-        case CALLBACK_RETURNSTORE_SELECTED:
-            gameMode = ENGINE_EXITGAME;
-            PrintLog("Callback: Return To Store Selected");
-            break;
-        case CALLBACK_RESTART_SELECTED:
-            PrintLog("Callback: Restart Selected");
+    default: PrintLog("Callback: Unknown (%d)", callbackID); break;
+    case CALLBACK_DISPLAYLOGOS: // Display Logos, Called immediately
+        /*if (ActiveStageList) {
+            callbackMessage = 1;
+            GameMode        = 7;
+        }
+        else {
+            callbackMessage = 10;
+        }*/
+        PrintLog("Callback: Display Logos");
+        break;
+    case CALLBACK_PRESS_START: // Called when "Press Start" is activated, PC = NONE
+        /*if (ActiveStageList) {
+            callbackMessage = 2;
+            GameMode        = 7;
+        }
+        else {
+            callbackMessage = 10;
+        }*/
+        PrintLog("Callback: Press Start");
+        break;
+    case CALLBACK_TIMEATTACK_NOTIFY_ENTER: PrintLog("Callback: Time Attack Notify Enter"); break;
+    case CALLBACK_TIMEATTACK_NOTIFY_EXIT: PrintLog("Callback: Time Attack Notify Exit"); break;
+    case CALLBACK_FINISHGAME_NOTIFY: // PC = NONE
+        PrintLog("Callback: Finish Game Notify");
+        break;
+    case CALLBACK_RETURNSTORE_SELECTED:
+        gameMode = ENGINE_EXITGAME;
+        PrintLog("Callback: Return To Store Selected");
+        break;
+    case CALLBACK_RESTART_SELECTED:
+        PrintLog("Callback: Restart Selected");
+        stageMode = STAGEMODE_LOAD;
+        break;
+    case CALLBACK_EXIT_SELECTED:
+        // gameMode = ENGINE_EXITGAME;
+        PrintLog("Callback: Exit Selected");
+        if (bytecodeMode == BYTECODE_PC) {
+            running = false;
+        }
+        else {
+            activeStageList = 0;
+            stageListPosition = 0;
             stageMode = STAGEMODE_LOAD;
-            break;
-        case CALLBACK_EXIT_SELECTED:
-            // gameMode = ENGINE_EXITGAME;
-            PrintLog("Callback: Exit Selected");
-            if (bytecodeMode == BYTECODE_PC) {
-                running = false;
+        }
+        break;
+    case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
+        gameMode = ENGINE_EXITGAME;
+        PrintLog("Callback: Buy Full Game Selected");
+        break;
+    case CALLBACK_TERMS_SELECTED: // PC = How to play, Mobile = Full Game Only Screen
+        // PC doesn't have hi res mode
+        /*if (bytecodeMode == BYTECODE_PC) {
+            for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
+                if (StrComp("HELP", stageList[STAGELIST_PRESENTATION][s].name)) {
+                    activeStageList   = STAGELIST_PRESENTATION;
+                    stageListPosition = s;
+                    stageMode         = STAGEMODE_LOAD;
+                }
+            }
+        }*/
+        PrintLog("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen");
+        break;
+    case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
+        PrintLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
+        break;
+    case CALLBACK_TRIAL_ENDED:
+        if (bytecodeMode == BYTECODE_PC) {
+            PrintLog("Callback: ???");
+        }
+        else {
+            if (Engine.trialMode) {
+                PrintLog("Callback: Trial Ended Screen Requested");
             }
             else {
-                activeStageList   = 0;
-                stageListPosition = 0;
-                stageMode         = STAGEMODE_LOAD;
+                // Go to this URL http://www.sega.com
+                PrintLog("Callback: Sega Website Requested");
             }
-            break;
-        case CALLBACK_BUY_FULL_GAME_SELECTED: //, Mobile = Buy Full Game Selected (Trial Mode Only)
-            gameMode = ENGINE_EXITGAME;
-            PrintLog("Callback: Buy Full Game Selected");
-            break;
-        case CALLBACK_TERMS_SELECTED: // PC = How to play, Mobile = Full Game Only Screen
-            // PC doesn't have hi res mode
-            /*if (bytecodeMode == BYTECODE_PC) {
-                for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
-                    if (StrComp("HELP", stageList[STAGELIST_PRESENTATION][s].name)) {
-                        activeStageList   = STAGELIST_PRESENTATION;
-                        stageListPosition = s;
-                        stageMode         = STAGEMODE_LOAD;
-                    }
-                }
-            }*/
-            PrintLog("Callback: PC = How to play Menu, Mobile = Terms & Conditions Screen");
-            break;
-        case CALLBACK_PRIVACY_SELECTED: // PC = Controls, Mobile = Full Game Only Screen
-            PrintLog("Callback: PC = Controls Menu, Mobile = Privacy Screen");
-            break;
-        case CALLBACK_TRIAL_ENDED:
-            if (bytecodeMode == BYTECODE_PC) {
-                PrintLog("Callback: ???");
+        }
+        break;                       // PC = ???, Mobile = Trial Ended Screen
+    case CALLBACK_SETTINGS_SELECTED: // PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)
+        if (bytecodeMode == BYTECODE_PC) {
+            PrintLog("Callback: Settings Requested");
+        }
+        else {
+            if (Engine.trialMode) {
+                PrintLog("Callback: Full Game Only Requested");
             }
             else {
-                if (Engine.trialMode) {
-                    PrintLog("Callback: Trial Ended Screen Requested");
-                }
-                else {
-                    // Go to this URL http://www.sega.com
-                    PrintLog("Callback: Sega Website Requested");
-                }
+                // Go to this URL http://www.sega.com/legal/terms_mobile.php
+                PrintLog("Callback: Terms Requested");
             }
-            break;                       // PC = ???, Mobile = Trial Ended Screen
-        case CALLBACK_SETTINGS_SELECTED: // PC = Settings, Mobile = Full Game Only Screen (Trial Mode Only)
-            if (bytecodeMode == BYTECODE_PC) {
-                PrintLog("Callback: Settings Requested");
-            }
-            else {
-                if (Engine.trialMode) {
-                    PrintLog("Callback: Full Game Only Requested");
-                }
-                else {
-                    // Go to this URL http://www.sega.com/legal/terms_mobile.php
-                    PrintLog("Callback: Terms Requested");
-                }
-            }
-            break;
-        case CALLBACK_PAUSE_REQUESTED: // PC/Mobile = Pause Requested (Mobile uses in-game menu, PC does as well if devMenu is active)
-            // I know this is kinda lazy and a copout, buuuuuuut the in-game menu is so much better than the janky PC one
-            stageMode = STAGEMODE_PAUSED;
-            PauseSound();
-            for (int o = 0; o < OBJECT_COUNT; ++o) {
-                if (StrComp("PauseMenu", typeNames[o])) {
-                    objectEntityList[9].type      = o;
-                    objectEntityList[9].drawOrder = 6;
-                    objectEntityList[9].priority  = PRIORITY_ALWAYS;
-                    if (activeStageList == STAGELIST_SPECIAL)
-                        stageLayouts[0].type = LAYER_3DFLOOR;
-                    for (int s = 0; s < globalSFXCount + stageSFXCount; ++s) {
-                        if (StrComp("Global/Select.wav", sfxList[s].name))
-                            PlaySfx(s, 0);
+        }
+        break;
+    case CALLBACK_PAUSE_REQUESTED: // PC/Mobile = Pause Requested (Mobile uses in-game menu, PC does as well if devMenu is active)
+        // I know this is kinda lazy and a copout, buuuuuuut the in-game menu is so much better than the janky PC one
+        stageMode = STAGEMODE_PAUSED;
+        PauseSound();
+        for (int o = 0; o < OBJECT_COUNT; ++o) {
+            if (StrComp("PauseMenu", typeNames[o])) {
+                objectEntityList[9].type = o;
+                objectEntityList[9].drawOrder = 6;
+                objectEntityList[9].priority = PRIORITY_ALWAYS;
+                if (activeStageList == STAGELIST_SPECIAL)
+                    stageLayouts[0].type = LAYER_3DFLOOR;
+                for (int s = 0; s < globalSFXCount + stageSFXCount; ++s) {
+                    if (StrComp("Global/Select.wav", sfxList[s].name))
+                        PlaySfx(s, 0);
 
-                        if (StrComp("Global/Flying.wav", sfxList[s].name))
-                            StopSfx(s);
+                    if (StrComp("Global/Flying.wav", sfxList[s].name))
+                        StopSfx(s);
 
-                        if (StrComp("Global/Tired.wav", sfxList[s].name))
-                            StopSfx(s);
-                    }
+                    if (StrComp("Global/Tired.wav", sfxList[s].name))
+                        StopSfx(s);
                 }
             }
-            PrintLog("Callback: Pause Menu Requested");
-            break;
-        case CALLBACK_FULL_VERSION_ONLY: PrintLog("Callback: Full Version Only Notify"); break; // PC = ???, Mobile = Full Game Only Screen
-        case CALLBACK_STAFF_CREDITS: // PC = Staff Credits, Mobile = Privacy
-            if (bytecodeMode == BYTECODE_PC) {
-                for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
-                    if (StrComp("CREDITS", stageList[STAGELIST_PRESENTATION][s].name)) {
-                        activeStageList   = STAGELIST_PRESENTATION;
-                        stageListPosition = s;
-                        stageMode         = STAGEMODE_LOAD;
-                    }
+        }
+        PrintLog("Callback: Pause Menu Requested");
+        break;
+    case CALLBACK_FULL_VERSION_ONLY: PrintLog("Callback: Full Version Only Notify"); break; // PC = ???, Mobile = Full Game Only Screen
+    case CALLBACK_STAFF_CREDITS: // PC = Staff Credits, Mobile = Privacy
+        if (bytecodeMode == BYTECODE_PC) {
+            for (int s = 0; s < stageListCount[STAGELIST_PRESENTATION]; ++s) {
+                if (StrComp("CREDITS", stageList[STAGELIST_PRESENTATION][s].name)) {
+                    activeStageList = STAGELIST_PRESENTATION;
+                    stageListPosition = s;
+                    stageMode = STAGEMODE_LOAD;
                 }
-                PrintLog("Callback: Staff Credits Requested");
             }
-            else {
-                // Go to this URL http://www.sega.com/legal/privacy_mobile.php
-                PrintLog("Callback: Privacy Requested");
-            }
-            break;
-        case CALLBACK_MOREGAMES: //, PC = ??? (only when online), Mobile = Show More Games
-            PrintLog("Callback: Show More Games");
-            break;
+            PrintLog("Callback: Staff Credits Requested");
+        }
+        else {
+            // Go to this URL http://www.sega.com/legal/privacy_mobile.php
+            PrintLog("Callback: Privacy Requested");
+        }
+        break;
+    case CALLBACK_MOREGAMES: //, PC = ??? (only when online), Mobile = Show More Games
+        PrintLog("Callback: Show More Games");
+        break;
 
-        case CALLBACK_SHOWREMOVEADS: //, PC = ??? (only when online), Mobile = Remove Ads
-            PrintLog("Callback: Show Remove Ads");
-            break;
+    case CALLBACK_SHOWREMOVEADS: //, PC = ??? (only when online), Mobile = Remove Ads
+        PrintLog("Callback: Show Remove Ads");
+        break;
 
-        case CALLBACK_AGEGATE:
-            PrintLog("Callback: Age Gate");
-            // Newer versions of the game wont continue without this
-            // Thanks to Sappharad for pointing this out
-            SetGlobalVariableByName("HaveLoadAllGDPRValue", 1);
-            break;
+    case CALLBACK_AGEGATE:
+        PrintLog("Callback: Age Gate");
+        // Newer versions of the game wont continue without this
+        // Thanks to Sappharad for pointing this out
+        SetGlobalVariableByName("HaveLoadAllGDPRValue", 1);
+        break;
 
         // Sonic Origins
-        case NOTIFY_DEATH_EVENT: PrintLog("NOTIFY: DeathEvent() -> %d", notifyParam1); break;
-        case NOTIFY_TOUCH_SIGNPOST: PrintLog("NOTIFY: TouchSignPost() -> %d", notifyParam1); break;
-        case NOTIFY_HUD_ENABLE: PrintLog("NOTIFY: HUDEnable() -> %d", notifyParam1); break;
-        case NOTIFY_ADD_COIN:
-            PrintLog("NOTIFY: AddCoin() -> %d", notifyParam1);
-            SetGlobalVariableByName("game.coinCount", GetGlobalVariableByName("game.coinCount") + notifyParam1);
-            break;
-        case NOTIFY_KILL_ENEMY: PrintLog("NOTIFY: KillEnemy() -> %d", notifyParam1); break;
-        case NOTIFY_SAVESLOT_SELECT: PrintLog("NOTIFY: SaveSlotSelect() -> %d", notifyParam1); break;
-        case NOTIFY_FUTURE_PAST:
-            PrintLog("NOTIFY: FuturePast() -> %d", notifyParam1);
-            objectEntityList[objectLoop].state++;
-            break;
-        case NOTIFY_GOTO_FUTURE_PAST: PrintLog("NOTIFY: GotoFuturePast() -> %d", notifyParam1); break;
-        case NOTIFY_BOSS_END: PrintLog("NOTIFY: BossEnd() -> %d", notifyParam1); break;
-        case NOTIFY_SPECIAL_END: PrintLog("NOTIFY: SpecialEnd() -> %d", notifyParam1); break;
-        case NOTIFY_DEBUGPRINT: PrintLog("NOTIFY: DebugPrint() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
-        case NOTIFY_KILL_BOSS: PrintLog("NOTIFY: KillBoss() -> %d", notifyParam1); break;
-        case NOTIFY_TOUCH_EMERALD: PrintLog("NOTIFY: TouchEmerald() -> %d", notifyParam1); break;
-        case NOTIFY_STATS_ENEMY: PrintLog("NOTIFY: StatsEnemy() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
-        case NOTIFY_STATS_CHARA_ACTION: PrintLog("NOTIFY: StatsCharaAction() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
-        case NOTIFY_STATS_RING: PrintLog("NOTIFY: StatsRing() -> %d", notifyParam1); break;
-        case NOTIFY_STATS_MOVIE:
-            PrintLog("NOTIFY: StatsMovie() -> %d", notifyParam1);
-            ClearGraphicsData();
-            ClearAnimationData();
-            LoadPalette("MasterPalette.act", 0, 0, 0, 256);
+    case NOTIFY_DEATH_EVENT: PrintLog("NOTIFY: DeathEvent() -> %d", notifyParam1); break;
+    case NOTIFY_TOUCH_SIGNPOST: PrintLog("NOTIFY: TouchSignPost() -> %d", notifyParam1); break;
+    case NOTIFY_HUD_ENABLE: PrintLog("NOTIFY: HUDEnable() -> %d", notifyParam1); break;
+    case NOTIFY_ADD_COIN:
+        PrintLog("NOTIFY: AddCoin() -> %d", notifyParam1);
+        SetGlobalVariableByName("game.coinCount", GetGlobalVariableByName("game.coinCount") + notifyParam1);
+        break;
+    case NOTIFY_KILL_ENEMY: PrintLog("NOTIFY: KillEnemy() -> %d", notifyParam1); break;
+    case NOTIFY_SAVESLOT_SELECT: PrintLog("NOTIFY: SaveSlotSelect() -> %d", notifyParam1); break;
+    case NOTIFY_FUTURE_PAST:
+        PrintLog("NOTIFY: FuturePast() -> %d", notifyParam1);
+        objectEntityList[objectLoop].state++;
+        break;
+    case NOTIFY_GOTO_FUTURE_PAST: PrintLog("NOTIFY: GotoFuturePast() -> %d", notifyParam1); break;
+    case NOTIFY_BOSS_END: PrintLog("NOTIFY: BossEnd() -> %d", notifyParam1); break;
+    case NOTIFY_SPECIAL_END: PrintLog("NOTIFY: SpecialEnd() -> %d", notifyParam1); break;
+    case NOTIFY_DEBUGPRINT: PrintLog("NOTIFY: DebugPrint() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
+    case NOTIFY_KILL_BOSS: PrintLog("NOTIFY: KillBoss() -> %d", notifyParam1); break;
+    case NOTIFY_TOUCH_EMERALD: PrintLog("NOTIFY: TouchEmerald() -> %d", notifyParam1); break;
+    case NOTIFY_STATS_ENEMY: PrintLog("NOTIFY: StatsEnemy() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
+    case NOTIFY_STATS_CHARA_ACTION: PrintLog("NOTIFY: StatsCharaAction() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
+    case NOTIFY_STATS_RING: PrintLog("NOTIFY: StatsRing() -> %d", notifyParam1); break;
+    case NOTIFY_STATS_MOVIE:
+        PrintLog("NOTIFY: StatsMovie() -> %d", notifyParam1);
+        ClearGraphicsData();
+        ClearAnimationData();
+        LoadPalette("MasterPalette.act", 0, 0, 0, 256);
 #if RETRO_USE_MOD_LOADER
-            Engine.LoadXMLPalettes();
+        Engine.LoadXMLPalettes();
 #endif
-            activeStageList   = 0;
-            stageMode         = STAGEMODE_LOAD;
-            Engine.gameMode   = ENGINE_MAINGAME;
-            stageListPosition = 0;
-            break;
-        case NOTIFY_STATS_PARAM_1: PrintLog("NOTIFY: StatsParam1() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
-        case NOTIFY_STATS_PARAM_2: PrintLog("NOTIFY: StatsParam2() -> %d", notifyParam1); break;
-        case NOTIFY_CHARACTER_SELECT:
-            PrintLog("NOTIFY: CharacterSelect() -> %d", notifyParam1);
-            SetGlobalVariableByName("game.callbackResult", 1);
-            SetGlobalVariableByName("game.continueFlag", 0);
-            break;
-        case NOTIFY_SPECIAL_RETRY:
-            PrintLog("NOTIFY: SpecialRetry() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3);
-            SetGlobalVariableByName("game.callbackResult", 1);
-            break;
-        case NOTIFY_TOUCH_CHECKPOINT: PrintLog("NOTIFY: TouchCheckpoint() -> %d", notifyParam1); break;
-        case NOTIFY_ACT_FINISH: PrintLog("NOTIFY: ActFinish() -> %d", notifyParam1); break;
-        case NOTIFY_1P_VS_SELECT: PrintLog("NOTIFY: 1PVSSelect() -> %d", notifyParam1); break;
-        case NOTIFY_CONTROLLER_SUPPORT:
-            PrintLog("NOTIFY: ControllerSupport() -> %d", notifyParam1);
-            SetGlobalVariableByName("game.callbackResult", 1);
-            break;
-        case NOTIFY_STAGE_RETRY: PrintLog("NOTIFY: StageRetry() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
-        case NOTIFY_SOUND_TRACK: PrintLog("NOTIFY: SoundTrack() -> %d", notifyParam1); break;
-        case NOTIFY_GOOD_ENDING: PrintLog("NOTIFY: GoodEnding() -> %d", notifyParam1); break;
-        case NOTIFY_BACK_TO_MAINMENU: PrintLog("NOTIFY: BackToMainMenu() -> %d", notifyParam1); break;
-        case NOTIFY_LEVEL_SELECT_MENU: PrintLog("NOTIFY: LevelSelectMenu() -> %d", notifyParam1); break;
-        case NOTIFY_PLAYER_SET: PrintLog("NOTIFY: PlayerSet() -> %d", notifyParam1); break;
-        case NOTIFY_EXTRAS_MODE: PrintLog("NOTIFY: ExtrasMode() -> %d", notifyParam1); break;
-        case NOTIFY_SPIN_DASH_TYPE: PrintLog("NOTIFY: SpindashType() -> %d", notifyParam1); break;
-        case NOTIFY_TIME_OVER: PrintLog("NOTIFY: TimeOver() -> %d", notifyParam1); break;
-        case NOTIFY_TIMEATTACK_MODE: PrintLog("NOTIFY: TimeAttackMode() -> %d", notifyParam1); break;
-        case NOTIFY_STATS_BREAK_OBJECT: PrintLog("NOTIFY: StatsBreakObject() -> %d, %d", notifyParam1, notifyParam2); break;
-        case NOTIFY_STATS_SAVE_FUTURE: PrintLog("NOTIFY: StatsSaveFuture() -> %d", notifyParam1); break;
-        case NOTIFY_STATS_CHARA_ACTION2: PrintLog("NOTIFY: StatsCharaAction2() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
+        activeStageList = 0;
+        stageMode = STAGEMODE_LOAD;
+        Engine.gameMode = ENGINE_MAINGAME;
+        stageListPosition = 0;
+        break;
+    case NOTIFY_STATS_PARAM_1: PrintLog("NOTIFY: StatsParam1() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
+    case NOTIFY_STATS_PARAM_2: PrintLog("NOTIFY: StatsParam2() -> %d", notifyParam1); break;
+    case NOTIFY_CHARACTER_SELECT:
+        PrintLog("NOTIFY: CharacterSelect() -> %d", notifyParam1);
+        SetGlobalVariableByName("game.callbackResult", 1);
+        SetGlobalVariableByName("game.continueFlag", 0);
+        break;
+    case NOTIFY_SPECIAL_RETRY:
+        PrintLog("NOTIFY: SpecialRetry() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3);
+        SetGlobalVariableByName("game.callbackResult", 1);
+        break;
+    case NOTIFY_TOUCH_CHECKPOINT: PrintLog("NOTIFY: TouchCheckpoint() -> %d", notifyParam1); break;
+    case NOTIFY_ACT_FINISH: PrintLog("NOTIFY: ActFinish() -> %d", notifyParam1); break;
+    case NOTIFY_1P_VS_SELECT: PrintLog("NOTIFY: 1PVSSelect() -> %d", notifyParam1); break;
+    case NOTIFY_CONTROLLER_SUPPORT:
+        PrintLog("NOTIFY: ControllerSupport() -> %d", notifyParam1);
+        SetGlobalVariableByName("game.callbackResult", 1);
+        break;
+    case NOTIFY_STAGE_RETRY: PrintLog("NOTIFY: StageRetry() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
+    case NOTIFY_SOUND_TRACK: PrintLog("NOTIFY: SoundTrack() -> %d", notifyParam1); break;
+    case NOTIFY_GOOD_ENDING: PrintLog("NOTIFY: GoodEnding() -> %d", notifyParam1); break;
+    case NOTIFY_BACK_TO_MAINMENU: PrintLog("NOTIFY: BackToMainMenu() -> %d", notifyParam1); break;
+    case NOTIFY_LEVEL_SELECT_MENU: PrintLog("NOTIFY: LevelSelectMenu() -> %d", notifyParam1); break;
+    case NOTIFY_PLAYER_SET: PrintLog("NOTIFY: PlayerSet() -> %d", notifyParam1); break;
+    case NOTIFY_EXTRAS_MODE: PrintLog("NOTIFY: ExtrasMode() -> %d", notifyParam1); break;
+    case NOTIFY_SPIN_DASH_TYPE: PrintLog("NOTIFY: SpindashType() -> %d", notifyParam1); break;
+    case NOTIFY_TIME_OVER: PrintLog("NOTIFY: TimeOver() -> %d", notifyParam1); break;
+    case NOTIFY_TIMEATTACK_MODE: PrintLog("NOTIFY: TimeAttackMode() -> %d", notifyParam1); break;
+    case NOTIFY_STATS_BREAK_OBJECT: PrintLog("NOTIFY: StatsBreakObject() -> %d, %d", notifyParam1, notifyParam2); break;
+    case NOTIFY_STATS_SAVE_FUTURE: PrintLog("NOTIFY: StatsSaveFuture() -> %d", notifyParam1); break;
+    case NOTIFY_STATS_CHARA_ACTION2: PrintLog("NOTIFY: StatsCharaAction2() -> %d, %d, %d", notifyParam1, notifyParam2, notifyParam3); break;
 
         // Sega Forever stuff
-        case CALLBACK_STARTGAME:
-            PrintLog("Callback: startGame()");
+    case CALLBACK_STARTGAME:
+        PrintLog("Callback: startGame()");
 
-            // Set lives count and the like
-            SetGlobalVariableByName("Config.NumOfLives", 3);
-            SetGlobalVariableByName("Config.IsPremiumUser", 1);
-            break;
-        case CALLBACK_SHOWURL: PrintLog("Callback: showURL(\"https://www.sega.com\")"); break;
-        case CALLBACK_SHOWMENU_2: PrintLog("Callback: showMenu(2)"); break;
-        case CALLBACK_SHOWHELPCENTER: PrintLog("Callback: Show Help Center"); break;
-        case CALLBACK_CHANGEADSTYPE: PrintLog("Callback: Change Ads Type"); break;
-        case CALLBACK_ONSHOWINTERSTITIAL: PrintLog("Callback: onShowInterstitial(2, 0) - Pause_Duration"); break;
-        case CALLBACK_ONSHOWBANNER: PrintLog("Callback: onShowBanner()"); break;
-        case CALLBACK_ONSHOWBANNER_PAUSESTART: PrintLog("Callback: onShowBanner() - Pause_Start"); break;
-        case CALLBACK_ONHIDEBANNER: PrintLog("Callback: onHideBanner()"); break;
-        case CALLBACK_REMOVEADSBUTTON_FADEOUT: PrintLog("Callback: RemoveAdsButton_FadeOut()"); break;
-        case CALLBACK_REMOVEADSBUTTON_FADEIN: PrintLog("Callback: RemoveAdsButton_FadeIn()"); break;
-        case CALLBACK_ONSHOWINTERSTITIAL_2:
-        case CALLBACK_ONSHOWINTERSTITIAL_3:
-        case CALLBACK_ONSHOWINTERSTITIAL_5: PrintLog("Callback: onShowInterstitial(0, 0)"); break;
-        case CALLBACK_ONSHOWINTERSTITIAL_4: PrintLog("Callback: onShowInterstitial(1, 0)"); break;
-        case CALLBACK_ONVISIBLEGRIDBTN_1: PrintLog("Callback: onVisibleGridBtn(1)"); break;
-        case CALLBACK_ONVISIBLEGRIDBTN_0:
-            PrintLog("Callback: onVisibleGridBtn(0)");
+        // Set lives count and the like
+        SetGlobalVariableByName("Config.NumOfLives", 3);
+        SetGlobalVariableByName("Config.IsPremiumUser", 1);
+        break;
+    case CALLBACK_SHOWURL: PrintLog("Callback: showURL(\"https://www.sega.com\")"); break;
+    case CALLBACK_SHOWMENU_2: PrintLog("Callback: showMenu(2)"); break;
+    case CALLBACK_SHOWHELPCENTER: PrintLog("Callback: Show Help Center"); break;
+    case CALLBACK_CHANGEADSTYPE: PrintLog("Callback: Change Ads Type"); break;
+    case CALLBACK_ONSHOWINTERSTITIAL: PrintLog("Callback: onShowInterstitial(2, 0) - Pause_Duration"); break;
+    case CALLBACK_ONSHOWBANNER: PrintLog("Callback: onShowBanner()"); break;
+    case CALLBACK_ONSHOWBANNER_PAUSESTART: PrintLog("Callback: onShowBanner() - Pause_Start"); break;
+    case CALLBACK_ONHIDEBANNER: PrintLog("Callback: onHideBanner()"); break;
+    case CALLBACK_REMOVEADSBUTTON_FADEOUT: PrintLog("Callback: RemoveAdsButton_FadeOut()"); break;
+    case CALLBACK_REMOVEADSBUTTON_FADEIN: PrintLog("Callback: RemoveAdsButton_FadeIn()"); break;
+    case CALLBACK_ONSHOWINTERSTITIAL_2:
+    case CALLBACK_ONSHOWINTERSTITIAL_3:
+    case CALLBACK_ONSHOWINTERSTITIAL_5: PrintLog("Callback: onShowInterstitial(0, 0)"); break;
+    case CALLBACK_ONSHOWINTERSTITIAL_4: PrintLog("Callback: onShowInterstitial(1, 0)"); break;
+    case CALLBACK_ONVISIBLEGRIDBTN_1: PrintLog("Callback: onVisibleGridBtn(1)"); break;
+    case CALLBACK_ONVISIBLEGRIDBTN_0:
+        PrintLog("Callback: onVisibleGridBtn(0)");
 
-            // small hack here since the game enables hiRes and forgets to disable it????
-            if (Engine.highResMode)
-                Engine.highResMode = false;
-            break;
-        case CALLBACK_ONSHOWINTERSTITIAL_PAUSEDURATION: PrintLog("Callback: onShowInterstitial(0, 0) - Pause_Duration"); break;
-        case CALLBACK_SHOWCOUNTDOWNMENU: PrintLog("Callback: showCountDownMenu(0)"); break;
-        case CALLBACK_ONVISIBLEMAINMENU_1: PrintLog("Callback: onVisibleMainMenu(1)"); break;
-        case CALLBACK_ONVISIBLEMAINMENU_0: PrintLog("Callback: OnVisibleMainMenu(0)"); break;
-        case CALLBACK_ONSHOWREWARDADS:
-            PrintLog("Callback: onShowRewardAds(0)");
+        // small hack here since the game enables hiRes and forgets to disable it????
+        if (Engine.highResMode)
+            Engine.highResMode = false;
+        break;
+    case CALLBACK_ONSHOWINTERSTITIAL_PAUSEDURATION: PrintLog("Callback: onShowInterstitial(0, 0) - Pause_Duration"); break;
+    case CALLBACK_SHOWCOUNTDOWNMENU: PrintLog("Callback: showCountDownMenu(0)"); break;
+    case CALLBACK_ONVISIBLEMAINMENU_1: PrintLog("Callback: onVisibleMainMenu(1)"); break;
+    case CALLBACK_ONVISIBLEMAINMENU_0: PrintLog("Callback: OnVisibleMainMenu(0)"); break;
+    case CALLBACK_ONSHOWREWARDADS:
+        PrintLog("Callback: onShowRewardAds(0)");
 
-            // small hack to prevent a softlock
-            SetGlobalVariableByName("RewardAdCallback", 1);
-            break;
-        case CALLBACK_ONSHOWBANNER_2: PrintLog("Callback: onShowBanner(4, 0)"); break;
+        // small hack to prevent a softlock
+        SetGlobalVariableByName("RewardAdCallback", 1);
+        break;
+    case CALLBACK_ONSHOWBANNER_2: PrintLog("Callback: onShowBanner(4, 0)"); break;
 
-            // Mod loader Only
+        // Mod loader Only
 #if RETRO_USE_MOD_LOADER
-        case CALLBACK_SET1P: activePlayerCount = 1; break;
-        case CALLBACK_SET2P: activePlayerCount = 2; break;
+    case CALLBACK_SET1P: activePlayerCount = 1; break;
+    case CALLBACK_SET2P: activePlayerCount = 2; break;
+    case CALLBACK_GETWINDOWINFO:
+        SetGlobalVariableByName("Engine.Fullscreen", Engine.startFullScreen);
+        SetGlobalVariableByName("Engine.Borderless", Engine.borderless);
+        SetGlobalVariableByName("Engine.VSync", Engine.vsync);
+        SetGlobalVariableByName("Engine.ScalingMode", Engine.scalingMode);
+        SetGlobalVariableByName("Engine.WindowScale", Engine.windowScale);
+        SetGlobalVariableByName("Engine.ScreenWidth", SCREEN_XSIZE);
+        SetGlobalVariableByName("Engine.HardwareRenderer", Engine.gameRenderType == "HW_Rendering");            
+        break;
+    case CALLBACK_SETWINDOWCHANGES:
+        for (int v = 0; v < globalVariablesCount; ++v) {
+            if (StrComp("Engine.Fullscreen", globalVariableNames[v])){
+                Engine.startFullScreen = globalVariables[v];
+                Engine.isFullScreen = Engine.startFullScreen;
+            }
+            else if (StrComp("Engine.Borderless", globalVariableNames[v]))
+                Engine.borderless = globalVariables[v];
+            else if (StrComp("Engine.VSync", globalVariableNames[v]))
+                Engine.vsync = globalVariables[v];
+            else if (StrComp("Engine.ScalingMode", globalVariableNames[v]))
+                Engine.scalingMode = globalVariables[v];
+            else if (StrComp("Engine.WindowScale", globalVariableNames[v]))
+                Engine.windowScale = globalVariables[v];
+            else if (StrComp("Engine.ScreenWidth", globalVariableNames[v])){
+                SCREEN_XSIZE = globalVariables[v];
+                SCREEN_XSIZE_CONFIG = SCREEN_XSIZE;
+            }
+            else if (StrComp("Engine.HardwareRenderer", globalVariableNames[v]))
+                Engine.gameRenderType = gameRenderTypes[globalVariables[v]];
+        }
+#if RETRO_USING_OPENGL
+        for (int i = 0; i < HW_TEXTURE_COUNT; ++i) {
+            glDeleteTextures(1, &gfxTextureID[i]);
+        }
+#endif
+        ReleaseRenderDevice();
+        InitRenderDevice();
+        break;
+    case CALLBACK_OPENMODMENU:
+        Engine.gameMode      = ENGINE_INITMODMENU;
+        Engine.modMenuCalled = true;
+        break;
 #endif
     }
 }
