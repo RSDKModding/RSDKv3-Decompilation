@@ -7,7 +7,7 @@ body:
     attributes:
       label: Before opening this issue, I ensure that...
       options:
-      - label: I have read the [FAQ](https://github.com/RSDKModding/RSDKv3-Decompilation/blob/main/FAQ.md) and confirmed my issue is not mentioned in it.
+      - label: I have read the [FAQ](https://github.com/RSDKModding/RSDKv3-Decompilation/blob/master/FAQ.md) and confirmed my issue is not mentioned in it.
         required: true
       - label: I have checked **both open and closed** issues and confirmed this bug has not already been reported.
         required: true
