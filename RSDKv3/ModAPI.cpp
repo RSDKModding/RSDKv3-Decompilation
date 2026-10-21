@@ -16,7 +16,8 @@ bool disableSaveIniOverride = false;
 char modTypeNames[OBJECT_COUNT][0x40];
 char modScriptPaths[OBJECT_COUNT][0x40];
 byte modScriptFlags[OBJECT_COUNT];
-byte modObjCount = 0;
+byte modObjCount      = 0;
+byte modObjCountStore = 0;
 
 char playerNames[PLAYERNAME_COUNT][0x20];
 byte playerCount = 0;
