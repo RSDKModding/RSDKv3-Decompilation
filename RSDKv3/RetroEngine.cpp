@@ -1474,7 +1474,7 @@ void RetroEngine::Callback(int callbackID)
             SetGlobalVariableByName("Engine.ScalingMode", Engine.scalingMode);
             SetGlobalVariableByName("Engine.WindowScale", Engine.windowScale);
             SetGlobalVariableByName("Engine.ScreenWidth", SCREEN_XSIZE);
-            SetGlobalVariableByName("Engine.HardwareRenderer", Engine.gameRenderType == "HW_Rendering");            
+            SetGlobalVariableByName("Engine.HardwareRenderer", Engine.gameRenderType == "HW_Rendering");
             break;
         case CALLBACK_SETWINDOWCHANGES:
             Engine.startFullScreen = Engine.isFullScreen; // Account for f4 toggle
@@ -1486,21 +1486,41 @@ void RetroEngine::Callback(int callbackID)
                 Engine.borderless = GetGlobalVariableByName("Engine.Borderless");
             if (GetGlobalVariableID("Engine.VSync") != 0xFF)
                 Engine.vsync = GetGlobalVariableByName("Engine.VSync");
-            if (GetGlobalVariableID("Engine.ScalingMode") != 0xFF)
-                Engine.scalingMode = GetGlobalVariableByName("Engine.ScalingMode");
+            if (GetGlobalVariableID("Engine.ScalingMode") != 0xFF) {
+                Engine.scalingMode  = GetGlobalVariableByName("Engine.ScalingMode");
+                Engine.useFBTexture = Engine.scalingMode;
+            }
             if (GetGlobalVariableID("Engine.WindowScale") != 0xFF)
                 Engine.windowScale = GetGlobalVariableByName("Engine.WindowScale");
             if (GetGlobalVariableID("Engine.ScreenWidth") != 0xFF) {
-                SCREEN_XSIZE        = GetGlobalVariableByName("Engine.ScreenWidth");
+                SCREEN_XSIZE = GetGlobalVariableByName("Engine.ScreenWidth");
                 SCREEN_XSIZE_CONFIG = SCREEN_XSIZE;
             }
-            if (GetGlobalVariableID("Engine.HardwareRenderer") != 0xFF)
-                Engine.gameRenderType = gameRenderTypes[GetGlobalVariableByName("Engine.HardwareRenderer")];
-#if RETRO_USING_OPENGL
-            for (int i = 0; i < HW_TEXTURE_COUNT; ++i) {
-                glDeleteTextures(1, &gfxTextureID[i]);
+            if (GetGlobalVariableID("Engine.HardwareRenderer") != 0xFF) {
+                renderType = GetGlobalVariableByName("Engine.HardwareRenderer");
+                Engine.gameRenderType = gameRenderTypes[renderType];
+
+                // Convert some stuff to the expected format
+                for (int b = 0; b < 8; b++) {
+                    for (int i = 0; i < 256; i++) {
+                        fullPalette[b][i] = renderType == RENDER_SW ? RGB888_TO_RGB565(fullPalette32[b][i].r, fullPalette32[b][i].g, fullPalette32[b][i].b)
+                                                                    : (RGB888_TO_RGB5551(fullPalette32[b][i].r, fullPalette32[b][i].g, fullPalette32[b][i].b) | 1);
+                    }
+                }
+                for (int i = 0; i < CHUNKTILE_COUNT; ++i) {
+                    if (renderType == RENDER_SW)
+                        tiles128x128.gfxDataPos[i] = tiles128x128.tileIndex[i] << 8;
+                    else if (renderType == RENDER_HW)
+                        tiles128x128.gfxDataPos[i] = tiles128x128.tileIndex[i] << 2;
+                }
+            
+                if (renderType == RENDER_HW) {
+                    activePalette   = fullPalette[0];
+                    activePalette32 = fullPalette32[0];
+                }
+                SetActivePalette(0, 0, 256);
             }
-#endif
+
             ReleaseRenderDevice();
             InitRenderDevice();
             break;

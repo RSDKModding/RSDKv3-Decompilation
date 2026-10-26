@@ -1037,16 +1037,24 @@ void FlipScreenVideo()
 
 void ReleaseRenderDevice()
 {
-    if (Engine.frameBuffer)
+    if (Engine.frameBuffer) {
         delete[] Engine.frameBuffer;
-    if (Engine.frameBuffer2x)
+        Engine.frameBuffer = nullptr;
+    }
+    if (Engine.frameBuffer2x) {
         delete[] Engine.frameBuffer2x;
+        Engine.frameBuffer2x = nullptr;
+    }
 
 #if RETRO_USING_OPENGL
-    if (Engine.texBuffer)
+    if (Engine.texBuffer) {
         delete[] Engine.texBuffer;
-    if (Engine.texBuffer2x)
+        Engine.texBuffer = nullptr;
+    }
+    if (Engine.texBuffer2x) {
         delete[] Engine.texBuffer2x;
+        Engine.texBuffer2x = nullptr;
+    }
 #endif
 
     if (renderType == RENDER_SW) {
