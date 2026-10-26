@@ -1474,7 +1474,7 @@ void RetroEngine::Callback(int callbackID)
             SetGlobalVariableByName("Engine.ScalingMode", Engine.scalingMode);
             SetGlobalVariableByName("Engine.WindowScale", Engine.windowScale);
             SetGlobalVariableByName("Engine.ScreenWidth", SCREEN_XSIZE);
-            SetGlobalVariableByName("Engine.HardwareRenderer", Engine.gameRenderType == "HW_Rendering");
+            SetGlobalVariableByName("Engine.HardwareRenderer", renderType == RENDER_HW);
             break;
         case CALLBACK_SETWINDOWCHANGES:
             Engine.startFullScreen = Engine.isFullScreen; // Account for f4 toggle
