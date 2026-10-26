@@ -360,13 +360,23 @@ void LoadStageFiles(void)
 
 #if RETRO_USE_MOD_LOADER
         loadGlobalScripts = false;
+
+        // StageXMLUseGlobalObjects sets loadGlobalScripts
+
+        // We're using its return value to determine if Stage.xml has
+        // the useGlobalObjects at all, if it does then we'll just ignore
+        // the value from StageConfig.bin
+        bool hasAttribute = Engine.StageXMLUseGlobalObjects(loadGlobalScripts);
 #else
         bool loadGlobalScripts = false;
 #endif
         if (LoadStageFile("StageConfig.bin", stageListPosition, &info)) {
             byte buf = 0;
             FileRead(&buf, 1);
-            loadGlobalScripts = buf;
+#if RETRO_USE_MOD_LOADER
+            if (!hasAttribute)
+#endif
+                loadGlobalScripts = buf;
             CloseFile();
         }
 
@@ -387,10 +397,13 @@ void LoadStageFiles(void)
                 SetObjectTypeName(strBuffer, i + scriptID);
             }
 
-#if RETRO_USE_MOD_LOADER && RETRO_USE_COMPILER
+#if RETRO_USE_MOD_LOADER
+            modObjCount = modObjCountStore;
+#if RETRO_USE_COMPILER
             for (byte i = 0; i < modObjCount && loadGlobalScripts; ++i) {
                 SetObjectTypeName(modTypeNames[i], globalObjectCount + i + 1);
             }
+#endif
 #endif
 
 #if RETRO_USE_COMPILER
@@ -475,6 +488,18 @@ void LoadStageFiles(void)
                 SetObjectTypeName(strBuffer, scriptID + i);
             }
 
+#if RETRO_USE_MOD_LOADER && RETRO_USE_COMPILER
+            if (!loadGlobalScripts)
+                modObjCount = modObjCountStore;
+            GetFileInfo(&info);
+            CloseFile();
+            Engine.LoadXMLObjects(true);
+            SetFileInfo(&info);
+            for (byte i = 0; i < modObjCount - modObjCountStore; ++i) {
+                SetObjectTypeName(modTypeNames[modObjCountStore + i], (scriptID + stageObjectCount) + i);
+            }
+#endif
+
 #if RETRO_USE_COMPILER
 #if RETRO_USE_MOD_LOADER
             char scriptPath[0x40];
@@ -553,6 +578,17 @@ void LoadStageFiles(void)
             SetFileInfo(&infoStore);
 #endif
 
+#if RETRO_USE_MOD_LOADER && RETRO_USE_COMPILER
+            for (byte i = 0; i < modObjCount - modObjCountStore; ++i) {
+                GetFileInfo(&infoStore);
+                CloseFile();
+                ParseScriptFile(modScriptPaths[modObjCountStore + i], (scriptID + stageObjectCount) + i);
+                SetFileInfo(&infoStore);
+                if (Engine.gameMode == ENGINE_SCRIPTERROR)
+                    return;
+            }
+#endif
+
             FileRead(&fileBuffer2, 1);
             stageSFXCount = fileBuffer2;
             for (int i = 0; i < stageSFXCount; ++i) {
@@ -583,6 +619,8 @@ void LoadStageFiles(void)
     else {
         PrintLog("Reloading Scene %s - %s", stageListNames[activeStageList], stageList[activeStageList][stageListPosition].name);
     }
+    Engine.LoadXMLSoundFX(true);
+    Engine.LoadXMLPalettes(true);
     LoadStageChunks();
     for (int i = 0; i < TRACK_COUNT; ++i) SetMusicTrack((char *)"", i, 0, 0);
     for (int i = 0; i < ENTITY_COUNT; ++i) {
